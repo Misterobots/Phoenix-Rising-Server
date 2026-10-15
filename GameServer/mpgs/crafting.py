@@ -11,7 +11,8 @@ import uuid
 from . import rewards
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RECIPES = os.path.join(HERE, 'world', 'recipes.json')
+RECIPES = next((p for p in (os.path.join(HERE, 'world', 'recipes.json'), os.path.join(HERE, 'data', '2.1.1', 'recipes.json'))
+            if os.path.exists(p)), os.path.join(HERE, 'world', 'recipes.json'))
 MAX_QTY = 99
 
 

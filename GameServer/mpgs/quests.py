@@ -20,7 +20,8 @@ from .repl.decode import OrderedFields
 from .repl.guid import GuidInfo
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CATALOG = os.path.join(HERE, 'world', 'quest_catalog.json')
+CATALOG = next((p for p in (os.path.join(HERE, 'world', 'quest_catalog.json'), os.path.join(HERE, 'data', '2.1.1', 'quests.json'))
+            if os.path.exists(p)), os.path.join(HERE, 'world', 'quest_catalog.json'))
 BASELINE = os.path.join(HERE, 'data', '2.1.1', 'starting_quests.json')
 
 # Static (odd) NetGUIDs for the three /Script/Archon classes; the client resolves them by path.

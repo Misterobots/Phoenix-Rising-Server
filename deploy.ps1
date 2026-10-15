@@ -58,13 +58,11 @@ if (-not $Name) { $Name = Read-Host 'Player name (letters and digits, up to 16)'
 
 # 4. Servers
 function Up($port) { try { (Invoke-WebRequest "http://127.0.0.1:$port/" -UseBasicParsing -TimeoutSec 2).StatusCode -eq 200 } catch { $false } }
-if (-not (Up 3001)) {
-    Step 'Starting the server'
-    & (Join-Path $Root 'start-server.ps1')
-    $deadline = (Get-Date).AddSeconds(30)
-    while (-not (Up 3001) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }
-    if (-not (Up 3001)) { throw "The backend did not start; see $Root\logs\backend.err.log" }
-}
+Step 'Starting the server'
+& (Join-Path $Root 'start-server.ps1')
+$deadline = (Get-Date).AddSeconds(30)
+while (-not (Up 3001) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }
+if (-not (Up 3001)) { throw "The backend did not start; see the newest backend_*.err.log in $Root\logs" }
 
 # 5. One-time: hosts entries + trusted certificate (administrator)
 $hostsOk = (Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" -Raw) -match 'phoenix-rising'

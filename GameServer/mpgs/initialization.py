@@ -662,12 +662,11 @@ def snapshot_values(bounty, cooldown, huntpass, progression=None):
         # The selected pass's record: without it the Hunt Pass screen has no data for its claim button
         # (the stock client crashes on "Claim rewards" without it).
         from . import huntpass as hp
-        path = hp.load_path(huntpass)
-        if path is not None:
-            row = next((r for r in progression if r.get('progression_id') == huntpass), {})
-            snapshots['HuntPassComponent']['ActiveHuntPassData'] = {'count': 1, 'elems': {0: hp.record(
-                huntpass, path, row.get('progress', 0), row.get('confirmed_fremium_rank', 0),
-                row.get('confirmed_premium_rank', 0))}}
+        path = hp.load_path(huntpass)      # None without a progression config: the pass then has no ranks
+        row = next((r for r in progression if r.get('progression_id') == huntpass), {})
+        snapshots['HuntPassComponent']['ActiveHuntPassData'] = {'count': 1, 'elems': {0: hp.record(
+            huntpass, path, row.get('progress', 0), row.get('confirmed_fremium_rank', 0),
+            row.get('confirmed_premium_rank', 0))}}
     return snapshots
 
 

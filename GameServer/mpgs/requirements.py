@@ -11,7 +11,8 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RULES = os.path.join(HERE, 'world', 'journey_rules.json')
+RULES = next((p for p in (os.path.join(HERE, 'world', 'journey_rules.json'), os.path.join(HERE, 'data', '2.1.1', 'slayers_path.json'))
+            if os.path.exists(p)), os.path.join(HERE, 'world', 'journey_rules.json'))
 REDEEMED = 3
 
 

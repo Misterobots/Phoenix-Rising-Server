@@ -25,7 +25,7 @@ While the hosts entries are active the Epic Games Launcher cannot sign in to Epi
 ## What works
 
 Sign-in and new characters, Ramsgate with other players, inventory and loadouts, the starter weapons and gear,
-equipping, Aetherite infusion, NPC interactions and quests.
+equipping, Aetherite infusion and NPC interactions.
 
 Not yet: hunts and the new-player island (new characters start in Ramsgate), item upgrades, the real-money store.
 

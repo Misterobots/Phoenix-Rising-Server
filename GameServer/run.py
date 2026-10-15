@@ -18,4 +18,10 @@ ap.add_argument('--template', default=os.path.join(HERE, 'data', '2.1.1', 'ramsg
 a = ap.parse_args()
 world = GenWorld.from_template(a.template)
 log('world: %d entries from %s' % (len(world.events), a.template))
-GameServer(a.port, world).run()
+try:
+    GameServer(a.port, world).run()
+except BaseException as exc:       # a log that ends without this line or a traceback means the process was killed
+    import traceback
+    log('game server stopping: %s' % type(exc).__name__)
+    traceback.print_exc()
+    raise

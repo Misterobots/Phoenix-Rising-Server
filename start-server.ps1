@@ -24,21 +24,39 @@ if ($Stop) {
     return
 }
 
+function Running($id, $match) {
+    if (-not $id) { return $false }
+    $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$id" -ErrorAction SilentlyContinue
+    return [bool]($proc -and $proc.CommandLine -match $match)
+}
+
 function Start-Part($Name, $Dir, $ArgList, $Env = @{}) {
     foreach ($k in $Env.Keys) { Set-Item "Env:$k" $Env[$k] }
+    $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
     $p = Start-Process -FilePath 'python' -ArgumentList $ArgList -WorkingDirectory (Join-Path $Root $Dir) `
-        -RedirectStandardOutput (Join-Path $Logs "$Name.log") -RedirectStandardError (Join-Path $Logs "$Name.err.log") `
+        -RedirectStandardOutput (Join-Path $Logs "${Name}_$stamp.log") -RedirectStandardError (Join-Path $Logs "${Name}_$stamp.err.log") `
         -WindowStyle Hidden -PassThru
-    Write-Host ("{0,-12} pid {1}" -f $Name, $p.Id)
+    Write-Host ("{0,-12} started, pid {1}" -f $Name, $p.Id)
     return $p.Id
 }
 
-$pids = [ordered]@{}
-$pids.backend = Start-Part 'backend' 'Backend' @('-u', '-m', 'phoenix_backend')
-Start-Sleep -Seconds 2     # first start creates Backend\data (game-server key, certificates) for the game server
-# Game server: full inventory sync for the stock client; test helpers are opt-in (README "Game server options").
-$pids.gameserver = Start-Part 'gameserver' 'GameServer' @('-u', 'run.py', '--port', "$GamePort") @{
-    MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'
+# Start only what is not already running (a restart after one part stopped keeps the other).
+$pids = [ordered]@{ backend = $null; gameserver = $null }
+if (Test-Path $PidFile) {
+    $old = Get-Content $PidFile | ConvertFrom-Json
+    $pids.backend = $old.backend; $pids.gameserver = $old.gameserver
+}
+if (Running $pids.backend 'phoenix_backend') { Write-Host "backend      running, pid $($pids.backend)" }
+else {
+    $pids.backend = Start-Part 'backend' 'Backend' @('-u', '-m', 'phoenix_backend')
+    Start-Sleep -Seconds 2     # first start creates Backend\data (game-server key, certificates) for the game server
+}
+if (Running $pids.gameserver 'run\.py') { Write-Host "gameserver   running, pid $($pids.gameserver)" }
+else {
+    # Full inventory sync for the stock client; test helpers are opt-in (README "Game server options").
+    $pids.gameserver = Start-Part 'gameserver' 'GameServer' @('-u', 'run.py', '--port', "$GamePort") @{
+        MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'
+    }
 }
 $pids | ConvertTo-Json | Set-Content $PidFile
-Write-Host "Logs: $Logs. Launch the client with .\tools\launch-client.ps1 -GameDir <Dauntless install folder>"
+Write-Host "Logs: $Logs"

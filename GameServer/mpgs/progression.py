@@ -13,7 +13,10 @@ from urllib.request import Request, urlopen
 from .repl.decode import OrderedFields
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG = os.environ.get('MPGS_PROGRESSION_CONFIG') or os.path.join(HERE, '..', 'Backend', 'data', 'progression_config.json')
+CONFIG = os.environ.get('MPGS_PROGRESSION_CONFIG') or next(
+    (p for p in (os.path.join(HERE, '..', 'Backend', 'data', 'progression_config.json'),
+                 os.path.join(HERE, 'data', '2.1.1', 'progression.json')) if os.path.exists(p)),
+    os.path.join(HERE, 'data', '2.1.1', 'progression.json'))
 
 # Catalog prefix of the equipped weapon (EWeaponType names in the SDK) -> experience track / EExperienceType.
 WEAPON_TRACKS = {'IH': ('ExperienceTrack_Weapon_Hammer', 4), 'GA': ('ExperienceTrack_Weapon_Axe', 2),

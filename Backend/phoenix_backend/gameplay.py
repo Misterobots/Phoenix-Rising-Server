@@ -22,6 +22,7 @@ log = logging.getLogger('phoenix')
 
 BUILD_ID = '682486_2.1.1_shipping'          # the client's engine build (party/join requests)
 SERVER_BUILD_ID = '682875_2.1.1_shipping'   # content changelist: what serverInfo.buildId carries
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAMESERVER_HEADERS = ('x-phoenixrising-gameserver-apikey', 'x-gameserver-apikey')
 STARTER = [('weapon', 'WP_EB_BEGINNER'), ('helmet', 'AR_UNEQUIPPED_HELM'), ('chest', 'AR_BEGINNER_CHEST'),
            ('arms', 'AR_BEGINNER_ARMS'), ('legs', 'AR_BEGINNER_LEGS'), ('lantern', 'LT_BASIC'),
@@ -325,7 +326,8 @@ class Gameplay:
     def track_ids(self):
         if not hasattr(self, '_tracks'):
             ids_, cfg = set(), {}
-            for path in (os.path.join(self.data_dir, 'progression_config.json'),):
+            for path in (os.path.join(self.data_dir, 'progression_config.json'),
+                         os.path.join(HERE, '..', 'GameServer', 'data', '2.1.1', 'progression.json')):
                 if os.path.exists(path):
                     with open(path, encoding='utf-8-sig') as f:
                         cfg = json.load(f)
@@ -377,7 +379,8 @@ class Gameplay:
         return envelope({'progression_id': request.match_info['track'], 'progress': total})
 
     async def progression_config(self, request):
-        for path in (os.path.join(self.data_dir, 'progression_config.json'),):
+        for path in (os.path.join(self.data_dir, 'progression_config.json'),
+                         os.path.join(HERE, '..', 'GameServer', 'data', '2.1.1', 'progression.json')):
             if os.path.exists(path):
                 with open(path, encoding='utf-8-sig') as f:
                     data = json.load(f)

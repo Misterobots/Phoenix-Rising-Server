@@ -15,7 +15,8 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ITEM_CLASSES = os.path.join(HERE, 'world', 'item_classes.json')
+ITEM_CLASSES = next((p for p in (os.path.join(HERE, 'world', 'item_classes.json'), os.path.join(HERE, 'data', '2.1.1', 'item_classes.json'))
+            if os.path.exists(p)), os.path.join(HERE, 'world', 'item_classes.json'))
 
 # ELoadoutItemSlotType -> backend loadout key
 SLOT_NAMES = {1: 'weapon', 2: 'helmet', 3: 'chest', 4: 'arms', 5: 'legs', 6: 'lantern', 7: 'subweapon', 8: 'player_role'}
