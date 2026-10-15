@@ -24,19 +24,11 @@ While the hosts entries are active the Epic Games Launcher cannot sign in to Epi
 
 ## What works
 
-Sign-in and new characters, Ramsgate with other players, inventory and loadouts, the starter weapons and gear,
-equipping, Aetherite infusion and NPC interactions.
+Sign-in and new characters, Ramsgate with other players, inventory and loadouts, equipping any weapon, armour or
+lantern, Aetherite infusion, player and weapon levels, NPC interactions, quests and their rewards, crafting,
+Slayer's Path unlocks and the Hunt Pass.
 
 Not yet: hunts and the new-player island (new characters start in Ramsgate), item upgrades, the real-money store.
-
-Some features use game data you can generate from your own install (not included):
-
-| Feature | Generate with |
-|---|---|
-| Equipping items beyond the starter kit | `cd GameServer; python -m tools.export_item_classes <DataTable export folder>` |
-| Crafting | `cd GameServer; python -m tools.export_recipes <DataTable export folder>` |
-| Slayer's Path unlock rules | `cd GameServer; python -m tools.export_journey_rules <player_journey_table.json>` |
-| Player levels, Hunt Pass | `python Backend\tools\make_progression_config.py <progression config JSON>` |
 
 ## What is in here
 
@@ -45,7 +37,7 @@ Some features use game data you can generate from your own install (not included
 | `Play.bat`, `Stop.bat`, `deploy.ps1`, `start-server.ps1` | Start, stop and first-run setup |
 | `Backend/` | Account, character, inventory and matchmaking service (`python -m phoenix_backend`; ports 3000, 3001, 443). Data is stored in `Backend/data/`. |
 | `GameServer/` | The game server (`python run.py`, UDP 8790) |
-| `GameServer/data/2.1.1/` | Data for the 2.1.1 build: network layouts and conditions, class/function/enum tables, the Ramsgate world and the starting quest state of a new character |
+| `GameServer/data/2.1.1/` | Data for the 2.1.1 build: network layouts and conditions, class/function/enum tables, the Ramsgate world, the starting quest state of a new character, quests, item classes, recipes, Slayer's Path rules and progression tracks |
 | `tools/` | `setup-local.ps1` (hosts + certificate), `launch-client.ps1` (start the game against this server) |
 
 The server and the game run on the same PC.
