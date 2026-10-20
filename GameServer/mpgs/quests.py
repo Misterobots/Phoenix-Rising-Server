@@ -160,9 +160,9 @@ def build_entry(series, comp_header, comp_ch, comp_cls, package_info, next_guid,
     return e, {'series': len(serie_guids), 'quests': nquests, 'objects': len(blocks) - 1, 'meta': meta}
 
 
-def persist_status(account, character, sid, quest_guid, status, auth_headers, base='http://127.0.0.1:3001'):
-    """Write one quest status into the backend character's SERIE_<id> JSON (read-modify-write;
-    POST /character replaces the whole data blob)."""
+def persist_status(account, character, sid, quest_guid, status, auth_headers, base='http://127.0.0.1:3001', objectives=None):
+    """Write one quest status (and optional objective map) into the backend character's SERIE_<id> JSON
+    (read-modify-write; POST /character replaces the whole data blob)."""
     from urllib.parse import quote
     from urllib.request import Request, urlopen
     path = '/character/' + quote(account, safe='') + '/' + quote(character, safe='')
@@ -176,6 +176,9 @@ def persist_status(account, character, sid, quest_guid, status, auth_headers, ba
     serie['ID'] = sid
     q = serie.get(quest_guid) if isinstance(serie.get(quest_guid), dict) else {}
     q['Status'] = status
+    if isinstance(objectives, dict):
+        for oguid, oval in objectives.items():
+            q[oguid] = dict(oval)
     serie[quest_guid] = q
     data[key] = json.dumps(serie, separators=(',', ':'))
     body = json.dumps({'characterId': character, 'accountId': account, 'data': json.dumps(data),
@@ -183,3 +186,4 @@ def persist_status(account, character, sid, quest_guid, status, auth_headers, ba
     hdr = dict(auth_headers); hdr['Content-Type'] = 'application/json'
     with urlopen(Request(base + '/character', data=body, headers=hdr, method='POST'), timeout=3) as r:
         return r.status
+

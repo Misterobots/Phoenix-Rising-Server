@@ -182,9 +182,10 @@ def normalize_character_profile(profile, character):
 
 def apply_character_profile(entries, schema, profile, character):
     """Apply one validated profile to the initial PlayerState block."""
+    from .actor_types import PLAYER_STATES
     normalized = normalize_character_profile(profile, character)
     candidates = [block for entry in entries for block in entry.parsed.blocks
-                  if block.cls_name == 'player_state_bp_C' and block.values is not None]
+                  if block.cls_name in PLAYER_STATES and block.values is not None]
     if len(candidates) != 1:
         raise ValueError('expected one decoded initial PlayerState block')
     block = candidates[0]

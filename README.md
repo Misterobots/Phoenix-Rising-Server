@@ -13,14 +13,14 @@ The first run installs what it needs and asks a few things:
 - **Python 3.11+**: offered through winget if it is missing (then run `Play.bat` again).
 - **Game folder**: found automatically for Epic installs, otherwise you are asked for it.
 - **Player name**.
-- **One administrator prompt** to add the server's hostnames to the Windows hosts file, and a Windows prompt to
-  trust the server's local certificate. Both stay on this PC.
+- **An administrator prompt each start** to enable local host routing and trust the server's certificate.
 
-The game then opens: click **Continue**, then **Defend the Frontier**. Later runs go straight to the game.
-`Stop.bat` stops the server.
+The game then opens: click **Continue**, then **Defend the Frontier**. `Stop.bat` stops both server processes and
+removes local routing and the trusted certificate.
 
-While the hosts entries are active the Epic Games Launcher cannot sign in to Epic; start the game with
-`Play.bat`. `tools\setup-local.ps1 -Remove` (administrator) removes the hosts entries and the certificate.
+While the server is running, the local Epic host entries route those service requests to this PC. Use `Stop.bat`
+to stop the services and restore normal Epic Launcher routing. If cleanup is interrupted, run
+`tools\setup-local.ps1 -Remove` from an elevated PowerShell window.
 
 ## What works
 

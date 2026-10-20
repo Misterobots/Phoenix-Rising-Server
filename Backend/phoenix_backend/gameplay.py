@@ -51,8 +51,27 @@ CURRENCIES = ['CURRENCY_CELLDUST', 'CURRENCY_EVENT_DARKHARVEST', 'CURRENCY_EVENT
               'CURRENCY_S13_COIN', 'CURRENCY_S13_DAILY', 'CURRENCY_S14_COIN', 'CURRENCY_S15_COIN', 'CURRENCY_S16_COIN',
               'CURRENCY_S17_COIN', 'CURRENCY_S18_COIN', 'CURRENCY_S19_COIN', 'CURRENCY_S20_COIN',
               'CURRENCY_SEASONAL_COIN', 'CURRENCY_WEAPON_TOKEN']
-CITY_MAP = '/Game/Maps/ramsgate/ramsgate_01_persistent?bUseIPSockets'
+CITY_WELCOME_MAP = '/Game/Maps/ramsgate/ramsgate_01_persistent'
+CITY_WELCOME_GAME_MODE = '/Game/Blueprints/GameMode/BPGM_City.BPGM_City_C'
+CITY_MAP = CITY_WELCOME_MAP + '?bUseIPSockets'
+HUNTS_CATALOG_PATH = os.path.join(HERE, '..', 'GameServer', 'data', '2.1.1', 'hunts.json')
 HUNTPASS_SEASON = 'season19'
+
+
+def travel_url_for_map(welcome_map):
+    if not isinstance(welcome_map, str) or not welcome_map.startswith('/Game/') or '?' in welcome_map:
+        raise ValueError(f'invalid NMT_Welcome map path: {welcome_map!r}')
+    return welcome_map + '?bUseIPSockets'
+
+
+def verify_travel_url(travel_url, welcome_map):
+    """Ensure the backend travel URL in serverInfo.map matches the GameServer NMT_Welcome map."""
+    if not isinstance(travel_url, str) or not isinstance(welcome_map, str):
+        raise ValueError('travel URL and Welcome map must be strings')
+    expected = travel_url_for_map(welcome_map)
+    if travel_url != expected:
+        raise ValueError(f'backend travel URL {travel_url!r} does not match NMT_Welcome map {welcome_map!r}')
+    return travel_url
 
 # The character-wide ("persistent") loadout a new character starts with: flare, glider, intro emote and the
 # beginner banner, all from the starter kit; empty emote/emoji/quick-chat/curiosity slots.
@@ -119,6 +138,16 @@ class Gameplay:
         self.data_dir = data_dir
         self.candidates = {}           # account -> candidate
         self.session_keys = {}         # token -> key hex
+        self.city_instance = {
+            'gameMode': 'CITY',
+            'huntId': '',
+            'host': self.game_host,
+            'port': self.game_port,
+            'welcomeMap': CITY_WELCOME_MAP,
+            'welcomeGameMode': CITY_WELCOME_GAME_MODE,
+            'map': verify_travel_url(CITY_MAP, CITY_WELCOME_MAP),
+        }
+        self.island_instances = {}     # huntId -> verified available island instance
 
     # -- auth ----------------------------------------------------------------------------------------------------
     def is_gameserver(self, request):
@@ -189,6 +218,174 @@ class Gameplay:
         both.update({'id_' + k.lower(): v for k, v in out.items()})
         return both
 
+    # -- authored hunt catalog & instance registry ----------------------------------------------------------------
+    def hunt_catalog(self):
+        if not hasattr(self, '_hunt_catalog'):
+            with open(HUNTS_CATALOG_PATH, encoding='utf-8') as f:
+                data = json.load(f)
+            if (data.get('format'), data.get('version'), data.get('build')) != ('phoenix-hunts', 1, '2.1.1'):
+                raise ValueError('Unsupported hunt catalog format or build')
+            self._hunt_catalog = data['hunts']
+        return self._hunt_catalog
+
+    def select_hunt(self, hunt_id, map_name=None):
+        catalog = self.hunt_catalog()
+        if not isinstance(hunt_id, str) or hunt_id not in catalog:
+            raise KeyError(f'Unknown hunt: {hunt_id}')
+        hunt = catalog[hunt_id]
+        maps = [m for m in hunt['maps'] if
+                map_name is None or m['name'] == map_name or m['package'] == map_name]
+        if not maps:
+            raise ValueError(f'{hunt_id}: no eligible authored map for {map_name!r}')
+        if len(maps) != 1:
+            raise ValueError(f'{hunt_id}: choose one map explicitly: ' + ', '.join(m['package'] for m in maps))
+        if not hunt['gameModeOverride']:
+            raise ValueError(f'{hunt_id}: default game mode is unresolved; no override in the authored table')
+        return {
+            'huntId': hunt_id,
+            'map': maps[0]['package'],
+            'gameMode': hunt['gameModeOverride'],
+            'mapDefinition': maps[0]['definition'],
+            'islandSpec': hunt['islandSpec'],
+            'definition': hunt['definition'],
+        }
+
+    def register_instance(self, info):
+        """Register and validate a live GameServer instance (CITY or ISLAND)."""
+        if not isinstance(info, dict):
+            raise ValueError('instance registration payload must be an object')
+        host = info.get('host') or self.game_host
+        if not isinstance(host, str) or not host:
+            raise ValueError('instance host must be a non-empty string')
+        try:
+            port = int(info['port'])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError('instance port must be an integer') from exc
+        if not 1 <= port <= 65535:
+            raise ValueError('instance port out of range')
+        hunt_id = info.get('huntId') or ''
+        mode = info.get('gameMode') or ('ISLAND' if hunt_id else 'CITY')
+        if mode == 'CITY' and not hunt_id:
+            welcome_map = info.get('map') or info.get('welcomeMap') or CITY_WELCOME_MAP
+            welcome_mode = info.get('welcomeGameMode') or info.get('gameModePath') or CITY_WELCOME_GAME_MODE
+            if welcome_map != CITY_WELCOME_MAP or welcome_mode != CITY_WELCOME_GAME_MODE:
+                raise ValueError('CITY instance Welcome map/mode does not match Ramsgate')
+            travel_url = verify_travel_url(info.get('travelUrl') or travel_url_for_map(welcome_map), welcome_map)
+            for hid, existing in list(self.island_instances.items()):
+                if (existing['host'], existing['port']) == (host, port):
+                    del self.island_instances[hid]
+            self.city_instance = {
+                'gameMode': 'CITY',
+                'huntId': '',
+                'host': host,
+                'port': port,
+                'welcomeMap': welcome_map,
+                'welcomeGameMode': welcome_mode,
+                'map': travel_url,
+            }
+            return dict(self.city_instance)
+        if mode != 'ISLAND' or not hunt_id:
+            raise ValueError('ISLAND instance registration requires gameMode=ISLAND and huntId')
+        map_hint = info.get('huntMap') or info.get('map') or info.get('welcomeMap')
+        selected = self.select_hunt(hunt_id, map_hint)
+        welcome_map = info.get('map') or info.get('welcomeMap') or selected['map']
+        welcome_mode = info.get('welcomeGameMode') or info.get('gameModePath') or selected['gameMode']
+        if welcome_map != selected['map']:
+            raise ValueError(f'{hunt_id}: instance Welcome map {welcome_map!r} does not match authored map {selected["map"]!r}')
+        if welcome_mode != selected['gameMode']:
+            raise ValueError(f'{hunt_id}: instance Welcome game mode {welcome_mode!r} does not match authored mode {selected["gameMode"]!r}')
+        travel_url = verify_travel_url(info.get('travelUrl') or travel_url_for_map(welcome_map), welcome_map)
+        for hid, existing in list(self.island_instances.items()):
+            if (existing['host'], existing['port']) == (host, port):
+                del self.island_instances[hid]
+        if self.city_instance and (self.city_instance['host'], self.city_instance['port']) == (host, port):
+            self.city_instance = None
+        record = {
+            'gameMode': 'ISLAND',
+            'huntId': selected['huntId'],
+            'host': host,
+            'port': port,
+            'welcomeMap': welcome_map,
+            'welcomeGameMode': welcome_mode,
+            'map': travel_url,
+        }
+        self.island_instances[selected['huntId']] = record
+        return dict(record)
+
+    def unregister_instance(self, info):
+        if not isinstance(info, dict):
+            raise ValueError('instance unregister payload must be an object')
+        hunt_id = info.get('huntId')
+        host = info.get('host')
+        port = info.get('port')
+        removed = []
+        if isinstance(hunt_id, str) and hunt_id in self.island_instances:
+            removed.append(self.island_instances.pop(hunt_id))
+        if host and port is not None:
+            pair = (str(host), int(port))
+            for hid, existing in list(self.island_instances.items()):
+                if (existing['host'], existing['port']) == pair:
+                    removed.append(self.island_instances.pop(hid))
+            if self.city_instance and (self.city_instance['host'], self.city_instance['port']) == pair and not hunt_id:
+                removed.append(self.city_instance)
+                self.city_instance = None
+        return {'removed': len(removed)}
+
+    async def instances_get(self, request):
+        if not self.is_gameserver(request):
+            self.routes.require(request)
+        return web.json_response({'city': self.city_instance, 'islands': self.island_instances})
+
+    async def instances_register(self, request):
+        if not self.is_gameserver(request):
+            raise web.HTTPForbidden()
+        body = await self.routes.body(request)
+        try:
+            record = self.register_instance(body)
+        except KeyError as exc:
+            return web.json_response({'error': str(exc)}, status=404)
+        except ValueError as exc:
+            return web.json_response({'error': str(exc)}, status=400)
+        log.info('registered %s instance: hunt=%s %s:%d map=%s',
+                 record['gameMode'], record['huntId'] or 'CITY', record['host'], record['port'], record['welcomeMap'])
+        return web.json_response(record)
+
+    async def instances_unregister(self, request):
+        if not self.is_gameserver(request):
+            raise web.HTTPForbidden()
+        body = await self.routes.body(request)
+        try:
+            result = self.unregister_instance(body)
+        except ValueError as exc:
+            return web.json_response({'error': str(exc)}, status=400)
+        return web.json_response(result)
+
+    def _resolve_candidate_instance(self, cand):
+        """Return the verified available server instance for a candidate, or None if unavailable."""
+        if not isinstance(cand, dict):
+            return None
+        if cand.get('gameMode') == 'CITY':
+            inst = self.city_instance
+            if inst is None:
+                return None
+            verify_travel_url(inst['map'], inst['welcomeMap'])
+            return inst
+        if cand.get('gameMode') == 'ISLAND':
+            requested = cand.get('requestedHunts') or ([cand['huntId']] if cand.get('huntId') else [])
+            for hunt_id in requested:
+                inst = self.island_instances.get(hunt_id)
+                if inst is None:
+                    continue
+                selected = self.select_hunt(inst['huntId'], inst['welcomeMap'])
+                if inst['welcomeMap'] != selected['map'] or inst['welcomeGameMode'] != selected['gameMode']:
+                    raise ValueError('Registered island instance no longer matches authored hunt selection')
+                verify_travel_url(inst['map'], inst['welcomeMap'])
+                cand['huntId'] = inst['huntId']
+                if not cand.get('playerHuntId'):
+                    cand['playerHuntId'] = inst['huntId']
+                return inst
+        return None
+
     # -- matchmaking -----------------------------------------------------------------------------------------------
     async def regions(self, request):
         self.routes.require(request)
@@ -199,13 +396,80 @@ class Gameplay:
     async def join(self, request):
         acc = self.routes.require(request)
         body = await self.routes.body(request)
-        # The game server hosts Ramsgate only. Island requests (the new-player FTUE island, hunts) are routed to
-        # Ramsgate as CITY: an ISLAND session makes the stock client require an anti-cheat session
-        # (ControlChannelEasyAntiCheatSessionFail) that a CITY session does not.
-        cand = {'candidateId': 'local$' + secrets.token_hex(16), 'gameMode': 'CITY', 'huntId': '',
-                'gameSessionId': secrets.token_hex(16), 'started': time.time()}
+        if not isinstance(body, dict):
+            return web.json_response({'error': 'join body must be an object'}, status=400)
+        req_mode = body.get('gameMode') or 'CITY'
+        req_type = body.get('gameType') or req_mode
+        raw_hunts = body.get('hunts')
+        single_hunt = body.get('huntId')
+        req_player_hunt = body.get('playerHuntId') if isinstance(body.get('playerHuntId'), str) else ''
+        forced_hunt = os.environ.get('PHOENIX_HUNT_ID', '').strip()
+        skip_ftue = os.environ.get('PHOENIX_SKIP_FTUE', '1') == '1'
+
+        # Explicit CITY requests (including return travel from an island to Ramsgate) always route to CITY.
+        # Title-screen FTUE requests without an explicit hunt also route to CITY when PHOENIX_SKIP_FTUE=1
+        # and no PHOENIX_HUNT_ID override is active.
+        if (req_mode == 'CITY' or req_type == 'CITY' or
+                (not forced_hunt and req_type == 'FTUE' and skip_ftue and not raw_hunts and not single_hunt)):
+            cand = {
+                'candidateId': 'local$' + secrets.token_hex(16),
+                'gameMode': 'CITY',
+                'gameType': req_type,
+                'huntId': '',
+                'playerHuntId': req_player_hunt,
+                'requestedHunts': [],
+                'gameSessionId': secrets.token_hex(16),
+                'started': time.time(),
+            }
+            self.candidates[acc['account_id']] = cand
+            log.info('matchmaking %s: asked %s %s (playerHuntId=%s) -> CITY',
+                     acc['display_name'], req_mode, req_type, req_player_hunt or '-')
+            return web.json_response({'candidateId': cand['candidateId'], 'gameMode': cand['gameMode'],
+                                      'huntId': cand['huntId'], 'status': 'MATCHING', 'statusReason': None})
+
+        if req_mode not in ('ISLAND', 'CITY'):
+            return web.json_response({'error': f'unsupported gameMode: {req_mode!r}'}, status=400)
+
+        if raw_hunts is not None:
+            if not isinstance(raw_hunts, list) or not raw_hunts or not all(isinstance(h, str) and h for h in raw_hunts):
+                return web.json_response({'error': 'hunts must be a non-empty list of hunt IDs'}, status=400)
+            requested_hunts = list(raw_hunts)
+        elif isinstance(single_hunt, str) and single_hunt:
+            requested_hunts = [single_hunt]
+        elif forced_hunt:
+            requested_hunts = [forced_hunt]
+        elif req_type == 'FTUE' and os.environ.get('PHOENIX_FTUE_HUNT_ID', '').strip():
+            requested_hunts = [os.environ['PHOENIX_FTUE_HUNT_ID'].strip()]
+        else:
+            return web.json_response({'error': 'ISLAND join requires hunts or huntId'}, status=400)
+
+        map_hint = body.get('huntMap')
+        for hunt_id in requested_hunts:
+            inst = self.island_instances.get(hunt_id)
+            effective_hint = map_hint or (inst['welcomeMap'] if inst else None)
+            try:
+                self.select_hunt(hunt_id, effective_hint)
+            except KeyError as exc:
+                return web.json_response({'error': str(exc)}, status=404)
+            except ValueError as exc:
+                return web.json_response({'error': str(exc)}, status=400)
+
+        chosen_hunt = next((h for h in requested_hunts if h in self.island_instances), requested_hunts[0])
+        player_hunt_id = body.get('playerHuntId') if isinstance(body.get('playerHuntId'), str) and body.get('playerHuntId') else chosen_hunt
+        cand = {
+            'candidateId': 'local$' + secrets.token_hex(16),
+            'gameMode': 'ISLAND',
+            'gameType': req_type,
+            'huntId': chosen_hunt,
+            'playerHuntId': player_hunt_id,
+            'requestedHunts': requested_hunts,
+            'gameSessionId': secrets.token_hex(16),
+            'started': time.time(),
+        }
         self.candidates[acc['account_id']] = cand
-        log.info('matchmaking %s: asked %s %s -> CITY', acc['display_name'], body.get('gameMode'), body.get('gameType'))
+        log.info('matchmaking %s: asked %s %s (%s) -> ISLAND %s (available=%s)',
+                 acc['display_name'], req_mode, req_type, ','.join(requested_hunts),
+                 chosen_hunt, chosen_hunt in self.island_instances)
         return web.json_response({'candidateId': cand['candidateId'], 'gameMode': cand['gameMode'],
                                   'huntId': cand['huntId'], 'status': 'MATCHING', 'statusReason': None})
 
@@ -214,18 +478,38 @@ class Gameplay:
         cand = self.candidates.get(acc['account_id'])
         if cand is None:
             return web.json_response({'error': 'no candidate'}, status=404)
+        inst = self._resolve_candidate_instance(cand)
+        duration = int(time.time() - cand['started'])
+        if inst is None:
+            # Do not mark a candidate IN_PROGRESS merely because a map exists in the catalog.
+            return web.json_response({
+                'candidateId': cand['candidateId'],
+                'candidateStatusPeriodMillis': 1000,
+                'gameMode': cand['gameMode'],
+                'huntId': cand['huntId'],
+                'playerStates': {acc['account_id']: {}},
+                'status': 'MATCHING',
+                'statusDuration': duration,
+                'statusReason': 'NO_AVAILABLE_INSTANCE',
+            })
         return web.json_response({
-            'candidateId': cand['candidateId'], 'candidateStatusPeriodMillis': 1000, 'gameMode': cand['gameMode'],
-            'huntId': cand['huntId'], 'playerStates': {acc['account_id']: {}},
+            'candidateId': cand['candidateId'],
+            'candidateStatusPeriodMillis': 1000,
+            'gameMode': cand['gameMode'],
+            'huntId': cand['huntId'],
+            'playerStates': {acc['account_id']: {}},
             # serverInfo.map is the travel URL; ?bUseIPSockets puts the client's net driver on the plain IP path
-            # (without it the stock client fails its anti-cheat session and never finishes loading).
-            'serverInfo': {'buildId': SERVER_BUILD_ID, 'gameSessionId': cand['gameSessionId'], 'host': self.game_host,
-                           'port': self.game_port, 'map': CITY_MAP},
-            'status': 'IN_PROGRESS', 'statusDuration': int(time.time() - cand['started']), 'statusReason': None})
+            # and verify_travel_url ensures its map path matches the GameServer's NMT_Welcome map.
+            'serverInfo': {'buildId': SERVER_BUILD_ID, 'gameSessionId': cand['gameSessionId'],
+                           'host': inst['host'], 'port': inst['port'], 'map': inst['map']},
+            'status': 'IN_PROGRESS', 'statusDuration': duration, 'statusReason': None})
 
     async def key_generate(self, request):
         acc = self.routes.require(request)
-        cand = self.candidates.get(acc['account_id']) or {'gameSessionId': secrets.token_hex(16)}
+        cand = self.candidates.get(acc['account_id'])
+        if cand is not None and self._resolve_candidate_instance(cand) is None:
+            return web.json_response({'error': 'candidate has no available server instance'}, status=409)
+        cand = cand or {'gameSessionId': secrets.token_hex(16)}
         session = self.tokens.mint('sessionid', 6 * 3600, acc=acc['account_id'], sub=acc['account_id'])
         token = '%s=%s' % (session, cand['gameSessionId'])
         key = secrets.token_hex(32)
@@ -375,7 +659,9 @@ class Gameplay:
         amount = int(request.match_info['amount'])
         if not 0 < amount <= 100000:
             return web.json_response({'error': 'amount out of range'}, status=400)
-        total = self.db.add_progress(acc['account_id'], request.match_info['track'], amount)
+        body = await self.routes.body(request)
+        tx_id = request.headers.get('x-transaction-id') or (body.get('transactionId') if isinstance(body, dict) else None)
+        total = self.db.add_progress(acc['account_id'], request.match_info['track'], amount, tx_id=tx_id)
         return envelope({'progression_id': request.match_info['track'], 'progress': total})
 
     async def progression_config(self, request):
@@ -478,14 +764,17 @@ class Gameplay:
         body = await self.routes.body(request)
         build = (body.get('buildId') if isinstance(body, dict) else None) or BUILD_ID
         cand = self.candidates.get(acc['account_id'])
+        inst = self._resolve_candidate_instance(cand) if cand else None
+        cand_state = ('IN_PROGRESS' if inst is not None else 'MATCHING') if cand else None
+        player_hunt_id = (cand.get('playerHuntId') or cand.get('huntId') or None) if cand else None
         party_id = self.db.get(acc['account_id'], 'party_id')
         if not party_id:
             party_id = '%s_%s' % (secrets.token_hex(16), base64.b64encode(build.encode()).decode())
             self.db.put(acc['account_id'], 'party_id', party_id)
         return web.json_response({
-            'candidateId': cand['candidateId'] if cand else None, 'candidateState': 'IN_PROGRESS' if cand else None,
+            'candidateId': cand['candidateId'] if cand else None, 'candidateState': cand_state,
             'gauntletLevel': None, 'leaderPlayerId': acc['account_id'], 'partyId': party_id,
-            'playerHuntId': (cand['huntId'] or None) if cand else None,
+            'playerHuntId': player_hunt_id,
             'playerStates': [{'consoleSessionId': None, 'displayName': acc['display_name'],
                               'isMemberOfCandidate': cand is not None, 'platform': 'win', 'playerId': acc['account_id']}]})
 
@@ -547,6 +836,9 @@ class Gameplay:
     def add_to(self, app):
         r = app.router
         get, post, put, delete = r.add_get, r.add_post, r.add_put, r.add_delete
+        get('/instances', self.instances_get)
+        post('/instances/register', self.instances_register)
+        post('/instances/unregister', self.instances_unregister)
         get('/candidate/regions', self.regions)
         post('/candidate/join', self.join)
         get('/candidate/status', self.status)

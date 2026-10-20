@@ -61,6 +61,8 @@ def function_params(schema, cls, func):
     for c in [cls] + schema.inherit.get(cls, []):
         for fn, _flags, params in schema.funcs.get(c, []):
             if fn == func:
+                if params is None:
+                    raise Unsupported('RPC signature not installed: %s.%s' % (c, func))
                 return [(p[2], p[0]) for p in params]
     return None
 

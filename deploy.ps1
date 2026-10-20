@@ -1,8 +1,7 @@
 # Dauntless - Phoenix Rising: one-click setup and play (Play.bat runs this).
 #
 # Every run: start the backend and game server (if not running) and launch the stock game client.
-# First run also: install the Python packages, find the Dauntless 2.1.1 install, and (one administrator prompt)
-# add the hosts entries and trust the local certificate.
+# Every run also ensures local routing and trusts the backend certificate (administrator prompt).
 #
 #   .\deploy.ps1 [-GameDir <Dauntless folder>] [-Name <player name>]
 
@@ -64,17 +63,8 @@ $deadline = (Get-Date).AddSeconds(30)
 while (-not (Up 3001) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }
 if (-not (Up 3001)) { throw "The backend did not start; see the newest backend_*.err.log in $Root\logs" }
 
-# 5. One-time: hosts entries + trusted certificate (administrator)
-$hostsOk = (Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" -Raw) -match 'phoenix-rising'
-$caOk = Get-ChildItem Cert:\CurrentUser\Root | Where-Object { $_.Subject -eq 'CN=Phoenix Rising Local CA' }
-if (-not $hostsOk -or -not $caOk) {
-    Step 'One-time setup: hosts entries and local certificate (administrator prompt)'
-    Start-Process powershell -Verb RunAs -Wait -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
-        (Join-Path $Root 'tools\setup-local.ps1'))
-}
-
-# 6. Remember the settings and play
+# 5. Remember the settings and play
 @{ GameDir = $GameDir; Name = $Name; GameChecked = $true } | ConvertTo-Json | Set-Content $Config
 Step "Launching Dauntless as '$Name'"
 & (Join-Path $Root 'tools\launch-client.ps1') -GameDir $GameDir -Name $Name
-Write-Host 'In the game window click Continue, then Defend the Frontier. Stop the server with Stop.bat.'
+Write-Host 'In the game window click Continue, then Defend the Frontier. Stop.bat stops both server processes and removes local Epic routing.'

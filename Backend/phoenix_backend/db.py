@@ -96,8 +96,8 @@ class DB:
         self.q('INSERT INTO accounts VALUES (?, ?, ?, ?, ?)', acc)
         return self.account(acc[0])
 
-    # exchange codes (one-time, short-lived) ---------------------------------------------------------------------
-    def new_exchange_code(self, account_id, ttl=300):
+    # exchange codes (reusable across title-screen reconnects within the session) --------------------------------
+    def new_exchange_code(self, account_id, ttl=86400 * 30):
         code = ids.hex32()
         self.q('INSERT INTO exchange_codes VALUES (?, ?, ?)', (code, account_id, time.time() + ttl))
         return code
@@ -106,8 +106,10 @@ class DB:
         row = self.one('SELECT * FROM exchange_codes WHERE code = ?', (code,))
         if row is None:
             return None
-        self.q('DELETE FROM exchange_codes WHERE code = ?', (code,))
-        return row['account_id'] if row['expires'] >= time.time() else None
+        if row['expires'] < time.time():
+            self.q('DELETE FROM exchange_codes WHERE code = ?', (code,))
+            return None
+        return row['account_id']
 
     # characters -------------------------------------------------------------------------------------------------
     def characters(self, account_id):
@@ -185,9 +187,23 @@ class DB:
         return {r['progression_id']: r['progress'] for r in
                 self.q('SELECT * FROM progression WHERE account_id = ?', (account_id,))}
 
-    def add_progress(self, account_id, track, amount):
-        self.q('INSERT INTO progression VALUES (?, ?, ?) ON CONFLICT(account_id, progression_id) '
-               'DO UPDATE SET progress = progress + excluded.progress', (account_id, track, int(amount)))
+    def add_progress(self, account_id, track, amount, tx_id=None):
+        with self.lock:
+            c = self.conn
+            if tx_id and c.execute('SELECT 1 FROM transactions WHERE transaction_id = ?', (tx_id,)).fetchone():
+                row = c.execute('SELECT progress FROM progression WHERE account_id = ? AND progression_id = ?',
+                                (account_id, track)).fetchone()
+                return row['progress'] if row else 0
+            c.execute('BEGIN')
+            try:
+                c.execute('INSERT INTO progression VALUES (?, ?, ?) ON CONFLICT(account_id, progression_id) '
+                          'DO UPDATE SET progress = progress + excluded.progress', (account_id, track, int(amount)))
+                if tx_id:
+                    c.execute('INSERT INTO transactions VALUES (?, ?)', (tx_id, time.time()))
+                c.execute('COMMIT')
+            except Exception:
+                c.execute('ROLLBACK')
+                raise
         return self.progression(account_id).get(track, 0)
 
     # small per-account values ---------------------------------------------------------------------------------

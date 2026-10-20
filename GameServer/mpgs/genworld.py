@@ -18,6 +18,7 @@ from .repl.schema import Schema
 from .repl.decode import OrderedFields
 from .initialization import apply_backend_weapon_reference, build_v2_weapon_add_update
 from .inventory_v2 import encode_client_item_state_updates_field
+from .actor_types import PLAYER_STATES, PLAYER_CONTROLLERS
 
 
 class _Ctx:
@@ -38,8 +39,12 @@ class _Ctx:
         if found:
             return found
         # Subobjects the class dump does not list as members (e.g. the
-        # controller's TimeTranslation): try the conventional component class
-        # names. model.parse only keeps the decode if it is bit-exact.
+        # controller's TimeTranslation or the pawn's CharCombatComp): try known
+        # default subobject aliases and conventional component class names.
+        # model.parse only keeps the decode if it is bit-exact.
+        alias = {'CharCombatComp': 'ArchonCombatComponent'}.get(n)
+        if alias and alias in self.schema.inherit:
+            return alias
         for candidate in ('Archon%sComponent' % n, '%sComponent' % n, n):
             if candidate in self.schema.inherit:
                 return candidate
@@ -179,6 +184,10 @@ class GenWorld:
             self.ctx._names[g] = (o, n)
         self.entries = tpl.load_entries(data, Entry)
         self.template_path = path
+        source = data.get('source')
+        self.island_contract = source.get('islandContract') if isinstance(source, dict) else None
+        from .island_encounter import install_schema
+        install_schema(self.schema, self.island_contract)
         return self
 
     def new_session(self, live_ids):
@@ -356,7 +365,7 @@ class GenSession(ReplaySession):
         for g, (o, n) in world.ctx._names.items():
             self.ctx._names[m(g)] = (m(o) if o else o, n)
         self.chan_cls = {e.ch: e.cls for e in self.entries if e.ch < 20 and e.cls}
-        if os.environ.get('MPGS_RAMSGATE_ATMOSPHERE') == '1':
+        if os.environ.get('MPGS_RAMSGATE_ATMOSPHERE') == '1' and not getattr(world, 'island_contract', None):
             entry = _ramsgate_atmosphere_entry(world, self.entries)
             self.entries.append(entry)
             self.entries.sort(key=lambda e: e.t)
@@ -496,6 +505,7 @@ class GenSession(ReplaySession):
         ids = {q['guid']: q['id'] for s_ in quests.load_catalog() for q in s_['quests']}
         self.quest_by_id = {ids.get(qg): g for g, (sid, qg) in self.quest_meta.items() if ids.get(qg)}
         self.quest_blocks = {b.guid: b for b in entry.parsed.blocks if b.cls_name == 'Quest'}
+        self.objective_blocks = {b.guid: b for b in entry.parsed.blocks if b.cls_name == 'Objective'}
         pos = next((k for k, e in enumerate(self.entries) if e.t > t), len(self.entries))
         self.entries.insert(pos, entry)
         print('QUESTS staged %s at %d ms (guids %d..%d)' % (report, t, start + 2, counter[0]), flush=True)
@@ -540,8 +550,20 @@ class GenSession(ReplaySession):
             out.append((b.ch, blk.cls_name, who, [(x[1], x[2], x[3]) for x in (blk.fields or [])]))
             if os.environ.get('MPGS_INTERACTION_REPLY', '1') == '1':
                 for x in blk.fields or []:
+                    if blk.cls_name == 'DamageComponent' and x[1] == 'ServerTryDoDamage':
+                        from .island_encounter import handle_damage
+                        handle_damage(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
+                        continue
                     if x[2] != 'rpc':
                         continue
+                    if blk.actor and (
+                            (blk.cls_name in PLAYER_CONTROLLERS and x[1] in (
+                                'SetCinematicStateRPC', 'Server_Gameplay_Start', 'Server_MovePlayersBackToArrivalArea'))
+                            or (blk.cls_name in PLAYER_STATES and x[1] in (
+                                'ServerSetUserWantsToLeaveMatch', 'ServerSetUserWantsToRetryMatch'))):
+                        from .island_arrival import handle_rpc
+                        if handle_rpc(self, b.ch, blk.cls_name, x[1], x[3]):
+                            continue
                     if blk.cls_name == 'base_interactionusercode_component_C' and x[1] == 'ServerStartInteraction':
                         self._reply_interaction(b.ch, blk, x[3])
                     elif blk.cls_name == 'player_journey_bpc_C' and x[1] == 'ServerUnlockNode':
@@ -823,7 +845,7 @@ class GenSession(ReplaySession):
         wd = progression.weapon_details(self.prog_curves, self.prog_progress, weapon)
         if wd:
             ps = next(((e.ch, e.cls, b) for e in self.entries for b in e.parsed.blocks
-                       if b.cls_name == 'player_state_bp_C' and b.actor and b.values is not None), None)
+                       if b.cls_name in PLAYER_STATES and b.actor and b.values is not None), None)
             if ps is not None:
                 e = Entry()
                 e.t, e.ch, e.cls, e.exports = 0, ps[0], ps[1], []
@@ -835,7 +857,7 @@ class GenSession(ReplaySession):
                 blk.actor, blk.rep, blk.guid, blk.stable, blk.destroy = True, True, 0, False, False
                 blk.cls = blk.outer = None
                 blk.ref = blk.ref_name = None
-                blk.cls_name = 'player_state_bp_C'
+                blk.cls_name = ps[2].cls_name
                 v = OrderedFields()
                 for k, val in wd.items():
                     v[k] = val
@@ -1286,14 +1308,15 @@ class GenSession(ReplaySession):
         if now - getattr(self, '_last_rescue', 0.0) < 3.0:
             return
         self._last_rescue = now
-        ch = next((e.ch for e in self.entries if e.cls == 'player_controller_city_bp_C' and e.open), None)
-        if ch is None:
+        controller = next((e for e in self.entries if e.cls in PLAYER_CONTROLLERS and e.open), None)
+        if controller is None:
             return
-        fi = self.world.schema.field_index('player_controller_city_bp_C')
+        ch, controller_cls = controller.ch, controller.cls
+        fi = self.world.schema.field_index(controller_cls)
         idx = fi.index(('func', 'ClientSetLocation'))
         target = [safe[0][0], safe[0][1], safe[0][2] + 50.0]
         e = Entry()
-        e.t, e.ch, e.cls, e.exports = 0, ch, 'player_controller_city_bp_C', []
+        e.t, e.ch, e.cls, e.exports = 0, ch, controller_cls, []
         e.open = e.close = e.must_map = False
         e.reliable = True
         e.patch_pairs = ()
@@ -1302,7 +1325,7 @@ class GenSession(ReplaySession):
         blk.actor, blk.rep, blk.guid, blk.stable, blk.destroy = True, False, 0, False, False
         blk.cls = blk.outer = None
         blk.ref = blk.ref_name = None
-        blk.cls_name = 'player_controller_city_bp_C'
+        blk.cls_name = controller_cls
         blk.values = blk.tail = blk.raw = None
         blk.partial_properties = False
         blk.fields = [(idx, 'ClientSetLocation', 'rpc', {'NewLocation': target, 'NewRotation': [0.0, safe[1][1], 0.0]})]

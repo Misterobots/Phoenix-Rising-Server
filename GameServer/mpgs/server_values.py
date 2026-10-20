@@ -45,7 +45,8 @@ def load_entitlements(base='http://127.0.0.1:3001', headers=None):
 
 def apply_player_state(entries, records, entitlements=None):
     """PlayerState: Loot (pending grants), PlayerRoleId, Weapon, Entitlements."""
-    ps = _blocks(entries, 'player_state_bp_C')
+    from .actor_types import PLAYER_STATES
+    ps = [b for e in entries for b in e.parsed.blocks if b.cls_name in PLAYER_STATES and b.values is not None]
     if len(ps) != 1:
         raise ValueError('expected one decoded PlayerState block')
     v = ps[0].values

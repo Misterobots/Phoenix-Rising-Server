@@ -30,16 +30,30 @@ def _short(v, limit=400):
 
 
 class GameServer:
-    def __init__(self, port, world):
-        self.port = port
+    def __init__(self, port, world, map_path=MAP_PATH, game_mode_path=GAME_MODE_PATH, hunt_id=''):
         self.world = world
+        self.map_path = map_path
+        self.game_mode_path = game_mode_path
+        self.hunt_id = hunt_id
         self.t0 = time.monotonic()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(('0.0.0.0', port))
+        self.port = self.sock.getsockname()[1]
         self.sock.setblocking(False)
         self.pending = {}        # addr -> cookie issued by our challenge
         self.conns = {}          # addr -> Connection
         self.sessions = {}       # addr -> dict(join_time, ids, welcomed ...)
+
+    def instance_info(self, host=None):
+        host = host or os.environ.get('PHOENIX_GAME_HOST', '127.0.0.1')
+        return {
+            'gameMode': 'ISLAND' if self.hunt_id else 'CITY',
+            'huntId': self.hunt_id,
+            'host': host,
+            'port': self.port,
+            'map': self.map_path,
+            'welcomeGameMode': self.game_mode_path,
+        }
 
     # ------------------------------------------------------------------ helpers
     def send(self, addr, datagrams):
@@ -86,7 +100,7 @@ class GameServer:
             sess['ids'], sess['auth_token'] = control.login_options_with_auth(b)
             for i in (0, 1):
                 conn.queue_bunches(control.game_specific(i))
-            conn.queue_bunches(control.welcome(MAP_PATH, GAME_MODE_PATH))
+            conn.queue_bunches(control.welcome(self.map_path, self.game_mode_path))
             session_ids = {**sess['ids'], 'auth_token': sess['auth_token']}
             sess['world'] = self.world.new_session(session_ids) if self.world else None
             sess['state'] = 'welcomed'
@@ -95,6 +109,12 @@ class GameServer:
             sess['state'] = 'joined'
             sess['join_t'] = time.monotonic()
             log('NMT_Join: world starts')
+        elif t == control.NMT_ACTOR_CHANNEL_FAILURE and b.nbits == 40:
+            channel = int.from_bytes(b.payload()[1:5], 'little', signed=True)
+            world = sess.get('world')
+            cls = getattr(world, 'chan_cls', {}).get(channel, 'unknown')
+            sess.setdefault('failed_actor_channels', {})[channel] = cls
+            log('NMT_ActorChannelFailure: client rejected actor ch=%d class=%s' % (channel, cls))
         elif t not in (control.NMT_NETSPEED,):
             log('control message', t, '(%d bits)' % b.nbits, b.payload()[:64].hex() if b.nbits else '', repr(b.payload()[:64]) if b.nbits else '')
 
@@ -139,79 +159,102 @@ class GameServer:
     # ------------------------------------------------------------------ main loop
     def run(self):
         log('listening on udp', self.port)
+        should_reg = os.environ.get('MPGS_REGISTER_INSTANCE', '1') == '1'
+        registered = False
+        last_reg_try = 0.0
         last_stat = time.monotonic()
-        while True:
-            r, _, _ = select.select([self.sock], [], [], 0.004)
-            now = time.monotonic()
-            while r:
-                try:
-                    raw, addr = self.sock.recvfrom(4096)
-                except (BlockingIOError, ConnectionResetError):
-                    break
-                hs = handshake.parse(raw)
-                if hs is not None:
-                    self.on_handshake(addr, hs)
-                    continue
-                conn = self.conns.get(addr)
-                if conn is None:
-                    continue
-                for b in conn.on_datagram(raw, now):
-                    if b.ch == 0:
-                        if b.nbits < 8 or b.close:
-                            log('control bunch detail', addr, 'bits', b.nbits, 'type', control.message_type(b),
-                                'reliable', b.reliable, 'seq', b.chseq, 'open', b.open, 'close', b.close,
-                                'reason', b.close_reason, 'control', b.control, 'payload', b.payload().hex())
-                        if b.close:
-                            # Client closed its control channel (disconnect, or travel such
-                            # as starting a hunt): drop now instead of resending until timeout.
-                            conn.closed_by_client = True
-                            continue
-                        self.on_control(addr, conn, self.sessions[addr], b)
-                    else:
-                        self.on_actor_bunch(addr, self.sessions[addr], b)
-            # players see each other: every joined connection gets the simulated-proxy view of every other joined connection (once)
-            joined = [(a, c, self.sessions[a]) for a, c in self.conns.items() if self.sessions[a]['state'] == 'joined' and self.sessions[a].get('world')]
-            for a, c, sa in joined:
-                for b2, c2, sb in joined:
-                    if a == b2 or id(sb['world']) in sa.setdefault('seen', {}):
+        try:
+            while True:
+                now = time.monotonic()
+                if should_reg and not registered and now - last_reg_try >= 2.0:
+                    last_reg_try = now
+                    try:
+                        backend.register_instance(self.instance_info())
+                        registered = True
+                        log('registered instance with backend:', self.hunt_id or 'CITY', 'udp', self.port)
+                    except Exception as exc:
+                        log('backend instance registration pending (%s)' % type(exc).__name__)
+                r, _, _ = select.select([self.sock], [], [], 0.004)
+                now = time.monotonic()
+                while r:
+                    try:
+                        raw, addr = self.sock.recvfrom(4096)
+                    except (BlockingIOError, ConnectionResetError):
+                        break
+                    hs = handshake.parse(raw)
+                    if hs is not None:
+                        self.on_handshake(addr, hs)
                         continue
-                    slot = len(sa['seen'])
-                    sa['seen'][id(sb['world'])] = sb['world']
-                    sa['world'].add_remote(sb['world'], slot, (now - sa['join_t']) * 1000)
-                    log('player %s now sees player %s (slot %d)' % (sa['ids']['name'], sb['ids']['name'], slot))
-            # relay each player's movement to everyone who sees them (~15 Hz, unreliable)
-            if now - getattr(self, '_last_relay', 0) >= 0.066:
-                self._last_relay = now
+                    conn = self.conns.get(addr)
+                    if conn is None:
+                        continue
+                    for b in conn.on_datagram(raw, now):
+                        if b.ch == 0:
+                            if b.nbits < 8 or b.close:
+                                log('control bunch detail', addr, 'bits', b.nbits, 'type', control.message_type(b),
+                                    'reliable', b.reliable, 'seq', b.chseq, 'open', b.open, 'close', b.close,
+                                    'reason', b.close_reason, 'control', b.control, 'payload', b.payload().hex())
+                            if b.close:
+                                # Client closed its control channel (disconnect, or travel such
+                                # as starting a hunt): drop now instead of resending until timeout.
+                                conn.closed_by_client = True
+                                continue
+                            self.on_control(addr, conn, self.sessions[addr], b)
+                        else:
+                            self.on_actor_bunch(addr, self.sessions[addr], b)
+                # players see each other: every joined connection gets the simulated-proxy view of every other joined connection (once)
+                joined = [(a, c, self.sessions[a]) for a, c in self.conns.items() if self.sessions[a]['state'] == 'joined' and self.sessions[a].get('world')]
                 for a, c, sa in joined:
                     for b2, c2, sb in joined:
-                        if a != b2 and id(sb['world']) in sa.get('seen', {}) and sb['world'].pawn_state is not None:
-                            ub = sa['world'].remote_update(sb['world'])
-                            c.queue_bunches(ub)
-                            c.queue_bunches(sa['world'].remote_state(sb['world']))
-                            st_ = sa.setdefault('relay_stat', [0, 0])
-                            st_[0 if ub else 1] += 1
-                            if st_[0] in (1, 2, 3, 100, 1000) and ub and st_[0] != sa.get('relay_logged'):
-                                sa['relay_logged'] = st_[0]
-                                log('relay %s <- %s: update #%d %d bunch(es) loc=%s mode=%s' % (sa['ids']['name'], sb['ids']['name'], st_[0], len(ub), [round(v, 1) for v in sb['world'].pawn_state['loc']], sb['world'].pawn_state['mode']))
-            for addr, conn in list(self.conns.items()):
-                sess = self.sessions[addr]
-                w = sess.get('world')
-                if sess['state'] == 'joined' and w and not w.finished:
-                    conn.queue_bunches(w.due((now - sess['join_t']) * 1000))
-                    if w.finished:
-                        log('recorded world delivered to', addr, '(%d identity patches)' % w.patch_hits)
-                self.send(addr, conn.pump(now))
-                closed = getattr(conn, 'closed_by_client', False)
-                if closed or now - conn.last_rx > 30:
-                    log('connection closed by client' if closed else 'connection timed out', addr, conn.stats)
-                    gone = self.sessions[addr].get('world')
-                    del self.conns[addr], self.sessions[addr]
-                    for a2, c2 in self.conns.items():       # remove the departed player from everybody else's world
-                        s2 = self.sessions[a2]
-                        if gone is not None and s2.get('world') is not None and id(gone) in s2.get('seen', {}):
-                            c2.queue_bunches(s2['world'].close_remote(gone))
-                            s2['seen'].pop(id(gone), None)
-            if now - last_stat > 10:
-                last_stat = now
-                for addr, conn in self.conns.items():
-                    log('stats', addr, self.sessions[addr]['state'], conn.stats, self.sessions[addr].get('relay_stat'))
+                        if a == b2 or id(sb['world']) in sa.setdefault('seen', {}):
+                            continue
+                        slot = len(sa['seen'])
+                        sa['seen'][id(sb['world'])] = sb['world']
+                        sa['world'].add_remote(sb['world'], slot, (now - sa['join_t']) * 1000)
+                        log('player %s now sees player %s (slot %d)' % (sa['ids']['name'], sb['ids']['name'], slot))
+                # relay each player's movement to everyone who sees them (~15 Hz, unreliable)
+                if now - getattr(self, '_last_relay', 0) >= 0.066:
+                    self._last_relay = now
+                    from .island_encounter import step_movement
+                    for a, c, sa in joined:
+                        enc = getattr(sa['world'], '_encounter', None)
+                        if enc and now - enc.get('spawn_mono', 0.0) >= 2.0:
+                            c.queue_bunches(step_movement(sa['world'], now))
+                        for b2, c2, sb in joined:
+                            if a != b2 and id(sb['world']) in sa.get('seen', {}) and sb['world'].pawn_state is not None:
+                                ub = sa['world'].remote_update(sb['world'])
+                                c.queue_bunches(ub)
+                                c.queue_bunches(sa['world'].remote_state(sb['world']))
+                                st_ = sa.setdefault('relay_stat', [0, 0])
+                                st_[0 if ub else 1] += 1
+                                if st_[0] in (1, 2, 3, 100, 1000) and ub and st_[0] != sa.get('relay_logged'):
+                                    sa['relay_logged'] = st_[0]
+                                    log('relay %s <- %s: update #%d %d bunch(es) loc=%s mode=%s' % (sa['ids']['name'], sb['ids']['name'], st_[0], len(ub), [round(v, 1) for v in sb['world'].pawn_state['loc']], sb['world'].pawn_state['mode']))
+                for addr, conn in list(self.conns.items()):
+                    sess = self.sessions[addr]
+                    w = sess.get('world')
+                    if sess['state'] == 'joined' and w and not w.finished:
+                        conn.queue_bunches(w.due((now - sess['join_t']) * 1000))
+                        if w.finished:
+                            log('recorded world delivered to', addr, '(%d identity patches)' % w.patch_hits)
+                    self.send(addr, conn.pump(now))
+                    closed = getattr(conn, 'closed_by_client', False)
+                    if closed or now - conn.last_rx > 30:
+                        log('connection closed by client' if closed else 'connection timed out', addr, conn.stats)
+                        gone = self.sessions[addr].get('world')
+                        del self.conns[addr], self.sessions[addr]
+                        for a2, c2 in self.conns.items():       # remove the departed player from everybody else's world
+                            s2 = self.sessions[a2]
+                            if gone is not None and s2.get('world') is not None and id(gone) in s2.get('seen', {}):
+                                c2.queue_bunches(s2['world'].close_remote(gone))
+                                s2['seen'].pop(id(gone), None)
+                if now - last_stat > 10:
+                    last_stat = now
+                    for addr, conn in self.conns.items():
+                        log('stats', addr, self.sessions[addr]['state'], conn.stats, self.sessions[addr].get('relay_stat'))
+        finally:
+            if registered:
+                try:
+                    backend.unregister_instance(self.instance_info())
+                except Exception:
+                    pass

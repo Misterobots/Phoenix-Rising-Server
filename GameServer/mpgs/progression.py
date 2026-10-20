@@ -11,6 +11,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from .repl.decode import OrderedFields
+from .actor_types import PLAYER_STATES
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG = os.environ.get('MPGS_PROGRESSION_CONFIG') or next(
@@ -94,7 +95,7 @@ def apply(entries, curves, progress, weapon_catalog):
     if wd:
         for e in entries:
             for b in e.parsed.blocks:
-                if b.cls_name == 'player_state_bp_C' and b.values is not None:
+                if b.cls_name in PLAYER_STATES and b.values is not None:
                     for k, v in wd.items():
                         b.values[k] = v
                     report['weapon_level'] = wd['WeaponExperienceDetails.Level']
@@ -132,9 +133,12 @@ def weapon_track(weapon_catalog):
     return WEAPON_TRACKS.get((weapon_catalog or '')[3:5]) if (weapon_catalog or '').startswith('WP_') else None
 
 
-def grant_xp(account, track, amount, headers, base='http://127.0.0.1:3001'):
+def grant_xp(account, track, amount, headers, base='http://127.0.0.1:3001', tx_id=None):
+    hdr = dict(headers)
+    if tx_id:
+        hdr['x-transaction-id'] = str(tx_id)
     req = Request('%s/progression/%s/%s/%d' % (base, quote(account, safe=''), track, amount), data=b'',
-                  headers=headers, method='POST')
+                  headers=hdr, method='POST')
     with urlopen(req, timeout=3) as r:
         return json.load(r).get('payload', {}).get('progress')
 

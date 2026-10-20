@@ -22,3 +22,17 @@ def consume_key(token: str, base='http://127.0.0.1:3001') -> bytes:
         base + '/key/consume', data=json.dumps({'token': token}).encode(),
         headers={'Content-Type': 'application/json', 'x-phoenixrising-gameserver-apikey': gameserver_api_key()})
     return bytes.fromhex(json.load(urllib.request.urlopen(req, timeout=5))['key'])
+
+
+def register_instance(info: dict, base='http://127.0.0.1:3001') -> dict:
+    req = urllib.request.Request(
+        base + '/instances/register', data=json.dumps(info).encode(),
+        headers={'Content-Type': 'application/json', 'x-phoenixrising-gameserver-apikey': gameserver_api_key()})
+    return json.load(urllib.request.urlopen(req, timeout=5))
+
+
+def unregister_instance(info: dict, base='http://127.0.0.1:3001') -> dict:
+    req = urllib.request.Request(
+        base + '/instances/unregister', data=json.dumps(info).encode(),
+        headers={'Content-Type': 'application/json', 'x-phoenixrising-gameserver-apikey': gameserver_api_key()})
+    return json.load(urllib.request.urlopen(req, timeout=5))

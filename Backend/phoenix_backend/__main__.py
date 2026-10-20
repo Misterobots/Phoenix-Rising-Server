@@ -62,7 +62,7 @@ def allowed_hosts(hostnames):
     return middleware
 
 
-def build_app(db, tokens, with_xmpp, data_dir=None, hostnames=None):
+def build_app(db, tokens, with_xmpp, data_dir=None, hostnames=None, routes=None, gameplay=None):
     from .gameplay import Gameplay
     middlewares = [trace]
     if hostnames:
@@ -70,9 +70,10 @@ def build_app(db, tokens, with_xmpp, data_dir=None, hostnames=None):
     if with_xmpp:
         middlewares.append(upgrades(XMPP(db, tokens)))
     app = web.Application(client_max_size=16 * 1024 * 1024, middlewares=middlewares)
-    routes = Routes(db, tokens)
-    gameplay = Gameplay(db, tokens, routes, data_dir or os.path.join(HERE, 'data'))
+    routes = routes or Routes(db, tokens)
+    gameplay = gameplay or Gameplay(db, tokens, routes, data_dir or os.path.join(HERE, 'data'))
     routes.is_gameserver = gameplay.is_gameserver
+    app['gameplay'] = gameplay
     app.router.add_get('/', banner)
     routes.add_to(app)
     gameplay.add_to(app)
@@ -82,11 +83,15 @@ def build_app(db, tokens, with_xmpp, data_dir=None, hostnames=None):
 
 
 async def serve(args):
+    from .gameplay import Gameplay
     db = DB(os.path.join(args.data, 'phoenix.sqlite'))
     tokens = Tokens(os.path.join(args.data, 'token.secret'))
+    routes = Routes(db, tokens)
+    gameplay = Gameplay(db, tokens, routes, args.data)
+    routes.is_gameserver = gameplay.is_gameserver
     runners = []
     for port, xmpp in ((args.http, False), (args.launcher, True)):
-        runner = web.AppRunner(build_app(db, tokens, xmpp, args.data), access_log=None)
+        runner = web.AppRunner(build_app(db, tokens, xmpp, args.data, routes=routes, gameplay=gameplay), access_log=None)
         await runner.setup()
         await web.TCPSite(runner, args.host, port).start()
         runners.append(runner)
@@ -94,7 +99,7 @@ async def serve(args):
     if args.tls:
         from . import tls
         ctx = tls.server_context(args.cert_dir or os.path.join(args.data, 'tls'))
-        runner = web.AppRunner(build_app(db, tokens, True, args.data, tls.HOSTNAMES), access_log=None)
+        runner = web.AppRunner(build_app(db, tokens, True, args.data, tls.HOSTNAMES, routes=routes, gameplay=gameplay), access_log=None)
         await runner.setup()
         await web.TCPSite(runner, args.host, args.tls, ssl_context=ctx).start()
         runners.append(runner)

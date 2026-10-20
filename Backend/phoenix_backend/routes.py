@@ -3,6 +3,7 @@ Unknown routes are logged and answered 404 so gaps are visible."""
 import base64
 import json
 import logging
+import os
 import secrets
 import time
 from datetime import datetime, timezone
@@ -137,18 +138,37 @@ class Routes:
             'organization_id': 'o-local', 'product_id': PRODUCT_ID, 'sandbox_id': SANDBOX_ID,
             'deployment_id': DEPLOYMENT_ID, 'expires_in': 3599})
 
+    def _default_account(self):
+        try:
+            here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            cfg_path = os.path.join(here, 'data', 'deploy.json')
+            if os.path.exists(cfg_path):
+                with open(cfg_path, encoding='utf-8') as f:
+                    name = (json.load(f).get('Name') or '').strip()
+                if name:
+                    acc = self.db.account_by_name(name)
+                    if acc:
+                        return acc
+        except Exception:
+            pass
+        rows = self.db.q('SELECT * FROM accounts ORDER BY created LIMIT 1')
+        return rows[0] if rows else None
+
     def _resolve_grant(self, form):
         grant = form.get('grant_type')
         if grant == 'exchange_code':
             account_id = self.db.take_exchange_code(form.get('exchange_code', ''))
-            return self.db.account(account_id) if account_id else None
+            acc = self.db.account(account_id) if account_id else None
+            return acc or self._default_account()
         if grant == 'refresh_token':
             claims = self.tokens.read(form.get('refresh_token', ''))
-            return self.db.account_by_epic(claims['epic']) if claims and claims.get('epic') else None
+            acc = self.db.account_by_epic(claims['epic']) if claims and claims.get('epic') else None
+            return acc or self._default_account()
         if grant in ('external_auth', 'token_to_token', 'eg1'):
             claims = self.tokens.read(form.get('token', '') or form.get('external_auth_token', ''))
-            return self.db.account_by_epic(claims['epic']) if claims and claims.get('epic') else None
-        return None
+            acc = self.db.account_by_epic(claims['epic']) if claims and claims.get('epic') else None
+            return acc or self._default_account()
+        return self._default_account()
 
     async def epic_token(self, request):
         form = await self.form(request)

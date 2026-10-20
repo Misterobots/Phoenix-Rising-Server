@@ -1,5 +1,6 @@
 """STRUCT_NetSerializeNative struct readers (UE5.1.1 + Dauntless). Added as the recorded data demands."""
 from .values import Unsupported, read_name, write_name
+import math
 
 STRUCT_READERS = {}
 
@@ -77,6 +78,23 @@ def _repmove(r):
     return out
 
 
+@reader('RepMovement_Behemoth')
+def _repmove_behemoth(r):
+    """Bp_Behemoth_C CDO overrides ReplicatedMovement to RoundOneDecimal (loc/vel) and ShortComponents (rot)."""
+    flags = r.read(4)
+    loc = read_quantized_vector(r, 10)
+    rot = read_rotator(r)
+    vel = read_quantized_vector(r, 10)
+    out = {'loc': loc, 'rot': rot, 'vel': vel, 'sleep': flags & 1, 'phys': (flags >> 1) & 1}
+    if flags & 2:
+        out['angvel'] = read_quantized_vector(r, 10)
+    if flags & 4:
+        out['frame'] = r.read_packed()
+    if flags & 8:
+        out['handle'] = r.read_packed()
+    return out
+
+
 # ----------------------------------------------------------------------------- writers
 from .quant import write_quantized_vector, write_rotator, write_int
 
@@ -142,6 +160,21 @@ def _w_repmove(w, v):
     write_quantized_vector(w, 1, v['vel'])
     if v.get('phys'):
         write_quantized_vector(w, 1, v['angvel'])
+    if 'frame' in v:
+        w.write_packed(v['frame'])
+    if 'handle' in v:
+        w.write_packed(v['handle'])
+
+
+@writer('RepMovement_Behemoth')
+def _w_repmove_behemoth(w, v):
+    flags = (v.get('sleep', 0)) | (v.get('phys', 0) << 1) | ((1 << 2) if 'frame' in v else 0) | ((1 << 3) if 'handle' in v else 0)
+    w.write(flags, 4)
+    write_quantized_vector(w, 10, v['loc'])
+    write_rotator(w, v['rot'])
+    write_quantized_vector(w, 10, v['vel'])
+    if v.get('phys'):
+        write_quantized_vector(w, 10, v['angvel'])
     if 'frame' in v:
         w.write_packed(v['frame'])
     if 'handle' in v:
@@ -269,6 +302,34 @@ def _vec(r):
 @writer('Vector')
 def _w_vec(w, v):
     for c in v:
+        w.write_double(c)
+
+
+@reader('Quat')
+def _quat(r):
+    # UE 5.1.1 Core/Private/Math/UnrealMath.cpp, TQuat<double>::NetSerialize:
+    # transmit XYZ as doubles, force W >= 0, reconstruct W on receipt.
+    xyz = [r.read_double() for _ in range(3)]
+    magnitude = sum(c * c for c in xyz)
+    if magnitude <= 1.0:
+        return xyz + [math.sqrt(1.0 - magnitude)]
+    inv = 1.0 / math.sqrt(magnitude)
+    return [c * inv for c in xyz] + [0.0]
+
+
+@writer('Quat')
+def _w_quat(w, v):
+    if len(v) != 4 or not all(math.isfinite(c) for c in v):
+        raise ValueError('Quat requires four finite components')
+    q = list(v)
+    norm = sum(c * c for c in q)
+    if norm <= 1e-8:
+        q = [0.0, 0.0, 0.0, 1.0]
+    elif abs(1.0 - norm) > 0.01:  # UE_DOUBLE_THRESH_QUAT_NORMALIZED
+        q = [c / math.sqrt(norm) for c in q]
+    if q[3] < 0:
+        q = [-c for c in q]
+    for c in q[:3]:
         w.write_double(c)
 
 

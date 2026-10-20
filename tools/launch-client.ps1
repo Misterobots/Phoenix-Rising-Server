@@ -38,3 +38,5 @@ $clientArgs = @(
 )
 Start-Process -FilePath $Boot -ArgumentList $clientArgs -WorkingDirectory $GameDir
 Write-Host "Launched Dauntless as '$Name'. In the game window click Continue, then Defend the Frontier."
+
+

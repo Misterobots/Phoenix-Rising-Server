@@ -157,7 +157,10 @@ class Schema:
                 raise KeyError('struct %s missing from dump' % prop.st)
             if sflags & STRUCT_NET_SERIALIZE_NATIVE:
                 rel += 1
-                lay.cmds.append(Cmd('NetSerialize:' + prop.st, prop, parent, rel, name))
+                st_name = prop.st
+                if st_name == 'RepMovement' and 'ArchonBehemoth' in ([lay.cls] + self.inherit.get(lay.cls, [])):
+                    st_name = 'RepMovement_Behemoth'
+                lay.cmds.append(Cmd('NetSerialize:' + st_name, prop, parent, rel, name))
                 return rel
             for m in self.struct_members(prop.st):
                 for j in range(m.dim):
