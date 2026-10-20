@@ -576,7 +576,14 @@ def _send_hit(session, enc, action, key, row):
         enc['hittable_exported'] = True
     print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
     stagger = _stagger_probe(session, pawn, damage)
-    return [entry] + ([stagger] if stagger is not None else [])
+    out = [entry] + ([stagger] if stagger is not None else [])
+    if os.environ.get(DIRECT_PROBE_FLAG, '1') != '0':
+        # Bisect (live 2026-10-20): the stagger RPC was ignored too. A health drop shows sub-object properties on the pawn
+        # channel land; a damage number/flash shows pawn actor RPCs land.
+        out += _damage_entries(session, enc, {'damage': damage, 'elemental': elemental,
+                                              'raw': float(sum((row.get('elements') or {}).values()))})
+        print('ENCOUNTER direct probe -> health %.0f' % enc['player_health'], flush=True)
+    return out
 
 
 STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 0 stops the stagger RPC sent with each ClientTryHit
@@ -603,6 +610,27 @@ def _stagger_probe(session, pawn, damage):
     return entry
 
 
+def _damage_entries(session, enc, info):
+    """Lower the player's CurrentHealth (ASC sub-object property) and send ClientHandlePostMitigationDamage (pawn actor RPC)."""
+    from .engine import hits
+    from .engine.attributes import find_block, property_update
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
+    if enc.get('player_health') is None:
+        enc['player_health'] = float((header.values or {}).get('CurrentHealth', 0.0))
+    # Downed/revive is out of scope: health stops at 0 (the client's own state machine handles what it shows).
+    enc['player_health'] = max(0.0, enc['player_health'] - info['damage'])
+    fi = session.world.schema.field_index(pawn.cls)
+    pm = hits.post_mitigation_params(_pawn_guid(session), info['damage'], info['elemental'], info['raw'])
+    return [
+        property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}),
+        _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
+            (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
+
+
+DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 stops applying damage without waiting for ServerAcceptHit
+
+
 def handle_hit_reply(session, func, params):
     """player_hittable_bpc.ServerAcceptHit / ServerRefuseHit for a ClientTryHit this encounter sent."""
     from .engine import hits
@@ -616,18 +644,7 @@ def handle_hit_reply(session, func, params):
     if func != 'ServerAcceptHit':
         print('ENCOUNTER hit refused by the client (%s/%s)' % (info['action'], info['key']), flush=True)
         return True
-    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
-    header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
-    if enc.get('player_health') is None:
-        enc['player_health'] = float((header.values or {}).get('CurrentHealth', 0.0))
-    # Downed/revive is out of scope: health stops at 0 (the client's own state machine handles what it shows).
-    enc['player_health'] = max(0.0, enc['player_health'] - info['damage'])
-    fi = session.world.schema.field_index(pawn.cls)
-    pm = hits.post_mitigation_params(_pawn_guid(session), info['damage'], info['elemental'], info['raw'])
-    session.entries[session.pos:session.pos] = [
-        property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}),
-        _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
-            (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
+    session.entries[session.pos:session.pos] = _damage_entries(session, enc, info)
     print('ENCOUNTER hit accepted: %.0f damage -> player health %.0f' % (info['damage'], enc['player_health']), flush=True)
     return True
 
