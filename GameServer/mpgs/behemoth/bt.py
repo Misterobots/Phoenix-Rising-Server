@@ -143,6 +143,11 @@ class Context:
     def log(self, msg):
         pass
 
+    def reach_radius(self, acceptable, key, include_agent=True, include_goal=True):
+        """UPathFollowingComponent::HasReachedInternal: AcceptanceRadius + goal radius + agent radius x MinAgentRadiusPct (1.1).
+        The base context knows no radii."""
+        return acceptable
+
     def action_class(self, name):
         """Blueprint class of the named action (e.g. 'lerawr_short_bite_atk_C'), or None. BTDeco_CheckChosenAction compares it."""
         return None
@@ -577,7 +582,11 @@ class MoveTo(Task):
         dest = ctx.target_pos(_key(self.p, 'BlackboardKey'))
         if dest is None:
             return FAILED
-        self.radius = float(self.p.get('AcceptableRadius', 5.0))
+        # BTTask_MoveTo defaults (UE 5.1.1 BTTask_MoveTo.cpp / AISystem.cpp): AcceptableRadius 5, and the reach test includes the
+        # agent's and the goal's collision radii (bFinishMoveOnGoalOverlap = true). The context adds the radii (reach_radius).
+        self.radius = ctx.reach_radius(float(self.p.get('AcceptableRadius', 5.0)), _key(self.p, 'BlackboardKey'),
+                                       bool(self.p.get('bReachTestIncludesAgentRadius', True)),
+                                       bool(self.p.get('bReachTestIncludesGoalRadius', True)))
         if _dist2d(ctx.target_pos('SelfPos'), dest) <= self.radius:
             return SUCCEEDED
         return RUNNING if ctx.move_to(dest, self.radius, _key(self.p, 'BlackboardKey')) else FAILED

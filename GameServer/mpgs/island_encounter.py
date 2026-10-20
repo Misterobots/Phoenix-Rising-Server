@@ -29,6 +29,7 @@ PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')   # BP_Player
 ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
 
 
+TRACE_FLAG = 'MPGS_BEHEMOTH_TRACE'     # engine path: 1 logs a director TRACE line every 0.5 s (positions, tree, attack choice)
 ASC_FLAG = 'MPGS_BEHEMOTH_ASC'         # engine path only; 0 leaves out the ability system / attribute sets (step 6) for bisecting
 
 
@@ -616,10 +617,17 @@ def _engine_step(session, enc, now):
     from .behemoth import spawn
     from .behemoth.director import montage_package
     # Spawn, reveal and montage RPCs go first: movement that refers to the actor or a montage must not overtake them.
-    if any(e.ch == ENCOUNTER_CHANNEL and e.reliable for e in session.entries[session.pos:]):
+    t = now - enc['spawn_mono']
+    held = sum(1 for e in session.entries[session.pos:] if e.ch == ENCOUNTER_CHANNEL and e.reliable)
+    if held:
+        if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
+            enc['trace_t'] = t
+            print('ENCOUNTER TRACE t=%.2f held: %d reliable encounter entries not yet sent' % (t, held), flush=True)
         return []
     director, cls = enc['director'], enc['cls']
-    t = now - enc['spawn_mono']
+    if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
+        enc['trace_t'] = t
+        print('ENCOUNTER ' + director.trace_line(t), flush=True)
     reliable, bunches, revealed = [], [], 0
     for ev in director.tick(t):
         kind = ev[0]

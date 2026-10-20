@@ -122,6 +122,41 @@ class PatrolExtrapolationTests(unittest.TestCase):
 
 
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
+class PawnSpacingTests(unittest.TestCase):
+    """Live 2026-10-20: the Embermane walked into the player and stood inside their capsule (52-67 cm apart); the client's
+    collision pushed it out against the server position. UE stops a MoveTo at 5 + goal radius + agent radius x 1.1 and
+    CharacterMovement blocks root motion at capsule contact (100 + 50)."""
+
+    def run_with_player(self, offset, seconds):
+        from mpgs.world.terrain import Terrain
+        import math
+        with open(os.path.join(ISLANDS, HUNT + '.contract.json'), encoding='utf-8') as f:
+            enc = json.load(f)['encounter']
+        center = next(c for c in enc['centers'] if c['name'] == 'BP_PatrolCenterPoint_263')['location']
+        terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', MANIFEST['terrain']))
+        player = {'loc': [center[0] + offset[0], center[1] + offset[1], 134.0], 'vel': [0.0, 0.0, 0.0]}
+        d = BehemothDirector(Species.load(HUNT), terrain, center, 0.0, lambda: player, rng=random.Random(1))
+        t, closest = 0.0, 1e9
+        while t < seconds:
+            d.tick(t)
+            if not d._ignore_pawn:
+                closest = min(closest, math.dist(d.loc[:2], player['loc'][:2]))
+            t += 1.0 / 15.0
+        return d, closest
+
+    def test_reach_radius_follows_ue(self):
+        d, _ = self.run_with_player((2000.0, 0.0), 0.1)
+        d.ctx.bb['AttackTarget'] = 'player'
+        self.assertAlmostEqual(d.ctx.reach_radius(5.0, 'AttackTarget'), 5.0 + 50.0 + 100.0 * 1.1)
+        self.assertAlmostEqual(d.ctx.reach_radius(5.0, 'MoveDestination'), 5.0 + 100.0 * 1.1)
+
+    def test_never_inside_the_player_capsule(self):
+        """Live positions from session 091521 (player stood ~2,100 cm away): approach, bites and lunges stay at contact or more."""
+        _, closest = self.run_with_player((-806.0, 1941.0), 40.0)
+        self.assertGreaterEqual(closest, 149.0)
+
+
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
 class JumpOverTurnTests(unittest.TestCase):
     NAME = 'b_aq_lerawr_00_loco_jumpoverturn_180_right_00_Montage'
 

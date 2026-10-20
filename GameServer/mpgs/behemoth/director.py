@@ -28,6 +28,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SERVER = os.path.normpath(os.path.join(HERE, '..', '..'))
 DEFAULT_MONTAGE_SECONDS = 2.5          # a montage with no root-motion curve to take its length from
 TURN_SNAP_DEG = 25.0                   # turns up to this are set directly (no turn montage covers less than 45)
+PLAYER_CAPSULE_RADIUS = 50.0           # BP_PlayerCharacter CollisionCylinder.CapsuleRadius (half height 100; matches the live root height)
+AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
 STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
 
 
@@ -190,6 +192,16 @@ class BehemothContext(bt.Context):
             self.bb.setdefault('CurrentFightStateStartTime', self.now)
 
     # ---- hooks the generic tree nodes call (bt.Context) -----------------------------------------------------------
+    def reach_radius(self, acceptable, key, include_agent=True, include_goal=True):
+        """Live 2026-10-20: with only the 5 cm acceptance radius the Embermane walked into the player's capsule (52-67 cm apart)
+        and the client's collision pushed it out against the server position. UE stops at 5 + 50 + 100 x 1.1 = 165 cm."""
+        r = acceptable
+        if include_goal and key and self.bb.get(key) == 'player':
+            r += PLAYER_CAPSULE_RADIUS
+        if include_agent:
+            r += getattr(getattr(self.d, 'species', None), 'capsule_radius', 0.0) * AGENT_RADIUS_PCT   # RockDirector has no species
+        return r
+
     def action_class(self, name):
         a = self.d.brain.actions.get(name) if name else None
         return a.get('class') if a else None
@@ -205,6 +217,21 @@ class BehemothContext(bt.Context):
             lock(None)
 
 
+def _capsule_radius(server, chain):
+    """CollisionCylinder.CapsuleRadius from the Blueprint chain (most derived first; lerawr_beta_bp sets 100), from the local
+    world/hunt_source dumps the island contract was extracted from. 0 when not found (reach tests then ignore the agent radius)."""
+    for cls_name in chain:
+        path = os.path.join(server, 'world', 'hunt_source', cls_name[:-2] + '.json' if cls_name.endswith('_C') else cls_name + '.json')
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding='utf-8') as f:
+            for e in json.load(f):
+                p = e.get('Properties') or {} if isinstance(e, dict) else {}
+                if e.get('Name') == 'CollisionCylinder' and 'CapsuleRadius' in p:
+                    return float(p['CapsuleRadius'])
+    return 0.0
+
+
 class Species:
     """Everything a director needs about one behemoth variant.
 
@@ -216,8 +243,9 @@ class Species:
     """
 
     def __init__(self, variant, actions, tree, half_height, walk_speed, enter_combat_range, base_health, turn_montages=None,
-                 damage=None):
+                 damage=None, capsule_radius=0.0):
         self.variant, self.actions, self.tree = variant, actions, tree
+        self.capsule_radius = float(capsule_radius)     # CollisionCylinder.CapsuleRadius of the most derived class that sets it
         self.half_height, self.walk_speed = float(half_height), float(walk_speed)
         self.enter_combat_range, self.base_health = float(enter_combat_range), float(base_health)
         self.turn_montages = dict(turn_montages or {})
@@ -240,7 +268,8 @@ class Species:
             with open(damage_path, encoding='utf-8') as f:
                 damage = json.load(f)['rows']
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
-                   enc['enterCombatRange'], enc['baseHealth'], damage=damage)
+                   enc['enterCombatRange'], enc['baseHealth'], damage=damage,
+                   capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]))
 
     def brain_data(self):
         """Brain's rock.json shape; damage rows from <variant>_damage.json ({key: {'elements', 'tags'}}, empty if not exported)."""
@@ -262,6 +291,8 @@ class BehemothDirector:
         self.send_interval = send_interval
         self.brain = Brain(species.brain_data(), 'normal', rng=self.rng)
         self.mover = Mover(terrain, loc[:2], yaw, half_height=species.half_height, walk_speed=species.walk_speed)
+        self.mover.blockers = self._blockers
+        self._ignore_pawn = False                  # an attack's ModifyPartCollisionChannelNotify window is open
         self.health = None                         # set by the damage layer (needs .hits); unused until step 5/6
         self.locked = None
         self.dead = False
@@ -399,7 +430,12 @@ class BehemothDirector:
                         for key in payload['keys']:
                             self._windows.pop((action, key), None)
                             self._hit_in_window.discard((action, key))
+                    elif kind == 'part_collision_ignore_pawn':
+                        self._ignore_pawn = True
+                    elif kind == 'part_collision_restore':
+                        self._ignore_pawn = False
                     elif kind == 'action_end':
+                        self._ignore_pawn = False
                         self._windows.clear()
                         self._hit_in_window.clear()
             self._check_hits()
@@ -413,6 +449,13 @@ class BehemothDirector:
             self._flush_move(now)
         out, self._events = self._events, []
         return out
+
+    def _blockers(self):
+        """The player's capsule (radius + this actor's) unless the current attack lets pawns through."""
+        st = self.player_state()
+        if not st or self._ignore_pawn or self.species.capsule_radius <= 0:
+            return []
+        return [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
 
     def _check_hits(self):
         """While a damage window is open, the first tick the player stands in the action's attack area (Brain.in_area at the
@@ -429,6 +472,26 @@ class BehemothDirector:
             if self.brain.in_area(action, target.pos):
                 self._hit_in_window.add((action, key))
                 self._events.append(('hit', action, key, row))
+
+    def trace_line(self, now):
+        """One diagnostic line (MPGS_BEHEMOTH_TRACE=1): where the actor is, what the tree runs, what it would attack and why not."""
+        st = self.player_state()
+        dist = math.dist(self.loc[:2], st['loc'][:2]) if st else -1.0
+        bb = self.ctx.bb
+        why = ''
+        if bb.get('ChosenAttack') is None and st:
+            target, _ = self._target()
+            self._sync_brain()
+            fails = {}
+            for name in self.brain.actions:
+                ok, reason = self.brain.available(name, now, self.brain.intensity([target]))
+                fails[name] = reason if not ok else ('in area' if self.brain.in_area(name, target.pos) else 'out of area')
+            why = ' why=' + ','.join('%s:%s' % (k, v) for k, v in fails.items())
+        return ('TRACE t=%.2f pos=(%.0f,%.0f) yaw=%.0f dist=%.0f vel=%.0f rm=%s path=%d bt=%s target=%s chosen=%s score=%.1f '
+                'busy=%s states=%s%s' % (now, self.loc[0], self.loc[1], self.yaw, dist, math.hypot(*self._tick_vel[:2]),
+                                         self.mover.montage is not None, len(self.mover.path), '/'.join(self.runner.path()[-2:]),
+                                         bb.get('AttackTarget'), bb.get('ChosenAttack'), bb.get('TopScore') or 0.0,
+                                         self.brain.busy, sorted(self.ctx.states), why))
 
     def kill(self):
         self.dead = True

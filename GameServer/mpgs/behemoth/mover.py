@@ -121,6 +121,9 @@ class Mover:
         self._sent = (self.x, self.y, self.z, self.yaw)
         self._sent_at = None
         self.stopped_reason = None
+        # () -> [(x, y, radius)]: capsules the actor may not move deeper into (CharacterMovement's sweep against pawns). Live
+        # 2026-10-20: a Bite lunge carried the Embermane 52 cm from the player's centre; the client's collision pushed it back.
+        self.blockers = None
 
     # ---- state ---------------------------------------------------------------------------------------------------
     @property
@@ -165,6 +168,14 @@ class Mover:
         return True
 
     # ---- simulation ----------------------------------------------------------------------------------------------
+    def _blocked(self, nx, ny):
+        """Moving to (nx, ny) would go deeper into a blocking capsule (moving out of or along one stays allowed)."""
+        for bx, by, r in (self.blockers() if self.blockers else ()):
+            new = math.hypot(nx - bx, ny - by)
+            if new < r and new < math.hypot(self.x - bx, self.y - by):
+                return True
+        return False
+
     def tick(self, now):
         dt = 0.0 if self.last_tick is None else max(0.0, now - self.last_tick)
         self.last_tick = now
@@ -186,7 +197,8 @@ class Mover:
             self.montage = None
             self.stopped_reason = 'unwalkable'
             return
-        self.x, self.y, self.z = nx, ny, ground
+        if not self._blocked(nx, ny):
+            self.x, self.y, self.z = nx, ny, ground
         self.yaw = _wrap(syaw + dyaw)
         if now - t0 >= curve.duration:
             self.montage = None
@@ -203,6 +215,9 @@ class Mover:
                 return
             self.yaw = _wrap(want)
             d = math.hypot(tx - self.x, ty - self.y)
+            if self._blocked(self.x + (tx - self.x) * min(1.0, budget / d) if d else tx,
+                             self.y + (ty - self.y) * min(1.0, budget / d) if d else ty):
+                break                                   # against a pawn: stay put this tick (the reach test ends the move)
             if d <= budget:
                 if not self.terrain_walkable(tx, ty):
                     self.path = []
