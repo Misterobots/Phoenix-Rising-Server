@@ -110,6 +110,24 @@ ignored), never invent values: write open questions down.
    XP and quest code stay as they are.
    *Done when* the existing encounter tests pass under both flag values, plus a new test for an
    Embermane attack montage reaching the wire.
+   **Result (2026-10-20):** done. The scripted encounter stays the default; `MPGS_BEHEMOTH_ENGINE=1` switches to the director.
+   179 tests pass with the flag at 0 and at 1 (`tests/test_island_encounter.py` is pinned to 0,
+   `tests/test_island_encounter_engine.py` to 1).
+   - `start`: the same proven spawn bunch, but the root sits on the landscape + capsule offset (about 43 cm lower than vent
+     Z + 149), with `ReplicatedMovementMode = 1` and no `DisableIkinema`. It attaches a `BehemothDirector`. Species, terrain
+     and trees are loaded once per world.
+   - `step_movement` → `_engine_step`: ticks the director in the existing 15 Hz loop. `move` → unreliable `ReplicatedMovement`
+     + `ReplicatedServerLastTransformUpdateTimeStamp`, plus `RepRootMotion` (with the montage's path export) while a root-motion
+     montage plays, cleared when it ends. `montage` → reliable `NetworkedMontageComponent.MulticastPlayMontage`, exporting the
+     component on first use. `lock` → `LockedTarget`. `target` → `reveal()`: the tree's aggro now decides spotting, not the
+     4,000-unit distance check. Movement waits while reliable encounter entries are queued, so it never overtakes the spawn,
+     reveal or a montage.
+   - `handle_damage`: unchanged health/combat text/defeat/rewards, plus `director.health.hits` (a hit acquires the target) and
+     `director.kill()` at 0. Deviation from the plan: `BehemothHealth` was not swapped in, because Phoenix's health path already
+     works live. The engine `damage` module waits for step 6.
+   - Not verified live. The restart helper is still suspended over the 10-19 machine crashes; a live run needs
+     `MPGS_BEHEMOTH_ENGINE=1` in the island server's environment.
+
 6. **E3 for the behemoth.** Replicate the behemoth ASC and attribute set so the client shows the
    health bar and hit reactions from server state, and send behemoth→player damage through
    `damage.behemoth_to_player`.

@@ -23,6 +23,13 @@ CDO_GUID = 44001
 PKG_GUID = 44003
 COMBAT_TEXT_COMP_TEMPLATE_GUID = 44002
 DAMAGE_COMP_TEMPLATE_GUID = 44004
+NETWORKED_MONTAGE_COMP_TEMPLATE_GUID = 44006
+MONTAGE_COMPONENT = ('NetworkedMontage', 'NetworkedMontageComponent')
+ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
+
+
+def engine_enabled(env=None):
+    return (os.environ if env is None else env).get(ENGINE_FLAG) == '1'
 DEFAULT_HIT_DAMAGE = 350.0
 DEFAULT_KILL_XP = 150
 FTUE_HUNT_QUEST_ID = 'CR20_PJM_FTUE_01'
@@ -178,30 +185,44 @@ def start(session):
     package, cls = config['actorClass'].rsplit('.', 1)
     center = min(config['centers'], key=lambda c: sum((a-b)**2 for a, b in
                  zip(c['location'], session.world.island_contract['starts'][0]['location'])))
-    # One fixed authored species at the nearest authored center, placed at the
-    # arena floor elevation so full-body IK does not stretch the legs downward.
-    loc = _grounded_location(config, center)
     rot = list(center['rotation'])
+    engine = _engine_resources(session.world) if engine_enabled() else None
+    if engine is not None:
+        # The landscape is the arena floor (ENGINE_PORT_PLAN step 4: live player samples sit a constant capsule height above it;
+        # the aether vent Z is a pivot). The director's Mover keeps the root at landscape + capsule offset from here on.
+        species, terrain, _ = engine
+        ground = terrain.ground_z(center['location'][0], center['location'][1])
+        if ground is None:
+            raise ValueError('Encounter center %s is off the exported landscape' % center['name'])
+        loc = [center['location'][0], center['location'][1], ground + species.half_height]
+    else:
+        # One fixed authored species at the nearest authored center, placed at the
+        # arena floor elevation so full-body IK does not stretch the legs downward.
+        loc = _grounded_location(config, center)
     cdo = _info(CDO_GUID, 'Default__' + cls, _info(PKG_GUID, package))
     base_health = float(config['baseHealth'])
-    actor = _entry(session.world, ENCOUNTER_CHANNEL, cls, [
-        _block(cls, {
-            'Role': 3, 'RemoteRole': 1, 'bHidden': 0, 'bCanBeDamaged': 1,
-            'bReplicateMovement': 1,
-            'ReplicatedMovement': {'loc': [round(v, 1) for v in loc], 'rot': [round(v, 2) for v in rot], 'vel': [0., 0., 0.], 'sleep': 0, 'phys': 0},
-            # Patrol transforms have no sampled Landscape Z. Keep client
-            # CharacterMovement from applying local floor corrections until
-            # the encounter is revealed and combat-height tracking begins.
-            'ReplicatedMovementMode': 0,
-            'BehemothMetaDataName': config['behemoth'],
-            'bImageRevealed': 0,
-            'HealthDEPRECATED_DO_NOT_USE': base_health,
-            'MetadataTableName': (config['behemoth'], 0), 'BehemothLevel': config['level'],
-            'CurrentMontagePlayRate': config['montagePlayRate'],
-            'ActionRateModifier': 1.0,
-            'Curving': 0,
-            'DisableIkinema': 1,
-            'InCombat': 0, 'IsAlerted': 0, 'IsDead': 0})])
+    values = {
+        'Role': 3, 'RemoteRole': 1, 'bHidden': 0, 'bCanBeDamaged': 1,
+        'bReplicateMovement': 1,
+        'ReplicatedMovement': {'loc': [round(v, 1) for v in loc], 'rot': [round(v, 2) for v in rot], 'vel': [0., 0., 0.], 'sleep': 0, 'phys': 0},
+        # Patrol transforms have no sampled Landscape Z. Keep client
+        # CharacterMovement from applying local floor corrections until
+        # the encounter is revealed and combat-height tracking begins.
+        'ReplicatedMovementMode': 0,
+        'BehemothMetaDataName': config['behemoth'],
+        'bImageRevealed': 0,
+        'HealthDEPRECATED_DO_NOT_USE': base_health,
+        'MetadataTableName': (config['behemoth'], 0), 'BehemothLevel': config['level'],
+        'CurrentMontagePlayRate': config['montagePlayRate'],
+        'ActionRateModifier': 1.0,
+        'Curving': 0,
+        'DisableIkinema': 1,
+        'InCombat': 0, 'IsAlerted': 0, 'IsDead': 0}
+    if engine is not None:
+        # Server positions now follow the terrain, so the client walks the actor (MOVE_Walking) and keeps its foot IK.
+        values['ReplicatedMovementMode'] = 1
+        del values['DisableIkinema']
+    actor = _entry(session.world, ENCOUNTER_CHANNEL, cls, [_block(cls, values)])
     actor.open, actor.exports = True, [cdo]
     # The behemoth package may not be resident when arrival completes. Match
     # UPackageMapClient::InternalWriteObject's async-load dependency: the client
@@ -256,6 +277,8 @@ def start(session):
         'last_step_t': None,
         'spawn_mono': time.monotonic(),
     }
+    if engine is not None:
+        _attach_director(session, session._encounter, engine, center)
     print('ENCOUNTER spawn %s level=%d center=%s loc=%s guid=%d (unrevealed)' % (
         config['behemoth'], config['level'], center['name'], [round(v, 1) for v in loc], behemoth_guid), flush=True)
     return entries
@@ -304,6 +327,8 @@ def step_movement(session, now):
     enc = getattr(session, '_encounter', None)
     if not enc or enc['dead']:
         return []
+    if enc.get('director') is not None:
+        return _engine_step(session, enc, now)
     # Wait until all reliable bunches on the encounter channel (spawn, reveal) have been sent.
     if any(e.ch == ENCOUNTER_CHANNEL for e in session.entries[session.pos:]):
         enc['last_step_t'] = now
@@ -404,6 +429,114 @@ def step_movement(session, now):
     p.blocks = [b]
     w = model.encode(p, session.ctx, enc['cls'])
     return compose.compose(ENCOUNTER_CHANNEL, w.n, w.nbits, [], open=False, close=False, reliable=False)
+
+
+# ----------------------------------------------------------------------------- behaviour engine (MPGS_BEHEMOTH_ENGINE=1)
+# ENGINE_PORT_PLAN.md step 5. The director (mpgs.behemoth.director) decides and moves; this adapter only turns its events into
+# bunches on the encounter channel. Spawn, reveal, damage and rewards stay as above.
+
+def _engine_resources(world):
+    """(Species, Terrain, TreeSet) for the world's hunt, loaded once per world from the local engine data (see the manifest)."""
+    cached = getattr(world, '_behemoth_engine', None)
+    if cached is None:
+        import json
+        from .behemoth import bt
+        from .behemoth.director import Species
+        from .behemoth.rock_ai import DEFAULT_BT_DIR
+        from .world.terrain import Terrain
+        server = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        hunt = world.island_contract['huntId']
+        with open(os.path.join(server, 'data', '2.1.1', 'islands', hunt + '.engine_data.json'), encoding='utf-8') as f:
+            manifest = json.load(f)
+        cached = (Species.load(hunt, server), Terrain.load(os.path.join(server, 'world', 'maps', manifest['terrain'])),
+                  bt.TreeSet.load(DEFAULT_BT_DIR))
+        world._behemoth_engine = cached
+    return cached
+
+
+def _attach_director(session, enc, engine, center):
+    import random
+    from types import SimpleNamespace
+    from .behemoth.director import BehemothDirector
+    from .behemoth.spawn import GuidSource
+    species, terrain, trees = engine
+    director = BehemothDirector(species, terrain, enc['loc'], enc['rot'][1], lambda: getattr(session, 'pawn_state', None),
+                                trees=trees, rng=random.Random(enc['guid']),
+                                log=lambda msg: print('ENCOUNTER AI ' + msg, flush=True))
+    director.health = SimpleNamespace(hits=0)
+    comp_guid = session.next_live_guid()
+    comp_export = _info(comp_guid, MONTAGE_COMPONENT[0], _info(enc['guid']))
+    comp_export.flags = 3
+    session.ctx._names[comp_guid] = (enc['guid'], MONTAGE_COMPONENT[0])
+    enc.update(director=director, montage_comp_guid=comp_guid, montage_comp_export=comp_export, montage_comp_exported=False,
+               montage_guids={}, guids=GuidSource(session.next_live_guid), root_motion=None)
+    print('ENCOUNTER engine on: %s tree=%s floor z=%.1f center=%s' % (
+        species.variant, species.tree, enc['loc'][2] - species.half_height, center['name']), flush=True)
+
+
+def _montage_info(enc, name, package):
+    from .behemoth.spawn import _info as path_info
+    mg, pg = enc['montage_guids'][(package, name)]
+    return path_info(mg, name, outer=path_info(pg, package))
+
+
+def _engine_step(session, enc, now):
+    """Tick the director and return its movement as unreliable bunches; queue montage RPCs and target state as reliable entries."""
+    from .behemoth import spawn
+    from .behemoth.director import montage_package
+    # Spawn, reveal and montage RPCs go first: movement that refers to the actor or a montage must not overtake them.
+    if any(e.ch == ENCOUNTER_CHANNEL and e.reliable for e in session.entries[session.pos:]):
+        return []
+    director, cls = enc['director'], enc['cls']
+    t = now - enc['spawn_mono']
+    reliable, bunches, revealed = [], [], 0
+    for ev in director.tick(t):
+        kind = ev[0]
+        if kind == 'target':
+            if ev[1] is not None and not enc['spotted']:
+                revealed += len(reveal(session))    # the tree acquired the player: compass reveal + combat start
+        elif kind == 'lock':
+            pawn_guid = _pawn_guid(session) if ev[1] is not None else 0
+            reliable.append(_entry(session.world, ENCOUNTER_CHANNEL, cls, [_block(cls, {'LockedTarget': ('obj', pawn_guid)})]))
+        elif kind == 'montage':
+            _, name, rate, t0 = ev
+            package = montage_package(name)
+            if package is None:
+                print('ENCOUNTER montage %s skipped: no montage dump' % name, flush=True)
+                continue
+            entry = spawn.montage_play_entry(session.world.schema, enc['guids'], ch=ENCOUNTER_CHANNEL, actor_cls=cls,
+                                             montage_guid_cache=enc['montage_guids'], component_guid=enc['montage_comp_guid'],
+                                             component_cls=MONTAGE_COMPONENT[1], montage_package=package, montage_name=name,
+                                             play_rate=rate)
+            if not enc['montage_comp_exported']:
+                entry.exports.insert(0, enc['montage_comp_export'])
+                enc['montage_comp_exported'] = True
+            reliable.append(entry)
+            if director.mover.montage is not None:
+                enc['root_motion'] = (name, package, t0, rate)
+            print('ENCOUNTER montage %s t=%.2f' % (name, t0), flush=True)
+        elif kind == 'move':
+            _, loc, yaw, vel = ev
+            enc['loc'], enc['rot'], enc['vel'] = list(loc), [0.0, yaw, 0.0], list(vel)
+            rm, exports = None, []
+            if enc['root_motion'] is not None:
+                name, package, t0, rate = enc['root_motion']
+                if director.mover.montage is not None:
+                    mg = enc['montage_guids'][(package, name)][0]
+                    rm = spawn.root_motion_values(mg, (t - t0) * rate, loc, yaw, vel)
+                    exports = [_montage_info(enc, name, package)]
+                else:
+                    rm = spawn.root_motion_values(None, 0.0, (0.0, 0.0, 0.0), 0.0)   # RepRootMotion.Clear() when it ends
+                    enc['root_motion'] = None
+            upd = spawn.movement_entry(ENCOUNTER_CHANNEL, cls, loc, yaw, vel=vel, mode=1, server_time=t, root_motion=rm,
+                                       exports=exports)
+            w = model.encode(upd.parsed, session.ctx, cls)
+            bunches.extend(compose.compose(ENCOUNTER_CHANNEL, w.n, w.nbits, upd.exports, open=False, close=False,
+                                           reliable=False))
+    if reliable:
+        at = session.pos + revealed                 # after the reveal entries reveal() queued this tick
+        session.entries[at:at] = reliable
+    return bunches
 
 
 def grant_defeat_rewards(session):
@@ -597,6 +730,11 @@ def handle_damage(session, ch, req_block, params=None):
         session._queue_rpc(ch, req_block, 'ClientDoDamageSucceed', {'PredictionKey': params['PredictionKey']})
     damage = float(params.get('Damage', DEFAULT_HIT_DAMAGE)) if isinstance(params, dict) else DEFAULT_HIT_DAMAGE
     enc['health'] = max(0.0, enc['health'] - damage)
+    director = enc.get('director')
+    if director is not None:
+        director.health.hits += 1                  # BehemothContext.pick_target: a hit acquires the attacker as target
+        if enc['health'] <= 0.0:
+            director.kill()
     cls = enc['cls']
     fi = session.world.schema.field_index(cls)
     ct_fi = session.world.schema.field_index('floating_combat_text_bpc_C')

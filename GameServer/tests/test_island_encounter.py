@@ -20,6 +20,18 @@ from mpgs.wire import Bunch
 from types import SimpleNamespace
 
 
+# These tests cover the scripted encounter (MPGS_BEHEMOTH_ENGINE unset/0). The engine path is in test_island_encounter_engine.py.
+_engine_flag = patch.dict(os.environ, {island_encounter.ENGINE_FLAG: '0'})
+
+
+def setUpModule():
+    _engine_flag.start()
+
+
+def tearDownModule():
+    _engine_flag.stop()
+
+
 class IslandEncounterTests(unittest.TestCase):
     def test_client_actor_rejection_identifies_encounter_channel(self):
         # Actual client control payload from the failed October 18 join.
