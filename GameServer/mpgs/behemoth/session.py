@@ -531,6 +531,10 @@ class RockDirector:
     def log_ai(self, msg):
         log('AI ' + msg)
 
+    def player_state(self):
+        """The context's view of the player (director.BehemothContext reads positions through this)."""
+        return self.s.pawn_state
+
     def _turn_test(self, now, out):
         """Play the listed turn montages in order (no attacks). Each one starts when the previous one has ended."""
         from .mover import montage_curve

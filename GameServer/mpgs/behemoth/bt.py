@@ -143,6 +143,16 @@ class Context:
     def log(self, msg):
         pass
 
+    def action_class(self, name):
+        """Blueprint class of the named action (e.g. 'lerawr_short_bite_atk_C'), or None. BTDeco_CheckChosenAction compares it."""
+        return None
+
+    def lock_target(self, key):
+        """Bp_Behemoth.LockTarget(blackboard[key]) (btdeco_lock_target on execution start)."""
+
+    def clear_locked_target(self):
+        """Bp_Behemoth.ClearLockedTarget() (btdeco_lock_target on execution finish)."""
+
 
 class Frame:
     def __init__(self, node, decorators=(), started=0.0):
@@ -176,6 +186,8 @@ class Runner:
         if self.task is not None:
             if self._should_abort(now):
                 self._abort_task()
+                for f in reversed(self.stack):        # aborted frames finish too (UE calls ReceiveExecutionFinishAI)
+                    self._on_exit(f.decorators)
                 self.stack = []
             else:
                 frame, h = self.task
@@ -257,6 +269,7 @@ class Runner:
 
     def _finish(self, frame, result):
         """`frame` has been popped with `result`; apply it to its parent (the new top of stack)."""
+        self._on_exit(frame.decorators)
         if frame.forced:
             result = SUCCEEDED
         if not self.stack:
@@ -323,6 +336,14 @@ class Runner:
         for d in decos:
             if d.type == 'btdeco_variablecooldown_C':
                 pass                                # state already advanced in the check (as the Blueprint does)
+            elif d.type == 'btdeco_lock_target_C':  # ReceiveExecutionStartAI: LockTarget(bb[LockToTargetName])
+                if self.ctx.bb.get(d.props.get('LockToTargetName', 'AttackTarget')) is not None:
+                    self.ctx.lock_target(d.props.get('LockToTargetName', 'AttackTarget'))
+
+    def _on_exit(self, decos):
+        for d in decos:
+            if d.type == 'btdeco_lock_target_C':    # ReceiveExecutionFinishAI: ClearLockedTarget()
+                self.ctx.clear_locked_target()
 
     # ---- decorators ----------------------------------------------------------------------------------------------
     def _check(self, d, peek=False):
@@ -450,7 +471,53 @@ def _d_cone(ctx, p, mem, peek):
     return diff <= float(p.get('ConeHalfAngle', 45.0))
 
 
+def _bb_float(ctx, sbd, default=0.0):
+    """archon_function_library.SimplifiedBBData_GetFloat (inferred from the struct: a named key wins, else ConstantFloat)."""
+    if not isinstance(sbd, dict):
+        return default
+    key = next((v for k, v in sbd.items() if k.startswith('BlackboardKeyName')), None)
+    if key not in (None, '', 'None'):
+        v = ctx.bb.get(key)
+        return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else default
+    return float(next((v for k, v in sbd.items() if k.startswith('ConstantFloat')), default))
+
+
+def _d_check_chosen_action(ctx, p, mem, peek):
+    """BTDeco_CheckChosenAction (bytecode): GetObjectClass(bb[ChosenAttackKeyName]) == ActionClass. With ActionClass unset (None),
+    as in lerawr_beta_new_bt, it passes exactly when no attack is chosen; the inverted copy guards PerformActionClass."""
+    chosen = ctx.bb.get(p.get('ChosenAttackKeyName', 'ChosenAttack'))
+    have = ctx.action_class(chosen) if chosen else None
+    want = _asset_name(p.get('ActionClass')) if p.get('ActionClass') else None
+    if chosen and have is None and want is None:
+        return False                              # a chosen action whose class is unknown is still an object, not None
+    return have == want
+
+
+def _d_archon_distance(ctx, p, mem, peek):
+    """archon_distance_check_btdeco (bytecode): target (horizontally predicted by PredictTargetHorizFuturePosTime when it is an
+    actor) within MaxDistance and not within MinDistance of Origin; both bounds are SimplifiedBBData floats. False when either
+    location is missing. IsWithinDistanceFast is taken as a 3D distance (inferred)."""
+    okey, tkey = _key(p, 'Origin') or 'SelfPos', _key(p, 'Target') or 'AttackTarget'
+    o, t = ctx.target_pos(okey), ctx.target_pos(tkey)
+    if o is None or t is None:
+        return False
+    pt = float(p.get('PredictTargetHorizFuturePosTime', 0.0))
+    if pt > 0.0:
+        vx, vy = ctx.target_vel(tkey)
+        t = (t[0] + vx * pt, t[1] + vy * pt, t[2])
+    d = math.dist(o, t)
+    return d <= _bb_float(ctx, p.get('MaxDistance')) and not d <= _bb_float(ctx, p.get('MinDistance'))
+
+
+def _d_lock_target(ctx, p, mem, peek):
+    """btdeco_lock_target (bytecode): aggro_bpc.IsTargetValid(current target) == ShouldBeValid (CDO: True). Lock/clear on enter/exit."""
+    return (ctx.bb.get('AttackTarget') is not None) == bool(p.get('ShouldBeValid', True))
+
+
 DECORATORS = {
+    'BTDeco_CheckChosenAction_C': _d_check_chosen_action,
+    'archon_distance_check_btdeco_C': _d_archon_distance,
+    'btdeco_lock_target_C': _d_lock_target,
     'BTDecorator_Blackboard': _d_blackboard,
     'BTDecorator_ForceSuccess': lambda ctx, p, m, peek: True,
     'BTDecorator_TimeLimit': lambda ctx, p, m, peek: True,
@@ -650,7 +717,14 @@ def _s_pick_target(ctx, p):
     ctx.pick_target()
 
 
+def _s_distance_from_target(ctx, p):
+    """distance_from_target_service (bytecode): bb[Distance_key] = |pawn - bb[Target_key] actor| (3D), or 0 without a target."""
+    t = ctx.target_pos(_key(p, 'Target_key') or 'AttackTarget') if ctx.bb.get(_key(p, 'Target_key') or 'AttackTarget') else None
+    ctx.bb[_key(p, 'Distance_key') or 'DistanceFromAttackTarget'] = math.dist(ctx.target_pos('SelfPos'), t) if t else 0.0
+
+
 SERVICES = {
+    'distance_from_target_service_C': _s_distance_from_target,
     'evaluate_action_btservice_C': _s_evaluate_action,
     'try_pick_new_target_bts_C': _s_pick_target,
     # cosmetic or not needed by this server

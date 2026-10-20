@@ -56,8 +56,9 @@ class LocalDataTests(unittest.TestCase):
         self.assertTrue(80.0 <= 127.5 - t.ground_z(-10681.4, 6836.1) <= 110.0)
 
     def test_patrol_center_vent_is_off_the_landscape(self):
-        """Recorded finding, not a goal: BP_PatrolCenterPoint_263's aether vent sits 43 cm above the landscape (static-mesh floor
-        the height grid cannot see). Step 4 must not assume landscape height equals walkable floor there."""
+        """Recorded finding: BP_PatrolCenterPoint_263's aether vent *pivot* is 43 cm above the landscape. It is not the floor: in 682
+        grounded player samples from the 10-18/10-19 live logs, root minus landscape is a constant ~102 cm, also within 500 units of
+        this center, so the landscape is the walkable arena floor. The old spawn rule (vent Z + capsule offset) floated the actor."""
         t = Terrain.load(os.path.join(SERVER, 'world', 'maps', M['terrain']))
         with open(CONTRACT, encoding='utf-8') as f:
             center = next(c for c in json.load(f)['encounter']['centers'] if c['name'] == 'BP_PatrolCenterPoint_263')
