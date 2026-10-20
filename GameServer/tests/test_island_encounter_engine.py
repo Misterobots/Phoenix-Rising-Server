@@ -140,6 +140,111 @@ class EngineEncounterTests(unittest.TestCase):
         self.assertEqual(island_encounter.step_movement(s, enc['spawn_mono'] + 5.0), [])
 
 
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally (see the engine_data manifest)')
+class HealthAndHitTests(EngineEncounterTests):
+    """Step 6: the behemoth's ability system and health set ride in the spawn bunch; hits update CurrentHealth; damage windows
+    send ClientTryHit and only an accepted hit reduces the player's health."""
+
+    # the inherited path tests run once, in EngineEncounterTests
+    test_spawn_stands_on_the_landscape_and_walks = None
+    test_unspotted_while_the_player_is_at_the_landing_pad = None
+    test_tree_aggro_reveals_then_attacks_with_montage_and_root_motion = None
+    test_hits_count_for_the_tree_and_death_stops_the_director = None
+
+    def roundtrip(self, session, entry):
+        from mpgs.repl import compose
+        bits = model.encode(entry.parsed, session.ctx, entry.cls)
+        ra, full = Reassembler(), None
+        for part in compose.compose(entry.ch, bits.n, bits.nbits, entry.exports, open=entry.open, must_map=entry.must_map,
+                                    reliable=entry.reliable):
+            full = ra.feed(part) or full
+        decoded, cls = model.parse(full, session.ctx, entry.cls)
+        again = model.encode(decoded, session.ctx, cls)
+        self.assertEqual((bits.n, bits.nbits), (again.n, again.nbits), 'bit-exact re-encode')
+        return decoded
+
+    def test_spawn_carries_ability_system_and_health_set(self):
+        s = self.session()
+        enc = s._encounter
+        actor = next(e for e in s.entries if e.open and e.cls == CLS)
+        decoded = self.roundtrip(s, actor)
+        by_cls = {b.cls_name: b for b in decoded.blocks}
+        hs = by_cls['ArchonHealthAttributeSet']
+        self.assertFalse(hs.stable)
+        self.assertEqual(hs.cls, island_encounter.HEALTH_SET_CLASS_GUID)
+        self.assertEqual(hs.values['CurrentHealth'], 18900.0)
+        self.assertEqual(hs.values['MaxHealth'], 18900.0)
+        self.assertEqual(by_cls['ArchonDamageAttributeSet'].cls, island_encounter.DAMAGE_SET_CLASS_GUID)
+        asc = by_cls['ArchonAbilitySystemComponent']
+        self.assertEqual(asc.values['OwnerActor'], ('obj', enc['guid']))
+        spawned = [e['SpawnedAttributes[]'] for _, e in sorted(asc.values['SpawnedAttributes']['elems'].items())]
+        self.assertEqual(spawned, [('obj', hs.guid), ('obj', by_cls['ArchonDamageAttributeSet'].guid)])
+        self.assertIn(('ArchonAbilitySystem', enc['guid']),
+                      [(x.name, x.outer_info.guid if x.outer_info else None) for x in actor.exports])
+
+    def test_player_hit_updates_the_health_set(self):
+        s = self.session()
+        self.assertTrue(island_encounter.handle_damage(s, 4, None, {'Damage': 1000.0}))
+        update = next(e for e in s.entries[s.pos:]
+                      if any(b.cls_name == 'ArchonHealthAttributeSet' for b in e.parsed.blocks))
+        blk = self.roundtrip(s, update).blocks[0]
+        self.assertEqual(blk.guid, s._encounter['health_set'].guid)
+        self.assertEqual(blk.values['CurrentHealth'], 17900.0)
+
+    def attack_until_hit(self, s):
+        enc = s._encounter
+        near = [enc['loc'][0] + 300.0, enc['loc'][1], enc['loc'][2]]
+        hittable = lambda step: enc.get('hittable_guid') is not None and any(
+            b.guid == enc['hittable_guid'] for e in step[2] for b in e.parsed.blocks)
+        steps = self.run_until(s, 60.0, player=lambda t: near, stop=hittable)
+        tries = [e for _, _, q in steps for e in q if any(b.guid == enc.get('hittable_guid') for b in e.parsed.blocks)]
+        self.assertTrue(tries, 'a damage window caught the player within 60 s')
+        return tries[0]
+
+    def test_damage_window_sends_client_try_hit(self):
+        s = self.session()
+        enc = s._encounter
+        entry = self.attack_until_hit(s)
+        self.assertEqual(entry.exports[0].name, 'player_hittable_bpc')        # exported by name on first use
+        blk = self.roundtrip(s, entry).blocks[0]
+        name, params = next((f[1], f[3]) for f in blk.fields if f[2] == 'rpc')
+        self.assertEqual(name, 'ClientTryHit')
+        self.assertEqual(params['Damager'], ('obj', enc['guid']))
+        self.assertGreater(params['Params_0.DamageRow.PhysicalDamage'] + params.get('Params_0.DamageRow.FlameDamage', 0), 0)
+        self.assertEqual(len(enc['pending_hits']), 1)
+
+    def test_only_an_accepted_hit_damages_the_player(self):
+        from mpgs.engine import hits
+        s = self.session()
+        enc = s._encounter
+        blk = self.attack_until_hit(s).parsed.blocks[0]
+        params = next(f[3] for f in blk.fields if f[1] == 'ClientTryHit')
+        reply = {'HitID.' + k: params['HitID.' + k] for k in 'ABCD'}
+        self.assertFalse(island_encounter.handle_hit_reply(s, 'ServerAcceptHit', {'HitID.A': 1}))   # unknown hit: ignored
+        before = len(s.entries)
+        self.assertTrue(island_encounter.handle_hit_reply(s, 'ServerAcceptHit', reply))
+        queued = s.entries[s.pos:]
+        self.assertEqual(len(s.entries) - before, 2)
+        health = next(e for e in queued if any(b.cls_name == 'ArchonHealthAttributeSet' for b in e.parsed.blocks))
+        v = self.roundtrip(s, health).blocks[0].values
+        pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        start = next(b for b in pawn.parsed.blocks if b.cls_name == 'ArchonHealthAttributeSet').values['CurrentHealth']
+        self.assertLess(v['CurrentHealth'], start)
+        self.assertEqual(v['CurrentHealth'], enc['player_health'])
+        pm = next(e for e in queued if any(f[1] == 'ClientHandlePostMitigationDamage' for b in e.parsed.blocks
+                                           for f in (b.fields or [])))
+        self.roundtrip(s, pm)
+        # the same hit cannot be applied twice, and a refused hit changes nothing
+        self.assertFalse(island_encounter.handle_hit_reply(s, 'ServerAcceptHit', reply))
+        enc['pending_hits'].add({'A': 1, 'B': 2, 'C': 3, 'D': 4}, {'damage': 99.0, 'elemental': 0.0, 'action': 'x', 'key': 'y',
+                                                              'raw': 1.0})
+        n = len(s.entries)
+        self.assertTrue(island_encounter.handle_hit_reply(s, 'ServerRefuseHit', {'HitID.A': 1, 'HitID.B': 2, 'HitID.C': 3,
+                                                                                 'HitID.D': 4}))
+        self.assertEqual(len(s.entries), n)
+        self.assertEqual(hits.key_of(reply), tuple(reply['HitID.' + k] for k in 'ABCD'))
+
+
 class FlagTests(unittest.TestCase):
     def test_flag_values(self):
         self.assertTrue(island_encounter.engine_enabled({'MPGS_BEHEMOTH_ENGINE': '1'}))

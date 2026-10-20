@@ -25,6 +25,7 @@ COMBAT_TEXT_COMP_TEMPLATE_GUID = 44002
 DAMAGE_COMP_TEMPLATE_GUID = 44004
 NETWORKED_MONTAGE_COMP_TEMPLATE_GUID = 44006
 MONTAGE_COMPONENT = ('NetworkedMontage', 'NetworkedMontageComponent')
+PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')   # BP_PlayerCharacter's ArchonHittableComponent
 ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
 
 
@@ -279,6 +280,7 @@ def start(session):
     }
     if engine is not None:
         _attach_director(session, session._encounter, engine, center)
+        _add_ability_system(session, session._encounter, entries[0])
     print('ENCOUNTER spawn %s level=%d center=%s loc=%s guid=%d (unrevealed)' % (
         config['behemoth'], config['level'], center['name'], [round(v, 1) for v in loc], behemoth_guid), flush=True)
     return entries
@@ -454,6 +456,15 @@ def _engine_resources(world):
     return cached
 
 
+def _damage_model(world):
+    """world/behemoths/damage_model.json (tools.export_damage: exploration damage curves), loaded once per world."""
+    cached = getattr(world, '_damage_model', None)
+    if cached is None:
+        from .behemoth.damage import load_model
+        cached = world._damage_model = load_model()
+    return cached
+
+
 def _attach_director(session, enc, engine, center):
     import random
     from types import SimpleNamespace
@@ -468,10 +479,119 @@ def _attach_director(session, enc, engine, center):
     comp_export = _info(comp_guid, MONTAGE_COMPONENT[0], _info(enc['guid']))
     comp_export.flags = 3
     session.ctx._names[comp_guid] = (enc['guid'], MONTAGE_COMPONENT[0])
+    from .engine.hits import PendingHits
     enc.update(director=director, montage_comp_guid=comp_guid, montage_comp_export=comp_export, montage_comp_exported=False,
-               montage_guids={}, guids=GuidSource(session.next_live_guid), root_motion=None)
+               montage_guids={}, guids=GuidSource(session.next_live_guid), root_motion=None,
+               pending_hits=PendingHits(), damage_model=_damage_model(session.world))
     print('ENCOUNTER engine on: %s tree=%s floor z=%.1f center=%s' % (
         species.variant, species.tree, enc['loc'][2] - species.half_height, center['name']), flush=True)
+
+
+# Static class GUIDs the client already knows from the join (template names table: /Script/Archon classes, outer 33).
+HEALTH_SET_CLASS_GUID = 41     # ArchonHealthAttributeSet
+DAMAGE_SET_CLASS_GUID = 43     # ArchonDamageAttributeSet
+ASC_COMPONENT = ('ArchonAbilitySystem', 'ArchonAbilitySystemComponent')
+
+
+def _subobject_block(guid, cls_guid, cls_name, values=None):
+    """A dynamic sub-object created in this bunch (not stably named, class GUID, outer = the actor), as the join creates the
+    player's attribute sets."""
+    b = model.Block()
+    b.actor, b.rep, b.guid, b.stable, b.destroy = False, values is not None, guid, False, False
+    b.cls, b.outer, b.ref, b.ref_name = cls_guid, None, None, None
+    b.cls_name, b.values, b.tail, b.fields, b.partial_properties = cls_name, values, None, None, False
+    b.raw = None if values is not None else (0, 0)
+    return b
+
+
+def _add_ability_system(session, enc, actor_entry):
+    """Health bar (ENGINE_PORT_PLAN step 6). Bp_Behemoth's ArchonAbilitySystem spawns ArchonHealthAttributeSet and
+    ArchonDamageAttributeSet (its DefaultStartingData; tables behemoth_health_as / behemoth_damage_as). Create both in the spawn
+    bunch the way the join creates the player's sets (sub-object blocks with values, then the ASC listing them in SpawnedAttributes),
+    with CurrentHealth = MaxHealth = the encounter's BaseHealth. INFERRED from the player's proven pattern: no behemoth ASC has been
+    seen on the wire yet."""
+    health_guid, damage_guid, asc_guid = session.next_live_guid(), session.next_live_guid(), session.next_live_guid()
+    behemoth = ('obj', enc['guid'])
+    blocks = [
+        _subobject_block(health_guid, HEALTH_SET_CLASS_GUID, 'ArchonHealthAttributeSet',
+                         {'CurrentHealth': enc['max_health'], 'MaxHealth': enc['max_health']}),
+        _subobject_block(damage_guid, DAMAGE_SET_CLASS_GUID, 'ArchonDamageAttributeSet'),
+        _block(ASC_COMPONENT[1], {'OwnerActor': behemoth, 'AvatarActor': behemoth,
+                                  'SpawnedAttributes': _array('SpawnedAttributes', [('obj', health_guid), ('obj', damage_guid)])},
+               guid=asc_guid),
+    ]
+    actor_entry.parsed.blocks.extend(blocks)
+    asc_export = _info(asc_guid, ASC_COMPONENT[0], _info(enc['guid']))
+    asc_export.flags = 3
+    actor_entry.exports.append(asc_export)
+    session.ctx._names[asc_guid] = (enc['guid'], ASC_COMPONENT[0])
+    enc.update(health_set=blocks[0], asc_guid=asc_guid)
+
+
+def _health_update(session, enc):
+    """CurrentHealth on the behemoth's health set (engine path), with the same header that created it."""
+    from .engine.attributes import property_update
+    return property_update(session, ENCOUNTER_CHANNEL, enc['health_set'], {'CurrentHealth': enc['health']})
+
+
+def _send_hit(session, enc, action, key, row):
+    """A damage window caught the player: ClientTryHit to their player_hittable_bpc; damage waits for ServerAcceptHit."""
+    from .engine import hits
+    from .repl.decode import OrderedFields
+    pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
+    if pawn is None or row is None:
+        return None
+    if enc.get('hittable_guid') is None:
+        enc['hittable_guid'] = session.next_live_guid()
+        export = _info(enc['hittable_guid'], PLAYER_HITTABLE[0], _info(_pawn_guid(session)))
+        export.flags = 3
+        enc['hittable_export'] = export
+        session.ctx._names[enc['hittable_guid']] = (_pawn_guid(session), PLAYER_HITTABLE[0])
+    player = getattr(session, 'pawn_state', None) or {'loc': enc['loc']}
+    d = [player['loc'][0] - enc['loc'][0], player['loc'][1] - enc['loc'][1], 0.0]
+    n = math.hypot(d[0], d[1]) or 1.0
+    hid = hits.hit_id(enc['director'].rng)
+    damage, elemental = hits.amount(enc['damage_model'], row.get('elements'))
+    enc['pending_hits'].add(hid, {'damage': damage, 'elemental': elemental, 'action': action, 'key': key,
+                                  'raw': float(sum((row.get('elements') or {}).values()))})
+    fi = session.world.schema.field_index(PLAYER_HITTABLE[1])
+    params = hits.client_try_hit_params(hid, enc['guid'], row.get('row'), direction=(d[0] / n, d[1] / n, 0.0))
+    entry = _entry(session.world, pawn.ch, pawn.cls, [_block(PLAYER_HITTABLE[1], fields=[
+        (fi.index(('func', 'ClientTryHit')), 'ClientTryHit', 'rpc', params)], guid=enc['hittable_guid'])])
+    if not enc.get('hittable_exported'):
+        entry.exports = [enc['hittable_export']]
+        enc['hittable_exported'] = True
+    print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
+    return entry
+
+
+def handle_hit_reply(session, func, params):
+    """player_hittable_bpc.ServerAcceptHit / ServerRefuseHit for a ClientTryHit this encounter sent."""
+    from .engine import hits
+    from .engine.attributes import find_block, property_update
+    enc = getattr(session, '_encounter', None)
+    if not enc or enc.get('pending_hits') is None or not isinstance(params, dict):
+        return False
+    info = enc['pending_hits'].take(hits.key_of(params))
+    if info is None:
+        return False
+    if func != 'ServerAcceptHit':
+        print('ENCOUNTER hit refused by the client (%s/%s)' % (info['action'], info['key']), flush=True)
+        return True
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
+    if enc.get('player_health') is None:
+        enc['player_health'] = float((header.values or {}).get('CurrentHealth', 0.0))
+    # Downed/revive is out of scope: health stops at 0 (the client's own state machine handles what it shows).
+    enc['player_health'] = max(0.0, enc['player_health'] - info['damage'])
+    fi = session.world.schema.field_index(pawn.cls)
+    pm = hits.post_mitigation_params(_pawn_guid(session), info['damage'], info['elemental'], info['raw'])
+    session.entries[session.pos:session.pos] = [
+        property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}),
+        _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
+            (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
+    print('ENCOUNTER hit accepted: %.0f damage -> player health %.0f' % (info['damage'], enc['player_health']), flush=True)
+    return True
 
 
 def _montage_info(enc, name, package):
@@ -495,6 +615,10 @@ def _engine_step(session, enc, now):
         if kind == 'target':
             if ev[1] is not None and not enc['spotted']:
                 revealed += len(reveal(session))    # the tree acquired the player: compass reveal + combat start
+        elif kind == 'hit':
+            entry = _send_hit(session, enc, ev[1], ev[2], ev[3])
+            if entry is not None:
+                reliable.append(entry)
         elif kind == 'lock':
             pawn_guid = _pawn_guid(session) if ev[1] is not None else 0
             reliable.append(_entry(session.world, ENCOUNTER_CHANNEL, cls, [_block(cls, {'LockedTarget': ('obj', pawn_guid)})]))
@@ -775,6 +899,8 @@ def handle_damage(session, ch, req_block, params=None):
         dmg_entry.exports = [enc['combat_text_export']]
         enc['combat_text_exported'] = True
     changes = [dmg_entry]
+    if enc.get('health_set') is not None:
+        changes.append(_health_update(session, enc))   # the health bar reads the attribute set (engine path)
     if enc['health'] <= 0.0:
         enc['dead'] = True
         enc['in_combat'] = False

@@ -132,6 +132,23 @@ ignored), never invent values: write open questions down.
    health bar and hit reactions from server state, and send behemoth→player damage through
    `damage.behemoth_to_player`.
    *Done when* offline tests cover the attribute update and an attack hit on the player.
+   **Result (2026-10-20):** done offline, engine flag only. 185 tests pass with the flag at 0 and at 1.
+   - **Health bar:** `Bp_Behemoth`'s `ArchonAbilitySystem` spawns the native `ArchonHealthAttributeSet` and
+     `ArchonDamageAttributeSet` (its `DefaultStartingData`). The engine spawn bunch now creates both as dynamic sub-objects with
+     static class GUIDs 41/43 that the client knows from the join, health = MaxHealth = 18,900. The ASC lists them in
+     `SpawnedAttributes`, the same shape the join uses for the player's sets. Each player hit sends a `CurrentHealth` update with
+     the creating header. **Inferred**: no behemoth ASC has been seen on the wire, and the Mystic attribute path was never
+     confirmed live.
+   - **Behemoth → player:** the director emits `hit` the first tick the player stands in an open damage window's attack area
+     (authored HitAreaBoxes, a stand-in for the native per-frame sweep). The adapter sends
+     `player_hittable_bpc.ClientTryHit` (HitID, Damager, the authored `FDamageTableData` row). Only `ServerAcceptHit` applies
+     damage: the player's `CurrentHealth` plus `ClientHandlePostMitigationDamage`. `ServerRefuseHit` (dodge) and unknown or
+     duplicate IDs change nothing. Amount = row element damage × `behemoth_to_player_exploration_dmgcurve`, with **equal powers as a
+     stand-in** (SideGore = 75). Damage rows come from `tools/export_behemoth_damage.py` (in the manifest).
+   - New wire format from UE 5.1.1 source: `FHitResult::NetSerialize` (`repl/structs.py`, `tests/test_hit_result.py`), needed
+     because a struct RPC parameter is sent whole.
+   - Not done: downed/revive at 0 health, the row's stagger/camera tags (`AssetTags`), the real power values, and resistances.
+
 7. **Live run** (user joins; no menu automation). Check against the old symptom list: on the
    ground, natural posture, patrols, notices the player, attacks, takes damage with a health bar,
    dies, and rewards arrive.

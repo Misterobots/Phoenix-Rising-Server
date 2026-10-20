@@ -80,7 +80,9 @@ def main():
 
     action_set = os.path.join(world, 'behemoths', cfg['variant'] + '.json')
     schema = os.path.join(world, 'behemoths', cfg['variant'] + '_schema.json')
-    for p in (action_set, schema):
+    damage = os.path.join(world, 'behemoths', cfg['variant'] + '_damage.json')         # step 6: damage rows
+    curves = os.path.join(world, 'behemoths', 'damage_model.json')                    # step 6: exploration damage curves
+    for p in (action_set, schema, damage, curves):
         files[rel(p)] = sha256(p)
 
     trees, missing = tree_files(cfg['tree'])
@@ -117,6 +119,8 @@ def main():
             'copy to world/behemoths/<variant>.json',
             'python -m tools.export_behemoth_schema --label <variant> --chain world/hunt_source/<variant>_bp.json '
             'world/hunt_source/<archetype>_bp.json --base world/hunt_source/Bp_Behemoth.json --out world/behemoths/<variant>_schema.json',
+            'dotnet <AssetDump.dll> dump <abs dir> Archon/Content/Monsters/aq/lerawr/data_tables/lerawr_beta_damage_table; '
+            'python -m tools.export_behemoth_damage <dump json> --variant <variant> (damage_model.json: tools.export_damage)',
             'dotnet <AssetDump.dll> texture <abs dir> Archon/Content/Maps/islands/adventure/Moss_Triforce/adventure_moss_triforce.umap; '
             'python -m tools.export_terrain world/hunt_source/adventure_moss_triforce.json <tex dir> --name adventure_moss_triforce',
         ],

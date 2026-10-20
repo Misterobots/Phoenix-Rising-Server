@@ -1,6 +1,7 @@
 """STRUCT_NetSerializeNative struct readers (UE5.1.1 + Dauntless). Added as the recorded data demands."""
 from .values import Unsupported, read_name, write_name
 import math
+import struct
 
 STRUCT_READERS = {}
 
@@ -394,3 +395,94 @@ def _datetime(r):
 @writer('DateTime')
 def _w_datetime(w, v):
     w.write(v & ((1 << 64) - 1), 64)
+
+
+# ----------------------------------------------------------------------------- FHitResult
+# FHitResult::NetSerialize, UE 5.1.1 Engine/Private/Engine/HitResult.cpp (fields: Classes/Engine/HitResult.h):
+#   uint8 Flags (SerializeBits 8): bBlockingHit, bStartPenetrating, ImpactPoint==Location, ImpactNormal==Normal,
+#                                  Item==INDEX_NONE, FaceIndex==INDEX_NONE, PenetrationDepth==0, ElementIndex==INDEX_NONE
+#   float Time; Location (FVector_NetQuantize = SerializePackedVector<1,20>); Normal (FVector_NetQuantizeNormal =
+#   SerializeFixedVector<1,16>); [ImpactPoint]; [ImpactNormal]; TraceStart; TraceEnd; [float PenetrationDepth]; [int32 Item];
+#   PhysMaterial (object); HitObjectHandle = Actor (object), Manager (object), int32 InstanceIndex (ActorInstanceHandle.cpp);
+#   Component (object); FName BoneName; [int32 FaceIndex]; [uint8 ElementIndex].
+# ElementIndex is a uint8 compared with INDEX_NONE (-1), so a UE sender never sets flag bit 7; this writer does the same.
+# Defaults follow FHitResult::Init (memzero, Time = 1): an empty dict is a default-constructed hit.
+_HIT_DEFAULTS = {'blocking': 0, 'start_penetrating': 0, 'time': 1.0, 'location': [0.0, 0.0, 0.0], 'normal': [0.0, 0.0, 0.0],
+                 'trace_start': [0.0, 0.0, 0.0], 'trace_end': [0.0, 0.0, 0.0], 'penetration': 0.0, 'item': 0,
+                 'phys_material': 0, 'actor': 0, 'manager': 0, 'instance_index': 0, 'component': 0, 'bone_name': ('ename', 0),
+                 'face_index': 0, 'element_index': 0}
+
+
+def _w_fixed_normal(w, vec):
+    for c in vec:                                    # WriteFixedCompressedFloat<1, 16>: MaxBitValue 32767, Bias 32768
+        delta = int(math.floor(32767 * c + 0.5)) + 32768
+        write_int(w, min(max(delta, 0), 65535), 1 << 16)
+
+
+def _r_fixed_normal(r):
+    return [(read_int(r, 1 << 16) - 32768) / 32767.0 for _ in range(3)]
+
+
+def _w_float(w, f):
+    w.write(struct.unpack('<I', struct.pack('<f', float(f)))[0], 32)
+
+
+def _r_float(r):
+    return struct.unpack('<f', struct.pack('<I', r.read(32)))[0]
+
+
+@writer('HitResult')
+def _w_hit_result(w, v):
+    h = dict(_HIT_DEFAULTS, **(v or {}))
+    ip = h.get('impact_point', h['location'])
+    inorm = h.get('impact_normal', h['normal'])
+    eq_ip, eq_in = list(ip) == list(h['location']), list(inorm) == list(h['normal'])
+    flags = (h['blocking'] & 1) | ((h['start_penetrating'] & 1) << 1) | (eq_ip << 2) | (eq_in << 3) | \
+        ((h['item'] == -1) << 4) | ((h['face_index'] == -1) << 5) | ((h['penetration'] == 0.0) << 6)
+    w.write(flags, 8)
+    _w_float(w, h['time'])
+    write_quantized_vector(w, 1, h['location'])
+    _w_fixed_normal(w, h['normal'])
+    if not eq_ip:
+        write_quantized_vector(w, 1, ip)
+    if not eq_in:
+        _w_fixed_normal(w, inorm)
+    write_quantized_vector(w, 1, h['trace_start'])
+    write_quantized_vector(w, 1, h['trace_end'])
+    if h['penetration'] != 0.0:
+        _w_float(w, h['penetration'])
+    if h['item'] != -1:
+        w.write(h['item'] & 0xFFFFFFFF, 32)
+    for k in ('phys_material', 'actor', 'manager'):
+        w.write_packed(h[k])
+    w.write(h['instance_index'] & 0xFFFFFFFF, 32)
+    w.write_packed(h['component'])
+    write_name(w, h['bone_name'])
+    if h['face_index'] != -1:
+        w.write(h['face_index'] & 0xFFFFFFFF, 32)
+    w.write(h['element_index'] & 0xFF, 8)
+
+
+@reader('HitResult')
+def _r_hit_result(r):
+    flags = r.read(8)
+    out = {'blocking': flags & 1, 'start_penetrating': (flags >> 1) & 1, 'time': _r_float(r),
+           'location': read_quantized_vector(r, 1), 'normal': _r_fixed_normal(r)}
+    out['impact_point'] = list(out['location']) if flags & 4 else read_quantized_vector(r, 1)
+    out['impact_normal'] = list(out['normal']) if flags & 8 else _r_fixed_normal(r)
+    out['trace_start'] = read_quantized_vector(r, 1)
+    out['trace_end'] = read_quantized_vector(r, 1)
+    out['penetration'] = 0.0 if flags & 64 else _r_float(r)
+    out['item'] = -1 if flags & 16 else _signed32(r.read(32))
+    for k in ('phys_material', 'actor', 'manager'):
+        out[k] = r.read_packed()
+    out['instance_index'] = _signed32(r.read(32))
+    out['component'] = r.read_packed()
+    out['bone_name'] = read_name(r)
+    out['face_index'] = -1 if flags & 32 else _signed32(r.read(32))
+    out['element_index'] = 255 if flags & 128 else r.read(8)
+    return out
+
+
+def _signed32(u):
+    return u - (1 << 32) if u & 0x80000000 else u

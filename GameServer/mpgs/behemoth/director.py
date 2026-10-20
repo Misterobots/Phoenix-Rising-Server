@@ -10,6 +10,7 @@ Events, in order, as plain tuples:
     ('state', state, added)                     behemoth_states_enum name index entered/left (9 = Combat)
     ('target', target)                          the tree's AttackTarget changed ('player' or None)
     ('brain', kind, payload, t)                 a Brain timeline event (damage windows, AoE spawns, ...)
+    ('hit', action, damage_key, row)            the player stood in the attack area while that damage window was open
 
 BehemothContext is Mystic-Paradox's RockContext made species-neutral (RockContext now subclasses it). Species data comes from
 Species.load: the all-species action-set export plus the island contract's authored values. Nothing here is Rock-specific.
@@ -229,13 +230,19 @@ class Species:
             manifest = json.load(f)
         with open(os.path.join(islands, hunt + '.contract.json'), encoding='utf-8') as f:
             enc = json.load(f)['encounter']
-        with open(os.path.join(server, 'world', 'behemoths', manifest['variant'] + '.json'), encoding='utf-8') as f:
+        behemoths = os.path.join(server, 'world', 'behemoths')
+        with open(os.path.join(behemoths, manifest['variant'] + '.json'), encoding='utf-8') as f:
             actions = json.load(f)['actions']
+        damage = {}
+        damage_path = os.path.join(behemoths, manifest['variant'] + '_damage.json')   # tools.export_behemoth_damage
+        if os.path.exists(damage_path):
+            with open(damage_path, encoding='utf-8') as f:
+                damage = json.load(f)['rows']
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
-                   enc['enterCombatRange'], enc['baseHealth'])
+                   enc['enterCombatRange'], enc['baseHealth'], damage=damage)
 
     def brain_data(self):
-        """Brain's rock.json shape. Damage rows are not exported for other species yet (ENGINE_PORT_PLAN step 3 gap)."""
+        """Brain's rock.json shape; damage rows from <variant>_damage.json ({key: {'elements', 'tags'}}, empty if not exported)."""
         return {'health': {'normal': self.base_health},
                 'variants': {'normal': {'actions': self.actions, 'damage': self.damage}}}
 
@@ -258,6 +265,8 @@ class BehemothDirector:
         self.locked = None
         self.dead = False
         self._events = []
+        self._windows = {}                         # (action, damage key) -> damage row, while that damage window is open
+        self._hit_in_window = set()
         self._target_seen = None
         self._states_seen = set()
         trees = trees or bt.TreeSet.load(os.environ.get('MPGS_BT_DIR') or os.path.join(SERVER, 'world', 'dumps', 'bt'))
@@ -360,8 +369,20 @@ class BehemothDirector:
             self.mover.tick(now)
             self._sync_brain()
             if self.brain.busy:
+                action = self.brain.run.name
                 for t, kind, payload in self.brain.tick(now) or ():
                     self._events.append(('brain', kind, payload, t))
+                    if kind == 'damage_window_open':
+                        for key in payload['keys']:
+                            self._windows[(action, key)] = payload['rows'].get(key)
+                    elif kind == 'damage_window_close':
+                        for key in payload['keys']:
+                            self._windows.pop((action, key), None)
+                            self._hit_in_window.discard((action, key))
+                    elif kind == 'action_end':
+                        self._windows.clear()
+                        self._hit_in_window.clear()
+            self._check_hits()
             tgt = self.ctx.bb.get('AttackTarget')
             if tgt != self._target_seen:
                 self._target_seen = tgt
@@ -373,6 +394,23 @@ class BehemothDirector:
         out, self._events = self._events, []
         return out
 
+    def _check_hits(self):
+        """While a damage window is open, the first tick the player stands in the action's attack area (Brain.in_area at the
+        current, root-motion-moved transform) is a hit: ('hit', action, damage key, damage row). One hit per window and key.
+        A stand-in for the native per-frame hit-volume sweep; the attack areas are the authored HitAreaBoxes/arcs."""
+        if not self._windows:
+            return
+        target, _ = self._target()
+        if not target.alive:
+            return
+        for (action, key), row in list(self._windows.items()):
+            if (action, key) in self._hit_in_window or action not in self.brain.actions:
+                continue
+            if self.brain.in_area(action, target.pos):
+                self._hit_in_window.add((action, key))
+                self._events.append(('hit', action, key, row))
+
     def kill(self):
         self.dead = True
+        self._windows.clear()
         self.ctx.bb['MonsterIsDead'] = True
