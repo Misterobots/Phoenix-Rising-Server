@@ -106,8 +106,33 @@ class RootCurve:
         return self._ry[i - 1] + _wrap(self._ry[i] - self._ry[i - 1]) * t
 
 
+class Movement:
+    """CharacterMovementComponent walking with path following (UE 5.1.1 CharacterMovementComponent.cpp CalcVelocity /
+    ApplyVelocityBraking, PathFollowingComponent.cpp FollowPathSegment), from the actor's authored CharMoveComp values.
+    Live 2026-10-20: the old walk started at full speed, stopped dead at every point and turned on the spot before each leg
+    ("very abrupt"); this accelerates, steers through turns, brakes into the path end and orients rotation to movement."""
+
+    def __init__(self, max_accel=2048.0, ground_friction=8.0, braking_friction=None, braking_decel=2048.0, rotation_rate=360.0,
+                 braking_distance=None, braking_friction_factor=2.0):
+        self.max_accel, self.ground_friction = float(max_accel), float(ground_friction)
+        self.braking_friction = None if braking_friction is None else float(braking_friction)   # bUseSeparateBrakingFriction
+        self.braking_decel, self.rotation_rate = float(braking_decel), float(rotation_rate)
+        self.braking_distance = braking_distance        # bUseFixedBrakingDistanceForPaths -> FixedPathBrakingDistance, else MaxSpeed
+        self.braking_friction_factor = float(braking_friction_factor)
+
+    @classmethod
+    def from_props(cls, props):
+        """CharMoveComp properties merged base -> derived (UCharacterMovementComponent defaults for anything unset)."""
+        rot = (props.get('RotationRate') or {}).get('Yaw', 360.0)
+        return cls(max_accel=props.get('MaxAcceleration', 2048.0), ground_friction=props.get('GroundFriction', 8.0),
+                   braking_friction=props.get('BrakingFriction', 0.0) if props.get('bUseSeparateBrakingFriction') else None,
+                   braking_decel=props.get('BrakingDecelerationWalking', 2048.0), rotation_rate=rot,
+                   braking_distance=props.get('FixedPathBrakingDistance', 0.0) if props.get('bUseFixedBrakingDistanceForPaths')
+                   else None, braking_friction_factor=props.get('BrakingFrictionFactor', 2.0))
+
+
 class Mover:
-    def __init__(self, terrain, pos, yaw, half_height=250.0, walk_speed=WALK_SPEED, yaw_rate=YAW_RATE):
+    def __init__(self, terrain, pos, yaw, half_height=250.0, walk_speed=WALK_SPEED, yaw_rate=YAW_RATE, movement=None):
         self.terrain = terrain
         self.x, self.y = float(pos[0]), float(pos[1])
         self.yaw = float(yaw)
@@ -124,6 +149,8 @@ class Mover:
         # () -> [(x, y, radius)]: capsules the actor may not move deeper into (CharacterMovement's sweep against pawns). Live
         # 2026-10-20: a Bite lunge carried the Embermane 52 cm from the player's centre; the client's collision pushed it back.
         self.blockers = None
+        self.movement = movement      # Movement: smooth CharacterMovement walking; None keeps the original direct walk (Rock)
+        self.vx = self.vy = 0.0       # walking velocity (smooth mode)
 
     # ---- state ---------------------------------------------------------------------------------------------------
     @property
@@ -180,10 +207,86 @@ class Mover:
         dt = 0.0 if self.last_tick is None else max(0.0, now - self.last_tick)
         self.last_tick = now
         if self.montage is not None:
+            self.vx = self.vy = 0.0                     # root motion owns the transform; walking restarts from rest
             self._tick_montage(now)
+        elif self.movement is not None:
+            if self.path or self.vx or self.vy:
+                self._tick_smooth(dt)
         elif self.path:
             self._tick_walk(dt)
         return self
+
+    def _path_left(self):
+        d, px, py = 0.0, self.x, self.y
+        for x, y in self.path:
+            d += math.hypot(x - px, y - py)
+            px, py = x, y
+        return d
+
+    def _tick_smooth(self, dt):
+        m = self.movement
+        while dt > 1e-6:
+            h = min(dt, 1.0 / 60.0)
+            dt -= h
+            while len(self.path) > 1 and math.hypot(self.path[0][0] - self.x, self.path[0][1] - self.y) <= WAYPOINT_EPS:
+                self.path.pop(0)                        # regular path point reached: next segment
+            if self.path and math.hypot(self.path[-1][0] - self.x, self.path[-1][1] - self.y) <= 1.0:
+                self.path = []
+            ax = ay = 0.0
+            analog = 0.0
+            if self.path:                               # FollowPathSegment: direction to the target, scaled near the end
+                tx, ty = self.path[0]
+                d = math.hypot(tx - self.x, ty - self.y) or 1.0
+                ix, iy = (tx - self.x) / d, (ty - self.y) / d
+                brake = m.braking_distance if m.braking_distance is not None else self.walk_speed
+                left = self._path_left()
+                analog = min(1.0, left / brake) if brake > 0 else 1.0
+                ax, ay = ix * analog * m.max_accel, iy * analog * m.max_accel      # bUseAccelerationForPaths
+            speed = math.hypot(self.vx, self.vy)
+            max_speed = self.walk_speed * analog        # MaxInputSpeed = MaxSpeed x AnalogInputModifier (|input|)
+            over = speed > max_speed + 1e-6
+            if (ax == 0.0 and ay == 0.0) or over:
+                self._brake(h)                          # CalcVelocity: no input, or over the (scaled) max speed
+            else:
+                a = math.hypot(ax, ay)
+                f = min(h * m.ground_friction, 1.0)     # steer the velocity toward the input direction, keeping its size
+                self.vx -= (self.vx - ax / a * speed) * f
+                self.vy -= (self.vy - ay / a * speed) * f
+            if ax or ay:
+                cap = math.hypot(self.vx, self.vy) if over else max_speed   # NewMaxInputSpeed
+                self.vx += ax * h
+                self.vy += ay * h
+                s2 = math.hypot(self.vx, self.vy)
+                if s2 > cap:
+                    self.vx, self.vy = (self.vx / s2 * cap, self.vy / s2 * cap) if s2 else (0.0, 0.0)
+            nx, ny = self.x + self.vx * h, self.y + self.vy * h
+            if (self.vx or self.vy) and (self._blocked(nx, ny) or not self.terrain_walkable(nx, ny)):
+                self.vx = self.vy = 0.0
+                if not self.terrain_walkable(nx, ny):
+                    self.path, self.stopped_reason = [], 'unwalkable'
+                continue
+            self.x, self.y = nx, ny
+            if math.hypot(self.vx, self.vy) > 1.0:      # bOrientRotationToMovement at RotationRate.Yaw
+                want = math.degrees(math.atan2(self.vy, self.vx))
+                step = m.rotation_rate * h
+                diff = _wrap(want - self.yaw)
+                self.yaw = _wrap(self.yaw + max(-step, min(step, diff)))
+        g = self._ground_z(self.x, self.y)
+        if g is not None:
+            self.z = g
+
+    def _brake(self, h):
+        """ApplyVelocityBraking: v += (-friction * v - decel * v_hat) * dt, never reversing."""
+        m = self.movement
+        speed = math.hypot(self.vx, self.vy)
+        if speed == 0.0:
+            return
+        friction = (m.braking_friction if m.braking_friction is not None else m.ground_friction) * max(0.0, m.braking_friction_factor)
+        ovx, ovy = self.vx, self.vy
+        self.vx += (-friction * self.vx - m.braking_decel * self.vx / speed) * h
+        self.vy += (-friction * self.vy - m.braking_decel * self.vy / speed) * h
+        if self.vx * ovx + self.vy * ovy <= 0.0 or math.hypot(self.vx, self.vy) < 1.0:
+            self.vx = self.vy = 0.0
 
     def _tick_montage(self, now):
         curve, t0, sx, sy, syaw, sz = self.montage

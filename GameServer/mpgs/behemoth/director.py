@@ -129,7 +129,7 @@ class BehemothContext(bt.Context):
         if not path:
             self.log('no path to (%.0f, %.0f)' % (dest[0], dest[1]))
             return False
-        if self.d.mover.montage is None and not self.d.mover.path:
+        if self.d.mover.montage is None and not self.d.mover.path and self.d.mover.movement is None:
             # starting from standing: a big heading change is a stepping turn first (the walk follows when it ends)
             nxt = next((p for p in path if math.hypot(p[0] - self.d.loc[0], p[1] - self.d.loc[1]) > 50.0), None)
             if nxt is not None:
@@ -154,7 +154,7 @@ class BehemothContext(bt.Context):
         if not mv.path:
             self._move = None
             return bt.FAILED
-        if mv.montage is None:
+        if mv.montage is None and mv.movement is None:      # smooth walking orients rotation to movement instead
             # still facing well away from the next leg (e.g. the target moved during a turn): another stepping turn
             p = mv.path[0]
             want = math.degrees(math.atan2(p[1] - mv.y, p[0] - mv.x))
@@ -167,6 +167,7 @@ class BehemothContext(bt.Context):
     def stop_moving(self):
         if self.d.mover is not None:
             self.d.mover.path = []
+            self.d.mover.vx = self.d.mover.vy = 0.0          # PathFollowing OnPathFinished -> StopMovementKeepPathing
         self._move = None
 
     def patrol_point(self, inner, outer):
@@ -217,6 +218,21 @@ class BehemothContext(bt.Context):
             lock(None)
 
 
+def _move_props(server, chain):
+    """CharMoveComp properties along the Blueprint chain, base first so derived classes override (Bp_Behemoth, then the
+    archetype: MaxAcceleration 4500, GroundFriction 8)."""
+    props = {}
+    for cls_name in reversed(chain):
+        path = os.path.join(server, 'world', 'hunt_source', cls_name[:-2] + '.json' if cls_name.endswith('_C') else cls_name + '.json')
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding='utf-8') as f:
+            for e in json.load(f):
+                if isinstance(e, dict) and e.get('Name') == 'CharMoveComp':
+                    props.update(e.get('Properties') or {})
+    return props
+
+
 def _capsule_radius(server, chain):
     """CollisionCylinder.CapsuleRadius from the Blueprint chain (most derived first; lerawr_beta_bp sets 100), from the local
     world/hunt_source dumps the island contract was extracted from. 0 when not found (reach tests then ignore the agent radius)."""
@@ -243,9 +259,10 @@ class Species:
     """
 
     def __init__(self, variant, actions, tree, half_height, walk_speed, enter_combat_range, base_health, turn_montages=None,
-                 damage=None, capsule_radius=0.0):
+                 damage=None, capsule_radius=0.0, move_props=None):
         self.variant, self.actions, self.tree = variant, actions, tree
-        self.capsule_radius = float(capsule_radius)     # CollisionCylinder.CapsuleRadius of the most derived class that sets it
+        self.capsule_radius = float(capsule_radius)
+        self.move_props = dict(move_props or {})       # authored CharMoveComp values; empty -> the original direct walk     # CollisionCylinder.CapsuleRadius of the most derived class that sets it
         self.half_height, self.walk_speed = float(half_height), float(walk_speed)
         self.enter_combat_range, self.base_health = float(enter_combat_range), float(base_health)
         self.turn_montages = dict(turn_montages or {})
@@ -269,7 +286,8 @@ class Species:
                 damage = json.load(f)['rows']
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
                    enc['enterCombatRange'], enc['baseHealth'], damage=damage,
-                   capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]))
+                   capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]),
+                   move_props=_move_props(server, [row['name'] for row in enc['schema']]))
 
     def brain_data(self):
         """Brain's rock.json shape; damage rows from <variant>_damage.json ({key: {'elements', 'tags'}}, empty if not exported)."""
@@ -290,7 +308,11 @@ class BehemothDirector:
         self._log = log or (lambda msg: None)
         self.send_interval = send_interval
         self.brain = Brain(species.brain_data(), 'normal', rng=self.rng)
-        self.mover = Mover(terrain, loc[:2], yaw, half_height=species.half_height, walk_speed=species.walk_speed)
+        from .mover import Movement
+        movement = Movement.from_props(species.move_props) if species.move_props else None
+        # MaxWalkSpeed stays the species walk speed (contract: 400); the archetype's 4000 is the charge ceiling loco modes cap.
+        self.mover = Mover(terrain, loc[:2], yaw, half_height=species.half_height, walk_speed=species.walk_speed,
+                           movement=movement)
         self.mover.blockers = self._blockers
         self._ignore_pawn = False                  # an attack's ModifyPartCollisionChannelNotify window is open
         self.health = None                         # set by the damage layer (needs .hits); unused until step 5/6

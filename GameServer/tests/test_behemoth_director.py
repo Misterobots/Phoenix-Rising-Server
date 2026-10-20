@@ -122,6 +122,41 @@ class PatrolExtrapolationTests(unittest.TestCase):
 
 
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
+class SmoothWalkTests(unittest.TestCase):
+    """Live 2026-10-20 "the walk/path is very abrupt": full speed instantly, dead stops at every point, on-the-spot turns. The
+    Embermane now walks with its authored CharMoveComp (CalcVelocity steering, ApplyVelocityBraking, 200 cm path braking,
+    orient rotation to movement at 720 deg/s)."""
+
+    def test_authored_movement_values(self):
+        from mpgs.behemoth.mover import Movement
+        m = Movement.from_props(Species.load(HUNT).move_props)
+        self.assertEqual((m.max_accel, m.ground_friction, m.braking_friction, m.braking_decel, m.rotation_rate,
+                          m.braking_distance), (4500.0, 8.0, 4.0, 1024.0, 720.0, 200.0))
+
+    def test_patrol_has_no_dead_stops_or_snap_turns(self):
+        from mpgs.world.terrain import Terrain
+        import math
+        with open(os.path.join(ISLANDS, HUNT + '.contract.json'), encoding='utf-8') as f:
+            enc = json.load(f)['encounter']
+        center = next(c for c in enc['centers'] if c['name'] == 'BP_PatrolCenterPoint_263')['location']
+        terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', MANIFEST['terrain']))
+        far = {'loc': [-18045.47, 16508.562, 703.9], 'vel': [0.0, 0.0, 0.0]}
+        d = BehemothDirector(Species.load(HUNT), terrain, center, 0.0, lambda: far, rng=random.Random(1))
+        dt, t, prev, dead, turn, moved = 1.0 / 15.0, 0.0, None, 0, 0.0, 0.0
+        while t < 40.0:
+            d.tick(t)
+            speed = math.hypot(*d._tick_vel[:2])
+            if prev:
+                dead += prev[0] > 300.0 and speed < 20.0
+                turn = max(turn, abs(((d.yaw - prev[1] + 180.0) % 360.0) - 180.0) / dt)
+            moved += speed * dt
+            prev, t = (speed, d.yaw), t + dt
+        self.assertGreater(moved, 2000.0, 'it patrols')
+        self.assertEqual(dead, 0)
+        self.assertLessEqual(turn, 720.0 + 1.0)
+
+
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
 class PawnSpacingTests(unittest.TestCase):
     """Live 2026-10-20: the Embermane walked into the player and stood inside their capsule (52-67 cm apart); the client's
     collision pushed it out against the server position. UE stops a MoveTo at 5 + goal radius + agent radius x 1.1 and
