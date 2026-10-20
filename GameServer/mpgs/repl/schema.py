@@ -195,13 +195,16 @@ class Schema:
         return None
 
     def own_net_functions(self, cls):
-        """UClass::NetFields: Net functions declared in cls that do not override a super function, sorted by name."""
+        """UClass::NetFields: Net functions declared in cls that do not override a super function, sorted by name.
+
+        UE sorts with FString operator< (FCString::Stricmp: case-insensitive, compares lowercased), so 'Client_X' sorts before
+        'ClientA' — a case-sensitive sort shifts every RPC index after the first mixed-case pair (Class.cpp FCompareUFieldNames)."""
         sup_names = set()
         for a in self.inherit.get(cls, []):
             for fn, _, _ in self.funcs.get(a, []):
                 sup_names.add(fn)
         # a function overriding one in an ancestor (any flags) is excluded; ancestors' non-net functions are unknown -> approximate
-        return sorted(fn for fn, _, _ in self.funcs.get(cls, []) if fn not in sup_names)
+        return sorted((fn for fn, _, _ in self.funcs.get(cls, []) if fn not in sup_names), key=str.lower)
 
     def field_index(self, cls):
         """FClassNetCache field list for cls: [('prop'|'func', name)], index = position (properties then RPCs, per class from the root)."""

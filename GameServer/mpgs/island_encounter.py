@@ -583,7 +583,19 @@ def _send_hit(session, enc, action, key, row):
         out += _damage_entries(session, enc, {'damage': damage, 'elemental': elemental,
                                               'raw': float(sum((row.get('elements') or {}).values()))})
         print('ENCOUNTER direct probe -> health %.0f' % enc['player_health'], flush=True)
+    if os.environ.get(PUSH_PROBE_FLAG, '1') != '0' and 'loc' in player:
+        # Bisect: health (a property) lands but no RPC shows. A 250 cm shove via the pawn's TeleportOnOwningClient RPC tells
+        # whether any server->client RPC on the pawn channel is executed.
+        dest = [player['loc'][0] + d[0] / n * 250.0, player['loc'][1] + d[1] / n * 250.0, player['loc'][2]]
+        pfi = session.world.schema.field_index(pawn.cls)
+        out.append(_entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
+            (pfi.index(('func', 'TeleportOnOwningClient')), 'TeleportOnOwningClient', 'rpc',
+             {'DestLocation': dest, 'DestRotation': list(player.get('rot') or [0.0, 0.0, 0.0])})])]))
+        print('ENCOUNTER push probe -> TeleportOnOwningClient %s' % [round(v) for v in dest], flush=True)
     return out
+
+
+PUSH_PROBE_FLAG = 'MPGS_HIT_PUSH_PROBE'   # engine path: 0 stops the 250 cm shove sent with each hit
 
 
 STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 0 stops the stagger RPC sent with each ClientTryHit
