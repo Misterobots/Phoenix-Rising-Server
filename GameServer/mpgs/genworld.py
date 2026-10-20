@@ -938,6 +938,11 @@ class GenSession(ReplaySession):
             if instance and os.environ.get('MPGS_EQUIP_LIVE', '1') == '1':
                 self._respawn_equipment(slot_type, instance)
 
+    def next_live_guid(self):
+        """A fresh even GUID for something this session creates after join (shared with equipment respawns; used by mpgs.engine)."""
+        self._live_guid = getattr(self, '_live_guid', self.guid_base * 32 + 16000) + 2
+        return self._live_guid
+
     def _respawn_equipment(self, slot, instance):
         """Live equipment change: close the slot actor's channel and open a new actor of the equipped item's class."""
         from . import loadout

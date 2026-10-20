@@ -147,19 +147,27 @@ STRUCT_WRITERS['Rotator'] = write_rotator
 
 @writer('RepMovement')
 def _w_repmove(w, v):
+    """FRepMovement::NetSerialize. The quantization levels are properties of the receiving actor's CDO, not on the wire: the player pawn
+    uses location x100, velocity x1, byte rotation (the defaults below, confirmed live). ArchonBehemoth classes are routed to
+    RepMovement_Behemoth by the schema; an explicit v['quant'] = {'loc': 10, 'vel': 10, 'rot': 'short'} (ported Mystic-Paradox
+    callers) selects the same encoding here."""
+    q = v.get('quant') or {}
     flags = (v.get('sleep', 0)) | (v.get('phys', 0) << 1) | ((1 << 2) if 'frame' in v else 0) | ((1 << 3) if 'handle' in v else 0)
     w.write(flags, 4)
-    write_quantized_vector(w, 100, v['loc'])
-    for a in v['rot']:                               # FRotator::SerializeCompressed: per axis [nonzero][byte]
-        s = int(round(a * 256.0 / 360.0)) & 0xFF
-        if s:
-            w.bit(1)
-            w.write(s, 8)
-        else:
-            w.bit(0)
-    write_quantized_vector(w, 1, v['vel'])
+    write_quantized_vector(w, q.get('loc', 100), v['loc'])
+    if q.get('rot') == 'short':                      # FRotator::SerializeCompressedShort: per axis [nonzero][uint16]
+        write_rotator(w, v['rot'])
+    else:
+        for a in v['rot']:                           # FRotator::SerializeCompressed: per axis [nonzero][byte]
+            s = int(round(a * 256.0 / 360.0)) & 0xFF
+            if s:
+                w.bit(1)
+                w.write(s, 8)
+            else:
+                w.bit(0)
+    write_quantized_vector(w, q.get('vel', 1), v['vel'])
     if v.get('phys'):
-        write_quantized_vector(w, 1, v['angvel'])
+        write_quantized_vector(w, q.get('vel', 1), v['angvel'])
     if 'frame' in v:
         w.write_packed(v['frame'])
     if 'handle' in v:
@@ -179,6 +187,50 @@ def _w_repmove_behemoth(w, v):
         w.write_packed(v['frame'])
     if 'handle' in v:
         w.write_packed(v['handle'])
+
+
+# ----------------------------------------------------------------------------- root motion (Character.RepRootMotion)
+# FRootMotionSourceGroup::NetSerialize, checked against the UE 5.1.1 source (D:\UnrealEngine-5.1.1-git, RootMotionSource.cpp):
+#   bHasAdditiveSources, bHasOverrideSources, bHasOverrideSourcesWithIgnoreZAccumulate   32 bits each (see below)
+#   LastPreAdditiveVelocity                                                              FVector_NetQuantize10
+#   bIsAdditiveVelocityApplied                                                           32 bits
+#   LastAccumulatedSettings.Flags                                                        uint8
+#   NetSerializeRMSArray(RootMotionSources)            uint8 count, then each source (script struct + its NetSerialize)
+#   NetSerializeRMSArray(PendingAddRootMotionSources)  uint8 count, then each source
+# The flags use FArchive_Serialize_BitfieldBool, i.e. `Ar << bool`, which calls FArchive::SerializeBool: a legacy UBOOL, 32 bits.
+# No net archive (FBitWriter/FBitReader/FNetBitWriter) overrides SerializeBool in 5.1.1, so on the wire `Ar << bool` is 32 bits;
+# only SerializeBits/WriteBit/ReadBit are single bits. RULE for every native serializer we port: check which of the two it uses.
+# Live 2026-10-16: two wrong versions (one count byte; 1-bit flags) were rejected by the client (ObjectReplicatorReceivedBunchFail);
+# a member-by-member probe (session._rm_probe_step) showed every other RepRootMotion member was accepted and this one was not.
+# The server never runs root motion *sources* (ability-driven forces); montage root motion travels in the other RepRootMotion members,
+# so only an empty group is written. A non-empty group from a capture is refused rather than misread.
+
+@reader('RootMotionSourceGroup')
+def _r_rms_group(r):
+    out = {'additive': r.read(32) != 0, 'override': r.read(32) != 0, 'override_ignore_z': r.read(32) != 0,
+           'last_pre_additive_velocity': read_quantized_vector(r, 10), 'additive_velocity_applied': r.read(32) != 0,
+           'settings_flags': r.read(8)}
+    for what in ('sources', 'pending'):
+        n = r.read(8)
+        if n:
+            raise Unsupported('RootMotionSourceGroup with %d %s' % (n, what))
+    out['sources'] = []
+    return out
+
+
+@writer('RootMotionSourceGroup')
+def _w_rms_group(w, v):
+    v = v or {}
+    if v.get('sources'):
+        raise Unsupported('RootMotionSourceGroup with sources')
+    w.write(1 if v.get('additive') else 0, 32)                 # Ar << bool: 32-bit UBOOL
+    w.write(1 if v.get('override') else 0, 32)
+    w.write(1 if v.get('override_ignore_z') else 0, 32)
+    write_quantized_vector(w, 10, v.get('last_pre_additive_velocity', [0.0, 0.0, 0.0]))
+    w.write(1 if v.get('additive_velocity_applied') else 0, 32)
+    w.write(v.get('settings_flags', 0), 8)
+    w.write(0, 8)                                   # RootMotionSources count
+    w.write(0, 8)                                   # PendingAddRootMotionSources count
 
 
 # ----------------------------------------------------------------------------- GameplayAbilities / GameplayTags
