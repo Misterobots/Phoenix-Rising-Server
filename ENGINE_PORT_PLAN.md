@@ -69,23 +69,40 @@ ignored), never invent values: write open questions down.
    - BT: `lerawr_beta_new_bt` (from the beta Blueprint's defaults) plus 19 sub-trees, all resolved. `TreeSet.load` now loads any
      BehaviorTree dump; `_shared/ai/sub_flee_arrive` has no `_bt` suffix.
    - Terrain: `adventure_moss_triforce` landscape, 28 components, 187×249 grid. It matches the live player position (root Z 127.5,
-     landscape 25.2). **The plan's check failed as written:** the aether vent at `BP_PatrolCenterPoint_263` is 43 cm above the
-     landscape, and at `BP_PatrolCenterPoint3` the gap is 160 cm. The arena floors are probably static meshes, which a
-     landscape-only grid cannot see.
+     landscape 25.2). The plan's check failed as written: the aether vent at `BP_PatrolCenterPoint_263` is 43 cm above the
+     landscape (160 cm at `BP_PatrolCenterPoint3`). **Resolved in step 4:** the vent Z is the actor's pivot, not the floor. See below.
 
-   **Step 4 backlog found here:** `bt.py` lacks about 40 node types the beta tree reaches. Most are coordination/message
-   tasks, flee/flight (`BTTask_FlyDirectlyTo`, `flight_navigation_btservice_C`), stagger, `btdeco_percentchance_C`,
-   `Compare_btdeco_C`, `BTDeco_CheckChosenAction_C`, `archon_distance_check_btdeco_C`, and the `BTComposite_SimpleParallel`
-   composite (`Node.is_composite` knows only Selector/Sequence). Unknown tasks currently succeed instantly (`Instant`), which is
-   wrong for waits and moves. Decide which ones the first encounter path actually reaches before implementing any of them.
-   Floor height needs a source for mesh floors (static-mesh collision, or the authored vent/patrol Z as a local floor patch).
-   Locomotion montages (walk, turn, idle) that the BT plays have not been checked for root motion yet.
+   Step 4 backlog found here: about 40 node types in reachable sub-trees are not implemented. Step 4 traced which ones the
+   encounter actually reaches (below).
 
 4. **Generalise the director.** Turn `RockDirector`/`RockAI` into `behemoth/director.py`: one
    director per spawned behemoth, given species data, terrain and a target provider. Add
    `brain.load_species`. Keep a Rock regression test.
    *Done when* an offline tick loop drives the Embermane through its BT to patrol, aggro and pick an
    attack, and emits movement with root motion and montage entries that decode bit-exactly.
+
+   **Result (2026-10-19):** done. `mpgs/behemoth/director.py` (`Species` takes the place of `brain.load_species`;
+   `BehemothDirector`, `BehemothContext`; `RockContext` now subclasses it), `tools/trace_behemoth_bt.py`,
+   `tests/test_behemoth_director.py`. 174 tests pass.
+   - **Trace first** (real `bt.Runner` on `lerawr_beta_new_bt`, a scripted player, island terrain, 180 s). Only 5 unhandled node
+     types are on the actual path, not 40. One of them explained **"never attacks"**: `BTDeco_CheckChosenAction_C` compares the
+     class of `bb[ChosenAttack]` with its `ActionClass`, which the beta tree leaves unset. The plain node means "no attack chosen"
+     (approach) and the inverted node guards `PerformActionClass`. Treated as always-pass, it blocked every attack and kept the
+     actor approaching forever, matching the live symptom. Implemented from bytecode: that decorator,
+     `archon_distance_check_btdeco_C`, `btdeco_lock_target_C` (with LockTarget/ClearLockedTarget, including on abort) and
+     `distance_from_target_service_C`. After that: 31 actions in 180 s (20 attacks, 11 `JumpReposition`), all with root motion.
+     Only `audio_exit_flee_state_bttask_C` (cosmetic) remains unhandled.
+   - **Floor:** across 682 grounded player samples from the live logs, root minus landscape is a constant ~102 cm everywhere,
+     including within 500 units of the arena center. **The landscape is the arena floor.** The vent Z is a pivot. So the current
+     `island_encounter` spawn (vent Z + 149) floats the Embermane about 43 cm, which likely contributes to the bad posture.
+     `Mover` (landscape + capsule offset) is correct.
+   - **Director:** a pure simulation that returns `move`/`montage`/`lock`/`state`/`target`/`brain` events, with no wire output.
+     A test encodes its first attack (`MulticastPlayMontage` with the real montage package, `ReplicatedMovement` +
+     `RepRootMotion` + server timestamp) with the Embermane's own schema and decodes it back.
+   - Open for step 5: there are no Embermane turn-in-place montages, so turns snap. The Embermane drifts up to about 4,300
+     units from its center while chasing a strafing player; check whether a leash/deaggro applies live. `damage` rows are
+     still empty (step 6). The `MulticastPlayMontage` field choice (PlayRate vs InPlayRate, bPlayBit) is still marked
+     "confirm live" in `spawn.py`.
 5. **Rewire `island_encounter.py`** behind `MPGS_BEHEMOTH_ENGINE=1`: `start` → `spawn.spawn_entry`
    + director; `step_movement` → `director.tick`; `handle_damage` → `damage` + `BehemothHealth`
    (via engine attributes once step 6 lands); `reveal` becomes a BT/aggro event. Remove
