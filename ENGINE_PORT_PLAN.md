@@ -154,6 +154,48 @@ ignored), never invent values: write open questions down.
    dies, and rewards arrive.
    *Done when* the user confirms it. Then make the engine path the default and delete the puppet code.
 
+   **Live test plan (2026-10-20).**
+
+   *What the 10-19 crashes were.* Both bugchecks (11:41 and 15:57) are `0x1A / 0x61941 PAGE_TABLE_RESERVED_BITS_SET`. The faulting
+   stack is inside `EasyAntiCheat_EOS.sys`, and WinDbg buckets it as `hardware_ram` (`logs/crash-analysis-20261019-18*`). That is
+   kernel page-table corruption: user-mode Python servers cannot cause it. The restart flow coincided with it because each attempt
+   also (re)started the stock client and its EAC kernel driver. After the 15:58 reboot, three island sessions ran 18:37–20:21
+   without a crash. The suspension guard exists only in the backup `logs/restart-island-before-regression-rollback-20261019.ps1.txt`.
+   The tracked `tools/restart-island.ps1` has no guard, but it needs a saved PID, and nothing is running now.
+
+   *Before the session (the user's call, not code):* a memory test (Windows Memory Diagnostic or MemTest86). Stock BIOS memory
+   settings make the "RAM" bucket easier to rule in or out. Save other work first; a repeat bugcheck reboots the machine.
+
+   *Prep (offline, no client):*
+   1. `python -m unittest discover -s GameServer/tests` with `MPGS_BEHEMOTH_ENGINE=1` (185 pass) and
+      `python -m unittest tests.test_island_engine_data` from `GameServer/`. The engine data must be present and match the manifest.
+      Without it, the island fails at arrival, not at startup.
+   2. Optional, recommended before the run: an `MPGS_BEHEMOTH_ASC=0` sub-switch that drops only the step 6 ASC/attribute blocks from
+      the spawn. Then a client rejection of channel 19 can be pinned to the inferred ASC blocks (step 6) or to the director path
+      (step 5) without a code change mid-session.
+
+   *Start (one clean launch, no restart helper):* in a PowerShell window, `$env:MPGS_BEHEMOTH_ENGINE = '1'`, then
+   `.\start-server.ps1` in the same window, so the island inherits the variable. The city server also inherits it; only the
+   island encounter reads it. Confirm the island log prints `ENCOUNTER engine on: lerawr_beta tree=lerawr_beta_new_bt` after
+   arrival. Then launch the stock EAC client (`MP211_NO_INJECT=1 MP211_EAC=1`); the user does every menu click and joins the hunt.
+
+   *One run, checked in order* (each line has a log signature in `logs/islandserver_*.log`):
+   | Check | Pass looks like | Log |
+   |---|---|---|
+   | Spawn accepted | Embermane visible, no disconnect | no `client rejected actor ch=19` |
+   | Floor/posture | feet on the ground, legs not stretched (compare the 10-18 screenshots) | `floor z=` in the engine line |
+   | Patrol, then aggro at about 4,000 | walks; compass icon only once spotted | `ENCOUNTER spotted` |
+   | Attacks | bite/side-gore/tail-swipe play; no snap back after root motion | `ENCOUNTER montage ...` |
+   | Health bar | bar shows and drops per hit | `ENCOUNTER hit guid=` |
+   | Gets hit | dodging avoids damage; standing in it costs about 75 | `ENCOUNTER hit attempt` / `accepted` / `refused` |
+   | Kill + rewards | dissolve, slain banner, loot | `ENCOUNTER defeated` |
+
+   *Stop rules:* stop at the first failing row and report it. Don't patch mid-session; the failing row goes back to the layer it
+   belongs to. On a client crash or disconnect, collect the island log and the client log before relaunching. On a machine
+   bugcheck, stop live testing entirely and treat it as a hardware/EAC problem; the server logs before the reboot show what was
+   running. Rollback: close the PowerShell window or set `$env:MPGS_BEHEMOTH_ENGINE = '0'`, then `.\Stop.bat` and
+   `.\start-server.ps1`. The scripted encounter is the default again.
+
 ## Open questions
 
 - `structs.py` divergence (120 lines): confirm none of Phoenix's newer readers conflict with
