@@ -125,7 +125,7 @@ def main():
         f.write(struct.pack(f'<{len(grid)}H', *grid))
 
     header = {
-        'source': 'Archon/Content/Maps/islands/1702 landscape (2.1.1 paks) via tools/AssetDump',
+        'source': '%s landscape (2.1.1 paks) via tools/AssetDump' % a.name,
         'width': w, 'height': h,
         'quad_origin': [x0, y0],
         'origin_world': [loc['X'] + scale['X'] * x0, loc['Y'] + scale['Y'] * y0, loc['Z']],

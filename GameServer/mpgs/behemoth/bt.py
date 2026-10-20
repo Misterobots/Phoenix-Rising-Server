@@ -92,10 +92,14 @@ class TreeSet:
     @classmethod
     def load(cls, folder):
         ts = cls()
+        # Not every tree asset is named *_bt (e.g. _shared/ai/sub_flee_arrive): load any dump that holds a BehaviorTree export.
         for fn in sorted(os.listdir(folder)):
-            if fn.endswith('_bt.json'):
-                with open(os.path.join(folder, fn), encoding='utf-8') as f:
-                    ts.add(json.load(f))
+            if not fn.endswith('.json'):
+                continue
+            with open(os.path.join(folder, fn), encoding='utf-8') as f:
+                exports = json.load(f)
+            if isinstance(exports, list) and any(isinstance(e, dict) and e.get('Type') == 'BehaviorTree' for e in exports):
+                ts.add(exports)
         return ts
 
     def add(self, exports):

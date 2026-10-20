@@ -59,6 +59,28 @@ ignored), never invent values: write open questions down.
    *Done when* `world/behemoths/lerawr_beta.json` has actions with montages, the BT parses with
    `bt.TreeSet`, and terrain gives a ground Z at `BP_PatrolCenterPoint_263` that matches the
    aether-vent Z (18.33) to within a few units.
+   **Result (2026-10-19):** done, manifest `GameServer/data/2.1.1/islands/Adventure_IslandA_D24.engine_data.json`
+   (`python -m tools.export_engine_manifest`), checked by `tests/test_island_engine_data.py`.
+   - Action set: 8 beta actions (SideGore L/R, TailSwipe L/R, PawSwipe L/R, JumpReposition, Bite), all with montage and
+     root-motion curves. Taken from the earlier all-species run (`Mystic-Paradox/_dumps/allact/out`).
+   - Schema: `lerawr_beta_bp_C` → `lerawr_archetype_bp_C` → `Bp_Behemoth_C` (no genus class). The 48 net properties are identical to
+     the island contract's schema. The contract also has RPC names, so step 4 keeps `island_encounter.install_schema` and does not use
+     `bp_schema`.
+   - BT: `lerawr_beta_new_bt` (from the beta Blueprint's defaults) plus 19 sub-trees, all resolved. `TreeSet.load` now loads any
+     BehaviorTree dump; `_shared/ai/sub_flee_arrive` has no `_bt` suffix.
+   - Terrain: `adventure_moss_triforce` landscape, 28 components, 187×249 grid. It matches the live player position (root Z 127.5,
+     landscape 25.2). **The plan's check failed as written:** the aether vent at `BP_PatrolCenterPoint_263` is 43 cm above the
+     landscape, and at `BP_PatrolCenterPoint3` the gap is 160 cm. The arena floors are probably static meshes, which a
+     landscape-only grid cannot see.
+
+   **Step 4 backlog found here:** `bt.py` lacks about 40 node types the beta tree reaches. Most are coordination/message
+   tasks, flee/flight (`BTTask_FlyDirectlyTo`, `flight_navigation_btservice_C`), stagger, `btdeco_percentchance_C`,
+   `Compare_btdeco_C`, `BTDeco_CheckChosenAction_C`, `archon_distance_check_btdeco_C`, and the `BTComposite_SimpleParallel`
+   composite (`Node.is_composite` knows only Selector/Sequence). Unknown tasks currently succeed instantly (`Instant`), which is
+   wrong for waits and moves. Decide which ones the first encounter path actually reaches before implementing any of them.
+   Floor height needs a source for mesh floors (static-mesh collision, or the authored vent/patrol Z as a local floor patch).
+   Locomotion montages (walk, turn, idle) that the BT plays have not been checked for root motion yet.
+
 4. **Generalise the director.** Turn `RockDirector`/`RockAI` into `behemoth/director.py`: one
    director per spawned behemoth, given species data, terrain and a target provider. Add
    `brain.load_species`. Keep a Rock regression test.

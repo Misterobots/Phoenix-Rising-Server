@@ -54,10 +54,24 @@ def one(path):
 
 
 def main():
-    root = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_ROOT
-    classes = [one(os.path.join(root, 'rock_full', n + '.json')) for n in CHAIN]
-    base = one(os.path.join(root, 'sample', 'Bp_Behemoth.json'))
-    data = {'source': 'Rock Blueprint chain via tools/AssetDump', 'classes': classes,
+    """Rock (default): python -m tools.export_behemoth_schema [dump root]
+    Any species:     python -m tools.export_behemoth_schema --chain <most derived bp.json> ... --base <Bp_Behemoth.json> --out <file>
+    (--chain lists AssetDump full-export files from the most derived class up to, not including, Bp_Behemoth)."""
+    global OUT
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument('root', nargs='?', default=DEFAULT_ROOT)
+    ap.add_argument('--chain', nargs='+')
+    ap.add_argument('--base')
+    ap.add_argument('--out')
+    ap.add_argument('--label', default='Rock')
+    a = ap.parse_args()
+    root = a.root
+    paths = a.chain or [os.path.join(root, 'rock_full', n + '.json') for n in CHAIN]
+    classes = [one(p) for p in paths]
+    base = one(a.base or os.path.join(root, 'sample', 'Bp_Behemoth.json'))
+    OUT = a.out or OUT
+    data = {'source': '%s Blueprint chain via tools/AssetDump' % a.label, 'classes': classes,
             'base': {'class': base['class'], 'super': base['super'], 'net_props': len(base['props']), 'net_prop_names': [x['n'] for x in base['props']],
                      'components': base['components']}}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
