@@ -170,9 +170,12 @@ ignored), never invent values: write open questions down.
    1. `python -m unittest discover -s GameServer/tests` with `MPGS_BEHEMOTH_ENGINE=1` (185 pass) and
       `python -m unittest tests.test_island_engine_data` from `GameServer/`. The engine data must be present and match the manifest.
       Without it, the island fails at arrival, not at startup.
-   2. Optional, recommended before the run: an `MPGS_BEHEMOTH_ASC=0` sub-switch that drops only the step 6 ASC/attribute blocks from
-      the spawn. Then a client rejection of channel 19 can be pinned to the inferred ASC blocks (step 6) or to the director path
-      (step 5) without a code change mid-session.
+   2. Bisect switch (done, 2026-10-20): `MPGS_BEHEMOTH_ASC=0` (engine path only; default on) drops just the step 6 ASC and
+      attribute-set blocks from the spawn, and their health updates. Movement, attacks and behemoth → player hits are unchanged.
+      A test checks that the lean spawn equals the full one minus those blocks. 189 tests pass with ENGINE/ASC at 0/1, 1/1 and 1/0.
+      Use it only after a failure: if the full run gets `client rejected actor ch=19`, relaunch the island with
+      `$env:MPGS_BEHEMOTH_ASC = '0'` as well. Acceptance there means the inferred ASC blocks (step 6) are at fault; a rejection
+      there too points at the step 5 spawn/movement. The island log then prints `ability system left out`.
 
    *Start (one clean launch, no restart helper):* in a PowerShell window, `$env:MPGS_BEHEMOTH_ENGINE = '1'`, then
    `.\start-server.ps1` in the same window, so the island inherits the variable. The city server also inherits it; only the

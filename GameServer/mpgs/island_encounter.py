@@ -29,8 +29,16 @@ PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')   # BP_Player
 ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
 
 
+ASC_FLAG = 'MPGS_BEHEMOTH_ASC'         # engine path only; 0 leaves out the ability system / attribute sets (step 6) for bisecting
+
+
 def engine_enabled(env=None):
     return (os.environ if env is None else env).get(ENGINE_FLAG) == '1'
+
+
+def asc_enabled(env=None):
+    """The step 6 ASC + attribute-set blocks in the spawn (and their health updates). On unless MPGS_BEHEMOTH_ASC=0."""
+    return (os.environ if env is None else env).get(ASC_FLAG, '1') != '0'
 DEFAULT_HIT_DAMAGE = 350.0
 DEFAULT_KILL_XP = 150
 FTUE_HUNT_QUEST_ID = 'CR20_PJM_FTUE_01'
@@ -280,7 +288,10 @@ def start(session):
     }
     if engine is not None:
         _attach_director(session, session._encounter, engine, center)
-        _add_ability_system(session, session._encounter, entries[0])
+        if asc_enabled():
+            _add_ability_system(session, session._encounter, entries[0])
+        else:
+            print('ENCOUNTER engine: ability system left out (%s=0)' % ASC_FLAG, flush=True)
     print('ENCOUNTER spawn %s level=%d center=%s loc=%s guid=%d (unrevealed)' % (
         config['behemoth'], config['level'], center['name'], [round(v, 1) for v in loc], behemoth_guid), flush=True)
     return entries

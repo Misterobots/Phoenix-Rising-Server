@@ -20,7 +20,7 @@ MANIFEST = json.loads((ROOT / 'data/2.1.1/islands/Adventure_IslandA_D24.engine_d
 HAVE_DATA = all((ROOT / p).exists() for p in MANIFEST['files'])
 CLS = 'lerawr_beta_bp_C'
 LANDING = [-18045.47, 16508.562, 703.9]
-_engine_flag = patch.dict(os.environ, {island_encounter.ENGINE_FLAG: '1'})
+_engine_flag = patch.dict(os.environ, {island_encounter.ENGINE_FLAG: '1', island_encounter.ASC_FLAG: '1'})
 
 
 def setUpModule():
@@ -245,7 +245,50 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertEqual(hits.key_of(reply), tuple(reply['HitID.' + k] for k in 'ABCD'))
 
 
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally (see the engine_data manifest)')
+class NoAbilitySystemTests(HealthAndHitTests):
+    """MPGS_BEHEMOTH_ASC=0: the engine path without the step 6 ASC/attribute-set blocks, for bisecting a live rejection."""
+    test_spawn_carries_ability_system_and_health_set = None
+    test_player_hit_updates_the_health_set = None
+    test_damage_window_sends_client_try_hit = None
+    test_only_an_accepted_hit_damages_the_player = None
+
+    def session(self):
+        with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):
+            return super().session()
+
+    def test_spawn_has_no_ability_system(self):
+        s = self.session()
+        actor = next(e for e in s.entries if e.open and e.cls == CLS)
+        names = {b.cls_name for b in self.roundtrip(s, actor).blocks}
+        self.assertFalse(names & {'ArchonAbilitySystemComponent', 'ArchonHealthAttributeSet', 'ArchonDamageAttributeSet'})
+        self.assertNotIn('ArchonAbilitySystem', [x.name for x in actor.exports])
+        self.assertIsNotNone(s._encounter['director'])
+        self.assertEqual(actor.parsed.blocks[0].values['ReplicatedMovementMode'], 1)
+
+    def test_spawn_differs_from_the_full_one_only_by_the_asc_blocks(self):
+        lean = next(e for e in self.session().entries if e.open and e.cls == CLS)
+        full = next(e for e in EngineEncounterTests.session(self).entries if e.open and e.cls == CLS)
+        step6 = {'ArchonAbilitySystemComponent', 'ArchonHealthAttributeSet', 'ArchonDamageAttributeSet'}
+        self.assertEqual([b.cls_name for b in lean.parsed.blocks],
+                         [b.cls_name for b in full.parsed.blocks if b.cls_name not in step6])
+        self.assertEqual(lean.parsed.blocks[0].values, full.parsed.blocks[0].values)
+
+    def test_hits_still_work_without_a_health_update(self):
+        s = self.session()
+        self.assertTrue(island_encounter.handle_damage(s, 4, None, {'Damage': 1000.0}))
+        self.assertFalse(any(b.cls_name == 'ArchonHealthAttributeSet' for e in s.entries[s.pos:] for b in e.parsed.blocks))
+        self.assertEqual(s._encounter['health'], 17900.0)
+        s.due(1000000)
+        self.assertTrue(self.attack_until_hit(s).reliable)          # behemoth -> player hits do not depend on the ASC
+
+
 class FlagTests(unittest.TestCase):
+    def test_asc_flag_values(self):
+        self.assertTrue(island_encounter.asc_enabled({}))
+        self.assertTrue(island_encounter.asc_enabled({'MPGS_BEHEMOTH_ASC': '1'}))
+        self.assertFalse(island_encounter.asc_enabled({'MPGS_BEHEMOTH_ASC': '0'}))
+
     def test_flag_values(self):
         self.assertTrue(island_encounter.engine_enabled({'MPGS_BEHEMOTH_ENGINE': '1'}))
         self.assertFalse(island_encounter.engine_enabled({'MPGS_BEHEMOTH_ENGINE': '0'}))
