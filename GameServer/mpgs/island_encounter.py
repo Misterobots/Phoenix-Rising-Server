@@ -25,7 +25,8 @@ COMBAT_TEXT_COMP_TEMPLATE_GUID = 44002
 DAMAGE_COMP_TEMPLATE_GUID = 44004
 NETWORKED_MONTAGE_COMP_TEMPLATE_GUID = 44006
 MONTAGE_COMPONENT = ('NetworkedMontage', 'NetworkedMontageComponent')
-PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')   # BP_PlayerCharacter's ArchonHittableComponent
+PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')
+HIT_REACTION = ('hit_reaction_bpc', 'hit_reaction_bpc_C')                # replicated; exported in the join (guid 130 template)   # BP_PlayerCharacter's ArchonHittableComponent
 ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
 
 
@@ -574,6 +575,31 @@ def _send_hit(session, enc, action, key, row):
         entry.exports = [enc['hittable_export']]
         enc['hittable_exported'] = True
     print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
+    stagger = _stagger_probe(session, pawn, damage)
+    return [entry] + ([stagger] if stagger is not None else [])
+
+
+STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 0 stops the stagger RPC sent with each ClientTryHit
+
+
+def _stagger_probe(session, pawn, damage):
+    """ClientStartStaggerAction on the player's hit_reaction_bpc, alongside ClientTryHit (live 2026-10-20 bisect).
+
+    The client never answered ClientTryHit. hit_reaction_bpc is a replicated pawn component the real server exports in the join
+    (flags 7 with checksum), so the client already maps it; player_hittable_bpc is not in the join. A visible stagger with still no
+    ServerAcceptHit means pawn-component RPCs arrive and the hittable addressing is at fault; no stagger points at the delivery of
+    server->client RPCs on the pawn channel in general."""
+    if os.environ.get(STAGGER_PROBE_FLAG, '1') == '0':
+        return None
+    from .behemoth import spawn
+    from .repl.guid import flatten
+    guid = next((i.guid for root in pawn.exports for i in flatten(root) if i.name == HIT_REACTION[0]), None)
+    if guid is None:
+        print('ENCOUNTER stagger probe skipped: %s not in the pawn exports' % HIT_REACTION[0], flush=True)
+        return None
+    entry = spawn.stagger_entry(session.world.schema, ch=pawn.ch, actor_cls=pawn.cls, component_guid=guid,
+                                component_cls=HIT_REACTION[1], damage_magnitude=max(1.0, damage))
+    print('ENCOUNTER stagger probe -> %s.ClientStartStaggerAction(%.0f) guid=%d' % (HIT_REACTION[0], damage, guid), flush=True)
     return entry
 
 
@@ -635,9 +661,7 @@ def _engine_step(session, enc, now):
             if ev[1] is not None and not enc['spotted']:
                 revealed += len(reveal(session))    # the tree acquired the player: compass reveal + combat start
         elif kind == 'hit':
-            entry = _send_hit(session, enc, ev[1], ev[2], ev[3])
-            if entry is not None:
-                reliable.append(entry)
+            reliable.extend(_send_hit(session, enc, ev[1], ev[2], ev[3]) or [])
         elif kind == 'lock':
             pawn_guid = _pawn_guid(session) if ev[1] is not None else 0
             reliable.append(_entry(session.world, ENCOUNTER_CHANNEL, cls, [_block(cls, {'LockedTarget': ('obj', pawn_guid)})]))

@@ -213,6 +213,28 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertGreater(params['Params_0.DamageRow.PhysicalDamage'] + params.get('Params_0.DamageRow.FlameDamage', 0), 0)
         self.assertEqual(len(enc['pending_hits']), 1)
 
+    def test_stagger_probe_targets_the_joined_hit_reaction_component(self):
+        """With each ClientTryHit: ClientStartStaggerAction on hit_reaction_bpc, the replicated component the join already maps."""
+        from mpgs.repl.guid import flatten
+        s = self.session()
+        enc = s._encounter
+        self.attack_until_hit(s)
+        pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        joined = next(i.guid for r in pawn.exports for i in flatten(r) if i.name == 'hit_reaction_bpc')
+        stagger = [e for e in s.entries if any(f[1] == 'ClientStartStaggerAction' for b in e.parsed.blocks for f in (b.fields or []))]
+        self.assertTrue(stagger)
+        blk = self.roundtrip(s, stagger[0]).blocks[0]
+        self.assertEqual(blk.guid, joined)
+        self.assertEqual(stagger[0].exports, [])                       # no new export: the client knows it from the join
+        self.assertGreater(next(f[3] for f in blk.fields if f[1] == 'ClientStartStaggerAction')['DamageMagnitude'], 0.0)
+
+    def test_stagger_probe_can_be_switched_off(self):
+        with patch.dict(os.environ, {island_encounter.STAGGER_PROBE_FLAG: '0'}):
+            s = self.session()
+            self.attack_until_hit(s)
+            self.assertFalse(any(f[1] == 'ClientStartStaggerAction' for e in s.entries for b in e.parsed.blocks
+                                 for f in (b.fields or [])))
+
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits
         s = self.session()
@@ -252,6 +274,8 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_player_hit_updates_the_health_set = None
     test_damage_window_sends_client_try_hit = None
     test_only_an_accepted_hit_damages_the_player = None
+    test_stagger_probe_targets_the_joined_hit_reaction_component = None
+    test_stagger_probe_can_be_switched_off = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):

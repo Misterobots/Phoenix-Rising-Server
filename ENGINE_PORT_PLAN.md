@@ -199,6 +199,33 @@ ignored), never invent values: write open questions down.
    running. Rollback: close the PowerShell window or set `$env:MPGS_BEHEMOTH_ENGINE = '0'`, then `.\Stop.bat` and
    `.\start-server.ps1`. The scripted encounter is the default again.
 
+## Live finding: the client never answers ClientTryHit (2026-10-20)
+
+Every hit the Embermane lands produces a `ClientTryHit` on the player's `player_hittable_bpc`. The stock client sends back
+neither `ServerAcceptHit` nor `ServerRefuseHit`: no damage and no hit reaction. Investigated in the 2.1.1 executable (stock exe ==
+workbench exe, SHA-256 934325AC...; Dumpspace function offsets are real `.pdata` function starts):
+
+- `ClientTryHit` exec thunk `0x2337460` reads the parameters and calls vtable slot `+0x4A8` unconditionally.
+- `UArchonHittableComponent::ClientTryHit_Implementation` (`0x2700320`, vtable `0x6901F60`) always appends the hit to
+  `OutstandingHits_Client` (this+0xF0, 0x200 bytes per entry) and calls `PrimaryComponentTick.SetTickFunctionEnable(true)`.
+- The answer is sent from `TickComponent` (slot 118, `0x2722610`): for each queued hit, `GetInvulnerabilityTagsForAttack`, then
+  `ServerRefuseHit` if any tags, else `ServerAcceptHit` (the only callers of the two stubs), then clear the list.
+- Constructor `0x26F86A0` sets `bCanEverTick` and clears `bStartWithTickEnabled`: ticking on demand works.
+- So if the RPC were dispatched, a reply would always follow. The server logs every client RPC and saw none, and nothing
+  unresolved on channel 4. The client never runs `ClientTryHit_Implementation`.
+- Our wire, decoded from the session's real `due()` output: a stably named block for GUID 48010, export
+  `player_hittable_bpc` with outer = the pawn (1050, the same outer the join uses), field index 2 (consistent with
+  `DamageComponent`'s working index 7). The live object dump confirms the runtime name `BP_PlayerCharacter_C_*.player_hittable_bpc`.
+- UE 5.1.1 drops exactly this case silently: `UActorChannel::ReadContentBlockHeader` returns null at Log level for a stably named
+  sub-object it cannot resolve. No path in stock `GetObjectFromNetGUID`/`RegisterNetGUIDFromPath_Client` explains a failure,
+  but the client runs the Phoenix Labs fork (5.1.1-682875+__phx-archon).
+- Key difference: the real server's join exports 19 named, replicated pawn components (flags 7 with checksum: `hit_reaction_bpc`,
+  `floating_combat_text_bpc`, `player_state_machine_bpc`...). `player_hittable_bpc` is not among them (not replicated).
+
+**Bisect in place:** each hit also sends `hit_reaction_bpc.ClientStartStaggerAction` to the GUID the join already maps
+(`MPGS_HIT_STAGGER_PROBE=0` turns it off). A visible stagger with still no reply puts the fault on the hittable addressing;
+no stagger puts it on server->client RPCs on the pawn channel.
+
 ## Open questions
 
 - `structs.py` divergence (120 lines): confirm none of Phoenix's newer readers conflict with
