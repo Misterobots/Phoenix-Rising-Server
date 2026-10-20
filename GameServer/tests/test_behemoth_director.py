@@ -72,6 +72,45 @@ class DecoratorSemanticsTests(unittest.TestCase):
         self.assertEqual(ctx.bb['DistanceFromAttackTarget'], 0.0)
 
 
+class RootMotionOriginTests(unittest.TestCase):
+    """Live 2026-10-20 rubber banding: a root track that does not start at the origin must be sampled relative to its start."""
+
+    def test_offset_root_track_starts_at_zero(self):
+        from mpgs.behemoth.mover import RootCurve
+        # 30 frames, root starts 900 cm forward and moves 300 more; start yaw 0
+        c = RootCurve(30, [[0, 900.0, 0.0, 0.0], [30, 1200.0, 0.0, 0.0]], [[0, 0.0, 0.0, 0.0, 1.0], [30, 0.0, 0.0, 0.0, 1.0]])
+        self.assertEqual(c.sample(0.0)[:3], (0.0, 0.0, 0.0))
+        self.assertAlmostEqual(c.sample(c.duration)[0], 300.0)
+
+    def test_start_rotation_is_removed_from_translation(self):
+        from mpgs.behemoth.mover import RootCurve
+        s = 2 ** -0.5                                   # start yawed +90: moving along world +Y is "forward" (+X) locally
+        c = RootCurve(30, [[0, 0.0, 0.0, 0.0], [30, 0.0, 200.0, 0.0]], [[0, 0.0, 0.0, s, s], [30, 0.0, 0.0, s, s]])
+        dx, dy, _, dyaw = c.sample(c.duration)
+        self.assertAlmostEqual(dx, 200.0, places=3)
+        self.assertAlmostEqual(dy, 0.0, places=3)
+        self.assertAlmostEqual(dyaw, 0.0, places=3)
+
+
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
+class JumpOverTurnTests(unittest.TestCase):
+    NAME = 'b_aq_lerawr_00_loco_jumpoverturn_180_right_00_Montage'
+
+    def test_two_segment_montage_has_no_teleport(self):
+        """jump-over-turn (1.63 s) + short pounce (root track starting 911.8 cm forward): continuous at the seam and the turn
+        happens during the jump, not at the end."""
+        c = montage_curve(self.NAME)
+        t, prev, worst = 0.0, None, 0.0
+        while t <= c.duration:
+            x, y, _, _ = c.sample(t)
+            if prev:
+                worst = max(worst, ((x - prev[0]) ** 2 + (y - prev[1]) ** 2) ** 0.5)
+            prev, t = (x, y), t + 1.0 / 30.0
+        self.assertLess(worst, 200.0)                   # the old seam jumped ~900 cm in one frame; the pounce lunge peaks ~124
+        self.assertGreater(abs(c.sample(1.2)[3]), 150.0)   # turned by mid-jump
+        self.assertLess(((c.sample(c.duration)[0]) ** 2 + c.sample(c.duration)[1] ** 2) ** 0.5, 300.0)
+
+
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
 class EncounterPathTests(unittest.TestCase):
     @classmethod

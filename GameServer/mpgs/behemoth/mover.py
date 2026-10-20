@@ -63,9 +63,18 @@ class RootCurve:
         return last / FPS
 
     def sample(self, t):
-        """(dx, dy, dz, dyaw) relative to the start at time t seconds (clamped to the sequence)."""
+        """(dx, dy, dz, dyaw) relative to the start at time t seconds (clamped to the sequence).
+
+        Relative to the start *transform*, as UE extracts root motion (inverse(start) * current): the first key's translation is
+        subtracted and the rest rotated into the start's frame. Live 2026-10-20: b_aq_lerawr_00_atk_short_pounce_fwd_00's root
+        track starts 911.8 cm forward; taken as absolute, the second segment of the Embermane's jump-over-turn montage teleported
+        it ~900 units back mid-montage (the rubber banding). Rock sequences start at the origin, so they were unaffected."""
         f = min(max(t * FPS, 0.0), self._tf[-1] if self._tf else 0.0)
-        dx, dy, dz = self._interp_vec(f)
+        x, y, z = self._interp_vec(f)
+        x0, y0, z0 = self._interp_vec(0.0)
+        r = math.radians(-self._ry0)
+        px, py = x - x0, y - y0
+        dx, dy, dz = px * math.cos(r) - py * math.sin(r), px * math.sin(r) + py * math.cos(r), z - z0
         dyaw = _wrap(self._interp_yaw(min(max(t * FPS, 0.0), self._rf[-1] if self._rf else 0.0)) - self._ry0)
         return dx, dy, dz, dyaw
 
