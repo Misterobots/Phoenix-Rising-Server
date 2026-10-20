@@ -28,6 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SERVER = os.path.normpath(os.path.join(HERE, '..', '..'))
 DEFAULT_MONTAGE_SECONDS = 2.5          # a montage with no root-motion curve to take its length from
 TURN_SNAP_DEG = 25.0                   # turns up to this are set directly (no turn montage covers less than 45)
+STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
 
 
 def montage_package(name, montage_dir=None):
@@ -265,6 +266,9 @@ class BehemothDirector:
         self.locked = None
         self.dead = False
         self._events = []
+        self._tick_vel = [0.0, 0.0, 0.0]           # measured over the last tick (_measure)
+        self._prev_tick = None
+        self._sent_moving = False
         self._windows = {}                         # (action, damage key) -> damage row, while that damage window is open
         self._hit_in_window = set()
         self._target_seen = None
@@ -352,14 +356,29 @@ class BehemothDirector:
         self.brain.pos, self.brain.yaw = tuple(self.loc[:2]), self.mover.yaw
 
     def _flush_move(self, now, force=False):
+        """Live 2026-10-20 idle rubber banding: the old velocity was the nominal walk speed whenever a path existed, also on the
+        tick a patrol leg ended (16 u/s actual). Then no update followed while the actor stood at the point (up to 1.7 s), so the
+        client extrapolated it forward at 400 u/s and snapped it back. The velocity is now the measured one, and a stop is always
+        sent once, with zero velocity."""
+        vel = self._velocity()
+        moving = math.hypot(vel[0], vel[1]) > STOP_SPEED
         if self.mover.pop_changed(now, 0.0 if force else self.send_interval):
-            self._events.append(('move', list(self.loc), self.mover.yaw, self._velocity()))
+            self._events.append(('move', list(self.loc), self.mover.yaw, vel))
+            self._sent_moving = moving
+        elif self._sent_moving and not moving:
+            self._events.append(('move', list(self.loc), self.mover.yaw, [0.0, 0.0, 0.0]))
+            self._sent_moving = False
 
     def _velocity(self):
-        if self.mover.path and self.mover.montage is None:
-            r = math.radians(self.mover.yaw)
-            return [math.cos(r) * self.mover.walk_speed, math.sin(r) * self.mover.walk_speed, 0.0]
-        return [0.0, 0.0, 0.0]
+        """Measured over the last tick (cm/s); zero before the first one."""
+        return list(self._tick_vel)
+
+    def _measure(self, now):
+        x, y = self.mover.x, self.mover.y
+        if self._prev_tick is not None and now > self._prev_tick[0]:
+            dt = now - self._prev_tick[0]
+            self._tick_vel = [(x - self._prev_tick[1]) / dt, (y - self._prev_tick[2]) / dt, 0.0]
+        self._prev_tick = (now, x, y)
 
     def tick(self, now):
         """Advance to `now` (seconds) and return the events since the last tick."""
@@ -367,6 +386,7 @@ class BehemothDirector:
             self._sync_brain()
             self.runner.tick(now)
             self.mover.tick(now)
+            self._measure(now)
             self._sync_brain()
             if self.brain.busy:
                 action = self.brain.run.name

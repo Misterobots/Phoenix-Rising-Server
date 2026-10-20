@@ -93,6 +93,35 @@ class RootMotionOriginTests(unittest.TestCase):
 
 
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
+class PatrolExtrapolationTests(unittest.TestCase):
+    def test_client_extrapolation_matches_the_server_while_patrolling(self):
+        """Live 2026-10-20 idle rubber banding. A simulated proxy extrapolates the last update by its velocity. With the old
+        nominal walk velocity and no stop update, that guess drifted up to 6.7 m at every patrol stop. Measured velocity plus
+        a zero-velocity stop keep it on the server position."""
+        from mpgs.world.terrain import Terrain
+        import math
+        with open(os.path.join(ISLANDS, HUNT + '.contract.json'), encoding='utf-8') as f:
+            enc = json.load(f)['encounter']
+        center = next(c for c in enc['centers'] if c['name'] == 'BP_PatrolCenterPoint_263')['location']
+        terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', MANIFEST['terrain']))
+        far = {'loc': [-18045.47, 16508.562, 703.9], 'vel': [0.0, 0.0, 0.0]}      # landing pad: never spotted
+        d = BehemothDirector(Species.load(HUNT), terrain, center, 0.0, lambda: far, rng=random.Random(1))
+        t, sent, worst, stops = 0.0, None, 0.0, 0
+        while t < 40.0:
+            for ev in d.tick(t):
+                if ev[0] == 'move':
+                    if sent and math.hypot(*sent[2][:2]) > 0 and math.hypot(*ev[3][:2]) == 0:
+                        stops += 1
+                    sent = (t, ev[1], ev[3])
+            if sent:
+                st, loc, vel = sent
+                worst = max(worst, math.dist((loc[0] + vel[0] * (t - st), loc[1] + vel[1] * (t - st)), d.loc[:2]))
+            t += 1.0 / 15.0
+        self.assertGreater(stops, 3, 'patrol legs end with a zero-velocity update')
+        self.assertLess(worst, 60.0)
+
+
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
 class JumpOverTurnTests(unittest.TestCase):
     NAME = 'b_aq_lerawr_00_loco_jumpoverturn_180_right_00_Montage'
 
