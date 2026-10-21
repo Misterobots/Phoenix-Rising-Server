@@ -29,6 +29,25 @@ def _short(v, limit=400):
     return t if len(t) <= limit else t[:limit] + '...'
 
 
+
+# Client RPCs whose undecoded payloads are saved for offline codec work: their parameters share structs (FHitResult,
+# FGameplayTagContainer, FVector) with ClientTryHit, which the client skips as incompatible when its payload does not decode.
+CAPTURE_RPCS = {'ServerTryDoDamage'}
+CAPTURE_LIMIT = 20
+
+
+def _capture_rpc(sess, ch, cls, who, name, payload):
+    n = sess['_rpc_captures'] = sess.get('_rpc_captures', 0) + 1
+    if n > CAPTURE_LIMIT:
+        return
+    import json
+    bits, nbits = payload
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'logs', 'rpc_capture.jsonl')
+    with open(path, 'a', encoding='utf-8') as f:
+        f.write(json.dumps({'t': time.time(), 'ch': ch, 'cls': cls, 'who': who, 'func': name, 'nbits': nbits,
+                            'hex': bits.to_bytes((nbits + 7) // 8, 'little').hex()}) + '\n')
+
+
 class GameServer:
     def __init__(self, port, world, map_path=MAP_PATH, game_mode_path=GAME_MODE_PATH, hunt_id=''):
         self.world = world
@@ -142,6 +161,8 @@ class GameServer:
                     if mv and (n <= 3 or n % 600 == 0):
                         log('move %s #%d t=%.3f loc=(%.1f,%.1f,%.1f) vel=(%.0f,%.0f,%.0f) yaw=%.1f mode=%s flags=%#x' % (
                             sess['ids']['name'], n, mv['time'], *mv['loc'], *mv['vel'], mv['ctrl_rot'][1], mv['mode'], mv['flags']))
+                if kind == 'raw' and name in CAPTURE_RPCS:
+                    _capture_rpc(sess, ch, cls, who, name, payload)
                 key = (ch, who, name)
                 seen = sess.setdefault('rx_seen', {})
                 seen[key] = seen.get(key, 0) + 1
