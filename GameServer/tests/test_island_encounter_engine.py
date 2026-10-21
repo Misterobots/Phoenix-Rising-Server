@@ -246,8 +246,12 @@ class HealthAndHitTests(EngineEncounterTests):
                                                                  for f in (b.fields or []))]
         self.assertTrue(plays)
         self.assertEqual(plays[0].parsed.blocks[0].guid, comp)
-        self.assertIn('h_mr_ua_stagger_med_atk_', plays[0].exports[0].name)
+        self.assertRegex(plays[0].exports[0].name, r'h_mr_ua_stagger_(lgt|med)_atk_')
         self.roundtrip(s, plays[0])
+        text = [e for e in s.entries if e.ch == pawn.ch and any(f[1] == 'MulticastSendMultitypeCombatText'
+                                                                for b in e.parsed.blocks for f in (b.fields or []))]
+        self.assertTrue(text)
+        self.roundtrip(s, text[0])
 
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits

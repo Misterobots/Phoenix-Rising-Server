@@ -577,9 +577,12 @@ def _send_hit(session, enc, action, key, row):
     print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
     stagger = _stagger_probe(session, pawn, damage)
     out = [entry] + ([stagger] if stagger is not None else [])
-    flinch = _flinch_entry(session, enc, pawn, player)
+    flinch = _flinch_entry(session, enc, pawn, player, damage)
     if flinch is not None:
         out.append(flinch)
+    numbers = _player_combat_text(session, enc, pawn, player, damage)
+    if numbers is not None:
+        out.append(numbers)
     if os.environ.get(DIRECT_PROBE_FLAG, '1') != '0':
         # Bisect (live 2026-10-20): the stagger RPC was ignored too. A health drop shows sub-object properties on the pawn
         # channel land; a damage number/flash shows pawn actor RPCs land.
@@ -603,9 +606,10 @@ PUSH_PROBE_FLAG = 'MPGS_HIT_PUSH_PROBE'   # engine path: 1 adds a 250 cm Telepor
 
 FLINCH_FLAG = 'MPGS_HIT_FLINCH'   # engine path: 0 stops the player flinch montage played with each hit
 FLINCH_PACKAGE = '/Game/Character/Player/Anims/Unarmed/'
+FLINCH_MEDIUM_DAMAGE = 60.0       # below: the light stagger; at or above: the medium one (heavy launch/land left out for now)
 
 
-def _flinch_entry(session, enc, pawn, player):
+def _flinch_entry(session, enc, pawn, player, damage):
     """A medium stagger montage on the player's NetworkedMontage component, picked by the side the Embermane hit from.
 
     The client ignores ClientTryHit and ClientStartStaggerAction (live 2026-10-20), but MulticastPlayMontage on a
@@ -621,13 +625,43 @@ def _flinch_entry(session, enc, pawn, player):
     to_attacker = math.atan2(enc['loc'][1] - player['loc'][1], enc['loc'][0] - player['loc'][0])
     rel = math.degrees(math.atan2(math.sin(to_attacker - yaw), math.cos(to_attacker - yaw)))
     side = 'fwd' if abs(rel) <= 45 else 'bwd' if abs(rel) >= 135 else 'rgt' if rel > 0 else 'lft'
-    name = 'h_mr_ua_stagger_med_atk_%s_imp_%s_01_mot' % (side, side)
+    if enc.get('player_health') is not None and enc['player_health'] - damage <= 0.0:     # this hit downs the player
+        name = 'h_mr_ua_stagger_med_death_fwd_01_mot'
+    else:
+        tier = 'lgt' if damage < FLINCH_MEDIUM_DAMAGE else 'med'
+        name = 'h_mr_ua_stagger_%s_atk_%s_imp_%s_01_mot' % (tier, side, side)
     print('ENCOUNTER flinch -> %s' % name, flush=True)
     return spawn.montage_play_entry(session.world.schema, enc['guids'], ch=pawn.ch, actor_cls=pawn.cls,
                                     montage_guid_cache=enc['montage_guids'], component_guid=comp,
                                     component_cls=MONTAGE_COMPONENT[1], montage_package=FLINCH_PACKAGE + name,
                                     montage_name=name)
 
+
+
+def _player_combat_text(session, enc, pawn, player, damage):
+    """Damage number over the player: MulticastSendMultitypeCombatText on their floating_combat_text_bpc (a multicast, like
+    the flinch montage; the client ignores client RPCs on the pawn)."""
+    if os.environ.get(FLINCH_FLAG, '1') == '0' or 'loc' not in player:
+        return None
+    from .repl.decode import OrderedFields
+    from .repl.guid import flatten
+    comp = next((i.guid for root in pawn.exports for i in flatten(root) if i.name == 'floating_combat_text_bpc'), None)
+    if comp is None:
+        return None
+    impact = [player['loc'][0], player['loc'][1], player['loc'][2] + 80.0]
+    e = OrderedFields()
+    e.update({
+        'Entries[].SourceActor': ('obj', enc['guid']),
+        'Entries[].CoreDamage': damage, 'Entries[].PartDamage': 0.0, 'Entries[].StaggerDamage': 0.0,
+        'Entries[].ExposeDamage': 0.0, 'Entries[].ShieldDamage': 0.0,
+        'Entries[].ImpactLocation': impact, 'Entries[].bHasImpactLocation': 1,
+        'Entries[].bHitWasAbsorbed': 0, 'Entries[].bIsCrit': 0, 'Entries[].bIsAntiCrit': 0,
+        'Entries[].bAlwaysShowDamageNumbers': 1, 'Entries[].bBlockExposeCrit': 0, 'Entries[].bShowWoundedStatus': 0,
+    })
+    fi = session.world.schema.field_index('floating_combat_text_bpc_C')
+    return _entry(session.world, pawn.ch, pawn.cls, [_block('floating_combat_text_bpc_C', fields=[
+        (fi.index(('func', 'MulticastSendMultitypeCombatText')), 'MulticastSendMultitypeCombatText', 'rpc', {'Entries': [e]})],
+        guid=comp)])
 
 STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 1 adds ClientStartStaggerAction to each hit (bisect probe; ignored live 2026-10-20)
 
