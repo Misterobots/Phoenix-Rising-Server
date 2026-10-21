@@ -216,9 +216,10 @@ class HealthAndHitTests(EngineEncounterTests):
     def test_stagger_probe_targets_the_joined_hit_reaction_component(self):
         """With each ClientTryHit: ClientStartStaggerAction on hit_reaction_bpc, the replicated component the join already maps."""
         from mpgs.repl.guid import flatten
-        s = self.session()
-        enc = s._encounter
-        self.attack_until_hit(s)
+        with patch.dict(os.environ, {island_encounter.STAGGER_PROBE_FLAG: '1'}):
+            s = self.session()
+            enc = s._encounter
+            self.attack_until_hit(s)
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
         joined = next(i.guid for r in pawn.exports for i in flatten(r) if i.name == 'hit_reaction_bpc')
         stagger = [e for e in s.entries if any(f[1] == 'ClientStartStaggerAction' for b in e.parsed.blocks for f in (b.fields or []))]
@@ -228,12 +229,25 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertEqual(stagger[0].exports, [])                       # no new export: the client knows it from the join
         self.assertGreater(next(f[3] for f in blk.fields if f[1] == 'ClientStartStaggerAction')['DamageMagnitude'], 0.0)
 
-    def test_stagger_probe_can_be_switched_off(self):
-        with patch.dict(os.environ, {island_encounter.STAGGER_PROBE_FLAG: '0'}):
+    def test_stagger_probe_is_off_by_default(self):
+        with patch.dict(os.environ, {}):
             s = self.session()
             self.attack_until_hit(s)
             self.assertFalse(any(f[1] == 'ClientStartStaggerAction' for e in s.entries for b in e.parsed.blocks
                                  for f in (b.fields or [])))
+
+    def test_hit_plays_a_flinch_montage_on_the_player(self):
+        from mpgs.repl.guid import flatten
+        s = self.session()
+        self.attack_until_hit(s)
+        pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        comp = next(i.guid for r in pawn.exports for i in flatten(r) if i.name == 'NetworkedMontage')
+        plays = [e for e in s.entries if e.ch == pawn.ch and any(f[1] == 'MulticastPlayMontage' for b in e.parsed.blocks
+                                                                 for f in (b.fields or []))]
+        self.assertTrue(plays)
+        self.assertEqual(plays[0].parsed.blocks[0].guid, comp)
+        self.assertIn('h_mr_ua_stagger_med_atk_', plays[0].exports[0].name)
+        self.roundtrip(s, plays[0])
 
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits
@@ -275,7 +289,8 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_damage_window_sends_client_try_hit = None
     test_only_an_accepted_hit_damages_the_player = None
     test_stagger_probe_targets_the_joined_hit_reaction_component = None
-    test_stagger_probe_can_be_switched_off = None
+    test_stagger_probe_is_off_by_default = None
+    test_hit_plays_a_flinch_montage_on_the_player = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):

@@ -577,13 +577,16 @@ def _send_hit(session, enc, action, key, row):
     print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
     stagger = _stagger_probe(session, pawn, damage)
     out = [entry] + ([stagger] if stagger is not None else [])
+    flinch = _flinch_entry(session, enc, pawn, player)
+    if flinch is not None:
+        out.append(flinch)
     if os.environ.get(DIRECT_PROBE_FLAG, '1') != '0':
         # Bisect (live 2026-10-20): the stagger RPC was ignored too. A health drop shows sub-object properties on the pawn
         # channel land; a damage number/flash shows pawn actor RPCs land.
         out += _damage_entries(session, enc, {'damage': damage, 'elemental': elemental,
                                               'raw': float(sum((row.get('elements') or {}).values()))})
         print('ENCOUNTER direct probe -> health %.0f' % enc['player_health'], flush=True)
-    if os.environ.get(PUSH_PROBE_FLAG, '1') != '0' and 'loc' in player:
+    if os.environ.get(PUSH_PROBE_FLAG, '0') == '1' and 'loc' in player:
         # Bisect: health (a property) lands but no RPC shows. A 250 cm shove via the pawn's TeleportOnOwningClient RPC tells
         # whether any server->client RPC on the pawn channel is executed.
         dest = [player['loc'][0] + d[0] / n * 250.0, player['loc'][1] + d[1] / n * 250.0, player['loc'][2]]
@@ -595,10 +598,38 @@ def _send_hit(session, enc, action, key, row):
     return out
 
 
-PUSH_PROBE_FLAG = 'MPGS_HIT_PUSH_PROBE'   # engine path: 0 stops the 250 cm shove sent with each hit
+PUSH_PROBE_FLAG = 'MPGS_HIT_PUSH_PROBE'   # engine path: 1 adds a 250 cm TeleportOnOwningClient shove to each hit (bisect probe; no effect live 2026-10-20)
 
 
-STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 0 stops the stagger RPC sent with each ClientTryHit
+FLINCH_FLAG = 'MPGS_HIT_FLINCH'   # engine path: 0 stops the player flinch montage played with each hit
+FLINCH_PACKAGE = '/Game/Character/Player/Anims/Unarmed/'
+
+
+def _flinch_entry(session, enc, pawn, player):
+    """A medium stagger montage on the player's NetworkedMontage component, picked by the side the Embermane hit from.
+
+    The client ignores ClientTryHit and ClientStartStaggerAction (live 2026-10-20), but MulticastPlayMontage on a
+    NetworkedMontage component is what already plays every Embermane attack, so the hit reaction is played the same way."""
+    if os.environ.get(FLINCH_FLAG, '1') == '0' or 'loc' not in player:
+        return None
+    from .behemoth import spawn
+    from .repl.guid import flatten
+    comp = next((i.guid for root in pawn.exports for i in flatten(root) if i.name == MONTAGE_COMPONENT[0]), None)
+    if comp is None:
+        return None
+    yaw = math.radians((player.get('rot') or [0.0, 0.0, 0.0])[1])
+    to_attacker = math.atan2(enc['loc'][1] - player['loc'][1], enc['loc'][0] - player['loc'][0])
+    rel = math.degrees(math.atan2(math.sin(to_attacker - yaw), math.cos(to_attacker - yaw)))
+    side = 'fwd' if abs(rel) <= 45 else 'bwd' if abs(rel) >= 135 else 'rgt' if rel > 0 else 'lft'
+    name = 'h_mr_ua_stagger_med_atk_%s_imp_%s_01_mot' % (side, side)
+    print('ENCOUNTER flinch -> %s' % name, flush=True)
+    return spawn.montage_play_entry(session.world.schema, enc['guids'], ch=pawn.ch, actor_cls=pawn.cls,
+                                    montage_guid_cache=enc['montage_guids'], component_guid=comp,
+                                    component_cls=MONTAGE_COMPONENT[1], montage_package=FLINCH_PACKAGE + name,
+                                    montage_name=name)
+
+
+STAGGER_PROBE_FLAG = 'MPGS_HIT_STAGGER_PROBE'   # engine path: 1 adds ClientStartStaggerAction to each hit (bisect probe; ignored live 2026-10-20)
 
 
 def _stagger_probe(session, pawn, damage):
@@ -608,7 +639,7 @@ def _stagger_probe(session, pawn, damage):
     (flags 7 with checksum), so the client already maps it; player_hittable_bpc is not in the join. A visible stagger with still no
     ServerAcceptHit means pawn-component RPCs arrive and the hittable addressing is at fault; no stagger points at the delivery of
     server->client RPCs on the pawn channel in general."""
-    if os.environ.get(STAGGER_PROBE_FLAG, '1') == '0':
+    if os.environ.get(STAGGER_PROBE_FLAG, '0') != '1':
         return None
     from .behemoth import spawn
     from .repl.guid import flatten
