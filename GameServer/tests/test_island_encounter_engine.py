@@ -4,6 +4,7 @@ path (test_island_encounter.py, flag 0). Skipped where the local engine game dat
 import json
 import math
 import os
+import time
 import sys
 import unittest
 from pathlib import Path
@@ -239,8 +240,12 @@ class HealthAndHitTests(EngineEncounterTests):
     def test_hit_plays_a_flinch_montage_on_the_player(self):
         from mpgs.repl.guid import flatten
         s = self.session()
-        self.attack_until_hit(s)
+        blk = self.attack_until_hit(s).parsed.blocks[0]
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        self.assertFalse([e for e in s.entries if e.ch == pawn.ch and any(f[1] == 'MulticastPlayMontage'
+                          for b in e.parsed.blocks for f in (b.fields or []))])       # nothing before the client answers
+        params = next(f[3] for f in blk.fields if f[1] == 'ClientTryHit')
+        island_encounter.handle_hit_reply(s, 'ServerAcceptHit', {'HitID.' + k: params['HitID.' + k] for k in 'ABCD'})
         comp = next(i.guid for r in pawn.exports for i in flatten(r) if i.name == 'NetworkedMontage')
         plays = [e for e in s.entries if e.ch == pawn.ch and any(f[1] == 'MulticastPlayMontage' for b in e.parsed.blocks
                                                                  for f in (b.fields or []))]
@@ -253,6 +258,17 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertTrue(text)
         self.roundtrip(s, text[0])
 
+    def test_an_unanswered_hit_is_applied_after_the_timeout(self):
+        s = self.session()
+        enc = s._encounter
+        self.attack_until_hit(s)
+        start = enc.get('player_health')
+        with patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 5.0):
+            out = island_encounter._expire_hits(s, enc)
+        self.assertTrue(any(b.cls_name == 'ArchonHealthAttributeSet' for e in out for b in e.parsed.blocks))
+        self.assertLess(enc['player_health'], start if start is not None else 1e9)
+        self.assertEqual(len(enc['pending_hits']), 0)
+
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits
         s = self.session()
@@ -264,7 +280,7 @@ class HealthAndHitTests(EngineEncounterTests):
         before = len(s.entries)
         self.assertTrue(island_encounter.handle_hit_reply(s, 'ServerAcceptHit', reply))
         queued = s.entries[s.pos:]
-        self.assertEqual(len(s.entries) - before, 2)
+        self.assertEqual(len(s.entries) - before, 4)        # flinch, damage number, health, damage summary
         health = next(e for e in queued if any(b.cls_name == 'ArchonHealthAttributeSet' for b in e.parsed.blocks))
         v = self.roundtrip(s, health).blocks[0].values
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
@@ -295,6 +311,7 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_stagger_probe_targets_the_joined_hit_reaction_component = None
     test_stagger_probe_is_off_by_default = None
     test_hit_plays_a_flinch_montage_on_the_player = None
+    test_an_unanswered_hit_is_applied_after_the_timeout = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):

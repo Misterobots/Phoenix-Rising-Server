@@ -94,5 +94,10 @@ class PendingHits:
     def take(self, key):
         return self._hits.pop(key, None)
 
+    def expired(self, now, timeout):
+        """Remove and return the infos sent more than `timeout` seconds before `now` (info['sent']) with no answer."""
+        old = [k for k, v in self._hits.items() if now - v.get('sent', now) > timeout]
+        return [self._hits.pop(k) for k in old]
+
     def __len__(self):
         return len(self._hits)

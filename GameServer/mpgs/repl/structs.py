@@ -407,6 +407,13 @@ def _w_datetime(w, v):
 #   Component (object); FName BoneName; [int32 FaceIndex]; [uint8 ElementIndex].
 # ElementIndex is a uint8 compared with INDEX_NONE (-1), so a UE sender never sets flag bit 7; this writer does the same.
 # Defaults follow FHitResult::Init (memzero, Time = 1): an empty dict is a default-constructed hit.
+#
+# Dauntless 2.1.1 differs from stock 5.1.1 (verified 2026-10-21 against 9 live ServerTryDoDamage payloads, logs/rpc_capture.jsonl,
+# which decode end to end with these rules): Flags are 16 bits; bit 8 is set in every sample and an extra FVector_NetQuantize
+# ('extra_point', small actor-relative values) follows ImpactNormal, before TraceStart. The writer always sets bit 8 and writes
+# the extra point, as the client does. A stock 8-bit hit makes the client mark the whole RPC incompatible and skip it silently
+# (DataReplication.cpp HANDLE_INCOMPATIBLE_RPC) - that is why ClientTryHit went unanswered.
+# Object fields are read with the InternalLoadObject format (a client sends default GUID 1 plus a path for assets).
 _HIT_DEFAULTS = {'blocking': 0, 'start_penetrating': 0, 'time': 1.0, 'location': [0.0, 0.0, 0.0], 'normal': [0.0, 0.0, 0.0],
                  'trace_start': [0.0, 0.0, 0.0], 'trace_end': [0.0, 0.0, 0.0], 'penetration': 0.0, 'item': 0,
                  'phys_material': 0, 'actor': 0, 'manager': 0, 'instance_index': 0, 'component': 0, 'bone_name': ('ename', 0),
@@ -439,7 +446,8 @@ def _w_hit_result(w, v):
     eq_ip, eq_in = list(ip) == list(h['location']), list(inorm) == list(h['normal'])
     flags = (h['blocking'] & 1) | ((h['start_penetrating'] & 1) << 1) | (eq_ip << 2) | (eq_in << 3) | \
         ((h['item'] == -1) << 4) | ((h['face_index'] == -1) << 5) | ((h['penetration'] == 0.0) << 6)
-    w.write(flags, 8)
+    flags |= 1 << 8
+    w.write(flags, 16)
     _w_float(w, h['time'])
     write_quantized_vector(w, 1, h['location'])
     _w_fixed_normal(w, h['normal'])
@@ -447,6 +455,7 @@ def _w_hit_result(w, v):
         write_quantized_vector(w, 1, ip)
     if not eq_in:
         _w_fixed_normal(w, inorm)
+    write_quantized_vector(w, 1, h.get('extra_point', [0.0, 0.0, 0.0]))
     write_quantized_vector(w, 1, h['trace_start'])
     write_quantized_vector(w, 1, h['trace_end'])
     if h['penetration'] != 0.0:
@@ -465,23 +474,33 @@ def _w_hit_result(w, v):
 
 @reader('HitResult')
 def _r_hit_result(r):
-    flags = r.read(8)
+    flags = r.read(16)
     out = {'blocking': flags & 1, 'start_penetrating': (flags >> 1) & 1, 'time': _r_float(r),
            'location': read_quantized_vector(r, 1), 'normal': _r_fixed_normal(r)}
     out['impact_point'] = list(out['location']) if flags & 4 else read_quantized_vector(r, 1)
     out['impact_normal'] = list(out['normal']) if flags & 8 else _r_fixed_normal(r)
+    if flags & (1 << 8):
+        out['extra_point'] = read_quantized_vector(r, 1)
     out['trace_start'] = read_quantized_vector(r, 1)
     out['trace_end'] = read_quantized_vector(r, 1)
     out['penetration'] = 0.0 if flags & 64 else _r_float(r)
     out['item'] = -1 if flags & 16 else _signed32(r.read(32))
     for k in ('phys_material', 'actor', 'manager'):
-        out[k] = r.read_packed()
+        out[k] = _r_hit_object(r, out)
     out['instance_index'] = _signed32(r.read(32))
-    out['component'] = r.read_packed()
+    out['component'] = _r_hit_object(r, out)
     out['bone_name'] = read_name(r)
     out['face_index'] = -1 if flags & 32 else _signed32(r.read(32))
     out['element_index'] = 255 if flags & 128 else r.read(8)
     return out
+
+
+def _r_hit_object(r, out):
+    exports = []
+    g = read_load_object(r, False, exports)
+    if exports:
+        out.setdefault('object_exports', []).extend(exports)
+    return g
 
 
 def _signed32(u):

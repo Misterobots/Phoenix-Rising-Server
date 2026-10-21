@@ -48,3 +48,31 @@ class HitResultTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class RealMessages(unittest.TestCase):
+    """Live client payloads (2026-10-21): the Dauntless FHitResult layout (16-bit flags, extra point) decodes them end to end."""
+
+    def test_server_try_do_damage_decodes_without_leftover_bits(self):
+        import json
+        from mpgs.repl import rpc
+        from mpgs.repl.schema import Schema
+        schema = Schema()
+        layout = rpc.rpc_layout(schema, 'DamageComponent', 'ServerTryDoDamage')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'real_messages', 'server_try_do_damage.jsonl')
+        with open(path, encoding='utf-8') as f:
+            samples = [json.loads(line) for line in f]
+        for s in samples:
+            raw = bytes.fromhex(s['hex'])
+            values = rpc.decode(layout, int.from_bytes(raw, 'little'), s['nbits'])
+            hit = values['Payload.Hit']
+            self.assertEqual(hit['blocking'], 1)
+            self.assertTrue(-20000 < hit['location'][0] < 0)                  # world position next to the player
+            self.assertIn(hit['bone_name'][0], ('head_jnt', 'horn_jnt'))
+            d = values['Payload.HitDirection']
+            self.assertAlmostEqual(sum(c * c for c in d), 1.0, places=3)
+
+    def test_writer_uses_the_dauntless_layout(self):
+        w = BitWriter()
+        STRUCT_WRITERS['HitResult'](w, {})
+        self.assertEqual(w.n & 0xFFFF, 0x14C)                                    # 16-bit flags with bit 8 set

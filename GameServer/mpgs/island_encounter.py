@@ -566,7 +566,8 @@ def _send_hit(session, enc, action, key, row):
     hid = hits.hit_id(enc['director'].rng)
     damage, elemental = hits.amount(enc['damage_model'], row.get('elements'))
     enc['pending_hits'].add(hid, {'damage': damage, 'elemental': elemental, 'action': action, 'key': key,
-                                  'raw': float(sum((row.get('elements') or {}).values()))})
+                                  'raw': float(sum((row.get('elements') or {}).values())),
+                                  'player': dict(player), 'sent': time.monotonic()})
     fi = session.world.schema.field_index(PLAYER_HITTABLE[1])
     params = hits.client_try_hit_params(hid, enc['guid'], row.get('row'), direction=(d[0] / n, d[1] / n, 0.0))
     entry = _entry(session.world, pawn.ch, pawn.cls, [_block(PLAYER_HITTABLE[1], fields=[
@@ -577,18 +578,6 @@ def _send_hit(session, enc, action, key, row):
     print('ENCOUNTER hit attempt %s/%s -> ClientTryHit (%.0f damage if accepted)' % (action, key, damage), flush=True)
     stagger = _stagger_probe(session, pawn, damage)
     out = [entry] + ([stagger] if stagger is not None else [])
-    flinch = _flinch_entry(session, enc, pawn, player, damage)
-    if flinch is not None:
-        out.append(flinch)
-    numbers = _player_combat_text(session, enc, pawn, player, damage)
-    if numbers is not None:
-        out.append(numbers)
-    if os.environ.get(DIRECT_PROBE_FLAG, '1') != '0':
-        # Bisect (live 2026-10-20): the stagger RPC was ignored too. A health drop shows sub-object properties on the pawn
-        # channel land; a damage number/flash shows pawn actor RPCs land.
-        out += _damage_entries(session, enc, {'damage': damage, 'elemental': elemental,
-                                              'raw': float(sum((row.get('elements') or {}).values()))})
-        print('ENCOUNTER direct probe -> health %.0f' % enc['player_health'], flush=True)
     if os.environ.get(PUSH_PROBE_FLAG, '0') == '1' and 'loc' in player:
         # Bisect: health (a property) lands but no RPC shows. A 250 cm shove via the pawn's TeleportOnOwningClient RPC tells
         # whether any server->client RPC on the pawn channel is executed.
@@ -598,6 +587,40 @@ def _send_hit(session, enc, action, key, row):
             (pfi.index(('func', 'TeleportOnOwningClient')), 'TeleportOnOwningClient', 'rpc',
              {'DestLocation': dest, 'DestRotation': list(player.get('rot') or [0.0, 0.0, 0.0])})])]))
         print('ENCOUNTER push probe -> TeleportOnOwningClient %s' % [round(v) for v in dest], flush=True)
+    return out
+
+
+HIT_REPLY_TIMEOUT = 1.0   # seconds without ServerAcceptHit/ServerRefuseHit before the fallback applies the hit anyway
+
+
+def _hit_feedback(session, enc, info):
+    """What an accepted hit does: health and damage summary, the flinch montage and the damage number."""
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    player = info.get('player') or {}
+    out = []
+    flinch = _flinch_entry(session, enc, pawn, player, info['damage'])
+    if flinch is not None:
+        out.append(flinch)
+    numbers = _player_combat_text(session, enc, pawn, player, info['damage'])
+    if numbers is not None:
+        out.append(numbers)
+    return out + _damage_entries(session, enc, info)
+
+
+def _expire_hits(session, enc):
+    """Hits the client has not answered in time: applied anyway unless MPGS_HIT_DIRECT_PROBE=0 (the client skips a ClientTryHit
+    it cannot decode without any error, so a silent client must not mean a free dodge)."""
+    pending = enc.get('pending_hits')
+    if pending is None:
+        return []
+    out = []
+    for info in pending.expired(time.monotonic(), HIT_REPLY_TIMEOUT):
+        if os.environ.get(DIRECT_PROBE_FLAG, '1') == '0':
+            print('ENCOUNTER hit unanswered (%s/%s), dropped' % (info['action'], info['key']), flush=True)
+            continue
+        out += _hit_feedback(session, enc, info)
+        print('ENCOUNTER hit unanswered (%s/%s) -> applied anyway, player health %.0f' % (
+            info['action'], info['key'], enc['player_health']), flush=True)
     return out
 
 
@@ -705,7 +728,7 @@ def _damage_entries(session, enc, info):
             (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
 
 
-DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 stops applying damage without waiting for ServerAcceptHit
+DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 drops hits the client leaves unanswered instead of applying them
 
 
 def handle_hit_reply(session, func, params):
@@ -721,7 +744,7 @@ def handle_hit_reply(session, func, params):
     if func != 'ServerAcceptHit':
         print('ENCOUNTER hit refused by the client (%s/%s)' % (info['action'], info['key']), flush=True)
         return True
-    session.entries[session.pos:session.pos] = _damage_entries(session, enc, info)
+    session.entries[session.pos:session.pos] = _hit_feedback(session, enc, info)
     print('ENCOUNTER hit accepted: %.0f damage -> player health %.0f' % (info['damage'], enc['player_health']), flush=True)
     return True
 
@@ -748,7 +771,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = [], [], 0
+    reliable, bunches, revealed = _expire_hits(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':
