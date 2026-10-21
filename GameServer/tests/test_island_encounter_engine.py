@@ -352,7 +352,7 @@ class FlagTests(unittest.TestCase):
     def test_flag_values(self):
         self.assertTrue(island_encounter.engine_enabled({'MPGS_BEHEMOTH_ENGINE': '1'}))
         self.assertFalse(island_encounter.engine_enabled({'MPGS_BEHEMOTH_ENGINE': '0'}))
-        self.assertFalse(island_encounter.engine_enabled({}))
+        self.assertTrue(island_encounter.engine_enabled({}))           # default on (2026-10-21)
 
 
 if __name__ == '__main__':

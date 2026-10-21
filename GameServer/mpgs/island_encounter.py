@@ -27,7 +27,7 @@ NETWORKED_MONTAGE_COMP_TEMPLATE_GUID = 44006
 MONTAGE_COMPONENT = ('NetworkedMontage', 'NetworkedMontageComponent')
 PLAYER_HITTABLE = ('player_hittable_bpc', 'player_hittable_bpc_C')
 HIT_REACTION = ('hit_reaction_bpc', 'hit_reaction_bpc_C')                # replicated; exported in the join (guid 130 template)   # BP_PlayerCharacter's ArchonHittableComponent
-ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # 1: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
+ENGINE_FLAG = 'MPGS_BEHEMOTH_ENGINE'   # default on; 0 falls back to the scripted encounter. On: behaviour tree + Brain + Mover drive the encounter (mpgs.behemoth.director)
 
 
 TRACE_FLAG = 'MPGS_BEHEMOTH_TRACE'     # engine path: 1 logs a director TRACE line every 0.5 s (positions, tree, attack choice)
@@ -35,7 +35,7 @@ ASC_FLAG = 'MPGS_BEHEMOTH_ASC'         # engine path only; 0 leaves out the abil
 
 
 def engine_enabled(env=None):
-    return (os.environ if env is None else env).get(ENGINE_FLAG) == '1'
+    return (os.environ if env is None else env).get(ENGINE_FLAG, '1') != '0'
 
 
 def asc_enabled(env=None):
