@@ -2,6 +2,7 @@
 attacks) and what it emits encodes onto the wire with the Embermane's own schema. Decorator/service semantics here were read from
 the cooked Blueprint bytecode (kismet_pseudo.py); see mpgs/behemoth/bt.py."""
 import json
+import math
 import os
 import random
 import sys
@@ -189,6 +190,46 @@ class PawnSpacingTests(unittest.TestCase):
         """Live positions from session 091521 (player stood ~2,100 cm away): approach, bites and lunges stay at contact or more."""
         _, closest = self.run_with_player((-806.0, 1941.0), 40.0)
         self.assertGreaterEqual(closest, 149.0)
+
+
+@unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
+class DamageReachTests(unittest.TestCase):
+    """Live 2026-10-22: hits landed from far away; the hit test used the attack areas the Brain aims with (JumpReposition: 20 m
+    square). A damage window now also needs the player within reach of its damaging bodies."""
+
+    def director(self, player):
+        from mpgs.world.terrain import Terrain
+        with open(os.path.join(ISLANDS, HUNT + '.contract.json'), encoding='utf-8') as f:
+            enc = json.load(f)['encounter']
+        center = next(c for c in enc['centers'] if c['name'] == 'BP_PatrolCenterPoint_263')['location']
+        terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', MANIFEST['terrain']))
+        return BehemothDirector(Species.load(HUNT), terrain, center, 0.0, lambda: player, rng=random.Random(1)), center
+
+    def test_body_reach_per_attack(self):
+        d, _ = self.director({'loc': [0.0, 0.0, 0.0], 'vel': [0.0, 0.0, 0.0]})
+        if not d.species.bodies:
+            self.skipTest('no <variant>_bodies.json (tools.export_behemoth_bodies)')
+        head = d._body_reach(['head_jnt'])
+        self.assertTrue(350.0 < head < 550.0)
+        self.assertGreater(d._body_reach(['tail_0%d_jnt' % i for i in range(9)]), head)     # the tail sweeps farther
+        self.assertIsNone(d._body_reach(['no_such_jnt']))
+
+    def test_jump_reposition_does_not_hit_from_ten_metres(self):
+        player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}
+        d, center = self.director(player)
+        if not d.species.bodies:
+            self.skipTest('no <variant>_bodies.json (tools.export_behemoth_bodies)')
+        d._windows[('JumpReposition', 'SideGore')] = {'row': {}}
+        d._window_reach[('JumpReposition', 'SideGore')] = d._body_reach(['head_jnt'])
+
+        def hits_at(dist):
+            player['loc'][:2] = [d.brain.pos[0] + dist * math.cos(d.brain.yaw), d.brain.pos[1] + dist * math.sin(d.brain.yaw)]
+            self.assertTrue(d.brain.in_area('JumpReposition', tuple(player['loc'][:2])))   # inside the aiming area
+            d._events, d._hit_in_window = [], set()
+            d._check_hits()
+            return [e for e in d._events if e[0] == 'hit']
+        self.assertFalse(hits_at(1000.0))                                  # out of the head's reach
+        self.assertTrue(hits_at(250.0))
 
 
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')

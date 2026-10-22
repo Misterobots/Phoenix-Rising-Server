@@ -29,6 +29,7 @@ SERVER = os.path.normpath(os.path.join(HERE, '..', '..'))
 DEFAULT_MONTAGE_SECONDS = 2.5          # a montage with no root-motion curve to take its length from
 TURN_SNAP_DEG = 25.0                   # turns up to this are set directly (no turn montage covers less than 45)
 PLAYER_CAPSULE_RADIUS = 50.0           # BP_PlayerCharacter CollisionCylinder.CapsuleRadius (half height 100; matches the live root height)
+SWING_MARGIN = 100.0                   # cm a damaging body may travel beyond its reference-pose spot during the swing
 AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
 STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
 
@@ -259,8 +260,9 @@ class Species:
     """
 
     def __init__(self, variant, actions, tree, half_height, walk_speed, enter_combat_range, base_health, turn_montages=None,
-                 damage=None, capsule_radius=0.0, move_props=None):
+                 damage=None, capsule_radius=0.0, move_props=None, bodies=None):
         self.variant, self.actions, self.tree = variant, actions, tree
+        self.bodies = dict(bodies or {})              # tools.export_behemoth_bodies: {bone: [{'pos', 'radius', 'half_length'}]}
         self.capsule_radius = float(capsule_radius)
         self.move_props = dict(move_props or {})       # authored CharMoveComp values; empty -> the original direct walk     # CollisionCylinder.CapsuleRadius of the most derived class that sets it
         self.half_height, self.walk_speed = float(half_height), float(walk_speed)
@@ -284,8 +286,13 @@ class Species:
         if os.path.exists(damage_path):
             with open(damage_path, encoding='utf-8') as f:
                 damage = json.load(f)['rows']
+        bodies = {}
+        bodies_path = os.path.join(behemoths, manifest['variant'] + '_bodies.json')   # tools.export_behemoth_bodies
+        if os.path.exists(bodies_path):
+            with open(bodies_path, encoding='utf-8') as f:
+                bodies = json.load(f)['bodies']
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
-                   enc['enterCombatRange'], enc['baseHealth'], damage=damage,
+                   enc['enterCombatRange'], enc['baseHealth'], damage=damage, bodies=bodies,
                    capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]),
                    move_props=_move_props(server, [row['name'] for row in enc['schema']]))
 
@@ -323,6 +330,7 @@ class BehemothDirector:
         self._prev_tick = None
         self._sent_moving = False
         self._windows = {}                         # (action, damage key) -> damage row, while that damage window is open
+        self._window_reach = {}                    # (action, damage key) -> how far from the actor its damaging bodies reach
         self._hit_in_window = set()
         self._target_seen = None
         self._states_seen = set()
@@ -448,9 +456,11 @@ class BehemothDirector:
                     if kind == 'damage_window_open':
                         for key in payload['keys']:
                             self._windows[(action, key)] = payload['rows'].get(key)
+                            self._window_reach[(action, key)] = self._body_reach(payload.get('bodies'))
                     elif kind == 'damage_window_close':
                         for key in payload['keys']:
                             self._windows.pop((action, key), None)
+                            self._window_reach.pop((action, key), None)
                             self._hit_in_window.discard((action, key))
                     elif kind == 'part_collision_ignore_pawn':
                         self._ignore_pawn = True
@@ -479,10 +489,20 @@ class BehemothDirector:
             return []
         return [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
 
+    def _body_reach(self, bones):
+        """Horizontal distance from the actor within which the window's damaging bodies can touch the player: the farthest body
+        (reference pose) plus its radius and half length, the player's capsule and SWING_MARGIN for the swing itself. None when
+        the species has no body data (then only the attack area decides)."""
+        shapes = [b for bone in (bones or ()) for b in getattr(self.species, 'bodies', {}).get(bone, ())]
+        if not shapes:
+            return None
+        return max(math.hypot(b['pos'][0], b['pos'][1]) + b['radius'] + b['half_length'] for b in shapes) +             PLAYER_CAPSULE_RADIUS + SWING_MARGIN
+
     def _check_hits(self):
         """While a damage window is open, the first tick the player stands in the action's attack area (Brain.in_area at the
         current, root-motion-moved transform) is a hit: ('hit', action, damage key, damage row). One hit per window and key.
-        A stand-in for the native per-frame hit-volume sweep; the attack areas are the authored HitAreaBoxes/arcs."""
+        A stand-in for the native per-frame hit-volume sweep. The attack areas (HitAreaBoxes/arcs) are where the Brain aims, so
+        they are large (JumpReposition: 20 m square); the player must also be within reach of the window's damaging bodies."""
         if not self._windows:
             return
         target, _ = self._target()
@@ -490,6 +510,9 @@ class BehemothDirector:
             return
         for (action, key), row in list(self._windows.items()):
             if (action, key) in self._hit_in_window or action not in self.brain.actions:
+                continue
+            reach = self._window_reach.get((action, key))
+            if reach is not None and math.hypot(target.pos[0] - self.brain.pos[0], target.pos[1] - self.brain.pos[1]) > reach:
                 continue
             if self.brain.in_area(action, target.pos):
                 self._hit_in_window.add((action, key))
