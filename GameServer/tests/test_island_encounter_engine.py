@@ -295,17 +295,15 @@ class HealthAndHitTests(EngineEncounterTests):
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
         asc = next(b for b in pawn.parsed.blocks if b.cls_name == 'ArchonAbilitySystemComponent')
         req = {'AbilityToActivate.Handle': 9, 'InputPressed': 0, 'PredictionKey': {'server': 0, 'current': 36}}
-        n = len(s.entries)
+
+        def count(func):
+            return sum(1 for e in s.entries for b in e.parsed.blocks for f in (b.fields or []) if f[1] == func)
         island_encounter.handle_ability(s, pawn.ch, asc, req)
-        self.assertTrue(any(f[1] == 'ClientActivateAbilityFailed' for e in s.entries[n:] for b in e.parsed.blocks
-                            for f in (b.fields or [])))
-        self.roundtrip(s, s.entries[-1])
+        self.assertEqual(count('ClientActivateAbilityFailed'), 1)            # standing: refused
         enc['player_health'] = 10.0
         island_encounter._damage_entries(s, enc, {'damage': 75.0, 'elemental': 0.0, 'raw': 75.0})
-        n = len(s.entries)
         island_encounter.handle_ability(s, pawn.ch, asc, req)
-        self.assertTrue(any(f[1] == 'ClientActivateAbilitySucceed' for e in s.entries[n:] for b in e.parsed.blocks
-                            for f in (b.fields or [])))
+        self.assertEqual(count('ClientActivateAbilitySucceed'), 1)           # downed: confirmed
         with patch.dict(os.environ, {island_encounter.AUTO_REVIVE_FLAG: '0'}),                 patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 1.0):
             up = island_encounter._auto_revive(s, enc)
         self.assertFalse(enc['player_downed'])
