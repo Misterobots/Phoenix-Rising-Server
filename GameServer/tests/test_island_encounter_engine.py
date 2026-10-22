@@ -331,6 +331,8 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertEqual(self.roundtrip(s, bleed[0]).blocks[0].values['CurrentBleedoutState'], 0)
         self.assertFalse(enc['player_downed'])
         self.assertEqual(enc['player_health'], 500)
+        revive = next(e for e in up if any(f[1] == 'InternalReviveFromBleedOut' for b in e.parsed.blocks for f in (b.fields or [])))
+        self.roundtrip(s, revive)
 
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits

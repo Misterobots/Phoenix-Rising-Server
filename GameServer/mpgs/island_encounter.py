@@ -841,6 +841,13 @@ def _set_bleedout(session, enc, down):
         header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
         enc['player_health'] = round(enc.get('player_max_health', 1000.0) * REVIVE_HEALTH_FRACTION)
         out.append(property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}))
+        # BP_PlayerCharacter.InternalReviveFromBleedOut (NetMulticast): Set Bleedout State(false) - hides the downed marker and
+        # revive callout (live 2026-10-22: the marker stayed) -, SendGameplayEventToActor(Revive_Tag), interaction
+        # RevivedFromBleedOut. Revive_Tag is sent empty (structs.TAG_NONE_INDEX) until the tag net index table exists.
+        fi = session.world.schema.field_index(pawn.cls)
+        out.append(_entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
+            (fi.index(('func', 'InternalReviveFromBleedOut')), 'InternalReviveFromBleedOut', 'rpc',
+             {'RevivingPawn_0': ('obj', _pawn_guid(session)), 'Revive_Tag': None})])]))
         print('ENCOUNTER player revived -> health %.0f' % enc['player_health'], flush=True)
     return out
 

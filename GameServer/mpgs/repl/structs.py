@@ -283,6 +283,27 @@ def _w_tags(w, v):
             _write_tag_index(w, i)
 
 
+# A tag net index past the end of the client's NetworkGameplayTagNodeIndex: GetTagFromNetIndex returns the empty tag. The real
+# table (sorted tag nodes, CommonlyReplicatedTags first) is not rebuilt yet, so a specific tag cannot be named on the wire.
+TAG_NONE_INDEX = (1 << 16) - 1
+
+
+@reader('GameplayTag')
+def _r_tag(r):
+    """FGameplayTag::NetSerialize_Packed with fast replication: one net index (SerializeTagNetIndexPacked)."""
+    if TAG_CFG.get('by_name'):
+        return read_name(r)
+    return _read_tag_index(r)
+
+
+@writer('GameplayTag')
+def _w_tag(w, v):
+    if TAG_CFG.get('by_name'):
+        write_name(w, v)
+    else:
+        _write_tag_index(w, TAG_NONE_INDEX if v is None else v)
+
+
 @reader('PredictionKey')
 def _r_pk(r):
     valid = r.bit()
