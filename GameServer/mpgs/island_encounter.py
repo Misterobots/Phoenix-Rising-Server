@@ -725,7 +725,7 @@ def _damage_entries(session, enc, info):
     fi = session.world.schema.field_index(pawn.cls)
     pm = hits.post_mitigation_params(_pawn_guid(session), info['damage'], info['elemental'], info['raw'])
     out = [
-        property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}),
+        *_health_entries(session, pawn, header, enc['player_health']),
         _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
             (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
     if enc['player_health'] <= 0.0 and not enc.get('player_downed'):
@@ -806,7 +806,7 @@ def _apply_heals(session, enc):
     top = float(enc.get('player_max_health') or values.get('MaxHealth') or enc['player_health'])
     enc['player_health'] = min(top, enc['player_health'] + sum(x[1] for x in due))
     print('ENCOUNTER heal -> player health %.0f' % enc['player_health'], flush=True)
-    return [property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']})]
+    return _health_entries(session, pawn, header, enc['player_health'])
 
 
 BLEEDOUT = ('player_bleedout_bpc', 'player_bleedout_bpc_C')   # ArchonBleedoutComponent: CurrentBleedoutState (RepNotify)
@@ -840,7 +840,7 @@ def _set_bleedout(session, enc, down):
     else:
         header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
         enc['player_health'] = round(enc.get('player_max_health', 1000.0) * REVIVE_HEALTH_FRACTION)
-        out.append(property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}))
+        out += _health_entries(session, pawn, header, enc['player_health'])
         # BP_PlayerCharacter.InternalReviveFromBleedOut (NetMulticast): Set Bleedout State(false) - hides the downed marker and
         # revive callout (live 2026-10-22: the marker stayed) -, SendGameplayEventToActor(Revive_Tag), interaction
         # RevivedFromBleedOut. Revive_Tag is sent empty (structs.TAG_NONE_INDEX) until the tag net index table exists.
@@ -875,6 +875,24 @@ def _auto_revive(session, enc):
     if delay <= 0 or time.monotonic() - (enc.get('downed_at') or 0.0) < delay:
         return []
     return _set_bleedout(session, enc, False)
+
+
+def _health_entries(session, pawn, header, health):
+    """A player health change as a real server replicates it: the ASC's ArchonHealthAttributeSet.CurrentHealth, the pawn's
+    Blueprint 'Current Health' (RepNotify OnRep_Health) and player_state_bp's 'Current Health' (OnRep_Health copies it there on
+    the server for the HUD and party). Leaving the two Blueprint copies at the join's value kept the revive callout and the
+    downed quick-item bar after a revive (live 2026-10-22)."""
+    from .engine.attributes import property_update
+    out = [property_update(session, pawn.ch, header, {'CurrentHealth': health}),
+           _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, {'Current Health': float(health)})])]
+    ps_cls = ((getattr(session.world, 'island_contract', None) or {}).get('classes', {}).get('PlayerStateClass') or
+              (None, 'player_state_bp_C'))[1]
+    ps = next((e for e in session.entries if e.open and e.cls == ps_cls), None)
+    sch = session.world.schema
+    if ps is not None and any(p.name == 'Current Health' for c in [ps.cls] + sch.inherit.get(ps.cls, [])
+                              for p in sch.classes.get(c, (None, []))[1]):
+        out.append(_entry(session.world, ps.ch, ps.cls, [_block(ps.cls, {'Current Health': float(health)})]))
+    return out
 
 
 DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 drops hits the client leaves unanswered instead of applying them

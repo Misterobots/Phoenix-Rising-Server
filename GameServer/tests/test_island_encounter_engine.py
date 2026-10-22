@@ -331,6 +331,10 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertEqual(self.roundtrip(s, bleed[0]).blocks[0].values['CurrentBleedoutState'], 0)
         self.assertFalse(enc['player_downed'])
         self.assertEqual(enc['player_health'], 500)
+        copies = [b for e in up for b in e.parsed.blocks if (b.values or {}).get('Current Health') == 500.0]
+        self.assertEqual(len(copies), 2)                               # pawn and player state Blueprint copies
+        for e in up:
+            self.roundtrip(s, e)
         revive = next(e for e in up if any(f[1] == 'InternalReviveFromBleedOut' for b in e.parsed.blocks for f in (b.fields or [])))
         self.roundtrip(s, revive)
 
@@ -345,7 +349,7 @@ class HealthAndHitTests(EngineEncounterTests):
         before = len(s.entries)
         self.assertTrue(island_encounter.handle_hit_reply(s, 'ServerAcceptHit', reply))
         queued = s.entries[s.pos:]
-        self.assertEqual(len(s.entries) - before, 4)        # flinch, damage number, health, damage summary
+        self.assertGreaterEqual(len(s.entries) - before, 5)  # flinch, damage number, health (ASC + pawn [+ player state]), summary
         health = next(e for e in queued if any(b.cls_name == 'ArchonHealthAttributeSet' for b in e.parsed.blocks))
         v = self.roundtrip(s, health).blocks[0].values
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
