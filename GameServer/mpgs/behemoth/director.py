@@ -29,7 +29,7 @@ SERVER = os.path.normpath(os.path.join(HERE, '..', '..'))
 DEFAULT_MONTAGE_SECONDS = 2.5          # a montage with no root-motion curve to take its length from
 TURN_SNAP_DEG = 25.0                   # turns up to this are set directly (no turn montage covers less than 45)
 PLAYER_CAPSULE_RADIUS = 50.0           # BP_PlayerCharacter CollisionCylinder.CapsuleRadius (half height 100; matches the live root height)
-SWING_MARGIN = 100.0                   # cm a damaging body may travel beyond its reference-pose spot during the swing
+SWING_MARGIN = 75.0                    # cm a damaging body may travel beyond its reference-pose spot (limb swing, not root motion)
 AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
 STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
 
@@ -330,7 +330,7 @@ class BehemothDirector:
         self._prev_tick = None
         self._sent_moving = False
         self._windows = {}                         # (action, damage key) -> damage row, while that damage window is open
-        self._window_reach = {}                    # (action, damage key) -> how far from the actor its damaging bodies reach
+        self._window_bodies = {}                   # (action, damage key) -> physics bodies of its damaging bones (None: no data)
         self._hit_in_window = set()
         self._target_seen = None
         self._states_seen = set()
@@ -456,11 +456,11 @@ class BehemothDirector:
                     if kind == 'damage_window_open':
                         for key in payload['keys']:
                             self._windows[(action, key)] = payload['rows'].get(key)
-                            self._window_reach[(action, key)] = self._body_reach(payload.get('bodies'))
+                            self._window_bodies[(action, key)] = self._window_shapes(payload.get('bodies'))
                     elif kind == 'damage_window_close':
                         for key in payload['keys']:
                             self._windows.pop((action, key), None)
-                            self._window_reach.pop((action, key), None)
+                            self._window_bodies.pop((action, key), None)
                             self._hit_in_window.discard((action, key))
                     elif kind == 'part_collision_ignore_pawn':
                         self._ignore_pawn = True
@@ -469,6 +469,7 @@ class BehemothDirector:
                     elif kind == 'action_end':
                         self._ignore_pawn = False
                         self._windows.clear()
+                        self._window_bodies.clear()
                         self._hit_in_window.clear()
             self._check_hits()
             tgt = self.ctx.bb.get('AttackTarget')
@@ -489,33 +490,64 @@ class BehemothDirector:
             return []
         return [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
 
-    def _body_reach(self, bones):
-        """Horizontal distance from the actor within which the window's damaging bodies can touch the player: the farthest body
-        (reference pose) plus its radius and half length, the player's capsule and SWING_MARGIN for the swing itself. None when
-        the species has no body data (then only the attack area decides)."""
+    def _window_shapes(self, bones):
+        """The physics bodies of a damage window's bones (tools.export_behemoth_bodies), or None without body data."""
         shapes = [b for bone in (bones or ()) for b in getattr(self.species, 'bodies', {}).get(bone, ())]
+        return shapes or None
+
+    def _body_reach(self, bones):
+        """Farthest horizontal distance from the actor a window's damaging bodies reach (diagnostics/tests), or None."""
+        shapes = self._window_shapes(bones)
         if not shapes:
             return None
         return max(math.hypot(b['pos'][0], b['pos'][1]) + b['radius'] + b['half_length'] for b in shapes) +             PLAYER_CAPSULE_RADIUS + SWING_MARGIN
 
+    @staticmethod
+    def _body_world(xf, shape):
+        (x, y), yaw = xf
+        c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+        lx, ly = shape['pos'][0], shape['pos'][1]
+        return x + lx * c - ly * s, y + lx * s + ly * c
+
+    def _bodies_touch(self, shapes, point, prev, cur):
+        """Whether any body, swept from its spot at the previous tick's transform to the current one, comes within its radius
+        and half length + the player's capsule + SWING_MARGIN of `point` (2D). Root-motion turns and leaps move the bodies."""
+        for sh in shapes:
+            ax, ay = self._body_world(prev, sh)
+            bx, by = self._body_world(cur, sh)
+            dx, dy = bx - ax, by - ay
+            n = dx * dx + dy * dy
+            u = 0.0 if n == 0 else max(0.0, min(1.0, ((point[0] - ax) * dx + (point[1] - ay) * dy) / n))
+            if math.hypot(point[0] - (ax + u * dx), point[1] - (ay + u * dy)) <=                     sh['radius'] + sh['half_length'] + PLAYER_CAPSULE_RADIUS + SWING_MARGIN:
+                return True
+        return False
+
     def _check_hits(self):
-        """While a damage window is open, the first tick the player stands in the action's attack area (Brain.in_area at the
-        current, root-motion-moved transform) is a hit: ('hit', action, damage key, damage row). One hit per window and key.
-        A stand-in for the native per-frame hit-volume sweep. The attack areas (HitAreaBoxes/arcs) are where the Brain aims, so
-        they are large (JumpReposition: 20 m square); the player must also be within reach of the window's damaging bodies."""
+        """While a damage window is open, the first tick a damaging body touches the player is a hit: ('hit', action, damage key,
+        damage row). One hit per attack (all its windows), broken-part windows skipped. A stand-in for the native per-frame hit-volume sweep.
+
+        The window names its damaging bones; their physics bodies (reference pose, carried by the actor's root-motion transform
+        and swept between ticks) decide. The attack areas (HitAreaBoxes) are only where the Brain aims at selection time -
+        large (JumpReposition: 20 m) and wrong after a spin (tail swipe) or a leap (paw swipe) - so they are used only for a
+        species without body data. Live 2026-10-22."""
+        cur = (tuple(self.brain.pos), self.brain.yaw)
+        prev, self._prev_xf = getattr(self, '_prev_xf', None) or cur, cur
         if not self._windows:
             return
         target, _ = self._target()
         if not target.alive:
             return
         for (action, key), row in list(self._windows.items()):
-            if (action, key) in self._hit_in_window or action not in self.brain.actions:
+            if (action, key) in self._hit_in_window or (action, '*') in self._hit_in_window or action not in self.brain.actions:
                 continue
-            reach = self._window_reach.get((action, key))
-            if reach is not None and math.hypot(target.pos[0] - self.brain.pos[0], target.pos[1] - self.brain.pos[1]) > reach:
-                continue
-            if self.brain.in_area(action, target.pos):
+            if 'broken' in key.lower():
+                continue                 # SideGore_BrokenHead, tailswipe_broken: only after that part is severed (not modelled)
+            shapes = self._window_bodies.get((action, key))
+            touched = (self._bodies_touch(shapes, target.pos, prev, cur) if shapes
+                       else self.brain.in_area(action, target.pos))
+            if touched:
                 self._hit_in_window.add((action, key))
+                self._hit_in_window.add((action, '*'))    # one hit per attack: its windows (tail, body) share the attack
                 self._events.append(('hit', action, key, row))
 
     def trace_line(self, now):

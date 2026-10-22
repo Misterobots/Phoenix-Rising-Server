@@ -214,22 +214,52 @@ class DamageReachTests(unittest.TestCase):
         self.assertGreater(d._body_reach(['tail_0%d_jnt' % i for i in range(9)]), head)     # the tail sweeps farther
         self.assertIsNone(d._body_reach(['no_such_jnt']))
 
+    def window(self, d, action, key, bones):
+        d._windows = {(action, key): {'row': {}}}
+        d._window_bodies = {(action, key): d._window_shapes(bones)}
+        d._events, d._hit_in_window = [], set()
+
+    def place(self, d, player, dist, rel_deg):
+        a = math.radians(d.brain.yaw + rel_deg)
+        player['loc'][:2] = [d.brain.pos[0] + dist * math.cos(a), d.brain.pos[1] + dist * math.sin(a)]
+
+    def hits(self, d):
+        d._check_hits()
+        return [e for e in d._events if e[0] == 'hit']
+
     def test_jump_reposition_does_not_hit_from_ten_metres(self):
         player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}
-        d, center = self.director(player)
+        d, _ = self.director(player)
         if not d.species.bodies:
             self.skipTest('no <variant>_bodies.json (tools.export_behemoth_bodies)')
-        d._windows[('JumpReposition', 'SideGore')] = {'row': {}}
-        d._window_reach[('JumpReposition', 'SideGore')] = d._body_reach(['head_jnt'])
+        for dist, expect in ((1000.0, False), (250.0, True)):
+            self.window(d, 'JumpReposition', 'SideGore', ['head_jnt'])
+            self.place(d, player, dist, 0.0)
+            self.assertEqual(bool(self.hits(d)), expect, dist)
 
-        def hits_at(dist):
-            player['loc'][:2] = [d.brain.pos[0] + dist * math.cos(d.brain.yaw), d.brain.pos[1] + dist * math.sin(d.brain.yaw)]
-            self.assertTrue(d.brain.in_area('JumpReposition', tuple(player['loc'][:2])))   # inside the aiming area
-            d._events, d._hit_in_window = [], set()
-            d._check_hits()
-            return [e for e in d._events if e[0] == 'hit']
-        self.assertFalse(hits_at(1000.0))                                  # out of the head's reach
-        self.assertTrue(hits_at(250.0))
+    def test_bite_does_not_hit_behind(self):
+        player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}
+        d, _ = self.director(player)
+        if not d.species.bodies:
+            self.skipTest('no <variant>_bodies.json (tools.export_behemoth_bodies)')
+        self.window(d, 'Bite', 'SideGore', ['head_jnt', 'neck_01_jnt'])
+        self.place(d, player, 300.0, 180.0)
+        self.assertFalse(self.hits(d))
+
+    def test_tail_swipe_hits_beside_after_a_spin(self):
+        """The tail sweeps with the root-motion turn: a player beside the Embermane is hit as the tail swings past."""
+        player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}
+        d, _ = self.director(player)
+        if not d.species.bodies:
+            self.skipTest('no <variant>_bodies.json (tools.export_behemoth_bodies)')
+        tail = ['tail_0%d_jnt' % i for i in range(9)]
+        self.window(d, 'TailSwipeL', 'tailswipe', tail)
+        self.place(d, player, 500.0, 90.0)                       # beside, the tail at rest points backwards
+        d._prev_xf = (tuple(d.brain.pos), d.brain.yaw)
+        self.assertFalse(self.hits(d))                          # no turn: the tail stays behind
+        self.window(d, 'TailSwipeL', 'tailswipe', tail)
+        d._prev_xf = (tuple(d.brain.pos), d.brain.yaw - 80.0)   # mid-spin: last tick the tail was near the player
+        self.assertTrue(self.hits(d))
 
 
 @unittest.skipUnless(HAVE_DATA, 'Embermane/island engine data not generated locally')
