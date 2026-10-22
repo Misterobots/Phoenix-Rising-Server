@@ -236,7 +236,11 @@ def _w_rms_group(w, v):
 
 # ----------------------------------------------------------------------------- GameplayAbilities / GameplayTags
 # Tag net-index configuration of the game (UGameplayTagsManager): container size bits, first bit segment, true bit count.
-TAG_CFG = {'size_bits': 6, 'first': 16, 'true': 16, 'by_name': False}   # stock UGameplayTagsManager defaults (live client memory); all recorded containers are empty
+# DefaultGameplayTags.ini: FastReplication=True, NumBitsForContainerSize=6, NetIndexFirstBitSegment=16. NetIndexTrueBitNum =
+# ceil(log2(nodes + 2)) (GameplayTagsManager.cpp): ~2,090 tag nodes (1,785 ini tags + parents + native strings in the exe) -> 12,
+# and the first segment is min(16, 12) = 12, so an index is a plain 12-bit value. The old 16 made InternalReviveFromBleedOut
+# undecodable: the client skipped it and stayed downed (live 2026-10-22).
+TAG_CFG = {'size_bits': 6, 'first': 12, 'true': 12, 'by_name': False}
 
 
 def _read_tag_index(r):
@@ -285,7 +289,7 @@ def _w_tags(w, v):
 
 # A tag net index past the end of the client's NetworkGameplayTagNodeIndex: GetTagFromNetIndex returns the empty tag. The real
 # table (sorted tag nodes, CommonlyReplicatedTags first) is not rebuilt yet, so a specific tag cannot be named on the wire.
-TAG_NONE_INDEX = (1 << 16) - 1
+TAG_NONE_INDEX = (1 << 12) - 1           # >= InvalidTagNetIndex (nodes + 1): decodes as the empty tag
 
 
 @reader('GameplayTag')
