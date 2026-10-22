@@ -246,6 +246,18 @@ class DamageReachTests(unittest.TestCase):
         self.place(d, player, 300.0, 180.0)
         self.assertFalse(self.hits(d))
 
+    def test_paw_swipe_reaches_in_front(self):
+        """Live 2026-10-22: the paw (tucked under the chest in the reference pose) never reached the player in front."""
+        player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}
+        d, _ = self.director(player)
+        if not d.species.bodies or not d.species.joints:
+            self.skipTest('no bodies/joints export (tools.export_behemoth_bodies)')
+        arm = ['r_finger_index_00_jnt', 'r_lower_arm_jnt', 'r_upper_arm_jnt', 'r_wrist_jnt']
+        for dist, expect in ((250.0, True), (600.0, False)):
+            self.window(d, 'PawSwipeL', 'bite', arm)
+            self.place(d, player, dist, 0.0)
+            self.assertEqual(bool(self.hits(d)), expect, dist)
+
     def test_tail_swipe_hits_beside_after_a_spin(self):
         """The tail sweeps with the root-motion turn: a player beside the Embermane is hit as the tail swings past."""
         player = {'loc': [0.0, 0.0, 134.0], 'vel': [0.0, 0.0, 0.0]}

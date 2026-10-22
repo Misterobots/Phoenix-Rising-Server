@@ -6,7 +6,7 @@
 Damage windows (archon_damage_window_C) name the bones whose bodies deal damage. Each body is a capsule/sphere/box on a bone; its
 centre is the bone's component-space reference pose applied to the body's local centre, then the CharacterMesh0 offset and scale
 (the Blueprint's RelativeLocation.Z and RelativeScale3D) take it to actor space. Output: {bone: [{'pos': [x, y, z], 'radius': r,
-'half_length': h}]} in cm, x forward.
+'half_length': h}]} in cm, x forward, plus 'joints' {bone: {'pos', 'parent'}} for limb swing pivots.
 """
 import argparse
 import json
@@ -29,9 +29,26 @@ def _qrot(q, v):
     return (vx + w * t[0] + y * t[2] - z * t[1], vy + w * t[1] + z * t[0] - x * t[2], vz + w * t[2] + x * t[1] - y * t[0])
 
 
+def _ref(skeleton):
+    return next(e for e in skeleton if isinstance(e, dict) and e.get('Type') == 'Skeleton')['ReferenceSkeleton']
+
+
+def joints(skeleton, mesh_z=0.0, mesh_scale=1.0):
+    """{bone: {'pos': actor-space joint position, 'parent': parent bone or None}} (reference pose)."""
+    pose, info = component_pose(skeleton), _ref(skeleton)['FinalRefBoneInfo']
+    out = {}
+    for b in info:
+        t = pose[b['Name']][1]
+        pos = [v * mesh_scale for v in t]
+        pos[2] += mesh_z
+        out[b['Name']] = {'pos': [round(v, 1) for v in pos],
+                          'parent': info[b['ParentIndex']]['Name'] if b['ParentIndex'] >= 0 else None}
+    return out
+
+
 def component_pose(skeleton):
     """FinalRefBonePose (parent-relative) -> {bone: (rotation quat, translation)} in component space."""
-    ref = next(e for e in skeleton if isinstance(e, dict) and e.get('Type') == 'Skeleton')['ReferenceSkeleton']
+    ref = _ref(skeleton)
     out, cs = {}, []
     for info, pose in zip(ref['FinalRefBoneInfo'], ref['FinalRefBonePose']):
         r, t = pose['Rotation'], pose['Translation']
@@ -85,7 +102,8 @@ def main():
     with open(args.phat, encoding='utf-8') as f:
         phat = json.load(f)
     out = {'source': [os.path.basename(args.skeleton), os.path.basename(args.phat)], 'mesh_z': args.mesh_z,
-           'mesh_scale': args.mesh_scale, 'bodies': bodies(skeleton, phat, args.mesh_z, args.mesh_scale)}
+           'mesh_scale': args.mesh_scale, 'bodies': bodies(skeleton, phat, args.mesh_z, args.mesh_scale),
+           'joints': joints(skeleton, args.mesh_z, args.mesh_scale)}
     path = os.path.join(HERE, '..', 'world', 'behemoths', args.variant + '_bodies.json')
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(out, f, indent=1)

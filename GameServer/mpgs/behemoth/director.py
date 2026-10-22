@@ -29,6 +29,7 @@ SERVER = os.path.normpath(os.path.join(HERE, '..', '..'))
 DEFAULT_MONTAGE_SECONDS = 2.5          # a montage with no root-motion curve to take its length from
 TURN_SNAP_DEG = 25.0                   # turns up to this are set directly (no turn montage covers less than 45)
 PLAYER_CAPSULE_RADIUS = 50.0           # BP_PlayerCharacter CollisionCylinder.CapsuleRadius (half height 100; matches the live root height)
+LIMB_ROOT_MARKS = ('upper_arm', 'thigh')  # a damage window chain rooted here is a limb that swings about that joint
 SWING_MARGIN = 75.0                    # cm a damaging body may travel beyond its reference-pose spot (limb swing, not root motion)
 AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
 STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
@@ -260,9 +261,10 @@ class Species:
     """
 
     def __init__(self, variant, actions, tree, half_height, walk_speed, enter_combat_range, base_health, turn_montages=None,
-                 damage=None, capsule_radius=0.0, move_props=None, bodies=None):
+                 damage=None, capsule_radius=0.0, move_props=None, bodies=None, joints=None):
         self.variant, self.actions, self.tree = variant, actions, tree
         self.bodies = dict(bodies or {})              # tools.export_behemoth_bodies: {bone: [{'pos', 'radius', 'half_length'}]}
+        self.joints = dict(joints or {})              # {bone: {'pos', 'parent'}}: limb swing pivots
         self.capsule_radius = float(capsule_radius)
         self.move_props = dict(move_props or {})       # authored CharMoveComp values; empty -> the original direct walk     # CollisionCylinder.CapsuleRadius of the most derived class that sets it
         self.half_height, self.walk_speed = float(half_height), float(walk_speed)
@@ -286,13 +288,14 @@ class Species:
         if os.path.exists(damage_path):
             with open(damage_path, encoding='utf-8') as f:
                 damage = json.load(f)['rows']
-        bodies = {}
+        bodies, joints = {}, {}
         bodies_path = os.path.join(behemoths, manifest['variant'] + '_bodies.json')   # tools.export_behemoth_bodies
         if os.path.exists(bodies_path):
             with open(bodies_path, encoding='utf-8') as f:
-                bodies = json.load(f)['bodies']
+                exported = json.load(f)
+                bodies, joints = exported['bodies'], exported.get('joints', {})
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
-                   enc['enterCombatRange'], enc['baseHealth'], damage=damage, bodies=bodies,
+                   enc['enterCombatRange'], enc['baseHealth'], damage=damage, bodies=bodies, joints=joints,
                    capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]),
                    move_props=_move_props(server, [row['name'] for row in enc['schema']]))
 
@@ -491,9 +494,24 @@ class BehemothDirector:
         return [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
 
     def _window_shapes(self, bones):
-        """The physics bodies of a damage window's bones (tools.export_behemoth_bodies), or None without body data."""
-        shapes = [b for bone in (bones or ()) for b in getattr(self.species, 'bodies', {}).get(bone, ())]
-        return shapes or None
+        """The physics bodies of a damage window's bones (tools.export_behemoth_bodies), or None without body data.
+
+        A limb (chain rooted at an arm or leg joint) swings about its root joint far from its reference pose - the paw swipe's
+        paw is tucked under the chest in the reference pose - so a limb window also gets a sphere at that joint reaching as far
+        as the chain's farthest joint and body: the limb at full stretch, in any direction (live 2026-10-22)."""
+        bodies = getattr(self.species, 'bodies', {})
+        shapes = [b for bone in (bones or ()) for b in bodies.get(bone, ())]
+        if not shapes:
+            return None
+        joints, wanted = getattr(self.species, 'joints', {}), set(bones)
+        for root in [b for b in wanted if b in joints and joints[b]['parent'] not in wanted]:
+            if not any(k in root for k in LIMB_ROOT_MARKS):
+                continue
+            pivot = joints[root]['pos']
+            reach = max([math.dist(pivot, joints[b]['pos']) for b in wanted if b in joints] +
+                        [math.dist(pivot, sh['pos']) + sh['radius'] for b in wanted for sh in bodies.get(b, ())])
+            shapes.append({'pos': list(pivot), 'radius': reach, 'half_length': 0.0, 'limb': root})
+        return shapes
 
     def _body_reach(self, bones):
         """Farthest horizontal distance from the actor a window's damaging bodies reach (diagnostics/tests), or None."""
