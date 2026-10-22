@@ -554,6 +554,10 @@ class GenSession(ReplaySession):
                         from .island_encounter import handle_damage
                         handle_damage(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
                         continue
+                    if blk.cls_name == 'ArchonAbilitySystemComponent' and x[1] == 'ServerTryActivateAbility' and                             getattr(self, '_encounter', None) is not None:
+                        from .island_encounter import handle_ability
+                        handle_ability(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
+                        continue
                     if blk.cls_name == 'player_hittable_bpc_C' and x[1] in ('ServerAcceptHit', 'ServerRefuseHit'):
                         from .island_encounter import handle_hit_reply
                         handle_hit_reply(self, x[1], x[3] if x[2] == 'rpc' else None)

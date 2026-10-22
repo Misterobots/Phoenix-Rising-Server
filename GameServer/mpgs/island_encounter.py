@@ -733,9 +733,73 @@ def _damage_entries(session, enc, info):
     return out
 
 
+# Quick items (live capture 2026-10-22): the client sends ServerNotifyQuickitemUsed(slot) on its inventory actor and
+# ServerTryActivateAbility(Handle, InputPressed, PredictionKey) on its ASC. The ability is LocalPredicted: the client already
+# plays the drink; the server confirms with ClientActivateAbilitySucceed(Handle, the client's key) and applies the effect.
+POTION_HEAL = 425.0          # Ability_QuickItem_Healing_Potion_Flask CDO "Heal Amount" (its HoTTime 20 / HoTBonus 1.2 not modelled)
+POTION_HEAL_DELAY = 0.8      # the CDO's Audio-ActivateDelay: the burst lands as the drink finishes
+
+
+def _ability_names(session, pawn):
+    """{handle: ability CDO name} from the join's ActivatableAbilities and the pawn's exports."""
+    from .repl.guid import flatten
+    names = {i.guid: i.name for root in pawn.exports for i in flatten(root) if i.name}
+    asc = next((b for b in pawn.parsed.blocks if b.cls_name == 'ArchonAbilitySystemComponent'), None)
+    out = {}
+    for f in (asc.fields or []) if asc is not None else []:
+        if f[1] != 'ActivatableAbilities' or not isinstance(f[3], dict):
+            continue
+        for _, item in f[3].get('changed', []):
+            d = dict(item)
+            h, ab = d.get('ActivatableAbilities.Items[].Handle.Handle'), d.get('ActivatableAbilities.Items[].Ability')
+            if h is not None and isinstance(ab, tuple):
+                out[h] = names.get(ab[1], '')
+    return out
+
+
+def handle_ability(session, ch, req_block, params):
+    """ArchonAbilitySystemComponent.ServerTryActivateAbility on the island. -> True when answered."""
+    enc = getattr(session, '_encounter', None)
+    pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
+    if pawn is None or ch != pawn.ch or not isinstance(params, dict):
+        return False
+    h = params.get('AbilityToActivate.Handle')
+    name = _ability_names(session, pawn).get(h, '')
+    key = params.get('PredictionKey') or {}
+    if 'Healing_Potion' not in name:
+        print('ENCOUNTER ability handle %s (%s) not handled; no reply' % (h, name or '?'), flush=True)
+        return False
+    session._queue_rpc(ch, req_block, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': key})
+    if enc is not None:
+        enc.setdefault('pending_heals', []).append((time.monotonic() + POTION_HEAL_DELAY, POTION_HEAL, name))
+    print('ENCOUNTER potion (handle %s, %s) -> ClientActivateAbilitySucceed, +%.0f health in %.1f s' % (
+        h, name, POTION_HEAL, POTION_HEAL_DELAY), flush=True)
+    return True
+
+
+def _apply_heals(session, enc):
+    from .engine.attributes import find_block, property_update
+    due = [x for x in enc.get('pending_heals', []) if x[0] <= time.monotonic()]
+    if not due or enc.get('player_downed'):
+        if due:
+            enc['pending_heals'] = [x for x in enc['pending_heals'] if x not in due]
+        return []
+    enc['pending_heals'] = [x for x in enc['pending_heals'] if x not in due]
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
+    values = header.values or {}
+    if enc.get('player_health') is None:
+        enc['player_health'] = float(values.get('CurrentHealth', 0.0))
+    top = float(enc.get('player_max_health') or values.get('MaxHealth') or enc['player_health'])
+    enc['player_health'] = min(top, enc['player_health'] + sum(x[1] for x in due))
+    print('ENCOUNTER heal -> player health %.0f' % enc['player_health'], flush=True)
+    return [property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']})]
+
+
 BLEEDOUT = ('player_bleedout_bpc', 'player_bleedout_bpc_C')   # ArchonBleedoutComponent: CurrentBleedoutState (RepNotify)
 AUTO_REVIVE_FLAG = 'MPGS_AUTO_REVIVE_SECONDS'   # downed for this long -> back up at REVIVE_HEALTH_FRACTION (0 turns it off)
 REVIVE_HEALTH_FRACTION = 0.5
+BLEEDOUT_AFTER_FALL = 1.9     # s: the death stagger's fall section ends at 1.93 s
 
 
 def _set_bleedout(session, enc, down):
@@ -747,7 +811,13 @@ def _set_bleedout(session, enc, down):
     comp = find_block(session, pawn.ch, BLEEDOUT[1])
     out = []
     if comp is not None:
-        out.append(property_update(session, pawn.ch, comp, {'CurrentBleedoutState': 1 if down else 0}))
+        if down:
+            # The lethal hit plays h_mr_ua_stagger_med_death_fwd_01_mot (_flinch_entry); its 'Default' section is the fall and
+            # 'GetUp' starts at 1.93 s. Setting the state at once cut straight to the downed loop (live 2026-10-22), so it waits.
+            enc['bleedout_due'] = (time.monotonic() + BLEEDOUT_AFTER_FALL, comp)
+        else:
+            enc['bleedout_due'] = None
+            out.append(property_update(session, pawn.ch, comp, {'CurrentBleedoutState': 0}))
     enc['player_downed'] = down
     enc['downed_at'] = time.monotonic() if down else None
     if enc.get('director') is not None:
@@ -760,6 +830,17 @@ def _set_bleedout(session, enc, down):
         out.append(property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}))
         print('ENCOUNTER player revived -> health %.0f' % enc['player_health'], flush=True)
     return out
+
+
+def _bleedout_now(session, enc):
+    """The delayed CurrentBleedoutState=1 once the death stagger's fall has played."""
+    from .engine.attributes import property_update
+    due = enc.get('bleedout_due')
+    if not due or time.monotonic() < due[0] or not enc.get('player_downed'):
+        return []
+    enc['bleedout_due'] = None
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    return [property_update(session, pawn.ch, due[1], {'CurrentBleedoutState': 1})]
 
 
 def _auto_revive(session, enc):
@@ -815,7 +896,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _expire_hits(session, enc) + _auto_revive(session, enc), [], 0
+    reliable, bunches, revealed = _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':

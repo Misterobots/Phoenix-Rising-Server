@@ -269,11 +269,35 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertLess(enc['player_health'], start if start is not None else 1e9)
         self.assertEqual(len(enc['pending_hits']), 0)
 
+    def test_potion_is_confirmed_and_heals(self):
+        s = self.session()
+        enc = s._encounter
+        enc['player_health'], enc['player_max_health'] = 300.0, 1000.0
+        pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        asc = next(b for b in pawn.parsed.blocks if b.cls_name == 'ArchonAbilitySystemComponent')
+        n = len(s.entries)
+        self.assertTrue(island_encounter.handle_ability(s, pawn.ch, asc, {'AbilityToActivate.Handle': 8, 'InputPressed': 0,
+                                                                          'PredictionKey': {'server': 0, 'current': 81}}))
+        reply = s.entries[n:]
+        self.assertTrue(any(f[1] == 'ClientActivateAbilitySucceed' for e in reply for b in e.parsed.blocks
+                            for f in (b.fields or [])))
+        self.roundtrip(s, reply[-1])
+        self.assertFalse(island_encounter.handle_ability(s, pawn.ch, asc, {'AbilityToActivate.Handle': 7,
+                                                                           'PredictionKey': {'server': 0, 'current': 82}}))
+        with patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 1.0):
+            out = island_encounter._apply_heals(s, enc)
+        self.assertEqual(enc['player_health'], 725.0)
+        self.assertEqual(self.roundtrip(s, out[0]).blocks[0].values['CurrentHealth'], 725.0)
+
     def test_zero_health_downs_the_player_then_the_placeholder_revives(self):
         s = self.session()
         enc = s._encounter
         enc['player_health'] = 10.0
         out = island_encounter._damage_entries(s, enc, {'damage': 75.0, 'elemental': 0.0, 'raw': 75.0})
+        self.assertFalse([e for e in out if any(b.cls_name == 'player_bleedout_bpc_C' for b in e.parsed.blocks)])  # fall first
+        self.assertEqual(island_encounter._bleedout_now(s, enc), [])
+        with patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 2.0):
+            out = island_encounter._bleedout_now(s, enc)
         bleed = [e for e in out if any(b.cls_name == 'player_bleedout_bpc_C' for b in e.parsed.blocks)]
         self.assertEqual(self.roundtrip(s, bleed[0]).blocks[0].values['CurrentBleedoutState'], 1)
         self.assertTrue(enc['player_downed'])
@@ -332,6 +356,7 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_hit_plays_a_flinch_montage_on_the_player = None
     test_an_unanswered_hit_is_applied_after_the_timeout = None
     test_zero_health_downs_the_player_then_the_placeholder_revives = None
+    test_potion_is_confirmed_and_heals = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):
