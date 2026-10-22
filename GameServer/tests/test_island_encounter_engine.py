@@ -269,6 +269,25 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertLess(enc['player_health'], start if start is not None else 1e9)
         self.assertEqual(len(enc['pending_hits']), 0)
 
+    def test_zero_health_downs_the_player_then_the_placeholder_revives(self):
+        s = self.session()
+        enc = s._encounter
+        enc['player_health'] = 10.0
+        out = island_encounter._damage_entries(s, enc, {'damage': 75.0, 'elemental': 0.0, 'raw': 75.0})
+        bleed = [e for e in out if any(b.cls_name == 'player_bleedout_bpc_C' for b in e.parsed.blocks)]
+        self.assertEqual(self.roundtrip(s, bleed[0]).blocks[0].values['CurrentBleedoutState'], 1)
+        self.assertTrue(enc['player_downed'])
+        self.assertTrue(enc['director'].target_down)
+        self.assertFalse(enc['director']._target()[0].alive)
+        self.assertIsNone(island_encounter._send_hit(s, enc, 'Bite', 'SideGore', {'row': {}, 'elements': {'PhysicalDamage': 1}}))
+        self.assertEqual(island_encounter._auto_revive(s, enc), [])                       # not yet
+        with patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 60.0):
+            up = island_encounter._auto_revive(s, enc)
+        bleed = [e for e in up if any(b.cls_name == 'player_bleedout_bpc_C' for b in e.parsed.blocks)]
+        self.assertEqual(self.roundtrip(s, bleed[0]).blocks[0].values['CurrentBleedoutState'], 0)
+        self.assertFalse(enc['player_downed'])
+        self.assertEqual(enc['player_health'], 500)
+
     def test_only_an_accepted_hit_damages_the_player(self):
         from mpgs.engine import hits
         s = self.session()
@@ -312,6 +331,7 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_stagger_probe_is_off_by_default = None
     test_hit_plays_a_flinch_montage_on_the_player = None
     test_an_unanswered_hit_is_applied_after_the_timeout = None
+    test_zero_health_downs_the_player_then_the_placeholder_revives = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):

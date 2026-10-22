@@ -552,7 +552,7 @@ def _send_hit(session, enc, action, key, row):
     from .engine import hits
     from .repl.decode import OrderedFields
     pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
-    if pawn is None or row is None:
+    if pawn is None or row is None or enc.get('player_downed'):
         return None
     if enc.get('hittable_guid') is None:
         enc['hittable_guid'] = session.next_live_guid()
@@ -595,6 +595,8 @@ HIT_REPLY_TIMEOUT = 1.0   # seconds without ServerAcceptHit/ServerRefuseHit befo
 
 def _hit_feedback(session, enc, info):
     """What an accepted hit does: health and damage summary, the flinch montage and the damage number."""
+    if enc.get('player_downed'):
+        return []                                   # a hit answered after the player went down changes nothing
     pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
     player = info.get('player') or {}
     out = []
@@ -718,14 +720,56 @@ def _damage_entries(session, enc, info):
     header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
     if enc.get('player_health') is None:
         enc['player_health'] = float((header.values or {}).get('CurrentHealth', 0.0))
-    # Downed/revive is out of scope: health stops at 0 (the client's own state machine handles what it shows).
+    enc['player_max_health'] = float((header.values or {}).get('MaxHealth', enc['player_health']) or enc['player_health'])
     enc['player_health'] = max(0.0, enc['player_health'] - info['damage'])
     fi = session.world.schema.field_index(pawn.cls)
     pm = hits.post_mitigation_params(_pawn_guid(session), info['damage'], info['elemental'], info['raw'])
-    return [
+    out = [
         property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}),
         _entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
             (fi.index(('func', 'ClientHandlePostMitigationDamage')), 'ClientHandlePostMitigationDamage', 'rpc', pm)])])]
+    if enc['player_health'] <= 0.0 and not enc.get('player_downed'):
+        out += _set_bleedout(session, enc, True)
+    return out
+
+
+BLEEDOUT = ('player_bleedout_bpc', 'player_bleedout_bpc_C')   # ArchonBleedoutComponent: CurrentBleedoutState (RepNotify)
+AUTO_REVIVE_FLAG = 'MPGS_AUTO_REVIVE_SECONDS'   # downed for this long -> back up at REVIVE_HEALTH_FRACTION (0 turns it off)
+REVIVE_HEALTH_FRACTION = 0.5
+
+
+def _set_bleedout(session, enc, down):
+    """Enter (down=True) or leave bleedout: EArchonBleedoutState Bleedout(1)/None(0) on the player's player_bleedout_bpc. The
+    client's OnRep_CurrentBleedoutState plays the downed loop / the get-up and shows its own UI. While down the behemoth does not
+    target the player and no hits are sent. Leaving it restores REVIVE_HEALTH_FRACTION of MaxHealth."""
+    from .engine.attributes import find_block, property_update
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    comp = find_block(session, pawn.ch, BLEEDOUT[1])
+    out = []
+    if comp is not None:
+        out.append(property_update(session, pawn.ch, comp, {'CurrentBleedoutState': 1 if down else 0}))
+    enc['player_downed'] = down
+    enc['downed_at'] = time.monotonic() if down else None
+    if enc.get('director') is not None:
+        enc['director'].target_down = down
+    if down:
+        print('ENCOUNTER player down (bleedout)%s' % ('' if comp else ' - no bleedout component in the join'), flush=True)
+    else:
+        header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
+        enc['player_health'] = round(enc.get('player_max_health', 1000.0) * REVIVE_HEALTH_FRACTION)
+        out.append(property_update(session, pawn.ch, header, {'CurrentHealth': enc['player_health']}))
+        print('ENCOUNTER player revived -> health %.0f' % enc['player_health'], flush=True)
+    return out
+
+
+def _auto_revive(session, enc):
+    """Placeholder until the real revive flow (talisman, party, self-revive charge) is captured live: back up after a delay."""
+    if not enc.get('player_downed'):
+        return []
+    delay = float(os.environ.get(AUTO_REVIVE_FLAG, '10') or 0)
+    if delay <= 0 or time.monotonic() - (enc.get('downed_at') or 0.0) < delay:
+        return []
+    return _set_bleedout(session, enc, False)
 
 
 DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 drops hits the client leaves unanswered instead of applying them
@@ -771,7 +815,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _expire_hits(session, enc), [], 0
+    reliable, bunches, revealed = _expire_hits(session, enc) + _auto_revive(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':

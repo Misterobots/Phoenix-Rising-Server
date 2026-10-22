@@ -314,6 +314,7 @@ class BehemothDirector:
         self.terrain = terrain
         self.variant = 'normal'
         self.player_state = player_state          # () -> {'loc': [x, y, z], 'vel': [...]} | None (GenSession.pawn_state)
+        self.target_down = False                  # the player is in bleedout: not a valid attack target (set by the encounter)
         self.rng = rng or random.Random()
         self._log = log or (lambda msg: None)
         self.send_interval = send_interval
@@ -365,8 +366,8 @@ class BehemothDirector:
 
     def _target(self):
         st = self.player_state()
-        if not st:
-            return Target('player', (0.0, 0.0), alive=False), None
+        if not st or self.target_down:
+            return Target('player', tuple(st['loc'][:2]) if st else (0.0, 0.0), alive=False), None
         return Target('player', tuple(st['loc'][:2]), tuple(st['vel'][:2])), None
 
     def lock_target(self, target):

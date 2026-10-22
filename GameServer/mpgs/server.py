@@ -33,7 +33,10 @@ def _short(v, limit=400):
 # Client RPCs whose undecoded payloads are saved for offline codec work: their parameters share structs (FHitResult,
 # FGameplayTagContainer, FVector) with ClientTryHit, which the client skips as incompatible when its payload does not decode.
 CAPTURE_RPCS = {'ServerTryDoDamage'}
-CAPTURE_LIMIT = 20
+# 2026-10-22: item use and revive are not modelled yet; capture every undecoded client RPC except steady movement/state traffic.
+CAPTURE_ALL_EXCEPT = {'ServerMovePacked', 'Server_UpdateCurrentLocoState', 'Server_UpdateDefaultPlayerState',
+                      'Server_UpdateDesiredLocoState', 'ServerSetAttackDirection'}
+CAPTURE_LIMIT = 300
 
 
 def _capture_rpc(sess, ch, cls, who, name, payload):
@@ -161,7 +164,7 @@ class GameServer:
                     if mv and (n <= 3 or n % 600 == 0):
                         log('move %s #%d t=%.3f loc=(%.1f,%.1f,%.1f) vel=(%.0f,%.0f,%.0f) yaw=%.1f mode=%s flags=%#x' % (
                             sess['ids']['name'], n, mv['time'], *mv['loc'], *mv['vel'], mv['ctrl_rot'][1], mv['mode'], mv['flags']))
-                if kind == 'raw' and name in CAPTURE_RPCS:
+                if kind == 'raw' and (name in CAPTURE_RPCS or name not in CAPTURE_ALL_EXCEPT):
                     _capture_rpc(sess, ch, cls, who, name, payload)
                 key = (ch, who, name)
                 seen = sess.setdefault('rx_seen', {})
