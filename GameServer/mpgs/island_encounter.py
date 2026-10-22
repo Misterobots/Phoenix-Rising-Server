@@ -737,6 +737,7 @@ def _damage_entries(session, enc, info):
 # ServerTryActivateAbility(Handle, InputPressed, PredictionKey) on its ASC. The ability is LocalPredicted: the client already
 # plays the drink; the server confirms with ClientActivateAbilitySucceed(Handle, the client's key) and applies the effect.
 POTION_HEAL = 425.0          # Ability_QuickItem_Healing_Potion_Flask CDO "Heal Amount" (its HoTTime 20 / HoTBonus 1.2 not modelled)
+TALISMAN_REVIVE_DELAY = 0.5   # s after the talisman is confirmed
 POTION_HEAL_DELAY = 0.8      # the CDO's Audio-ActivateDelay: the burst lands as the drink finishes
 
 
@@ -766,6 +767,18 @@ def handle_ability(session, ch, req_block, params):
     h = params.get('AbilityToActivate.Handle')
     name = _ability_names(session, pawn).get(h, '')
     key = params.get('PredictionKey') or {}
+    if 'ReviveTalisman' in name:
+        # CDO: ActivationRequiredTags State.Bleedout, CanUseInBleedout. Only a downed player can use it.
+        if enc is None or not enc.get('player_downed'):
+            session._queue_rpc(ch, req_block, 'ClientActivateAbilityFailed',
+                               {'AbilityToActivate.Handle': h, 'PredictionKey': key.get('current', 0)})
+            print('ENCOUNTER revive talisman (handle %s) while standing -> ClientActivateAbilityFailed' % h, flush=True)
+            return True
+        session._queue_rpc(ch, req_block, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': key})
+        enc['revive_due'] = time.monotonic() + TALISMAN_REVIVE_DELAY
+        print('ENCOUNTER revive talisman (handle %s) -> ClientActivateAbilitySucceed, back up in %.1f s' % (
+            h, TALISMAN_REVIVE_DELAY), flush=True)
+        return True
     if 'Healing_Potion' not in name:
         print('ENCOUNTER ability handle %s (%s) not handled; no reply' % (h, name or '?'), flush=True)
         return False
@@ -847,6 +860,10 @@ def _auto_revive(session, enc):
     """Placeholder until the real revive flow (talisman, party, self-revive charge) is captured live: back up after a delay."""
     if not enc.get('player_downed'):
         return []
+    if enc.get('revive_due') and time.monotonic() >= enc['revive_due']:
+        enc['revive_due'] = None
+        print('ENCOUNTER revive talisman used', flush=True)
+        return _set_bleedout(session, enc, False)
     delay = float(os.environ.get(AUTO_REVIVE_FLAG, '10') or 0)
     if delay <= 0 or time.monotonic() - (enc.get('downed_at') or 0.0) < delay:
         return []

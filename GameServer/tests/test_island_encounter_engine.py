@@ -289,6 +289,28 @@ class HealthAndHitTests(EngineEncounterTests):
         self.assertEqual(enc['player_health'], 725.0)
         self.assertEqual(self.roundtrip(s, out[0]).blocks[0].values['CurrentHealth'], 725.0)
 
+    def test_revive_talisman_only_while_down(self):
+        s = self.session()
+        enc = s._encounter
+        pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        asc = next(b for b in pawn.parsed.blocks if b.cls_name == 'ArchonAbilitySystemComponent')
+        req = {'AbilityToActivate.Handle': 9, 'InputPressed': 0, 'PredictionKey': {'server': 0, 'current': 36}}
+        n = len(s.entries)
+        island_encounter.handle_ability(s, pawn.ch, asc, req)
+        self.assertTrue(any(f[1] == 'ClientActivateAbilityFailed' for e in s.entries[n:] for b in e.parsed.blocks
+                            for f in (b.fields or [])))
+        self.roundtrip(s, s.entries[-1])
+        enc['player_health'] = 10.0
+        island_encounter._damage_entries(s, enc, {'damage': 75.0, 'elemental': 0.0, 'raw': 75.0})
+        n = len(s.entries)
+        island_encounter.handle_ability(s, pawn.ch, asc, req)
+        self.assertTrue(any(f[1] == 'ClientActivateAbilitySucceed' for e in s.entries[n:] for b in e.parsed.blocks
+                            for f in (b.fields or [])))
+        with patch.dict(os.environ, {island_encounter.AUTO_REVIVE_FLAG: '0'}),                 patch.object(island_encounter.time, 'monotonic', return_value=time.monotonic() + 1.0):
+            up = island_encounter._auto_revive(s, enc)
+        self.assertFalse(enc['player_downed'])
+        self.assertTrue(any(b.cls_name == 'player_bleedout_bpc_C' for e in up for b in e.parsed.blocks))
+
     def test_zero_health_downs_the_player_then_the_placeholder_revives(self):
         s = self.session()
         enc = s._encounter
@@ -357,6 +379,7 @@ class NoAbilitySystemTests(HealthAndHitTests):
     test_an_unanswered_hit_is_applied_after_the_timeout = None
     test_zero_health_downs_the_player_then_the_placeholder_revives = None
     test_potion_is_confirmed_and_heals = None
+    test_revive_talisman_only_while_down = None
 
     def session(self):
         with patch.dict(os.environ, {island_encounter.ASC_FLAG: '0'}):
