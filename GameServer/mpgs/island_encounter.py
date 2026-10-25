@@ -736,7 +736,8 @@ def _damage_entries(session, enc, info):
 # Quick items (live capture 2026-10-22): the client sends ServerNotifyQuickitemUsed(slot) on its inventory actor and
 # ServerTryActivateAbility(Handle, InputPressed, PredictionKey) on its ASC. The ability is LocalPredicted: the client already
 # plays the drink; the server confirms with ClientActivateAbilitySucceed(Handle, the client's key) and applies the effect.
-POTION_HEAL = 425.0          # Ability_QuickItem_Healing_Potion_Flask CDO "Heal Amount" (its HoTTime 20 / HoTBonus 1.2 not modelled)
+POTION_HEAL = 425.0          # Ability_QuickItem_Healing_Potion_Flask CDO "Heal Amount"
+POTION_HOT_TIME = 20.0       # CDO HoTTime: ApplyEffect heals Heal Amount, then a Heal_Over_Time_Buff of Heal Amount / HoTTime per second
 TALISMAN_REVIVE_DELAY = 0.5   # s after the talisman is confirmed
 POTION_HEAL_DELAY = 0.8      # the CDO's Audio-ActivateDelay: the burst lands as the drink finishes
 
@@ -784,9 +785,12 @@ def handle_ability(session, ch, req_block, params):
         return False
     session._queue_rpc(ch, req_block, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': key})
     if enc is not None:
-        enc.setdefault('pending_heals', []).append((time.monotonic() + POTION_HEAL_DELAY, POTION_HEAL, name))
-    print('ENCOUNTER potion (handle %s, %s) -> ClientActivateAbilitySucceed, +%.0f health in %.1f s' % (
-        h, name, POTION_HEAL, POTION_HEAL_DELAY), flush=True)
+        now = time.monotonic() + POTION_HEAL_DELAY
+        enc.setdefault('pending_heals', []).extend(
+            [(now, POTION_HEAL, name)] +
+            [(now + s, POTION_HEAL / POTION_HOT_TIME, name + ' HoT') for s in range(1, int(POTION_HOT_TIME) + 1)])
+    print('ENCOUNTER potion (handle %s, %s) -> ClientActivateAbilitySucceed, +%.0f health in %.1f s, then %.2f/s for %.0f s' % (
+        h, name, POTION_HEAL, POTION_HEAL_DELAY, POTION_HEAL / POTION_HOT_TIME, POTION_HOT_TIME), flush=True)
     return True
 
 
