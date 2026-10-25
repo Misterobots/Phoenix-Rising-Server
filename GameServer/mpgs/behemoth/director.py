@@ -338,6 +338,7 @@ class BehemothDirector:
         self._hit_in_window = set()
         self._target_seen = None
         self._states_seen = set()
+        self.staggered_until = 0.0                 # a stagger/part-break montage is playing: no tree, no attack
         trees = trees or bt.TreeSet.load(os.environ.get('MPGS_BT_DIR') or os.path.join(SERVER, 'world', 'dumps', 'bt'))
         env = dict(env or {})
         env.setdefault('MPGS_ROCK_AGGRO_RANGE', str(species.enter_combat_range))
@@ -397,6 +398,25 @@ class BehemothDirector:
         self._log('t=%.2f attack %s' % (now, name))
         return True
 
+    def stagger(self, name, seconds, now):
+        """Interrupt the current attack (damage windows close) and play a stagger montage; the tree waits until it ends."""
+        if self.dead:
+            return False
+        if self.brain.run is not None:
+            self._events.append(('brain', 'action_end', {'action': self.brain.run.name, 'interrupted': True}, now))
+        self.brain.run = None
+        self._windows.clear()
+        self._window_bodies.clear()
+        self._hit_in_window.clear()
+        self._ignore_pawn = False
+        self.mover.montage = None
+        self.mover.path = []
+        self.ctx.bb['StaggerCount'] = self.ctx.bb.get('StaggerCount', 0) + 1
+        self._play(name, 1.0, now)
+        self.staggered_until = now + seconds
+        self._log('t=%.2f stagger %s (%.1f s)' % (now, name, seconds))
+        return True
+
     def play_montage(self, name, now):
         if not name:
             return None
@@ -449,7 +469,8 @@ class BehemothDirector:
         """Advance to `now` (seconds) and return the events since the last tick."""
         if not self.dead:
             self._sync_brain()
-            self.runner.tick(now)
+            if now >= self.staggered_until:
+                self.runner.tick(now)
             self.mover.tick(now)
             self._measure(now)
             self._sync_brain()

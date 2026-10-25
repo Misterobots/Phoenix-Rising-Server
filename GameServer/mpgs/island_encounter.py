@@ -496,6 +496,9 @@ def _attach_director(session, enc, engine, center):
     enc.update(director=director, montage_comp_guid=comp_guid, montage_comp_export=comp_export, montage_comp_exported=False,
                montage_guids={}, guids=GuidSource(session.next_live_guid), root_motion=None,
                pending_hits=PendingHits(), damage_model=_damage_model(session.world))
+    from .behemoth import parts
+    pdata = parts.load(species.variant)
+    enc['parts'] = parts.PartTracker(pdata, species.joints, enc['max_health']) if pdata else None
     print('ENCOUNTER engine on: %s tree=%s floor z=%.1f center=%s' % (
         species.variant, species.tree, enc['loc'][2] - species.half_height, center['name']), flush=True)
 
@@ -1184,6 +1187,28 @@ def grant_defeat_rewards(session):
     return out
 
 
+def _part_hit(enc, params, damage):
+    """Part health and the stagger meter (behemoth.parts): a part break or a full meter interrupts the attack with a stagger
+    montage, picked by the side of the behemoth the player hit."""
+    tracker, director = enc.get('parts'), enc.get('director')
+    if tracker is None or director is None or enc['health'] <= 0.0:
+        return
+    hit = params.get('Payload.Hit') if isinstance(params, dict) else None
+    hit = hit if isinstance(hit, dict) else {}
+    bone = (hit.get('bone_name') or [None])[0]
+    point = hit.get('impact_point') or hit.get('location') or enc['loc']
+    yaw = math.radians(enc['rot'][1])
+    side = 'left' if math.cos(yaw) * (point[1] - enc['loc'][1]) - math.sin(yaw) * (point[0] - enc['loc'][0]) < 0 else 'right'
+    part, reactions = tracker.hit(bone, damage, side)
+    print('ENCOUNTER part hit bone=%s part=%s part health=%.0f stagger=%.0f/%.0f' % (
+        bone, part, tracker.health[part], tracker.stagger, tracker.stagger_threshold), flush=True)
+    now = time.monotonic() - enc['spawn_mono']
+    for kind, montage, seconds in reactions:
+        print('ENCOUNTER %s %s -> %s' % ('part break' if kind == 'break' else 'stagger', part, montage), flush=True)
+        if now >= director.staggered_until:
+            director.stagger(montage, seconds, now)
+
+
 def handle_damage(session, ch, req_block, params=None):
     """Process a client DamageComponent.ServerTryDoDamage hit against the active encounter."""
     enc = getattr(session, '_encounter', None)
@@ -1201,6 +1226,7 @@ def handle_damage(session, ch, req_block, params=None):
         director.health.hits += 1                  # BehemothContext.pick_target: a hit acquires the attacker as target
         if enc['health'] <= 0.0:
             director.kill()
+    _part_hit(enc, params, damage)
     cls = enc['cls']
     fi = session.world.schema.field_index(cls)
     ct_fi = session.world.schema.field_index('floating_combat_text_bpc_C')
