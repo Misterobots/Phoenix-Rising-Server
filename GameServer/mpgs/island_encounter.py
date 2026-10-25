@@ -848,6 +848,17 @@ def _set_bleedout(session, enc, down):
         out.append(_entry(session.world, pawn.ch, pawn.cls, [_block(pawn.cls, fields=[
             (fi.index(('func', 'InternalReviveFromBleedOut')), 'InternalReviveFromBleedOut', 'rpc',
              {'RevivingPawn_0': ('obj', _pawn_guid(session)), 'Revive_Tag': None})])]))
+        # The get-up is started by the Revive_Tag gameplay event, which is empty, so the player snapped upright (live
+        # 2026-10-25). Play the pawn's get-up montage directly, like the flinches.
+        from .behemoth import spawn
+        from .repl.guid import flatten
+        mc = next((i.guid for root in pawn.exports for i in flatten(root) if i.name == MONTAGE_COMPONENT[0]), None)
+        if mc is not None:
+            name = 'h_mr_ua_bleedout_getup_fwd_01_mot'
+            out.append(spawn.montage_play_entry(session.world.schema, enc['guids'], ch=pawn.ch, actor_cls=pawn.cls,
+                                                montage_guid_cache=enc['montage_guids'], component_guid=mc,
+                                                component_cls=MONTAGE_COMPONENT[1], montage_package=FLINCH_PACKAGE + name,
+                                                montage_name=name))
         print('ENCOUNTER player revived -> health %.0f' % enc['player_health'], flush=True)
     return out
 
