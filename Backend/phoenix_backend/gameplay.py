@@ -34,6 +34,10 @@ STARTER = [('weapon', 'WP_EB_BEGINNER'), ('helmet', 'AR_UNEQUIPPED_HELM'), ('che
            (None, 'PART_CB_SPECIAL_DEFAULT'), (None, 'PART_MS_SPECIAL_PROJECTILE'), (None, 'PART_DP_RECEIVER_DEFAULT'),
            (None, 'PART_DP_GRIP_DEFAULT'), (None, 'PART_AC_SPECIAL_DEFAULT'), (None, 'GD_FRAME_STARTER_BASE'),
            (None, 'BN_BEGINNER_00')]
+# Test kit (private test server): three more lines of every weapon type, the Embermane armour set and lantern, unequipped.
+# PHOENIX_TEST_KIT=0 leaves it out; granted once per catalog id like the starter kit.
+TEST_KIT = [(None, 'WP_%s_%s' % (t, line)) for line in ('LERAWR', 'SHOCKMANE', 'ROCK')
+            for t in ('EB', 'GA', 'IH', 'CB', 'MS', 'DP', 'AC')] +            [(None, c) for c in ('AR_LERAWR_HELM', 'AR_LERAWR_CHEST', 'AR_LERAWR_ARMS', 'AR_LERAWR_LEGS', 'LT_LERAWR')]
 STARTER_STACKS = [('CURRENCY_NOTES', 5000), ('CURRENCY_PJM_WEAPON', 50), ('CURRENCY_PJM_ARMOR', 50),
                   ('CURRENCY_PJM_ALCHEMY', 50), ('CURRENCY_PJM_AIRSHIP', 50), ('CURRENCY_PJM_FISHING', 50),
                   # flare, beginner emotes, banner customization, dyes
@@ -180,7 +184,8 @@ class Gameplay:
         first = not have and not self.db.loadouts(character_id)
         granted = set(self.db.get(character_id, 'starter_granted', []))
         slot, add = {name: None for name in LOADOUT_SLOTS}, []
-        for name, catalog in STARTER:
+        kit = STARTER + (TEST_KIT if os.environ.get('PHOENIX_TEST_KIT', '1') != '0' else [])
+        for name, catalog in kit:
             if catalog in have or catalog in granted:
                 continue
             inst = ids.base32_id()
