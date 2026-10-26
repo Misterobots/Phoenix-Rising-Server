@@ -1,6 +1,7 @@
 """Behemoth part health, part breaks and the stagger meter, from world/behemoths/<variant>_parts.json.
 
 Exact (asset data): the parts, each part's health as RatioOfBehemothHealth of max health, the stagger table montages.
+The body's preset (body_standard_ptpreset, PercentOfMaxHealth 999) never breaks: 'breakable': false.
 Assumed until the native rules are traced: the part hit is the part whose root joint is the nearest ancestor of the hit bone
 (the game uses ArchonPartCollisionComponent), the stagger meter fills with STAGGER_RATIO of each hit's damage and empties at
 STAGGER_THRESHOLD_RATIO of max health, and a part break plays the short startle stagger (the tail its tailcut montage).
@@ -45,7 +46,7 @@ class PartTracker:
         a break first."""
         part = self.part_of(bone)
         out = []
-        if part not in self.broken:
+        if part not in self.broken and self.data['parts'][part].get('breakable', True):
             self.health[part] = max(0.0, self.health[part] - damage)
             if self.health[part] <= 0.0:
                 self.broken.add(part)

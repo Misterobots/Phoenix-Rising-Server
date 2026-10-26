@@ -552,7 +552,17 @@ class GenSession(ReplaySession):
                 for x in blk.fields or []:
                     if blk.cls_name == 'DamageComponent' and x[1] == 'ServerTryDoDamage':
                         from .island_encounter import handle_damage
-                        handle_damage(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
+                        params = x[3] if x[2] == 'rpc' else None
+                        if params is None and x[2] == 'raw':
+                            # Real reports do not re-encode bit-exactly (model.try_decode), but they decode end to end
+                            # (tests/test_hit_result.py): keep the hit bone and prediction key.
+                            from .repl import rpc as _rpc
+                            try:
+                                params = _rpc.decode(_rpc.rpc_layout(self.world.schema, 'DamageComponent', 'ServerTryDoDamage'),
+                                                     x[3][0], x[3][1])
+                            except Exception as exc:
+                                print('ServerTryDoDamage decode failed: %r' % (exc,), flush=True)
+                        handle_damage(self, b.ch, blk, params)
                         continue
                     if blk.cls_name == 'ArchonAbilitySystemComponent' and x[1] == 'ServerTryActivateAbility' and                             getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_ability

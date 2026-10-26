@@ -36,6 +36,12 @@ class PartTrackerTests(unittest.TestCase):
         _, out = t.hit('tail_05_jnt', 1.0, 'left')
         self.assertFalse([r for r in out if r[0] == 'break'])          # breaks once
 
+    def test_body_never_breaks(self):
+        t = _tracker()
+        _, out = t.hit('spine_03_jnt', 5000.0, 'left')
+        self.assertNotIn('Body', t.broken)
+        self.assertFalse([r for r in out if r[0] == 'break'])
+
     def test_stagger_meter_fills_then_grows(self):
         t = _tracker()
         threshold = t.stagger_threshold
