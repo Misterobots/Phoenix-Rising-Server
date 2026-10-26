@@ -1200,14 +1200,23 @@ def _stamina(session, enc):
 
 
 def handle_stamina_rpc(session, ch, req_block, func, params):
-    """CharCombatComp.ServerStartNextMove spends the destination move's stamina; the pawn's ServerSetSprintInput starts or
-    stops the sprint drain. Out of stamina -> ArchonCombatComponent.ClientHandleOutOfStamina on the same component."""
+    """CharCombatComp.ServerStartNextMove spends the destination move's stamina; the locomotion state and sheathe status
+    start or stop the sprint drain. Out of stamina -> ArchonCombatComponent.ClientHandleOutOfStamina on the same component."""
     enc = session._encounter
     st = _stamina(session, enc)
     now = time.monotonic() - enc['spawn_mono']
-    if func == 'ServerSetSprintInput':
+    if func in ('Server_UpdateCurrentLocoState', 'Server_UpdateSheatheStatus'):
+        # BP_PlayerCharacter."Evaluate Stamina System": the sprint drains only with the weapon out (not sheathed).
+        # EArchonLocomotionState 3 = Sprint; EWeaponSheatheState 1 SHEATHED, 3 UNSHEATHED.
         st.tick(now)
-        st.sprinting = bool((params or {}).get('NewValue'))
+        p = params or {}
+        if 'CurrentLocomotionState' in p:
+            enc['loco_state'] = p['CurrentLocomotionState']
+        if 'ClientSheatheState' in p:
+            enc['sheathed'] = p['ClientSheatheState'] in (0, 1, 4)
+        st.sprinting = enc.get('loco_state') == 3 and not enc.get('sheathed', True)
+        return
+    if func != 'ServerStartNextMove':
         return
     dest = (params or {}).get('ComboInputBuffer.DestState')
     dest = dest[1] if isinstance(dest, tuple) else dest

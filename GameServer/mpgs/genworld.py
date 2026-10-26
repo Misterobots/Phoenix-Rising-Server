@@ -553,10 +553,9 @@ class GenSession(ReplaySession):
             out.append((b.ch, blk.cls_name, who, [(x[1], x[2], x[3]) for x in (blk.fields or [])]))
             if os.environ.get('MPGS_INTERACTION_REPLY', '1') == '1':
                 for x in blk.fields or []:
-                    if x[1] in ('ServerStartNextMove', 'ServerSetSprintInput') and x[2] == 'rpc' and                             getattr(self, '_encounter', None) is not None:
+                    if x[1] in ('ServerStartNextMove', 'Server_UpdateCurrentLocoState', 'Server_UpdateSheatheStatus') and                             x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_stamina_rpc
-                        handle_stamina_rpc(self, b.ch, blk, x[1], x[3])
-                        continue
+                        handle_stamina_rpc(self, b.ch, blk, x[1], x[3])   # observes only; normal handling continues
                     if blk.cls_name == 'DamageComponent' and x[1] == 'ServerTryDoDamage':
                         from .island_encounter import handle_damage
                         params = x[3] if x[2] == 'rpc' else None

@@ -19,6 +19,7 @@ COSTS = os.path.join(HERE, 'world', 'player', 'stamina_costs.json')
 SPRINT_DRAIN = 3.75
 REGEN_DELAY = 1.4
 SEND_INTERVAL = 0.25
+RESYNC_INTERVAL = 2.0     # the server is authoritative: resend even unchanged, so a client-side spend never sticks
 
 
 def load_costs(path=COSTS):
@@ -65,7 +66,9 @@ class Stamina:
 
     def due_update(self, now):
         """The value to replicate now, or None (changed, and at most every SEND_INTERVAL; the final full value always)."""
-        if abs(self.value - self.sent) < 0.01:
+        if abs(self.value - self.sent) < 0.01 and (self.sent_t is None or now - self.sent_t < RESYNC_INTERVAL):
+            if self.sent_t is None:
+                self.sent_t = now
             return None
         if self.sent_t is not None and now - self.sent_t < SEND_INTERVAL and self.value < self.max:
             return None
