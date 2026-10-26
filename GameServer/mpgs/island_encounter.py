@@ -1209,8 +1209,46 @@ def _part_hit(session, enc, params, damage):
         if now >= director.staggered_until:
             director.stagger(montage, seconds, now)
         if kind == 'break':
-            out.append(_part_broken_entry(session, enc, part, tracker.data['parts'][part].get('sever', False)))
+            pd = tracker.data['parts'][part]
+            out.append(_part_broken_entry(session, enc, part, pd.get('sever', False)))
+            if pd.get('sever_actor'):
+                piece = _severed_piece_entry(session, enc, pd['sever_actor'], pd.get('sever_socket'), director)
+                if piece is not None:
+                    out.append(piece)
     return out
+
+
+SEVERED_PARENT = 'BP_MonsterSeverablePart_C'
+
+
+def _severed_piece_entry(session, enc, package, socket, director):
+    """Spawn the part's 'Severable Actor To Spawn' (a BP_MonsterSeverablePart_C child) at the sever socket, as the server's
+    monsterpart_bpc does on a sever break. The socket is placed from the reference pose (the bodies export's joints)."""
+    from .behemoth import spawn
+    schema = session.world.schema
+    cls = package.rsplit('/', 1)[1] + '_C'
+    if cls not in schema.classes:
+        if SEVERED_PARENT not in schema.inherit:
+            print('ENCOUNTER severed piece skipped: %s not in the schema' % SEVERED_PARENT, flush=True)
+            return None
+        schema.classes[cls] = (SEVERED_PARENT, [])
+        schema.inherit[cls] = [SEVERED_PARENT] + schema.inherit[SEVERED_PARENT]
+        schema._layouts.clear()
+    joint = (director.species.joints.get(socket) or {}).get('pos') or [0.0, 0.0, 0.0]
+    yaw = math.radians(enc['rot'][1])
+    loc = [enc['loc'][0] + joint[0] * math.cos(yaw) - joint[1] * math.sin(yaw),
+           enc['loc'][1] + joint[0] * math.sin(yaw) + joint[1] * math.cos(yaw),
+           enc['loc'][2] + joint[2]]
+    session._live_ch = getattr(session, '_live_ch', 900)
+    ch = session._live_ch
+    session._live_ch += 1
+    entry, ids = spawn.spawn_entry(schema, enc['guids'], ch=ch, cls_name=cls, package=package, loc=[round(v, 1) for v in loc],
+                                   rot=[0.0, enc['rot'][1], 0.0], values={'bReplicateMovement': 0})
+    session.chan_cls[ch] = cls
+    session.ctx._names[ids['package']] = (0, package)
+    session.ctx._names[ids['archetype']] = (ids['package'], 'Default__' + cls)
+    print('ENCOUNTER severed piece %s ch%d at %s' % (cls, ch, [round(v) for v in loc]), flush=True)
+    return entry
 
 
 def _part_broken_entry(session, enc, part, sever):
