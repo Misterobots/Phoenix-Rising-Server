@@ -1241,6 +1241,37 @@ def _stamina_entries(session, enc, t):
     return [property_update(session, pawn.ch, find_block(session, pawn.ch, 'ArchonHealthAttributeSet'), {'Stamina': value})]
 
 
+RANGED_ROWS = {'dp_umbral_01_bp_C': 'DP.ExoticBombs.PrimaryFire', 'dp_radiant_01_bp_C': 'DP.ExoticBombs.PrimaryFire',
+               'dp_exotic_bombs_00_bp_C': 'DP.ExoticBombs.PrimaryFire'}   # the weapon CDOs' DamageRowName
+RANGED_DEFAULT_ROW = 'DP.PrimaryFire'                                    # dp_weapon_bp CDO
+AMMO_MAX = 12                                                            # dp_weapon_bp ammo_bpc_GEN_VARIABLE MaxAmmoCount
+
+
+def handle_ranged(session, ch, req_block, func, params):
+    """dp_weapon_bp.ServerShoot / Server_Reload. ServerShoot (server): ServerValidateShoot, then
+    ranged_weapon_function_library.AuthOnHitRangedTarget(Hit Actor, HitComponent, HitResult, ..., DamageRowName) scaled by
+    distance and ammo scale (both taken as 1 here). Server_Reload: ammo_bpc.AuthReloadWeaponWithAmmoScale(1.0)."""
+    enc = session._encounter
+    weapon_cls = session.chan_cls.get(ch) or getattr(req_block, 'cls_name', None)
+    guid = getattr(req_block, 'guid', 0) or None
+    ammo = enc.setdefault('ammo', {})
+    if func == 'Server_Reload':
+        ammo[ch] = AMMO_MAX
+        print('ENCOUNTER reload %s -> %d' % (weapon_cls, AMMO_MAX), flush=True)
+        return
+    ammo[ch] = max(0, ammo.get(ch, AMMO_MAX) - 1)
+    p = params or {}
+    hit_actor = p.get('Hit Actor') or p.get('Hit_Actor')
+    hit_guid = hit_actor[1] if isinstance(hit_actor, tuple) else hit_actor
+    hit = p.get('HitResult') if isinstance(p.get('HitResult'), dict) else {}
+    print('ENCOUNTER shot %s hit=%s bone=%s ammo=%d' % (weapon_cls, hit_guid, (hit.get('bone_name') or [None])[0], ammo[ch]),
+          flush=True)
+    if hit_guid != enc.get('guid'):
+        return
+    row = RANGED_ROWS.get(weapon_cls, RANGED_DEFAULT_ROW)
+    handle_damage(session, ch, None, {'Payload.DamageTypeName': (row, 0), 'Payload.Hit': hit})
+
+
 def _player_hit_damage(enc, params):
     """-> (damage, damage-table row or None). The report names its attack (Payload.DamageTypeName, a Gameplay/DamageTable row such
     as EBRework.X1); damage = the row's BaseDamage x player_to_behemoth_exploration_dmgcurve(player power - behemoth power), as

@@ -556,6 +556,18 @@ class GenSession(ReplaySession):
                     if x[1] in ('ServerStartNextMove', 'Server_UpdateCurrentLocoState', 'Server_UpdateSheatheStatus') and                             x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_stamina_rpc
                         handle_stamina_rpc(self, b.ch, blk, x[1], x[3])   # observes only; normal handling continues
+                    if x[1] in ('ServerShoot', 'Server_Reload') and getattr(self, '_encounter', None) is not None:
+                        from .island_encounter import handle_ranged
+                        params = x[3] if x[2] == 'rpc' else None
+                        if params is None and x[2] == 'raw':
+                            from .repl import rpc as _rpc
+                            try:
+                                params = _rpc.decode(_rpc.rpc_layout(self.world.schema, blk.cls_name or self.chan_cls.get(b.ch),
+                                                                     x[1]), x[3][0], x[3][1])
+                            except Exception as exc:
+                                print('%s decode failed: %r' % (x[1], exc), flush=True)
+                        handle_ranged(self, b.ch, blk, x[1], params)
+                        continue
                     if blk.cls_name == 'DamageComponent' and x[1] == 'ServerTryDoDamage':
                         from .island_encounter import handle_damage
                         params = x[3] if x[2] == 'rpc' else None

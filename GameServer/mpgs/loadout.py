@@ -120,6 +120,39 @@ def weapon_entry(entries, schema):
     return equipment_entry(entries, schema, 1)
 
 
+ATLAS_CLASSES = os.path.join(HERE, 'data', 'atlas', 'classes')
+
+
+def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES):
+    """Give a Blueprint class the schema has no layout for the layout of its nearest known ancestor, when the atlas shows
+    that no class in between adds a replicated property or an RPC (so the client's field indexes match). -> True when
+    `cls_name` is now in the schema. A weapon class missing from the schema made its RPCs (e.g. dp_weapon_bp.ServerShoot)
+    undecodable: they were read with the slot's base layout (live 2026-10-26)."""
+    if cls_name in schema.inherit:
+        return True
+    chain, cur = [], cls_name
+    while cur not in schema.inherit:
+        path = os.path.join(atlas_dir, cur + '.json')
+        if not os.path.exists(path):
+            return False
+        with open(path, encoding='utf-8') as f:
+            info = json.load(f)
+        if any(p.get('net') for p in info.get('properties') or ()) or any(fn.get('rpc') for fn in info.get('functions') or ()):
+            return False
+        chain.append(cur)
+        parents = info.get('parents') or []
+        if not parents:
+            return False
+        cur = parents[0]
+    for c in reversed(chain):
+        parent = cur if c == chain[-1] else chain[chain.index(c) + 1]
+        schema.classes[c] = (parent, [])
+        schema.inherit[c] = [parent] + schema.inherit[parent]
+        schema.funcs.setdefault(c, [])
+    schema._layouts.clear()
+    return True
+
+
 def swap_equipment_actor(entries, schema, slot, catalog, classes=None, slots=None):
     """Point the equipment actor in `slot` at `catalog`'s blueprint: archetype path + ItemId. A class unknown to
     the schema encodes with the slot's base layout. -> (old class, new class) or None when nothing changed."""
@@ -147,7 +180,7 @@ def swap_equipment_actor(entries, schema, slot, catalog, classes=None, slots=Non
     arch.name, arch.flags, arch.checksum = 'Default__' + cls_name, 1, None
     arch.outer_info.name, arch.outer_info.flags, arch.outer_info.checksum = package, 1, None
     a.values['ItemId'] = catalog
-    if cls_name in schema.inherit:
+    if cls_name in schema.inherit or register_atlas_class(schema, cls_name):
         layout = cls_name
     elif slot == 1 and cls_name.startswith('eblade_') and e.cls.startswith('eblade_'):
         layout = e.cls          # sword -> sword keeps the sword layout
