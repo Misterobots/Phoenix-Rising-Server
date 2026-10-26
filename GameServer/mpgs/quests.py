@@ -38,6 +38,26 @@ def load_baseline(path=BASELINE):
         return json.load(f)['series']
 
 
+# Weapon catalog rows gate the loadout list on these quests (RequireQuestStatuses, AnyRequired of Accepted/Redeemable/Redeemed):
+# Embermane weapons CR19_S1_Q1A_TalkToWils, Rock CR19_S1_Q3_GatheringSupplies, Shockmane CR19_S2_Q1_MegaQuest_8. The beginner
+# weapons' gate (KillQuest_Stormclaw) is not in the 2.1.1 quest catalog. Test server only: MPGS_TEST_UNLOCK_WEAPONS=0 turns it off.
+TEST_UNLOCK_QUESTS = ('CR19_S1_Q1A_TalkToWils', 'CR19_S1_Q3_GatheringSupplies', 'CR19_S2_Q1_MegaQuest_8')
+QUEST_REDEEMED = 3                 # EQuestStatus::Redeemed
+
+
+def apply_test_unlocks(catalog, progress, names=TEST_UNLOCK_QUESTS):
+    """Mark the named quests Redeemed in `progress` (adding their series). -> the quest ids changed."""
+    done = []
+    for s in catalog:
+        for q in s['quests']:
+            if q['id'] in names:
+                st = progress.setdefault(s['id'], {}).setdefault(q['guid'], {})
+                if int(st.get('Status', 0)) not in (1, 2, 3):
+                    st['Status'] = QUEST_REDEEMED
+                    done.append(q['id'])
+    return done
+
+
 def merge_progress(baseline, character_data):
     """character_data: the backend character's data dict (SERIE_* values are JSON strings). Per-quest override."""
     out = {k: dict(v) for k, v in baseline.items()}

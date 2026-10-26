@@ -491,7 +491,10 @@ class GenSession(ReplaySession):
             if isinstance(data, str):
                 data = json.loads(data)
         progress = quests.merge_progress(quests.load_baseline(), data)
-        series = quests.build_objects(quests.load_catalog(), progress)
+        catalog = quests.load_catalog()
+        if os.environ.get('MPGS_TEST_UNLOCK_WEAPONS', '1') != '0':
+            print('QUESTS test weapon unlocks redeemed=%s' % quests.apply_test_unlocks(catalog, progress), flush=True)
+        series = quests.build_objects(catalog, progress)
         start = base_guid & ~1                      # 32x the connection's base: 8192 GUIDs per connection, clear of remapped ones
         counter = [start]
 
