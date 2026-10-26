@@ -1187,12 +1187,12 @@ def grant_defeat_rewards(session):
     return out
 
 
-def _part_hit(enc, params, damage):
+def _part_hit(session, enc, params, damage):
     """Part health and the stagger meter (behemoth.parts): a part break or a full meter interrupts the attack with a stagger
     montage, picked by the side of the behemoth the player hit."""
     tracker, director = enc.get('parts'), enc.get('director')
     if tracker is None or director is None or enc['health'] <= 0.0:
-        return
+        return []
     hit = params.get('Payload.Hit') if isinstance(params, dict) else None
     hit = hit if isinstance(hit, dict) else {}
     bone = (hit.get('bone_name') or [None])[0]
@@ -1203,10 +1203,34 @@ def _part_hit(enc, params, damage):
     print('ENCOUNTER part hit bone=%s part=%s part health=%.0f stagger=%.0f/%.0f' % (
         bone, part, tracker.health[part], tracker.stagger, tracker.stagger_threshold), flush=True)
     now = time.monotonic() - enc['spawn_mono']
+    out = []
     for kind, montage, seconds in reactions:
         print('ENCOUNTER %s %s -> %s' % ('part break' if kind == 'break' else 'stagger', part, montage), flush=True)
         if now >= director.staggered_until:
             director.stagger(montage, seconds, now)
+        if kind == 'break':
+            out.append(_part_broken_entry(session, enc, part, tracker.data['parts'][part].get('sever', False)))
+    return out
+
+
+def _part_broken_entry(session, enc, part, sever):
+    """The part's monsterpart_bpc_C component (default subobject named after the part): CurrentBreakStage 1 - OnRep swaps in the
+    scarred material - and, for a severable part, PartSevered - OnRep hides the part's bones (the tail comes off)."""
+    guids = enc.setdefault('part_guids', {})
+    exports = []
+    if part not in guids:
+        g = guids[part] = session.next_live_guid()
+        info = _info(g, part, _info(enc['guid']))
+        info.flags = 3
+        session.ctx._names[g] = (enc['guid'], part)
+        exports.append(info)
+    values = {'CurrentBreakStage': 1}
+    if sever:
+        values['PartSevered'] = True
+    entry = _entry(session.world, ENCOUNTER_CHANNEL, enc['cls'], [_block('monsterpart_bpc_C', values, guid=guids[part])])
+    entry.exports = exports
+    print('ENCOUNTER part %s -> %s' % (part, values), flush=True)
+    return entry
 
 
 def handle_damage(session, ch, req_block, params=None):
@@ -1226,7 +1250,7 @@ def handle_damage(session, ch, req_block, params=None):
         director.health.hits += 1                  # BehemothContext.pick_target: a hit acquires the attacker as target
         if enc['health'] <= 0.0:
             director.kill()
-    _part_hit(enc, params, damage)
+    part_entries = _part_hit(session, enc, params, damage)
     cls = enc['cls']
     fi = session.world.schema.field_index(cls)
     ct_fi = session.world.schema.field_index('floating_combat_text_bpc_C')
@@ -1266,7 +1290,7 @@ def handle_damage(session, ch, req_block, params=None):
     if not enc.get('combat_text_exported') and enc.get('combat_text_export') is not None:
         dmg_entry.exports = [enc['combat_text_export']]
         enc['combat_text_exported'] = True
-    changes = [dmg_entry]
+    changes = [dmg_entry] + part_entries
     if enc.get('health_set') is not None:
         changes.append(_health_update(session, enc))   # the health bar reads the attribute set (engine path)
     if enc['health'] <= 0.0:
