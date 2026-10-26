@@ -34,10 +34,10 @@ STARTER = [('weapon', 'WP_EB_BEGINNER'), ('helmet', 'AR_UNEQUIPPED_HELM'), ('che
            (None, 'PART_CB_SPECIAL_DEFAULT'), (None, 'PART_MS_SPECIAL_PROJECTILE'), (None, 'PART_DP_RECEIVER_DEFAULT'),
            (None, 'PART_DP_GRIP_DEFAULT'), (None, 'PART_AC_SPECIAL_DEFAULT'), (None, 'GD_FRAME_STARTER_BASE'),
            (None, 'BN_BEGINNER_00')]
-# Test kit (private test server): three more lines of every weapon type, the Embermane armour set and lantern, unequipped.
-# PHOENIX_TEST_KIT=0 leaves it out; granted once per catalog id like the starter kit.
-TEST_KIT = [(None, 'WP_%s_%s' % (t, line)) for line in ('LERAWR', 'SHOCKMANE', 'ROCK')
-            for t in ('EB', 'GA', 'IH', 'CB', 'MS', 'DP', 'AC')] +            [(None, c) for c in ('AR_LERAWR_HELM', 'AR_LERAWR_CHEST', 'AR_LERAWR_ARMS', 'AR_LERAWR_LEGS', 'LT_LERAWR')]
+# Test kit (private test server): the 2.x weapons the loadout lists can show - AArchonInventory::CanEquipItem drops catalog
+# items tagged 'legacy' or 'hidden', which covers every WP_*_BEGINNER and the old behemoth lines (atlas native_notes, 297899d) -
+# plus the Embermane armour set and lantern, unequipped. PHOENIX_TEST_KIT=0 leaves it out; granted once per catalog id.
+TEST_KIT = [(None, c) for c in ('WP_AC_TERRA_01', 'WP_AC_SHOCK_01', 'WP_AC_SPRINGTIDE_L1', 'WP_CB_UMBRAL_01', 'WP_CB_FROST_01', 'WP_CB_BANEANDBALM', 'WP_DP_UMBRAL_01', 'WP_DP_RADIANT_01', 'WP_DP_EXOTIC_BOMBS', 'WP_EB_SHOCK_01', 'WP_EB_RADIANT_01', 'WP_EB_FROSTFALL_L1', 'WP_EB_CROWBEAR_EXOTIC', 'WP_GA_BLAZE_01', 'WP_GA_FROST_01', 'WP_GA_REAPERS_EDGE', 'WP_IH_SHOCK_01', 'WP_IH_FROST_01', 'WP_IH_SALLY_EXOTIC', 'WP_MS_TERRA_01', 'WP_MS_BLAZE_01', 'WP_MS_BUGBEAR_EXOTIC')] +            [(None, c) for c in ('AR_LERAWR_HELM', 'AR_LERAWR_CHEST', 'AR_LERAWR_ARMS', 'AR_LERAWR_LEGS', 'LT_LERAWR')]
 STARTER_STACKS = [('CURRENCY_NOTES', 5000), ('CURRENCY_PJM_WEAPON', 50), ('CURRENCY_PJM_ARMOR', 50),
                   ('CURRENCY_PJM_ALCHEMY', 50), ('CURRENCY_PJM_AIRSHIP', 50), ('CURRENCY_PJM_FISHING', 50),
                   # flare, beginner emotes, banner customization, dyes
