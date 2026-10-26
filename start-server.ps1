@@ -106,6 +106,16 @@ function Running($id, $port, $protocol) {
 }
 
 function Assert-PortAvailable($Port, $Protocol) {
+    # A socket of a process that was just stopped can show as owned by PID 0 for a few seconds; wait for it to close.
+    $deadline = (Get-Date).AddSeconds(15)
+    do {
+        $closing = netstat -ano -p $Protocol 2>$null | Where-Object {
+            $f = $_.Trim() -split '\s+'
+            $f.Count -ge 4 -and $f[0] -ieq $Protocol -and $f[1] -match ":${Port}$" -and $f[-1] -eq '0' -and
+                ($Protocol -ne 'tcp' -or $f[3] -eq 'LISTENING')
+        }
+        if ($closing) { Start-Sleep -Milliseconds 500 }
+    } while ($closing -and (Get-Date) -lt $deadline)
     $rows = netstat -ano -p $Protocol 2>$null
     foreach ($row in $rows) {
         $fields = $row.Trim() -split '\s+'
