@@ -956,7 +956,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
+    reliable, bunches, revealed = _stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':
@@ -1228,6 +1228,9 @@ def _part_hit(session, enc, params, damage, row=None):
         print('ENCOUNTER %s %s -> %s' % ('part break' if kind == 'break' else 'stagger', part, montage), flush=True)
         if now >= director.staggered_until:
             director.stagger(montage, seconds, now)
+            if kind == 'stagger':
+                out.append(_stagger_flags_entry(session, enc, True))
+                enc['stagger_flags_until'] = now + seconds
         if kind == 'break':
             pd = tracker.data['parts'][part]
             out.append(_part_broken_entry(session, enc, part, pd.get('sever', False)))
@@ -1272,6 +1275,21 @@ def _severed_piece_entry(session, enc, package, transform):
     session.ctx._names[ids['archetype']] = (ids['package'], 'Default__' + cls)
     print('ENCOUNTER severed piece %s ch%d at %s' % (cls, ch, [round(v) for v in loc]), flush=True)
     return entry
+
+
+def _stagger_flags_entry(session, enc, on):
+    """The real stagger path sets Bp_Behemoth.IsStaggered_0 (AuthInternalSetState, staggered state) and Curving
+    (handle_stagger_bttask, true while the stagger montage plays) and clears both when it ends."""
+    return _entry(session.world, ENCOUNTER_CHANNEL, enc['cls'], [_block(enc['cls'], {'IsStaggered_0': bool(on),
+                                                                                     'Curving': bool(on)})])
+
+
+def _stagger_flags_end(session, enc, t):
+    due = enc.get('stagger_flags_until')
+    if due is None or t < due:
+        return []
+    enc['stagger_flags_until'] = None
+    return [_stagger_flags_entry(session, enc, False)]
 
 
 def _part_broken_entry(session, enc, part, sever):
