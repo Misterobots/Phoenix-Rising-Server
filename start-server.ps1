@@ -32,6 +32,15 @@ function Test-TcpConnect($Port) {
     } catch { return $false } finally { $client.Dispose() }
 }
 
+# The saved backend PID is ours when the process is python and one of our backend logs was created as it started
+# (netstat can miss its listeners, and an old backend that lost some listeners still holds the others).
+function Test-OurBackendProcess($Id) {
+    $proc = Get-Process -Id $Id -ErrorAction SilentlyContinue
+    if (-not $proc -or $proc.ProcessName -ne 'python') { return $false }
+    return [bool](Get-ChildItem -LiteralPath $Logs -Filter 'backend_*.err.log' | Where-Object {
+        [Math]::Abs(($_.CreationTime - $proc.StartTime).TotalSeconds) -lt 5 })
+}
+
 # Some Windows installations omit live loopback listeners from netstat. Require
 # this process's startup log and command line as well as a successful connection.
 function Test-BackendReady($Id, $Port) {
@@ -55,7 +64,8 @@ function Stop-Parts {
             if ($id) {
                 $proc = Get-Process -Id $id -ErrorAction SilentlyContinue
                 $owned = if ($name -eq 'backend') {
-                    (Test-OwnedPort $id 3001 'tcp') -or (Test-OwnedPort $id 443 'tcp')
+                    (Test-OwnedPort $id 3001 'tcp') -or (Test-OwnedPort $id 443 'tcp') -or (Test-OwnedPort $id 3000 'tcp') -or
+                        (Test-OurBackendProcess $id)
                 } elseif ($name -eq 'islandserver') {
                     Test-OwnedPort $id $IslandPort 'udp'
                 } else { Test-OwnedPort $id $GamePort 'udp' }
