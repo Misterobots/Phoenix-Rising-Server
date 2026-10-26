@@ -956,7 +956,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _stamina_entries(session, enc, t) + _stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
+    reliable, bunches, revealed = _ammo_entries(session, enc) + _stamina_entries(session, enc, t) +_stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':
@@ -1245,6 +1245,46 @@ RANGED_ROWS = {'dp_umbral_01_bp_C': 'DP.ExoticBombs.PrimaryFire', 'dp_radiant_01
                'dp_exotic_bombs_00_bp_C': 'DP.ExoticBombs.PrimaryFire'}   # the weapon CDOs' DamageRowName
 RANGED_DEFAULT_ROW = 'DP.PrimaryFire'                                    # dp_weapon_bp CDO
 AMMO_MAX = 12                                                            # dp_weapon_bp ammo_bpc_GEN_VARIABLE MaxAmmoCount
+
+
+def _ranged_channels(session):
+    """-> {channel: actor guid} for the open repeater actors (classes under dp_weapon_bp_C)."""
+    inherit = session.world.schema.inherit
+    out = {}
+    for e in session.entries:
+        if e.open and e.parsed is not None and (e.cls == 'dp_weapon_bp_C' or 'dp_weapon_bp_C' in inherit.get(e.cls, ())):
+            g = (e.parsed.open or {}).get('guid')
+            if g:
+                out[e.ch] = g
+    return out
+
+
+def _ammo_entries(session, enc):
+    """ArchonAmmoComponent's MaxAmmoCount / AuthoritativeAmmoCount on the repeater's ammo_bpc component (the dp_weapon_bp SCS
+    component 'ammo_bpc'). The server sets them (ammo_bpc BeginPlay: StartWithFullAmmo -> SetAmmo(max); AuthReloadNumAmmo);
+    while they stay 0 the client treats every attack as a reload (live 2026-10-26)."""
+    ammo, sent, guids = enc.setdefault('ammo', {}), enc.setdefault('ammo_sent', {}), enc.setdefault('ammo_guids', {})
+    out = []
+    for ch, actor in _ranged_channels(session).items():
+        value = ammo.setdefault(ch, AMMO_MAX)
+        if sent.get(ch) == value:
+            continue
+        exports = []
+        if ch not in guids:
+            g = guids[ch] = session.next_live_guid()
+            info = _info(g, 'ammo_bpc', _info(actor))
+            info.flags = 3
+            session.ctx._names[g] = (actor, 'ammo_bpc')
+            exports.append(info)
+        values = {'AuthoritativeAmmoCount': value}
+        if ch not in sent:
+            values['MaxAmmoCount'] = AMMO_MAX
+        entry = _entry(session.world, ch, session.chan_cls.get(ch), [_block('ammo_bpc_C', values, guid=guids[ch])])
+        entry.exports = exports
+        sent[ch] = value
+        print('ENCOUNTER ammo ch%d -> %s' % (ch, values), flush=True)
+        out.append(entry)
+    return out
 
 
 def handle_ranged(session, ch, req_block, func, params):
