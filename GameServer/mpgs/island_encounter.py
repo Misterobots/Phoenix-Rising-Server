@@ -1212,7 +1212,7 @@ def _part_hit(session, enc, params, damage):
             pd = tracker.data['parts'][part]
             out.append(_part_broken_entry(session, enc, part, pd.get('sever', False)))
             if pd.get('sever_actor'):
-                piece = _severed_piece_entry(session, enc, pd['sever_actor'], pd.get('sever_socket'), director)
+                piece = _severed_piece_entry(session, enc, pd['sever_actor'], pd.get('sever_transform'))
                 if piece is not None:
                     out.append(piece)
     return out
@@ -1221,9 +1221,11 @@ def _part_hit(session, enc, params, damage):
 SEVERED_PARENT = 'BP_MonsterSeverablePart_C'
 
 
-def _severed_piece_entry(session, enc, package, socket, director):
-    """Spawn the part's 'Severable Actor To Spawn' (a BP_MonsterSeverablePart_C child) at the sever socket, as the server's
-    monsterpart_bpc does on a sever break. The socket is placed from the reference pose (the bodies export's joints)."""
+def _severed_piece_entry(session, enc, package, transform):
+    """Spawn the part's 'Severable Actor To Spawn' as monsterpart_bpc.AuthSpawnSeveredPartActor does: at the world transform of
+    its 'Severable Spawn Socket', nothing else set. The piece's own BeginPlay (BP_MonsterSeverablePart) then traces to the ground,
+    turns on physics and applies ImpulseOnSpawn / TorqueOnSpawn on the client. `transform` is the socket in actor space at the
+    reference pose (<variant>_parts.json sever_transform), so the piece starts where the standing pose has the part."""
     from .behemoth import spawn
     schema = session.world.schema
     cls = package.rsplit('/', 1)[1] + '_C'
@@ -1234,16 +1236,17 @@ def _severed_piece_entry(session, enc, package, socket, director):
         schema.classes[cls] = (SEVERED_PARENT, [])
         schema.inherit[cls] = [SEVERED_PARENT] + schema.inherit[SEVERED_PARENT]
         schema._layouts.clear()
-    joint = (director.species.joints.get(socket) or {}).get('pos') or [0.0, 0.0, 0.0]
+    pos, rot = (transform or {}).get('pos') or [0.0, 0.0, 0.0], (transform or {}).get('rot') or [0.0, 0.0, 0.0]
     yaw = math.radians(enc['rot'][1])
-    loc = [enc['loc'][0] + joint[0] * math.cos(yaw) - joint[1] * math.sin(yaw),
-           enc['loc'][1] + joint[0] * math.sin(yaw) + joint[1] * math.cos(yaw),
-           enc['loc'][2] + joint[2]]
+    loc = [enc['loc'][0] + pos[0] * math.cos(yaw) - pos[1] * math.sin(yaw),
+           enc['loc'][1] + pos[0] * math.sin(yaw) + pos[1] * math.cos(yaw),
+           enc['loc'][2] + pos[2]]
+    world_rot = [rot[0], ((enc['rot'][1] + rot[1] + 180.0) % 360.0) - 180.0, rot[2]]   # the sockets have no roll
     session._live_ch = getattr(session, '_live_ch', 900)
     ch = session._live_ch
     session._live_ch += 1
     entry, ids = spawn.spawn_entry(schema, enc['guids'], ch=ch, cls_name=cls, package=package, loc=[round(v, 1) for v in loc],
-                                   rot=[0.0, enc['rot'][1], 0.0], values={'bReplicateMovement': 0})
+                                   rot=[round(v, 2) for v in world_rot], values={'bReplicateMovement': 0})
     session.chan_cls[ch] = cls
     session.ctx._names[ids['package']] = (0, package)
     session.ctx._names[ids['archetype']] = (ids['package'], 'Default__' + cls)
@@ -1265,7 +1268,11 @@ def _part_broken_entry(session, enc, part, sever):
     values = {'CurrentBreakStage': 1}
     if sever:
         values['PartSevered'] = True
-    entry = _entry(session.world, ENCOUNTER_CHANNEL, enc['cls'], [_block('monsterpart_bpc_C', values, guid=guids[part])])
+    fi = session.world.schema.field_index('monsterpart_bpc_C')
+    # AuthHandleBreak: MulticastSpawnBreakImpulses() on every stage change, then PartSevered for a sever stage.
+    entry = _entry(session.world, ENCOUNTER_CHANNEL, enc['cls'], [_block('monsterpart_bpc_C', values, guid=guids[part]),
+        _block('monsterpart_bpc_C', fields=[(fi.index(('func', 'MulticastSpawnBreakImpulses')), 'MulticastSpawnBreakImpulses',
+                                             'rpc', {})], guid=guids[part])])
     entry.exports = exports
     print('ENCOUNTER part %s -> %s' % (part, values), flush=True)
     return entry
