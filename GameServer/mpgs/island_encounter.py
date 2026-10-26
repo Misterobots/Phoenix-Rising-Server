@@ -956,7 +956,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
+    reliable, bunches, revealed = _stamina_entries(session, enc, t) + _stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':
@@ -1185,6 +1185,51 @@ def grant_defeat_rewards(session):
 
         threading.Thread(target=persist, daemon=True).start()
     return out
+
+
+def _stamina(session, enc):
+    """The player's server-side stamina (engine.stamina), started from the join's ArchonHealthAttributeSet values."""
+    st = enc.get('stamina')
+    if st is None:
+        from .engine.attributes import find_block
+        from .engine.stamina import Stamina
+        pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        v = (find_block(session, pawn.ch, 'ArchonHealthAttributeSet').values or {})
+        st = enc['stamina'] = Stamina(v.get('Stamina', 100.0), v.get('MaxStamina', 100.0), v.get('StaminaRegen', 9.0))
+    return st
+
+
+def handle_stamina_rpc(session, ch, req_block, func, params):
+    """CharCombatComp.ServerStartNextMove spends the destination move's stamina; the pawn's ServerSetSprintInput starts or
+    stops the sprint drain. Out of stamina -> ArchonCombatComponent.ClientHandleOutOfStamina on the same component."""
+    enc = session._encounter
+    st = _stamina(session, enc)
+    now = time.monotonic() - enc['spawn_mono']
+    if func == 'ServerSetSprintInput':
+        st.tick(now)
+        st.sprinting = bool((params or {}).get('NewValue'))
+        return
+    dest = (params or {}).get('ComboInputBuffer.DestState')
+    dest = dest[1] if isinstance(dest, tuple) else dest
+    cost = st.move_cost(dest)
+    if cost and not st.spend(cost, now):
+        session._queue_rpc(ch, req_block, 'ClientHandleOutOfStamina', {})
+        print('ENCOUNTER stamina out (move cost %.0f) -> ClientHandleOutOfStamina' % cost, flush=True)
+    elif cost:
+        print('ENCOUNTER stamina -%.0f -> %.0f' % (cost, st.value), flush=True)
+
+
+def _stamina_entries(session, enc, t):
+    st = enc.get('stamina')
+    if st is None:
+        return []
+    st.tick(t)
+    value = st.due_update(t)
+    if value is None:
+        return []
+    from .engine.attributes import find_block, property_update
+    pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+    return [property_update(session, pawn.ch, find_block(session, pawn.ch, 'ArchonHealthAttributeSet'), {'Stamina': value})]
 
 
 def _player_hit_damage(enc, params):
