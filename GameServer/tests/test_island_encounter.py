@@ -21,7 +21,8 @@ from types import SimpleNamespace
 
 
 # These tests cover the scripted encounter (MPGS_BEHEMOTH_ENGINE unset/0). The engine path is in test_island_encounter_engine.py.
-_engine_flag = patch.dict(os.environ, {island_encounter.ENGINE_FLAG: '0'})
+_engine_flag = patch.dict(os.environ, {island_encounter.ENGINE_FLAG: '0',
+                                       'MPGS_WEAPON_PARTS': '0'})   # the spawn wire alone (weapon parts: test_weapon_parts.py)
 
 
 def setUpModule():
