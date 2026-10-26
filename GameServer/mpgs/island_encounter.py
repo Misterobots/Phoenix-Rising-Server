@@ -1187,7 +1187,26 @@ def grant_defeat_rewards(session):
     return out
 
 
-def _part_hit(session, enc, params, damage):
+def _player_hit_damage(enc, params):
+    """-> (damage, damage-table row or None). The report names its attack (Payload.DamageTypeName, a Gameplay/DamageTable row such
+    as EBRework.X1); damage = the row's BaseDamage x player_to_behemoth_exploration_dmgcurve(player power - behemoth power), as
+    behemoth.damage does for the Rock. Power delta 0 until player and behemoth power are modelled (curve value 1)."""
+    from .behemoth.damage import eval_curve, PLAYER_CURVE
+    if isinstance(params, dict) and 'Damage' in params:          # an explicit amount (tests, debug tools) wins
+        return float(params['Damage']), None
+    name = params.get('Payload.DamageTypeName') if isinstance(params, dict) else None
+    name = name[0] if isinstance(name, tuple) else name
+    model = enc.get('damage_model') or {}
+    row = (model.get('rows') or {}).get(name) if name else None
+    if row is None:
+        print('ENCOUNTER hit attack=%s not in the damage table -> %.0f' % (name, DEFAULT_HIT_DAMAGE), flush=True)
+        return DEFAULT_HIT_DAMAGE, None
+    mult = eval_curve(model['curves'][PLAYER_CURVE], 0.0) * float(os.environ.get('MPGS_DAMAGE_SCALE', '1'))
+    print('ENCOUNTER hit attack=%s base=%s' % (name, row.get('BaseDamage')), flush=True)
+    return float(row.get('BaseDamage', 0)) * mult, row
+
+
+def _part_hit(session, enc, params, damage, row=None):
     """Part health and the stagger meter (behemoth.parts): a part break or a full meter interrupts the attack with a stagger
     montage, picked by the side of the behemoth the player hit."""
     tracker, director = enc.get('parts'), enc.get('director')
@@ -1199,10 +1218,11 @@ def _part_hit(session, enc, params, damage):
     point = hit.get('impact_point') or hit.get('location') or enc['loc']
     yaw = math.radians(enc['rot'][1])
     side = 'left' if math.cos(yaw) * (point[1] - enc['loc'][1]) - math.sin(yaw) * (point[0] - enc['loc'][0]) < 0 else 'right'
-    part, reactions = tracker.hit(bone, damage, side)
-    print('ENCOUNTER part hit bone=%s part=%s part health=%.0f stagger=%.0f/%.0f' % (
-        bone, part, tracker.health[part], tracker.stagger, tracker.stagger_threshold), flush=True)
     now = time.monotonic() - enc['spawn_mono']
+    part, reactions = tracker.hit(bone, damage, side, row=row, now=now)
+    print('ENCOUNTER part hit bone=%s part=%s part health=%.0f stagger meter=%.0f/%.0f stage=%d armor=%.0f' % (
+        bone, part, tracker.health[part], tracker.stagger, tracker.stagger_max, tracker.stage,
+        sum(a[0] for a in tracker.armor)), flush=True)
     out = []
     for kind, montage, seconds in reactions:
         print('ENCOUNTER %s %s -> %s' % ('part break' if kind == 'break' else 'stagger', part, montage), flush=True)
@@ -1288,14 +1308,14 @@ def handle_damage(session, ch, req_block, params=None):
     # Reply with ClientDoDamageSucceed on the player's DamageComponent if a decoded PredictionKey is present.
     if isinstance(params, dict) and 'PredictionKey' in params and req_block is not None:
         session._queue_rpc(ch, req_block, 'ClientDoDamageSucceed', {'PredictionKey': params['PredictionKey']})
-    damage = float(params.get('Damage', DEFAULT_HIT_DAMAGE)) if isinstance(params, dict) else DEFAULT_HIT_DAMAGE
+    damage, row = _player_hit_damage(enc, params)
     enc['health'] = max(0.0, enc['health'] - damage)
     director = enc.get('director')
     if director is not None:
         director.health.hits += 1                  # BehemothContext.pick_target: a hit acquires the attacker as target
         if enc['health'] <= 0.0:
             director.kill()
-    part_entries = _part_hit(session, enc, params, damage)
+    part_entries = _part_hit(session, enc, params, damage, row)
     cls = enc['cls']
     fi = session.world.schema.field_index(cls)
     ct_fi = session.world.schema.field_index('floating_combat_text_bpc_C')

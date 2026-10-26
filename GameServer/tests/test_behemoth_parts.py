@@ -42,13 +42,29 @@ class PartTrackerTests(unittest.TestCase):
         self.assertNotIn('Body', t.broken)
         self.assertFalse([r for r in out if r[0] == 'break'])
 
-    def test_stagger_meter_fills_then_grows(self):
+    def test_stagger_follows_the_stage_table(self):
+        """EBRework.X1 (BaseDamage 100, WeaponImpact): 100 - stage 1 per-hit armor 80 = 20 stagger a hit; 500 needed."""
         t = _tracker()
-        threshold = t.stagger_threshold
-        _, out = t.hit('spine_03_jnt', threshold / parts.STAGGER_RATIO, 'right')
+        row = {'BaseDamage': 100, 'tags': ['Combat.Weapon.WeaponImpact']}
+        self.assertEqual(t.stagger_damage(row), 20.0)
+        out = []
+        for i in range(25):
+            _, out = t.hit('spine_03_jnt', 100.0, 'right', row=row, now=0.0)
         self.assertEqual(out[0][:2], ('stagger', 'b_leRawr_stagger_right_mot'))
-        self.assertEqual(t.stagger, 0.0)
-        self.assertGreater(t.stagger_threshold, threshold)
+        self.assertEqual((t.stage, t.stagger_max), (1, 600.0))
+        self.assertEqual(round(sum(a[0] for a in t.armor)), 4000)      # the new stage's temporary armor
+        _, out = t.hit('spine_03_jnt', 100.0, 'right', row=row, now=0.0)
+        self.assertEqual(t.stagger, 600.0)                              # soaked by armor
+
+    def test_meter_regenerates_and_blunt_hits_harder(self):
+        t = _tracker()
+        hammer = {'BaseDamage': 100, 'tags': ['Combat.Weapon.WeaponImpact', 'DamageType.Blunt']}
+        self.assertAlmostEqual(t.stagger_damage(hammer), 100 * 1.333 - 80, places=1)
+        t.hit('spine_03_jnt', 1.0, 'left', row=hammer, now=0.0)
+        low = t.stagger
+        t.tick(2.0)
+        self.assertAlmostEqual(t.stagger, min(500.0, low + 30.0), places=3)
+        self.assertEqual(t.stagger_damage({'BaseDamage': 100, 'tags': []}), 0.0)    # no WeaponImpact: no stagger
 
 
 class DirectorStaggerTests(unittest.TestCase):
