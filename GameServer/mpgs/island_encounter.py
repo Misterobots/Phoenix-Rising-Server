@@ -296,6 +296,13 @@ def start(session):
             print('ENCOUNTER engine: ability system left out (%s=0)' % ASC_FLAG, flush=True)
     print('ENCOUNTER spawn %s level=%d center=%s loc=%s guid=%d (unrevealed)' % (
         config['behemoth'], config['level'], center['name'], [round(v, 1) for v in loc], behemoth_guid), flush=True)
+    if os.environ.get('MPGS_WEAPON_PARTS', '1') == '1':
+        from .engine import weapon_parts
+        try:
+            parts, session._encounter['part_abilities'] = weapon_parts.setup(session, lambda m: print(m, flush=True))
+            entries += parts
+        except Exception as exc:                          # the hunt still runs without the parts
+            print('WEAPON PARTS failed: %s: %s' % (type(exc).__name__, exc), flush=True)
     return entries
 
 
@@ -782,6 +789,10 @@ def handle_ability(session, ch, req_block, params):
         enc['revive_due'] = time.monotonic() + TALISMAN_REVIVE_DELAY
         print('ENCOUNTER revive talisman (handle %s) -> ClientActivateAbilitySucceed, back up in %.1f s' % (
             h, TALISMAN_REVIVE_DELAY), flush=True)
+        return True
+    pa = (enc or {}).get('part_abilities')
+    if pa is not None and h in pa.granted:
+        pa.on_try_activate(ch, req_block, params)          # a weapon part ability (repeater X / Y): granted by this server
         return True
     if 'Healing_Potion' not in name:
         print('ENCOUNTER ability handle %s (%s) not handled; no reply' % (h, name or '?'), flush=True)

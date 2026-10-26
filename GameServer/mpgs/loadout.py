@@ -123,11 +123,12 @@ def weapon_entry(entries, schema):
 ATLAS_CLASSES = os.path.join(HERE, 'data', 'atlas', 'classes')
 
 
-def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES):
+def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES, props_only=False):
     """Give a Blueprint class the schema has no layout for the layout of its nearest known ancestor, when the atlas shows
     that no class in between adds a replicated property or an RPC (so the client's field indexes match). -> True when
     `cls_name` is now in the schema. A weapon class missing from the schema made its RPCs (e.g. dp_weapon_bp.ServerShoot)
-    undecodable: they were read with the slot's base layout (live 2026-10-26)."""
+    undecodable: they were read with the slot's base layout (live 2026-10-26). props_only: accept classes that add only
+    RPCs - their property layout (what the server sends) still matches; their own RPCs cannot be decoded."""
     if cls_name in schema.inherit:
         return True
     chain, cur = [], cls_name
@@ -137,7 +138,8 @@ def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES):
             return False
         with open(path, encoding='utf-8') as f:
             info = json.load(f)
-        if any(p.get('net') for p in info.get('properties') or ()) or any(fn.get('rpc') for fn in info.get('functions') or ()):
+        if any(p.get('net') for p in info.get('properties') or ()) or (
+                not props_only and any(fn.get('rpc') for fn in info.get('functions') or ())):
             return False
         chain.append(cur)
         parents = info.get('parents') or []

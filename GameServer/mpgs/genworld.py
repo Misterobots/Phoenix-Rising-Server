@@ -582,7 +582,8 @@ class GenSession(ReplaySession):
                                 print('ServerTryDoDamage decode failed: %r' % (exc,), flush=True)
                         handle_damage(self, b.ch, blk, params)
                         continue
-                    if blk.cls_name == 'ArchonAbilitySystemComponent' and x[1] == 'ServerTryActivateAbility' and                             getattr(self, '_encounter', None) is not None:
+                    if blk.cls_name == 'ArchonAbilitySystemComponent' and x[1] in (
+                            'ServerTryActivateAbility', 'ServerTryActivateAbilityWithEventData') and                            getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_ability
                         handle_ability(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
                         continue
