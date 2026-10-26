@@ -5,8 +5,9 @@
 #
 #   .\start-server.ps1            start both (logs in .\logs)
 #   .\start-server.ps1 -Stop      stop what this script started
+#   .\start-server.ps1 -Restart   stop the server processes (routing kept), then start them with the current code
 
-param([switch]$Stop, [int]$GamePort = 8790, [int]$IslandPort = 8791, [string]$IslandHunt = 'Adventure_IslandA_D24')
+param([switch]$Stop, [switch]$Restart, [int]$GamePort = 8790, [int]$IslandPort = 8791, [string]$IslandHunt = 'Adventure_IslandA_D24')
 
 $ErrorActionPreference = 'Stop'
 $Root = $PSScriptRoot
@@ -46,7 +47,7 @@ function Test-BackendReady($Id, $Port) {
     return ($started -and (Test-TcpConnect $Port))
 }
 
-if ($Stop) {
+function Stop-Parts {
     if (Test-Path $PidFile) {
         $saved = Get-Content $PidFile -Raw | ConvertFrom-Json
         foreach ($name in @('islandserver', 'gameserver', 'backend')) {
@@ -77,6 +78,12 @@ if ($Stop) {
     } else {
         Write-Host 'No saved server PIDs; server processes were not started by this script.'
     }
+}
+
+if ($Restart) { Stop-Parts }
+
+if ($Stop) {
+    Stop-Parts
     # Routing is needed only while this local server is in use. Remove its hosts
     # overrides and trust anchor so Epic Launcher can reach Epic again.
     $setup = Join-Path $Root 'tools\setup-local.ps1'
