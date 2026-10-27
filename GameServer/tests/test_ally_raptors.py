@@ -55,6 +55,8 @@ class AllyRaptorTests(unittest.TestCase):
         self.assertEqual(got['ActivationInfo.PredictionKeyWhenActivated']['current'], 8)
         fx = [e for e in s.entries[s.pos:] for b in e.parsed.blocks for f in b.fields or () if f[1] == 'ActiveGameplayEffects']
         self.assertEqual(len(fx), 1)                                        # the Y cooldown effect the HUD reads
+        wch = next(e.ch for e in s.entries for b in e.parsed.blocks if b.actor and b.cls_name == 'dp_umbral_01_bp_C')
+        self.assertEqual(fx[0].ch, wch)                                     # on the weapon's own ASC, as StartYCooldown
         w = model.encode(fx[0].parsed, s.ctx, fx[0].cls)
         full = Full()
         full.bits, full.nbits, full.must_map, full.open, full.exports = w.n, w.nbits, True, False, []

@@ -1,9 +1,10 @@
-"""Gameplay effects on the player's ASC (ActiveGameplayEffects), so the HUD shows ability cooldowns.
+"""Gameplay effects on the equipped weapon's ASC (ActiveGameplayEffects), so the HUD shows ability cooldowns.
 
 What the game does (atlas dp_weapon_bp StartXCooldown / StartYCooldown, GetXCooldown / GetYCooldown; AssetDump of the GEs; read
 2026-10-27): the repeaters' X and Y abilities call StartXCooldown / StartYCooldown(AbilityCooldown), which applies
 dp_x_ability_cooldown_ge / dp_y_ability_cooldown_ge (HasDuration, SetByCaller 'Duration', granting Combat.Pistols.XCooldown /
-YCooldown) to the player's ASC. The HUD (weapon_dp_bpw) asks the weapon's GetXCooldown / GetYCooldown, which is
+YCooldown) to GetAbilitySystemComponent(self): the weapon actor's own ASC, not the player's (the first build used the pawn's;
+live 2026-10-27 no timer showed and X re-fired inside 15 s). The HUD (weapon_dp_bpw) asks the weapon's GetXCooldown / GetYCooldown, which is
 ArchonAbilitySystemComponent.GetTimePercentionOfActiveEffectsWithTags(that tag): only the replicated effect matters, not the
 weapon's handle.
 
@@ -46,7 +47,7 @@ def _info(guid, name, outer=None):
 
 
 class PlayerEffects:
-    """The ActiveGameplayEffects the server keeps on the player's ASC for one session."""
+    """The ActiveGameplayEffects the server keeps on the weapon's ASC for one session."""
 
     def __init__(self, session, clock_base=None):
         self.s = session
@@ -56,10 +57,21 @@ class PlayerEffects:
         self.active = {}                # item id -> {'cls', 'ends'}
         self.clock_base = clock_base    # server world time = clock_base + now (now: the abilities' clock)
 
+    def _weapon(self):
+        """(channel, actor guid) of the equipped weapon: the open actor whose channel carries its own ASC and damage set."""
+        for e in self.s.entries:
+            if e.open and e.cls != 'BP_PlayerCharacter_C':
+                names = {b.cls_name for x in self.s.entries if x.ch == e.ch for b in x.parsed.blocks}
+                if ASC_CLS in names and 'ArchonDamageAttributeSet' in names:
+                    return e.ch, (e.parsed.open or {}).get('guid', 0)
+        return None, None
+
     def _load(self, now):
-        ch, hdr = self.s._server_header(ASC_CLS)
+        from .attributes import find_block
+        ch, self.owner = self._weapon()
+        hdr = find_block(self.s, ch, ASC_CLS) if ch is not None else None
         if hdr is None:
-            raise LookupError('no %s in the sent world' % ASC_CLS)
+            raise LookupError('no weapon %s in the sent world' % ASC_CLS)
         key, ids = 0, []
         for e in self.s.entries:
             if e.ch != ch:
@@ -130,14 +142,12 @@ class PlayerEffects:
             cdo = _info(g() + 1, 'Default__' + cls, outer=pkg)
             exports, must_map = [cls_info, cdo], [cls_info.guid, cdo.guid]
             self.cdo[cls] = cdo.guid
-        from ..island_encounter import _pawn_guid
-        pawn = _pawn_guid(self.s)
         rid = self.next_id
         self.next_id += 1
         vals = [(P + 'Spec.Def', ('obj', self.cdo[cls])), (P + 'Spec.ModifiedAttributes', []), (P + 'Spec.Duration', float(duration)),
                 (P + 'Spec.Period', 0.0), (P + 'Spec.ChanceToApplyToTarget', 1.0), (P + 'Spec.DynamicGrantedTags', []),
                 (P + 'Spec.DynamicAssetTags', []), (P + 'Spec.Modifiers', []), (P + 'Spec.StackCount', 1),
-                (P + 'Spec.GrantedAbilitySpecs', []), (P + 'Spec.EffectContext', {'rep': 3, 'instigator': pawn, 'causer': pawn}),
+                (P + 'Spec.GrantedAbilitySpecs', []), (P + 'Spec.EffectContext', {'rep': 3, 'instigator': self.owner, 'causer': self.owner}),
                 (P + 'Spec.Level', 0.0), (P + 'PredictionKey', prediction_key or {'server': 0}),
                 (P + 'StartServerWorldTime', self.world_time(now))]
         fa = {'delta_flag': 0, 'key': self.key + 1, 'base': self.key, 'deleted': [], 'changed': [(rid, vals)]}
