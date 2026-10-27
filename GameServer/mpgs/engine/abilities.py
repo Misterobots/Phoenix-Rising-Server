@@ -35,7 +35,7 @@ EXPORT_FLAGS = 5                 # path + checksum flag, checksum 0: as the reco
 # server spawns the pack and calls K2_EndAbility in the same activation, so UGameplayAbility::EndAbility (bReplicateEndAbility)
 # sends ClientEndAbility; the client's own instance never ends on its own here (it stops at FindBuff(alluring_raptor_manager_buff)
 # before StartYCooldown / K2_EndAbility, live 2026-10-27). Its cooldown is the CDO AbilityCooldown, enforced here because the
-# client never applies its dp_y_ability_cooldown_ge and this server does not replicate gameplay effects yet.
+# client never applies its dp_y_ability_cooldown_ge; the server applies that effect instead (effects.py) for the HUD.
 SERVER_ENDED = {'dp_y_ability_spawn_raptor_ab_C': 60.0}
 
 WEAPON_ABILITIES = {
@@ -273,6 +273,9 @@ class PlayerAbilities:
         self.s._queue_rpc(ch, req, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': sk})
         log('handle %d (%s): ServerTryActivateAbility (client key %s) -> ClientActivateAbilitySucceed server key %d'
             % (h, spec['cls'], key, sk['current']))
+        from . import effects
+        fx = effects.on_ability_activated(self.s, spec['cls'], key, now)     # the cooldown effect the HUD reads
+        self.s.entries[self.s.pos:self.s.pos] = fx
         if cooldown is not None:
             spec['ready_at'] = now + cooldown
             self.s._queue_rpc(ch, req, 'ClientEndAbility', {

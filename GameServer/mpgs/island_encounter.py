@@ -1034,6 +1034,9 @@ def _engine_step(session, enc, now):
                                            reliable=False))
     from .engine import allies, legendary
     reliable.extend(legendary.step(session, enc, t))
+    pe = getattr(session, '_effects', None)
+    if pe is not None:
+        reliable.extend(pe.step(time.monotonic() if not hasattr(session, 'clock') else session.clock()))
     ally_reliable, ally_bunches = allies.step(session, enc, t)
     reliable.extend(ally_reliable)
     bunches.extend(ally_bunches)

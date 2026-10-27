@@ -53,6 +53,22 @@ class AllyRaptorTests(unittest.TestCase):
         got = dict(next(f[3] for b in p.blocks for f in b.fields or () if f[1] == 'ClientEndAbility'))
         self.assertEqual(got['AbilityToEnd.Handle'], h)
         self.assertEqual(got['ActivationInfo.PredictionKeyWhenActivated']['current'], 8)
+        fx = [e for e in s.entries[s.pos:] for b in e.parsed.blocks for f in b.fields or () if f[1] == 'ActiveGameplayEffects']
+        self.assertEqual(len(fx), 1)                                        # the Y cooldown effect the HUD reads
+        w = model.encode(fx[0].parsed, s.ctx, fx[0].cls)
+        full = Full()
+        full.bits, full.nbits, full.must_map, full.open, full.exports = w.n, w.nbits, True, False, []
+        p, _ = model.parse(full, s.ctx, fx[0].cls)
+        fa = next(f[3] for b in p.blocks for f in b.fields or () if f[1] == 'ActiveGameplayEffects')
+        item = dict(fa['changed'][0][1])
+        pre = 'ActiveGameplayEffects.GameplayEffects_Internal[].'
+        self.assertEqual(item[pre + 'Spec.Duration'], 60.0)
+        self.assertEqual(item[pre + 'Spec.Def'], ('obj', s._effects.cdo['dp_y_ability_cooldown_ge_C']))
+        self.assertTrue(any('ReplicatedWorldTimeSeconds' in (b.values or {}) for e in s.entries[s.pos:] for b in e.parsed.blocks))
+        rid = fa['changed'][0][0]
+        self.assertEqual(s._effects.step(s._effects.active[rid]['ends'] - 1.0), [])
+        gone = s._effects.step(s._effects.active[rid]['ends'])
+        self.assertEqual(gone[0].parsed.blocks[0].fields[0][3]['deleted'], [rid])   # removed when it runs out
         n = len(s.entries)
         island_encounter.handle_ability(s, asc_ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
                                                             'PredictionKey': {'server': 0, 'current': 10, 'base': 9}})
