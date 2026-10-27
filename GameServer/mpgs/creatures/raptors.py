@@ -33,10 +33,12 @@ RAPTOR_PACKAGES = {
     'araptor_00_bp_C': '/Game/creatures/tp/raptor/araptor/blueprints/araptor_00_bp',
     'sraptor_00_bp_C': '/Game/creatures/tp/raptor/sraptor/blueprints/sraptor_00_bp',
     'praptor_00_bp_C': '/Game/creatures/tp/raptor/praptor/blueprints/praptor_00_bp',
+    'uraptor_00_bp_C': '/Game/creatures/tp/raptor/uraptor/uraptor_00_bp',
 }
 PACK = list(RAPTOR_PACKAGES)              # the ability's MakeArray {araptor, sraptor, praptor}
 PACK_SIZE = 2                             # dp_y_ability_spawn_raptor_ab CDO RaptorPackSpawnQuantity
 LIFESPAN = 90.0                           # CDO AllyRaptorLifespanDuration
+ULTRA_LIFESPAN = 300.0                    # legendary_weapon_part_spawn_raptor_bpc CDO AllyUltraRaptorLifespanDuration
 HALF_HEIGHT, CAPSULE_RADIUS = 95.0, 60.0  # af_raptor_archetype_bp CollisionCylinder
 CONTACT_REACH = 150.0                     # stand-in
 HEAD_FORWARD = 150.0                      # stand-in

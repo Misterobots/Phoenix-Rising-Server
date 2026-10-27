@@ -292,6 +292,42 @@ def _w_tags(w, v):
 TAG_NONE_INDEX = (1 << 12) - 1           # >= InvalidTagNetIndex (nodes + 1): decodes as the empty tag
 
 
+_TAG_TABLE = None
+
+
+def tag_index(name):
+    """Net index of a gameplay tag by name (data/2.1.1/gameplay_tags.json, tools/export_gameplay_tags), or None if unknown."""
+    global _TAG_TABLE
+    if _TAG_TABLE is None:
+        import json as _json
+        import os as _os
+        path = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', 'data', '2.1.1', 'gameplay_tags.json')
+        try:
+            with open(path, encoding='utf-8') as f:
+                _TAG_TABLE = {n.lower(): i for i, n in enumerate(_json.load(f))}
+        except OSError:
+            _TAG_TABLE = {}
+    return _TAG_TABLE.get(name.lower())
+
+
+MINIMAL_TAG_COUNT_BITS = 5      # UAbilitySystemGlobals::MinimalReplicationTagCountBits default (DefaultGame.ini sets none)
+
+
+@reader('MinimalReplicationTagCountMap')
+def _r_minimal_tags(r):
+    """FMinimalReplicationTagCountMap::NetSerialize: a CountBits count, then that many FGameplayTag::NetSerialize."""
+    n = r.read(MINIMAL_TAG_COUNT_BITS)
+    return [_read_tag_index(r) for _ in range(n)]
+
+
+@writer('MinimalReplicationTagCountMap')
+def _w_minimal_tags(w, v):
+    v = list(v or [])
+    w.write(len(v), MINIMAL_TAG_COUNT_BITS)
+    for i in v:
+        _write_tag_index(w, i)
+
+
 @reader('GameplayTag')
 def _r_tag(r):
     """FGameplayTag::NetSerialize_Packed with fast replication: one net index (SerializeTagNetIndexPacked)."""

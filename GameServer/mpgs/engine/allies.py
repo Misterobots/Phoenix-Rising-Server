@@ -26,8 +26,10 @@ def _data(session):
     return cached or None
 
 
-def spawn_raptors(session, enc, now):
-    """dp_y_ability_spawn_raptor_ab on the server: clear the previous pack, spawn PACK_SIZE random raptors at the player. -> entries."""
+def spawn_raptors(session, enc, now, group='q', classes=None, lifespan=None, yaw_key='ctrl_rot'):
+    """Spawn ally raptors at the player, first clearing the previous ones of the same group. -> entries.
+    group 'q': dp_y_ability_spawn_raptor_ab (PACK_SIZE random picks of PACK, camera yaw, LIFESPAN; KillPrevSpawnedRaptors).
+    group 'legend': legendary_weapon_part_spawn_raptor_bpc (one uraptor, the character's yaw, ULTRA_LIFESPAN; ClearRaptorsLegend)."""
     from ..creatures import raptors
     from ..behemoth import spawn
     from ..loadout import register_atlas_class_full
@@ -39,15 +41,16 @@ def spawn_raptors(session, enc, now):
         _log('raptors not spawned (%s)' % ('no world/creatures/raptor; python -m tools.export_raptors' if data is None
                                             else 'no behemoth engine' if director is None else 'no player position'))
         return []
-    out = despawn_all(session, enc)
+    out = despawn_all(session, enc, group)
     schema = session.world.schema
     rng = enc.setdefault('ally_rng', random.Random(enc['guid'] + 7))
-    pack = enc['allies'] = []
+    pack = enc.setdefault('allies', [])
     beh = raptors.Behemoth(lambda: (tuple(director.loc), director.yaw, enc['health'] > 0.0), director.species.bodies,
                            getattr(director.species, 'capsule_radius', 0.0))
-    yaw = float((st.get('ctrl_rot') or [0.0, 0.0, 0.0])[1])   # the control rotation: GetThrowPosition uses the camera yaw
-    for i in range(raptors.PACK_SIZE):
-        cls = rng.choice(raptors.PACK)
+    yaw = float((st.get(yaw_key) or st.get('ctrl_rot') or [0.0, 0.0, 0.0])[1])
+    picks = classes or [rng.choice(raptors.PACK) for _ in range(raptors.PACK_SIZE)]
+    lifespan = raptors.LIFESPAN if lifespan is None else lifespan
+    for i, cls in enumerate(picks):
         if not register_atlas_class_full(schema, cls):
             _log('%s has no layout; skipped' % cls)
             continue
@@ -56,7 +59,8 @@ def spawn_raptors(session, enc, now):
                st['loc'][1] + 150.0 * math.sin(r) + (i - 0.5) * 120.0 * math.cos(r), st['loc'][2]]
         raptor = raptors.Raptor(data, cls, director.terrain, loc, yaw, lambda: getattr(session, 'pawn_state', None), beh,
                                 lambda: enc.get('allies') or [], now, rng=random.Random(rng.random()),
-                                log=lambda m, c=cls: _log('%s %s' % (c, m)))
+                                log=lambda m, c=cls: _log('%s %s' % (c, m)), lifespan=lifespan)
+        raptor.group = group
         session._live_ch = getattr(session, '_live_ch', 900)
         raptor.ch = session._live_ch
         session._live_ch += 1
@@ -74,15 +78,16 @@ def spawn_raptors(session, enc, now):
         raptor.sent_at = 0.0
         pack.append(raptor)
         out.append(entry)
-        _log('spawned %s ch%d at %s (lifespan %.0f s)' % (cls, raptor.ch, [round(v) for v in loc], raptors.LIFESPAN))
+        _log('spawned %s ch%d at %s (lifespan %.0f s)' % (cls, raptor.ch, [round(v) for v in loc], lifespan))
     return out
 
 
-def despawn_all(session, enc):
+def despawn_all(session, enc, group=None):
+    """Close the raptors of `group` (all when None)."""
     from ..behemoth.spawn import close_entry
-    out = [close_entry(r.ch, r.cls) for r in enc.get('allies') or () if r.ch is not None]
-    enc['allies'] = []
-    return out
+    gone = [r for r in enc.get('allies') or () if group is None or getattr(r, 'group', 'q') == group]
+    enc['allies'] = [r for r in enc.get('allies') or () if r not in gone]
+    return [close_entry(r.ch, r.cls) for r in gone if r.ch is not None]
 
 
 def step(session, enc, now):

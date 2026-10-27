@@ -301,6 +301,12 @@ def start(session):
         try:
             parts, session._encounter['part_abilities'] = weapon_parts.setup(session, lambda m: print(m, flush=True))
             entries += parts
+            weapon = weapon_parts.equipped_weapon(session)
+            if weapon is not None:
+                from .engine import legendary
+                comps = [row['component'].rsplit('.', 1)[-1]
+                         for _, _, row in weapon_parts.default_parts(weapon_parts.load(), weapon[2])]
+                entries += legendary.setup(session, session._encounter, comps)
         except Exception as exc:                          # the hunt still runs without the parts
             print('WEAPON PARTS failed: %s: %s' % (type(exc).__name__, exc), flush=True)
     if os.environ.get('MPGS_GEAR_STATS', '1') == '1':
@@ -1022,7 +1028,8 @@ def _engine_step(session, enc, now):
             w = model.encode(upd.parsed, session.ctx, cls)
             bunches.extend(compose.compose(ENCOUNTER_CHANNEL, w.n, w.nbits, upd.exports, open=False, close=False,
                                            reliable=False))
-    from .engine import allies
+    from .engine import allies, legendary
+    reliable.extend(legendary.step(session, enc, t))
     ally_reliable, ally_bunches = allies.step(session, enc, t)
     reliable.extend(ally_reliable)
     bunches.extend(ally_bunches)

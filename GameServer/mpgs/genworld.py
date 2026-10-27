@@ -559,6 +559,10 @@ class GenSession(ReplaySession):
                     if x[1] in ('ServerStartNextMove', 'Server_UpdateCurrentLocoState', 'Server_UpdateSheatheStatus') and                             x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_stamina_rpc
                         handle_stamina_rpc(self, b.ch, blk, x[1], x[3])   # observes only; normal handling continues
+                        if x[1] == 'ServerStartNextMove':
+                            from .engine import legendary
+                            enc = self._encounter
+                            legendary.on_move(self, enc, x[3], time.monotonic() - enc['spawn_mono'])
                     if x[1] in ('ServerShoot', 'Server_Reload') and getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_ranged
                         params = x[3] if x[2] == 'rpc' else None

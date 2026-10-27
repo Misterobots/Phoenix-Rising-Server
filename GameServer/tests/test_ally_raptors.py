@@ -51,6 +51,41 @@ class AllyRaptorTests(unittest.TestCase):
         case.run_until(s, raptors.LIFESPAN + 1.0, start=30.0, player=lambda t: player)
         self.assertEqual(enc.get('allies'), [])
 
+    def test_legendary_tag_move_ultra_raptor_and_cooldown(self):
+        import test_island_encounter_engine as T
+        from mpgs.engine import legendary
+        from mpgs.repl import model
+        from mpgs.repl.structs import tag_index
+        if not T.HAVE_DATA:
+            self.skipTest('island engine data not generated')
+        T.setUpModule()
+        self.addCleanup(T.tearDownModule)
+        T.EngineEncounterTests.setUpClass()
+        w = T.EngineEncounterTests.world
+        loadout.swap_weapon_actor(w.entries, w.schema, 'WP_DP_UMBRAL_01')
+        self.addCleanup(loadout.swap_weapon_actor, w.entries, w.schema, 'WP_EB_BEGINNER')
+        case = T.EngineEncounterTests('test_spawn_stands_on_the_landscape_and_walks')
+        with patch.dict(os.environ, {'MPGS_WEAPON_PARTS': '1'}):
+            s = case.session()
+        enc = s._encounter
+        self.assertTrue(enc['legendary']['ready'])
+        sent = [b.values for e in s.entries for b in e.parsed.blocks if b.values and 'ReplicatedLooseTags' in b.values]
+        self.assertEqual(sent[-1]['ReplicatedLooseTags'], [tag_index('Combat.LegendaryAbilityAvailable')])
+        self.assertEqual(tag_index('Combat.LegendaryAbilityAvailable'), 1047)
+        bl = enc['loc']
+        player = (bl[0] - 1200.0, bl[1], bl[2])
+        s.pawn_state = {'loc': list(player), 'rot': [0.0, 0.0, 0.0], 'ctrl_rot': [0.0, 0.0, 0.0], 'vel': [0.0, 0.0, 0.0], 'mode': 1}
+        dest = ('soft', '/Game/Blueprints/Weapons/_shared/legendary/mint/active_weapon_part_DP_umbral_1_animstateset.'
+                         'active_weapon_part_DP_umbral_1_animstateset:ComboAnimState_0')
+        legendary.on_move(s, enc, {'ComboInputBuffer.DestState': dest}, 1.0)
+        self.assertFalse(enc['legendary']['ready'])
+        case.run_until(s, 3.0, start=1.0, player=lambda t: player)
+        self.assertEqual([(r.cls, r.group) for r in enc['allies']], [('uraptor_00_bp_C', 'legend')])
+        legendary.on_move(s, enc, {'ComboInputBuffer.DestState': dest}, 3.0)      # on cooldown: nothing more
+        case.run_until(s, 122.0, start=3.0, player=lambda t: player)
+        self.assertTrue(enc['legendary']['ready'])
+        self.assertEqual(len([r for r in enc['allies'] if r.group == 'legend']), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
