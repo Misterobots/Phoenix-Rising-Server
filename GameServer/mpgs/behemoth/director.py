@@ -325,6 +325,7 @@ class BehemothDirector:
         self.mover = Mover(terrain, loc[:2], yaw, half_height=species.half_height, walk_speed=species.walk_speed,
                            movement=movement)
         self.mover.blockers = self._blockers
+        self.extra_blockers = None
         self._ignore_pawn = False                  # an attack's ModifyPartCollisionChannelNotify window is open
         self.health = None                         # set by the damage layer (needs .hits); unused until step 5/6
         self.locked = None
@@ -512,8 +513,9 @@ class BehemothDirector:
         """The player's capsule (radius + this actor's) unless the current attack lets pawns through."""
         st = self.player_state()
         if not st or self._ignore_pawn or self.species.capsule_radius <= 0:
-            return []
-        return [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
+            return []        # extra_blockers: () -> [(x, y, own radius)] of other pawns (ally raptors, engine/allies.py)
+        out = [(st['loc'][0], st['loc'][1], PLAYER_CAPSULE_RADIUS + self.species.capsule_radius)]
+        return out + [(x, y, r + self.species.capsule_radius) for x, y, r in (self.extra_blockers() if self.extra_blockers else ())]
 
     def _window_shapes(self, bones):
         """The physics bodies of a damage window's bones (tools.export_behemoth_bodies), or None without body data.

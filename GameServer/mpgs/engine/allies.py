@@ -46,6 +46,7 @@ def spawn_raptors(session, enc, now, group='q', classes=None, lifespan=None, yaw
                                             else 'no behemoth engine' if director is None else 'no player position'))
         return []
     out = despawn_all(session, enc, group)
+    director.extra_blockers = lambda: [(r.mover.x, r.mover.y, _radius(r)) for r in enc.get('allies') or ()]
     schema = session.world.schema
     rng = enc.setdefault('ally_rng', random.Random(enc['guid'] + 7))
     pack = enc.setdefault('allies', [])
@@ -65,6 +66,7 @@ def spawn_raptors(session, enc, now, group='q', classes=None, lifespan=None, yaw
                                 lambda: enc.get('allies') or [], now, rng=random.Random(rng.random()),
                                 log=lambda m, c=cls: _log('%s %s' % (c, m)), lifespan=lifespan)
         raptor.group = group
+        raptor.mover.blockers = (lambda me=raptor: _raptor_blockers(enc, director, me))
         session._live_ch = getattr(session, '_live_ch', 900)
         raptor.ch = session._live_ch
         session._live_ch += 1
@@ -84,6 +86,20 @@ def spawn_raptors(session, enc, now, group='q', classes=None, lifespan=None, yaw
         out.append(entry)
         _log('spawned %s ch%d at %s (lifespan %.0f s)' % (cls, raptor.ch, [round(v) for v in loc], lifespan))
     return out
+
+
+def _radius(r):
+    from ..creatures import raptors
+    return raptors.CAPSULE_RADIUS * (1.5 if r.cls == 'uraptor_00_bp_C' else 1.0)   # uraptor_00_bp scales itself 1.5x
+
+
+def _raptor_blockers(enc, director, me):
+    """Capsules a raptor may not walk into: the behemoth's and the other raptors' (both radii). Without it a sprinting raptor
+    (~160 cm per 15 Hz tick) ended inside the behemoth's capsule and the client pushed the overlapping pawns apart, so all of them
+    snapped back on the next update (live 2026-10-27)."""
+    own = _radius(me)
+    out = [(director.mover.x, director.mover.y, own + getattr(director.species, 'capsule_radius', 0.0))]
+    return out + [(r.mover.x, r.mover.y, own + _radius(r)) for r in enc.get('allies') or () if r is not me]
 
 
 def despawn_all(session, enc, group=None):
