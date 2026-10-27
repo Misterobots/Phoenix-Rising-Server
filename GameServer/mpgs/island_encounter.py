@@ -303,6 +303,12 @@ def start(session):
             entries += parts
         except Exception as exc:                          # the hunt still runs without the parts
             print('WEAPON PARTS failed: %s: %s' % (type(exc).__name__, exc), flush=True)
+    if os.environ.get('MPGS_GEAR_STATS', '1') == '1':
+        from .engine import gear
+        try:
+            entries += gear.setup(session, lambda m: print(m, flush=True))
+        except Exception as exc:
+            print('GEAR failed: %s: %s' % (type(exc).__name__, exc), flush=True)
     return entries
 
 

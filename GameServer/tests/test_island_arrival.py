@@ -19,7 +19,7 @@ from mpgs.repl.structs import STRUCT_READERS, STRUCT_WRITERS
 class IslandArrivalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls._parts = patch.dict(os.environ, {'MPGS_WEAPON_PARTS': '0'})   # arrival + spawn only (test_weapon_parts.py)
+        cls._parts = patch.dict(os.environ, {'MPGS_WEAPON_PARTS': '0', 'MPGS_GEAR_STATS': '0'})   # arrival + spawn only (test_weapon_parts.py)
         cls._parts.start()
         cls.addClassCleanup(cls._parts.stop)
         contract = json.loads((ROOT / 'data/2.1.1/islands/Adventure_IslandA_D24.contract.json').read_text())
