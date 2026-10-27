@@ -31,6 +31,13 @@ EXPORT_FLAGS = 5                 # path + checksum flag, checksum 0: as the reco
 
 # Weapon ability rows (Gameplay/weapon_power_table, FWeaponPowerTableData). Only the starter sword so far; the row of the equipped
 # weapon should come from the item data when more weapons are handled.
+# Part abilities whose server instance ends at once and that the server cools down itself. dp_y_ability_spawn_raptor_ab: the
+# server spawns the pack and calls K2_EndAbility in the same activation, so UGameplayAbility::EndAbility (bReplicateEndAbility)
+# sends ClientEndAbility; the client's own instance never ends on its own here (it stops at FindBuff(alluring_raptor_manager_buff)
+# before StartYCooldown / K2_EndAbility, live 2026-10-27). Its cooldown is the CDO AbilityCooldown, enforced here because the
+# client never applies its dp_y_ability_cooldown_ge and this server does not replicate gameplay effects yet.
+SERVER_ENDED = {'dp_y_ability_spawn_raptor_ab_C': 60.0}
+
 WEAPON_ABILITIES = {
     'eblade_beginner_00_bp_C': [
         # (package, class, what it is)
@@ -229,7 +236,8 @@ class PlayerAbilities:
         return {'server': 1, 'current': self.server_key}
 
     def on_try_activate(self, ch, req, params):
-        """ServerTryActivateAbility -> ClientActivateAbilitySucceed (granted here) or ClientActivateAbilityFailed (unknown handle)."""
+        """ServerTryActivateAbility -> ClientActivateAbilitySucceed (granted here) or ClientActivateAbilityFailed (unknown handle).
+        -> True when the activation was accepted."""
         h = params.get('AbilityToActivate.Handle')
         key = params.get('PredictionKey') or {}
         if ch != self.ch:
@@ -249,6 +257,13 @@ class PlayerAbilities:
             log('handle %d (%s): meter %.0f / %.0f not full -> ClientActivateAbilityFailed'
                 % (h, spec['cls'], self.meter.value, self.meter.max))
             return
+        cooldown = SERVER_ENDED.get(spec['cls'])
+        now = self.s.clock() if hasattr(self.s, 'clock') else __import__('time').monotonic()
+        if cooldown is not None and now < spec.get('ready_at', 0.0):
+            self.s._queue_rpc(ch, req, 'ClientActivateAbilityFailed',
+                              {'AbilityToActivate.Handle': h, 'PredictionKey': key.get('current', 0)})
+            log('handle %d (%s): on cooldown (%.0f s left) -> ClientActivateAbilityFailed' % (h, spec['cls'], spec['ready_at'] - now))
+            return
         if 'part ' in spec['what'] and key:
             # weapon part abilities are LocalPredicted (dp_weapon_ability_base_ab): confirm the client's own prediction key,
             # as the potion reply does (live 2026-10-22); a new server key would not match the client's pending activation
@@ -258,5 +273,12 @@ class PlayerAbilities:
         self.s._queue_rpc(ch, req, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': sk})
         log('handle %d (%s): ServerTryActivateAbility (client key %s) -> ClientActivateAbilitySucceed server key %d'
             % (h, spec['cls'], key, sk['current']))
+        if cooldown is not None:
+            spec['ready_at'] = now + cooldown
+            self.s._queue_rpc(ch, req, 'ClientEndAbility', {
+                'AbilityToEnd.Handle': h, 'ActivationInfo.ActivationMode': 0,        # the server's instance: Authority
+                'ActivationInfo.bCanBeEndedByOtherInstance': 0, 'ActivationInfo.PredictionKeyWhenActivated': sk})
+            log('handle %d (%s): server instance ended -> ClientEndAbility (cooldown %.0f s)' % (h, spec['cls'], cooldown))
         if special and self.meter is not None:
             self.meter.spend_all('special %s activated' % spec['cls'])
+        return True

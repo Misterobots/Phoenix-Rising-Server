@@ -42,6 +42,23 @@ class AllyRaptorTests(unittest.TestCase):
         island_encounter.handle_ability(s, asc_ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
                                                             'PredictionKey': {'server': 0, 'current': 8, 'base': 7}})
         self.assertEqual(len(enc['allies']), raptors.PACK_SIZE)
+        from mpgs.repl import model
+        from mpgs.repl.chan import Full
+        ends = [e for e in s.entries[s.pos:] if any(f[1] == 'ClientEndAbility' for b in e.parsed.blocks for f in b.fields or ())]
+        self.assertEqual(len(ends), 1)                                      # the server ends the client's instance
+        w = model.encode(ends[0].parsed, s.ctx, ends[0].cls)
+        full = Full()
+        full.bits, full.nbits, full.must_map, full.open, full.exports = w.n, w.nbits, False, False, []
+        p, _ = model.parse(full, s.ctx, ends[0].cls)
+        got = dict(next(f[3] for b in p.blocks for f in b.fields or () if f[1] == 'ClientEndAbility'))
+        self.assertEqual(got['AbilityToEnd.Handle'], h)
+        self.assertEqual(got['ActivationInfo.PredictionKeyWhenActivated']['current'], 8)
+        n = len(s.entries)
+        island_encounter.handle_ability(s, asc_ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
+                                                            'PredictionKey': {'server': 0, 'current': 10, 'base': 9}})
+        self.assertTrue(any(f[1] == 'ClientActivateAbilityFailed' for e in s.entries[s.pos:] for b in e.parsed.blocks
+                            for f in b.fields or ()))                       # within the 60 s cooldown
+        self.assertEqual(len(enc['allies']), raptors.PACK_SIZE)
         self.assertNotIn('uraptor_00_bp_C', raptors.PACK)                    # the ultra raptor is the legendary's only
         start_health = enc['health']
         out = case.run_until(s, 30.0, player=lambda t: player)

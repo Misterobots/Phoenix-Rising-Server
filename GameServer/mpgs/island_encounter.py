@@ -808,8 +808,8 @@ def handle_ability(session, ch, req_block, params):
         return True
     pa = (enc or {}).get('part_abilities')
     if pa is not None and h in pa.granted:
-        pa.on_try_activate(ch, req_block, params)          # a weapon part ability (repeater X / Y): granted by this server
-        if pa.granted[h]['cls'] == 'dp_y_ability_spawn_raptor_ab_C' and enc.get('director') is not None:
+        accepted = pa.on_try_activate(ch, req_block, params)   # a weapon part ability (repeater X / Y): granted by this server
+        if accepted and pa.granted[h]['cls'] == 'dp_y_ability_spawn_raptor_ab_C' and enc.get('director') is not None:
             from .engine import allies                       # the ability spawns its raptors on the server (authority only)
             session.entries.extend(allies.spawn_raptors(session, enc, time.monotonic() - enc['spawn_mono']))
         return True
