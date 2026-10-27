@@ -187,13 +187,13 @@ def register_atlas_class_full(schema, cls_name, atlas_dir=ATLAS_CLASSES):
             continue
         params = []
         for prm in fn.get('params') or ():
-            t = _ATLAS_PARAM.get(prm.get('type'))
+            pt = prm.get('type') or ''
+            t = _ATLAS_PARAM.get(pt) or (['U' + pt[len('ObjectProperty<'):-1], 'C', '*', []] if pt.startswith('ObjectProperty<') else None)
             if t is None:
                 return False
             params.append([t, '', prm['name']])
         funcs.append((fn['name'], '|'.join(fn.get('bp_flags') or ()), params))
-    if props:
-        schema.classes[cls_name] = (parent, props)
+    schema.classes[cls_name] = (parent, props)        # listed even without properties: spawn_entry needs the class known
     schema.inherit[cls_name] = [parent] + schema.inherit[parent]
     schema.funcs[cls_name] = funcs
     schema._layouts.clear()

@@ -799,6 +799,9 @@ def handle_ability(session, ch, req_block, params):
     pa = (enc or {}).get('part_abilities')
     if pa is not None and h in pa.granted:
         pa.on_try_activate(ch, req_block, params)          # a weapon part ability (repeater X / Y): granted by this server
+        if pa.granted[h]['cls'] == 'dp_y_ability_spawn_raptor_ab_C' and enc.get('director') is not None:
+            from .engine import allies                       # the ability spawns its raptors on the server (authority only)
+            session.entries.extend(allies.spawn_raptors(session, enc, time.monotonic() - enc['spawn_mono']))
         return True
     if 'Healing_Potion' not in name:
         print('ENCOUNTER ability handle %s (%s) not handled; no reply' % (h, name or '?'), flush=True)
@@ -1019,6 +1022,10 @@ def _engine_step(session, enc, now):
             w = model.encode(upd.parsed, session.ctx, cls)
             bunches.extend(compose.compose(ENCOUNTER_CHANNEL, w.n, w.nbits, upd.exports, open=False, close=False,
                                            reliable=False))
+    from .engine import allies
+    ally_reliable, ally_bunches = allies.step(session, enc, t)
+    reliable.extend(ally_reliable)
+    bunches.extend(ally_bunches)
     if reliable:
         at = session.pos + revealed                 # after the reveal entries reveal() queued this tick
         session.entries[at:at] = reliable

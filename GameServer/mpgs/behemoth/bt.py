@@ -519,6 +519,55 @@ def _d_lock_target(ctx, p, mem, peek):
     return (ctx.bb.get('AttackTarget') is not None) == bool(p.get('ShouldBeValid', True))
 
 
+# ---- creature (ally raptor) nodes: read from their Blueprint bytecode (atlas pseudo/<class>.txt, 2026-10-26) -------------------
+def _d_in_range(ctx, p, mem, peek):
+    """BTD_InRange: DistanceMin <= ControlledPawn.GetDistanceTo(bb[AttackTarget]) <= DistanceMax (3D)."""
+    a, b = ctx.target_pos('SelfPos'), ctx.target_pos(_key(p, 'AttackTarget') or 'AttackTarget')
+    if a is None or b is None:
+        return False
+    return float(p.get('DistanceMin', 0.0)) <= math.dist(a, b) <= float(p.get('DistanceMax', 1e12))
+
+
+def _d_random_choice(ctx, p, mem, peek):
+    """BTD_RandomChoice: RandomFloatInRange(0, 1) <= RandomChoice."""
+    return ctx.rng.random() <= float(p.get('RandomChoice', 0.5))
+
+
+def _d_class_equal(*classes):
+    """BTD_ClassEqualTo<X>raptor: ClassIsChildOf(class of bb[SelfActor], ...). Araptor's version also accepts uraptor."""
+    return lambda ctx, p, mem, peek: getattr(ctx, 'creature_class', None) in classes
+
+
+def _d_distance_from_behemoth(ctx, p, mem, peek):
+    """BTDecorator_DistanceFromBehemothCheck: 2D distance from bb[Origin] to the behemoth's bounds centre (bb[TargetBehemoth],
+    moved by its predicted horizontal movement) in (MinDistance, bound sphere radius + MaxDistance). False without a behemoth."""
+    o = ctx.target_pos(_key(p, 'Origin'))
+    b = ctx.behemoth_bounds(_key(p, 'TargetBehemoth'), float(p.get('PredictTargetHorizFuturePosTime', 0.0)))         if hasattr(ctx, 'behemoth_bounds') else None
+    if o is None or b is None:
+        return False
+    centre, radius = b
+    d = _dist2d(o, centre)
+    return float(p.get('MinDistance', 0.0)) < d < radius + float(p.get('MaxDistance', 0.0))
+
+
+def _d_percent_chance(ctx, p, mem, peek):
+    """btdeco_percentchance: RandomFloat() <= bb[BlackboardPercentChanceKey] when that key is set and > 0, else
+    PercentChance > 0 and RandomFloat() <= PercentChance."""
+    k = _key(p, 'BlackboardPercentChanceKey')
+    v = ctx.bb.get(k) if k else None
+    if isinstance(v, (int, float)) and v > 0:
+        return ctx.rng.random() <= v
+    pc = float(p.get('PercentChance', 0.0))
+    return pc > 0 and ctx.rng.random() <= pc
+
+
+def _d_has_tags(ctx, p, mem, peek):
+    """actor_has_gameplaytags_btdeco: the actor in bb[ActorBBKey] has the RequireTags (ctx.actor_tags)."""
+    tags = set(getattr(ctx, 'actor_tags', lambda key: ())(_key(p, 'ActorBBKey') or 'SelfActor'))
+    want = [t if isinstance(t, str) else (t or {}).get('TagName') for t in p.get('RequireTags') or []]
+    return all(w in tags for w in want)
+
+
 DECORATORS = {
     'BTDeco_CheckChosenAction_C': _d_check_chosen_action,
     'archon_distance_check_btdeco_C': _d_archon_distance,
@@ -536,6 +585,15 @@ DECORATORS = {
     'enter_combat_check_btdeco_C': _d_enter_combat,
     'BTDecorator_DistanceCheck_C': _d_distance,
     'BTDecorator_ConeCheck': _d_cone,
+    'BTD_InRange_C': _d_in_range,
+    'BTD_RandomChoice_C': _d_random_choice,
+    'BTD_ClassEqualToAraptor_C': _d_class_equal('araptor_00_bp_C', 'uraptor_00_bp_C'),
+    'BTD_ClassEqualToPraptor_C': _d_class_equal('praptor_00_bp_C'),
+    'BTD_ClassEqualToSraptor_C': _d_class_equal('sraptor_00_bp_C'),
+    'BTD_ClassEqualToUraptor_C': _d_class_equal('uraptor_00_bp_C'),
+    'BTDecorator_DistanceFromBehemothCheck_C': _d_distance_from_behemoth,
+    'actor_has_gameplaytags_btdeco_C': _d_has_tags,
+    'btdeco_percentchance_C': _d_percent_chance,
     # no allies / no messages / no flee despawn in a one-behemoth session
     'check_next_message_type_btdeco_C': lambda ctx, p, m, peek: False,
     'should_despawn_on_flee_btdeco_C': lambda ctx, p, m, peek: False,
@@ -604,9 +662,11 @@ class EQSQuery(Task):
     def start(self, ctx):
         req = self.p.get('EQSRequest') or {}
         name = _asset_name(req.get('QueryTemplate')) or _asset_name(self.p.get('QueryTemplate')) or ''
+        cfg = {c.get('ParamName'): c.get('Value') for c in req.get('QueryConfig') or []}
+        if hasattr(ctx, 'run_eqs'):                    # creatures: the context knows their queries by name
+            return SUCCEEDED if ctx.run_eqs(name, _key(self.p, 'BlackboardKey') or 'TempLocation', cfg) else FAILED
         if 'patrol' not in name.lower() and 'NextPointAroundTargetPoint' not in name:
             return FAILED
-        cfg = {c.get('ParamName'): c.get('Value') for c in req.get('QueryConfig') or []}
         outer = float(cfg.get('DonutOuterRadius') or cfg.get('Radius') or 500.0)
         inner = float(cfg.get('DonutInnerRadius') or 0.0)
         p = ctx.patrol_point(inner, outer)
@@ -673,7 +733,7 @@ class Pivot(Task):
     """Turn toward the target. ctx.face returns the end time of a turn montage (wait for it) or None (turned at once)."""
 
     def start(self, ctx):
-        tgt = ctx.target_pos(_key(self.p, 'PivotTarget') or 'AttackTarget')
+        tgt = ctx.target_pos(_key(self.p, 'PivotTarget') or _key(self.p, 'BlackboardKey') or 'AttackTarget')
         self.until = ctx.face(tgt) if tgt is not None else None
         return RUNNING if self.until is not None else SUCCEEDED
 
@@ -710,6 +770,10 @@ TASKS = {
     'bttask_enter_tired_state_C': StateMontage,
     # instant in this server: growls/generic actions, coordination, audio, armour, flee timers
     'generic_action_bttask_C': Instant,
+    'perform_action_montage_bttask_C': BehemothAction,   # NetworkedMontage.PlayMontage(Montage); finishes when it blends out
+    'BTTask_RotateToFaceBBEntry': Pivot,
+    'BTT_FocusTarget_C': Instant,                          # SetFocus: the creature faces its target while moving (ctx.face on move)
+    'BTT_ClearFocus_C': Instant,
 }
 
 
@@ -736,6 +800,12 @@ SERVICES = {
     'distance_from_target_service_C': _s_distance_from_target,
     'evaluate_action_btservice_C': _s_evaluate_action,
     'try_pick_new_target_bts_C': _s_pick_target,
+    'ally_try_pick_new_target_bts_C': lambda ctx, p: ctx.pick_ally_target(),   # bb[AttackTarget] = nearest ArchonBehemoth
+    'set_loco_state_btservice_C': lambda ctx, p: ctx.set_loco(_enum_index(p.get('LocoState'))),   # loco table MovementSpeed
+    'BTService_RunEQS': lambda ctx, p: ctx.run_eqs(_asset_name((p.get('EQSRequest') or {}).get('QueryTemplate')),
+                                                   _key(p, 'BlackboardKey'), {}) if hasattr(ctx, 'run_eqs') else None,
+    'set_gameplay_focus_btservice_C': lambda ctx, p: None,
+    'enable_strafe_btservice_C': lambda ctx, p: None,
     # cosmetic or not needed by this server
     'BTService_UpdateDirections_C': lambda ctx, p: None,
     'calc_knowntargetavgpos_btservice_C': lambda ctx, p: None,
