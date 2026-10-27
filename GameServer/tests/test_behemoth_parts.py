@@ -85,6 +85,15 @@ class DirectorStaggerTests(unittest.TestCase):
         self.assertEqual(d.ctx.bb['StaggerCount'], 1)
         self.assertIn('b_leRawr_stagger_left_mot', [e[1] for e in d._events if e[0] == 'montage'])
 
+    def test_handle_stagger_task_clears_the_count(self):
+        """shared_handle_stagger_bt runs while StaggerCount > 0; its task resets it, or the tree never leaves the branch."""
+        from types import SimpleNamespace
+        from mpgs.behemoth import bt
+        ctx = SimpleNamespace(bb={'StaggerCount': 2})
+        task = bt.TASKS['handle_stagger_bttask_C'].__new__(bt.TASKS['handle_stagger_bttask_C'])
+        self.assertEqual(task.start(ctx), bt.SUCCEEDED)
+        self.assertEqual(ctx.bb['StaggerCount'], 0)
+
 
 if __name__ == '__main__':
     unittest.main()

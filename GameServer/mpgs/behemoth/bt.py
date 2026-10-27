@@ -754,8 +754,20 @@ class StateMontage(Task):
         return SUCCEEDED if ctx.now >= self.until else RUNNING
 
 
+class HandleStagger(Task):
+    """handle_stagger_bttask (shared_handle_stagger_bt, gated by 'StaggerCount Is Greater Than 0'): plays the picked stagger montage,
+    then SetValueAsInt(StaggerCount, 0) and FinishExecute. The director already plays the stagger and holds the tree until it ends
+    (BehemothDirector.stagger / staggered_until), so here only the count is cleared - without it the branch reran forever and the
+    behemoth stood still until the next stagger (2026-10-27)."""
+
+    def start(self, ctx):
+        ctx.bb['StaggerCount'] = 0
+        return SUCCEEDED
+
+
 TASKS = {
     'BTTask_Wait': Wait,
+    'handle_stagger_bttask_C': HandleStagger,
     'BTTask_MoveTo': MoveTo,
     'BTTask_MoveToAndFace': MoveTo,
     'BTTask_RunEQSQuery': EQSQuery,

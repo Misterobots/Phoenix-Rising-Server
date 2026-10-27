@@ -307,6 +307,10 @@ def start(session):
                 comps = [row['component'].rsplit('.', 1)[-1]
                          for _, _, row in weapon_parts.default_parts(weapon_parts.load(), weapon[2])]
                 entries += legendary.setup(session, session._encounter, comps)
+            pa = session._encounter.get('part_abilities')
+            if pa is not None and any(v['cls'] == 'dp_y_ability_spawn_raptor_ab_C' for v in pa.granted.values()):
+                from .engine import buffs                 # the Q ability's client side needs it (engine/buffs.py)
+                entries += buffs.add(session, session._encounter, 'alluring_raptor_manager_buff_C')
         except Exception as exc:                          # the hunt still runs without the parts
             print('WEAPON PARTS failed: %s: %s' % (type(exc).__name__, exc), flush=True)
     if os.environ.get('MPGS_GEAR_STATS', '1') == '1':
