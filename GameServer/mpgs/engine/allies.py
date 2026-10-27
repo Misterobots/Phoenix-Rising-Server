@@ -114,7 +114,7 @@ def step(session, enc, now):
     """-> (reliable entries, unreliable bunches) for this tick."""
     from ..behemoth import spawn
     from ..behemoth.spawn import close_entry
-    from ..island_encounter import _entry, _block, handle_damage
+    from ..island_encounter import _entry, _block, handle_damage, _montage_info
     allies = enc.get('allies')
     if not allies:
         return [], []
@@ -143,12 +143,23 @@ def step(session, enc, now):
         if r.ctx.bb.get('HasSpawnedIn') and not spawned:
             reliable.append(_entry(session.world, r.ch, r.cls, [_block(r.cls, {'HasSpawnedIn': True})]))
             _log('%s ch%d send HasSpawnedIn' % (r.cls, r.ch))
-        if now - r.sent_at >= SEND_INTERVAL and r.mover.pop_changed():
+        ending = getattr(r, 'root_motion', None) is not None and r.mover.montage is None   # send the RepRootMotion clear
+        if now - r.sent_at >= SEND_INTERVAL and (r.mover.pop_changed() or ending):
             r.sent_at = now
             m = r.mover
             vel = (m.walk_speed * math.cos(math.radians(m.yaw)), m.walk_speed * math.sin(math.radians(m.yaw)), 0.0) \
                 if m.path else (0.0, 0.0, 0.0)
-            upd = spawn.movement_entry(r.ch, r.cls, m.loc, m.yaw, vel=vel, mode=1, server_time=now, quant=RAPTOR_MOVE_QUANT)
+            rm, exports = None, []
+            if getattr(r, 'root_motion', None) is not None:        # Character.RepRootMotion, as for the behemoth
+                name, package, t0 = r.root_motion
+                if m.montage is not None and (package, name) in enc['montage_guids']:
+                    rm = spawn.root_motion_values(enc['montage_guids'][(package, name)][0], now - t0, m.loc, m.yaw, vel)
+                    exports = [_montage_info(enc, name, package)]
+                else:
+                    rm = spawn.root_motion_values(None, 0.0, (0.0, 0.0, 0.0), 0.0)
+                    r.root_motion = None
+            upd = spawn.movement_entry(r.ch, r.cls, m.loc, m.yaw, vel=vel, mode=1, server_time=now, quant=RAPTOR_MOVE_QUANT,
+                                       root_motion=rm, exports=exports)
             w = model.encode(upd.parsed, session.ctx, r.cls)
             bunches.extend(compose.compose(r.ch, w.n, w.nbits, upd.exports, open=False, close=False, reliable=False))
     enc['allies'] = keep

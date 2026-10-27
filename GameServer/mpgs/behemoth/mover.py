@@ -359,7 +359,7 @@ class Mover:
 import os
 import re
 
-_ANIM_REF = re.compile(r'/anims/([A-Za-z0-9_]+)\.\d+')
+_ANIM_REF = re.compile(r'/anims?/([A-Za-z0-9_]+)\.\d+')
 # Local AssetDump output under GameServer/world/dumps (git-ignored game data); Mystic-Paradox kept it in ../_dumps.
 ROOTMOTION_DIR = os.environ.get('MPGS_ROOTMOTION_DIR') or os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'world', 'dumps', 'rootmotion'))

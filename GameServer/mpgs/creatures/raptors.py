@@ -231,6 +231,13 @@ class Raptor:
     def play(self, name, now):
         m = self.data['montages'].get(name)
         self.events.append(('montage', name, now))
+        from ..behemoth.mover import montage_curve
+        curve = montage_curve(name)                      # the attack's root motion moves the raptor (world/dumps/rootmotion)
+        if curve is not None:
+            self.mover.path = []
+            self.mover.montage = None
+            self.mover.play(curve, now)
+            self.root_motion = (name, (m or {}).get('package'), now)
         self._notifies = [(now + e['t'], e) for e in (m or {}).get('events', ())
                           if e['type'] in ('archon_damage_window_C', 'spawn_aoe_class_bpn_C', 'spawn_gameplay_ns_C')]
         return now + (m['length'] if m else 1.0)
