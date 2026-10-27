@@ -115,12 +115,14 @@ def step(session, enc, now):
                     session.world.schema, enc['guids'], ch=r.ch, actor_cls=r.cls, montage_guid_cache=enc['montage_guids'],
                     component_guid=r.montage_comp, component_cls=MONTAGE_COMPONENT[1], montage_package=m['package'],
                     montage_name=ev[1]))
+                _log('%s ch%d send montage %s' % (r.cls, r.ch, ev[1]))
             elif ev[0] == 'hit':
                 _, row, bone, dmg = ev
                 _log('%s %s hit %s for %.0f' % (r.cls, row, bone, dmg))
                 handle_damage(session, None, None, {'Damage': dmg, 'Payload.Hit': {'bone_name': [bone]}})
         if r.ctx.bb.get('HasSpawnedIn') and not spawned:
             reliable.append(_entry(session.world, r.ch, r.cls, [_block(r.cls, {'HasSpawnedIn': True})]))
+            _log('%s ch%d send HasSpawnedIn' % (r.cls, r.ch))
         if now - r.sent_at >= SEND_INTERVAL and r.mover.pop_changed():
             r.sent_at = now
             m = r.mover

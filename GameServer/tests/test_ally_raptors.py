@@ -42,6 +42,7 @@ class AllyRaptorTests(unittest.TestCase):
         island_encounter.handle_ability(s, asc_ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
                                                             'PredictionKey': {'server': 0, 'current': 8, 'base': 7}})
         self.assertEqual(len(enc['allies']), raptors.PACK_SIZE)
+        self.assertNotIn('uraptor_00_bp_C', raptors.PACK)                    # the ultra raptor is the legendary's only
         start_health = enc['health']
         out = case.run_until(s, 30.0, player=lambda t: player)
         self.assertLess(enc['health'], start_health)                       # their hits landed

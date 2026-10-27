@@ -35,7 +35,7 @@ RAPTOR_PACKAGES = {
     'praptor_00_bp_C': '/Game/creatures/tp/raptor/praptor/blueprints/praptor_00_bp',
     'uraptor_00_bp_C': '/Game/creatures/tp/raptor/uraptor/uraptor_00_bp',
 }
-PACK = list(RAPTOR_PACKAGES)              # the ability's MakeArray {araptor, sraptor, praptor}
+PACK = ['araptor_00_bp_C', 'sraptor_00_bp_C', 'praptor_00_bp_C']   # the ability's MakeArray (the uraptor is the legendary's only)
 PACK_SIZE = 2                             # dp_y_ability_spawn_raptor_ab CDO RaptorPackSpawnQuantity
 LIFESPAN = 90.0                           # CDO AllyRaptorLifespanDuration
 ULTRA_LIFESPAN = 300.0                    # legendary_weapon_part_spawn_raptor_bpc CDO AllyUltraRaptorLifespanDuration
