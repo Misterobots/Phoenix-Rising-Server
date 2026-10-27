@@ -12,6 +12,10 @@ from ..repl import compose, model
 
 SEND_INTERVAL = 1.0 / 15.0
 MONTAGE_COMPONENT = ('NetworkedMontage', 'NetworkedMontageComponent')
+# ReplicatedMovement quantization: the raptor blueprints (and base_creature_bp / af_raptor_archetype_bp) set none, so they inherit the
+# native ArchonAbilityCharacter values the player pawn uses (BP_PlayerCharacter sets none either; x100 / x1 / byte confirmed live).
+# Bp_Behemoth's own override (x10 / x10 / short) made the client fail the bunch (ObjectReplicatorReceivedBunchFail, 2026-10-27).
+RAPTOR_MOVE_QUANT = {'loc': 100, 'vel': 1, 'rot': 'byte'}
 
 
 def _log(msg):
@@ -128,7 +132,7 @@ def step(session, enc, now):
             m = r.mover
             vel = (m.walk_speed * math.cos(math.radians(m.yaw)), m.walk_speed * math.sin(math.radians(m.yaw)), 0.0) \
                 if m.path else (0.0, 0.0, 0.0)
-            upd = spawn.movement_entry(r.ch, r.cls, m.loc, m.yaw, vel=vel, mode=1, server_time=now)
+            upd = spawn.movement_entry(r.ch, r.cls, m.loc, m.yaw, vel=vel, mode=1, server_time=now, quant=RAPTOR_MOVE_QUANT)
             w = model.encode(upd.parsed, session.ctx, r.cls)
             bunches.extend(compose.compose(r.ch, w.n, w.nbits, upd.exports, open=False, close=False, reliable=False))
     enc['allies'] = keep
