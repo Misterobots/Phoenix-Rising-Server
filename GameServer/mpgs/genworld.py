@@ -32,6 +32,9 @@ class _Ctx:
         return self._names[g]
 
     def comp_class(self, actor_cls, g):
+        dyn = getattr(self, 'dynamic_classes', None)   # dynamic sub-objects this server created: guid -> class (ability instances)
+        if dyn and g in dyn:
+            return dyn[g]
         n = self._names.get(g, (None, None))[1]
         if not n:
             return None
@@ -585,7 +588,15 @@ class GenSession(ReplaySession):
                     if blk.cls_name == 'ArchonAbilitySystemComponent' and x[1] in (
                             'ServerTryActivateAbility', 'ServerTryActivateAbilityWithEventData') and                            getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_ability
-                        handle_ability(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
+                        params = x[3] if x[2] == 'rpc' else None
+                        if params is None and x[2] == 'raw' and x[1] == 'ServerTryActivateAbilityWithEventData':
+                            from .engine.abilities import activation_prefix
+                            params = activation_prefix(x[3])   # the TriggerEventData struct has no reader; its leading params do
+                        handle_ability(self, b.ch, blk, params)
+                        continue
+                    if x[1] == 'SpawnProjectile' and blk.cls_name == 'dp_x_ability_piercing_ab_C' and                             getattr(self, '_encounter', None) is not None:
+                        from .island_encounter import handle_spawn_projectile
+                        handle_spawn_projectile(self, b.ch, blk, x[3] if x[2] == 'rpc' else None)
                         continue
                     if blk.cls_name == 'player_hittable_bpc_C' and x[1] in ('ServerAcceptHit', 'ServerRefuseHit'):
                         from .island_encounter import handle_hit_reply

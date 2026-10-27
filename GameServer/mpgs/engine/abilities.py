@@ -50,6 +50,23 @@ def _info(guid, name, outer=None, flags=EXPORT_FLAGS, checksum=0):
     return i
 
 
+
+def activation_prefix(raw):
+    """ServerTryActivateAbilityWithEventData raw params -> {Handle, InputPressed, PredictionKey}, the parameters before
+    TriggerEventData (not decoded). RPC layout: a send bit before every non-bool parameter. Checked against four live
+    captures (2026-10-26): handles 12/13 and keys matching the client's ServerEndAbility. None when it does not fit."""
+    from ..bitio import BitReader
+    from ..repl.structs import STRUCT_READERS
+    bits, nbits = raw
+    try:
+        r = BitReader(bits.to_bytes((nbits + 7) // 8, 'little'), nbits)
+        h = r.read(32) if r.bit() else 0
+        pressed = r.bit()
+        key = STRUCT_READERS['PredictionKey'](r) if r.bit() else {}
+    except Exception:
+        return None
+    return {'AbilityToActivate.Handle': h, 'InputPressed': pressed, 'PredictionKey': key}
+
 class PlayerAbilities:
     """Ability state for one connection's own pawn. Created by the session; step() grants once the world is delivered."""
 
@@ -120,6 +137,12 @@ class PlayerAbilities:
             cls_info = _info(g() + 1, cls, outer=pkg)
             cdo = _info(g() + 1, 'Default__' + cls, outer=pkg)
             inst = g()                                         # dynamic: created by its content block, never exported by path
+            from ..loadout import register_atlas_class_full
+            register_atlas_class_full(self.s.world.schema, cls)   # its own RPCs (e.g. SpawnProjectile) then decode
+            ctx = self.s.ctx
+            if not hasattr(ctx, 'dynamic_classes'):
+                ctx.dynamic_classes = {}
+            ctx.dynamic_classes[inst] = cls
             exports += [cls_info, cdo]
             must_map += [cls_info.guid, cdo.guid]
             b = model.Block()
@@ -226,7 +249,12 @@ class PlayerAbilities:
             log('handle %d (%s): meter %.0f / %.0f not full -> ClientActivateAbilityFailed'
                 % (h, spec['cls'], self.meter.value, self.meter.max))
             return
-        sk = self.new_server_key()
+        if 'part ' in spec['what'] and key:
+            # weapon part abilities are LocalPredicted (dp_weapon_ability_base_ab): confirm the client's own prediction key,
+            # as the potion reply does (live 2026-10-22); a new server key would not match the client's pending activation
+            sk = key
+        else:
+            sk = self.new_server_key()
         self.s._queue_rpc(ch, req, 'ClientActivateAbilitySucceed', {'AbilityToActivate.Handle': h, 'PredictionKey': sk})
         log('handle %d (%s): ServerTryActivateAbility (client key %s) -> ClientActivateAbilitySucceed server key %d'
             % (h, spec['cls'], key, sk['current']))

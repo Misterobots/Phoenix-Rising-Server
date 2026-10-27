@@ -973,7 +973,7 @@ def _engine_step(session, enc, now):
     if os.environ.get(TRACE_FLAG) == '1' and t - enc.get('trace_t', -1.0) >= 0.5:
         enc['trace_t'] = t
         print('ENCOUNTER ' + director.trace_line(t), flush=True)
-    reliable, bunches, revealed = _ammo_entries(session, enc) + _stamina_entries(session, enc, t) +_stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
+    reliable, bunches, revealed = _ammo_entries(session, enc) + _projectile_closes(session, enc) + _stamina_entries(session, enc, t) +_stagger_flags_end(session, enc, t) + _expire_hits(session, enc) + _bleedout_now(session, enc) + _auto_revive(session, enc) +         _apply_heals(session, enc), [], 0
     for ev in director.tick(t):
         kind = ev[0]
         if kind == 'target':
@@ -1327,6 +1327,70 @@ def handle_ranged(session, ch, req_block, func, params):
         return
     row = RANGED_ROWS.get(weapon_cls, RANGED_DEFAULT_ROW)
     handle_damage(session, ch, None, {'Payload.DamageTypeName': (row, 0), 'Payload.Hit': hit})
+
+
+PIERCING_PROJECTILE = ('/Game/game/abilities/weapons/DP/x_abilities/piercing_skillshot/dp_x_ability_piercing_proj',
+                       'dp_x_ability_piercing_proj_C')
+PROJECTILE_LIFETIME = 3.0     # s until the server closes the projectile's channel (stand-in; its own CleanupAndDestroy runs on hit)
+
+
+def _projectile_entry(session, enc, loc, rot):
+    """Spawn the piercing projectile as the ability's GameplayTask_SpawnActor does on the server: at Loc/Rot, Instigator = the
+    pawn. Its ProjectileMovement flies it on the client. -> Entry or None."""
+    from .behemoth import spawn
+    from .loadout import register_atlas_class_full
+    package, cls = PIERCING_PROJECTILE
+    schema = session.world.schema
+    if not register_atlas_class_full(schema, cls):
+        print('ENCOUNTER projectile skipped: %s has no atlas layout' % cls, flush=True)
+        return None
+    session._live_ch = getattr(session, '_live_ch', 900)
+    ch = session._live_ch
+    session._live_ch += 1
+    entry, ids = spawn.spawn_entry(schema, enc['guids'], ch=ch, cls_name=cls, package=package, loc=[round(v, 1) for v in loc],
+                                   rot=[round(v, 2) for v in rot], values={'Instigator': ('obj', _pawn_guid(session))})
+    session.chan_cls[ch] = cls
+    session.ctx._names[ids['package']] = (0, package)
+    session.ctx._names[ids['archetype']] = (ids['package'], 'Default__' + cls)
+    enc.setdefault('projectiles', []).append((time.monotonic() + PROJECTILE_LIFETIME, ch, cls))
+    return entry
+
+
+def _projectile_closes(session, enc):
+    from .behemoth.spawn import close_entry
+    now, out, keep = time.monotonic(), [], []
+    for due, ch, cls in enc.get('projectiles') or ():
+        if now >= due:
+            out.append(close_entry(ch, cls))
+        else:
+            keep.append((due, ch, cls))
+    enc['projectiles'] = keep
+    return out
+
+
+def handle_spawn_projectile(session, ch, req_block, params):
+    """dp_x_ability_piercing_ab.SpawnProjectile(Loc, Rot), a server RPC on the ability instance (repeater heavy)."""
+    from .engine import projectiles
+    enc = getattr(session, '_encounter', None)
+    if enc is None or not isinstance(params, dict):
+        return
+    loc, rot = params.get('Loc'), params.get('Rot')
+    if not loc or not rot:
+        print('ENCOUNTER SpawnProjectile without Loc/Rot: %s' % params, flush=True)
+        return
+    entry = _projectile_entry(session, enc, loc, rot)
+    if entry is not None:
+        session.entries.append(entry)
+    director = enc.get('director')
+    hit = None
+    if director is not None and enc['health'] > 0.0:
+        hit = projectiles.ray_hit(director.species.bodies, director.loc, director.yaw, loc, rot)
+    print('ENCOUNTER piercing shot from %s rot %s -> %s' % ([round(v) for v in loc], [round(v, 1) for v in rot],
+          'hit %s at %.0f cm' % (hit[0], hit[2]) if hit else 'miss'), flush=True)
+    if hit:
+        handle_damage(session, ch, None, {'Payload.DamageTypeName': (projectiles.PIERCING_ROW, 0),
+                                          'Payload.Hit': {'bone_name': [hit[0]], 'impact_point': list(hit[1]),
+                                                                          'ImpactPoint': list(hit[1])}})
 
 
 def _player_hit_damage(enc, params):

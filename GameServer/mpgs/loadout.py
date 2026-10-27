@@ -155,6 +155,51 @@ def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES, props_only=F
     return True
 
 
+_ATLAS_PARAM = {'StructProperty<Vector>': ['FVector', 'S', '', []], 'StructProperty<Rotator>': ['FRotator', 'S', '', []],
+                'BoolProperty': ['bool', 'D', '', []], 'IntProperty': ['int32', 'D', '', []], 'FloatProperty': ['float', 'D', '', []],
+                'DoubleProperty': ['double', 'D', '', []]}
+
+
+def register_atlas_class_full(schema, cls_name, atlas_dir=ATLAS_CLASSES):
+    """Like register_atlas_class, but also for a Blueprint that adds its own bool properties and RPCs with simple parameters
+    (vectors, rotators, numbers): the class gets those properties and RPCs, so the client's RPCs on it decode (e.g.
+    dp_x_ability_piercing_ab.SpawnProjectile(Loc, Rot), a server RPC on the ability instance). Its parent must be known
+    (or registrable the same way). -> True when cls_name is in the schema."""
+    if cls_name in schema.inherit:
+        return True
+    path = os.path.join(atlas_dir, cls_name + '.json')
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding='utf-8') as f:
+        info = json.load(f)
+    parent = (info.get('parents') or [None])[0]
+    if parent is None or not (parent in schema.inherit or register_atlas_class_full(schema, parent, atlas_dir)):
+        return False
+    from .repl.schema import Prop
+    props = []
+    for i, p in enumerate(q for q in info.get('properties') or () if q.get('net')):
+        if p.get('type') != 'BoolProperty':
+            return False
+        props.append(Prop({'n': p['name'], 'ri': i, 'off': i, 'dim': 1, 'fl': '20', 'k': 'BoolProperty', 'bsz': 1}))
+    funcs = []
+    for fn in info.get('functions') or ():
+        if not fn.get('rpc'):
+            continue
+        params = []
+        for prm in fn.get('params') or ():
+            t = _ATLAS_PARAM.get(prm.get('type'))
+            if t is None:
+                return False
+            params.append([t, '', prm['name']])
+        funcs.append((fn['name'], '|'.join(fn.get('bp_flags') or ()), params))
+    if props:
+        schema.classes[cls_name] = (parent, props)
+    schema.inherit[cls_name] = [parent] + schema.inherit[parent]
+    schema.funcs[cls_name] = funcs
+    schema._layouts.clear()
+    return True
+
+
 def swap_equipment_actor(entries, schema, slot, catalog, classes=None, slots=None):
     """Point the equipment actor in `slot` at `catalog`'s blueprint: archetype path + ItemId. A class unknown to
     the schema encodes with the slot's base layout. -> (old class, new class) or None when nothing changed."""
