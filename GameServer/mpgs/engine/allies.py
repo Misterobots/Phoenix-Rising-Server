@@ -53,7 +53,9 @@ def spawn_raptors(session, enc, now, group='q', classes=None, lifespan=None, yaw
     beh = raptors.Behemoth(lambda: (tuple(director.loc), director.yaw, enc['health'] > 0.0), director.species.bodies,
                            getattr(director.species, 'capsule_radius', 0.0))
     yaw = float((st.get(yaw_key) or st.get('ctrl_rot') or [0.0, 0.0, 0.0])[1])
-    picks = classes or [rng.choice(raptors.PACK) for _ in range(raptors.PACK_SIZE)]
+    tags = getattr(session, 'talent_tags', None) or set()
+    size = 3 if 'weapon.talent.d24.sp01' in tags else raptors.PACK_SIZE      # Q: SP01 sets RaptorPackSpawnQuantity 3
+    picks = classes or [rng.choice(raptors.PACK) for _ in range(size)]
     lifespan = raptors.LIFESPAN if lifespan is None else lifespan
     for i, cls in enumerate(picks):
         if not register_atlas_class_full(schema, cls):
@@ -138,6 +140,7 @@ def step(session, enc, now):
                 _log('%s ch%d send montage %s' % (r.cls, r.ch, ev[1]))
             elif ev[0] == 'hit':
                 _, row, bone, dmg = ev
+                dmg *= getattr(r, 'damage_mult', 1.0)
                 _log('%s %s hit %s for %.0f' % (r.cls, row, bone, dmg))
                 handle_damage(session, None, None, {'Damage': dmg, 'Payload.Hit': {'bone_name': [bone]}})
         if r.ctx.bb.get('HasSpawnedIn') and not spawned:

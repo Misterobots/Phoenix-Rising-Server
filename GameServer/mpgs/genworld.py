@@ -400,6 +400,8 @@ class GenSession(ReplaySession):
         self.name = live_ids.get('name')
         self.live_ids = live_ids
         self._main_queue = []
+        if os.environ.get('MPGS_PLAYER_DATA') == '1' and live_ids.get('acct') and live_ids.get('char'):
+            self._replay_talents()
 
 
     def _stage_journey(self, live_ids):
@@ -636,6 +638,9 @@ class GenSession(ReplaySession):
                                 self._restore_state(b.ch)
                     elif blk.actor and x[1] in ('ServerCraftItemFromCatalogData', 'ServerPurchaseItemFromCatalog'):
                         self._craft('craft' if x[1].startswith('ServerCraft') else 'purchase', x[3])
+                    elif blk.actor and x[1] in ('ServerSetWeaponTalentPerkUnlockedById', 'ServerSetWeaponTalentPerkUnlockedByIndex',
+                                                'ServerSetWeaponTalentPerkEquippedById'):
+                        self._talent_change(b.ch, blk.cls_name, x[1], x[3])
                     elif blk.actor and x[1] == 'ServerAddItemProgressionXPFromItems':
                         self._infuse(b.ch, blk.cls_name, x[3])
                     elif blk.actor and x[1] == 'ServerInternalAssignItem':
@@ -885,6 +890,110 @@ class GenSession(ReplaySession):
             print('INFUSE %s spent %s -> %s +%d XP (%d -> %d)' % (item, spends, track[0], xp, before, after), flush=True)
         threading.Thread(target=work, daemon=True).start()
 
+    def _talent_state(self):
+        """This character's weapon talents (backend /talents), fetched once."""
+        if getattr(self, 'talent_state', None) is None:
+            from . import talents
+            from .initialization import _backend_headers
+            ids = getattr(self, 'live_ids', None) or {}
+            try:
+                self.talent_state = talents.fetch(ids['acct'], ids['char'], _backend_headers(ids.get('auth_token')))
+            except Exception as exc:
+                print('TALENT state unavailable (%s: %s)' % (type(exc).__name__, exc), flush=True)
+                return None
+        return self.talent_state
+
+    def _item_catalog(self, instance_id):
+        inv = ((self.player_records or {}).get('inventory') or {}).get('instancedItems') or []
+        return next((it['catalogId'] for it in inv if it.get('instanceId') == instance_id), None)
+
+    def _talent_change(self, ch, cls, func, params):
+        """ServerSetWeaponTalentPerkUnlockedById / ByIndex and ServerSetWeaponTalentPerkEquippedById (talents.py): check,
+        spend the perk's recipe for an unlock, save, then the matching Client*State reply (worker thread -> main queue)."""
+        import threading
+        from . import rewards, talents
+        from .initialization import _backend_headers
+        cat = talents.catalog()
+        item = params.get('ItemId') or ''
+        perk = int(params.get('TalentPerkIndex', -1))
+        talent = params.get('TalentId') or cat.talent_id(self._item_catalog(item), int(params.get('TalentIndex', -1)))
+        equip = 'Equipped' in func
+        value = bool(params.get('NewEquipValue' if equip else 'NewUnlockValue', True))
+        state = self._talent_state()
+        ids = getattr(self, 'live_ids', None) or {}
+        perks = (cat.talents.get(talent) or {}).get('perks') or []
+        why = None
+        if state is None or not (ids.get('acct') and ids.get('char')):
+            why = 'no talent store'
+        elif talent not in cat.talents or not 0 <= perk < len(perks):
+            why = 'unknown talent %s perk %s' % (talent, perk)
+        elif equip and value and not talents.is_unlocked(state, item, talent, perk):
+            why = 'perk not unlocked'
+        spends = []
+        if why is None and not equip and value:
+            if talents.is_unlocked(state, item, talent, perk):
+                why = 'already unlocked'
+            else:
+                spends = cat.cost(talent, perk)
+                if not hasattr(self, 'v2_state'):
+                    self.v2_state = rewards.state_from_updates(getattr(self, 'inventory_v2_updates', []))
+                owned = {r['instanceId']: r['quantity'] for r in self.v2_state}
+                if spends is None:
+                    why = 'no recipe'
+                elif any(owned.get(c, 0) < a for c, a in spends):
+                    why = 'not enough: %s' % [(c, a, owned.get(c, 0)) for c, a in spends if owned.get(c, 0) < a]
+        if why is not None:
+            print('TALENT %s %s %s[%s]=%s refused: %s' % (func, item, talent, perk, value, why), flush=True)
+            return
+        new = talents.set_flag(state, item, talent, perk, 'equipped' if equip else 'unlocked', value)
+        hdrs = _backend_headers(ids.get('auth_token'))
+
+        def work():
+            if spends:
+                body = {'accountId': ids['acct'], 'characterId': ids['char'],
+                        'transactionId': __import__('uuid').uuid4().hex.upper(),
+                        'removeStackedItems': [{'catalogId': c, 'quantity': a} for c, a in spends]}
+                ok, detail = rewards.post_transaction(body, hdrs)
+                if not ok:
+                    print('TALENT spend refused %s -> %s' % (spends, detail), flush=True)
+                    return
+            try:
+                talents.store(ids['acct'], ids['char'], new, hdrs)
+            except Exception as exc:
+                print('TALENT save failed (%s: %s)' % (type(exc).__name__, exc), flush=True)
+                return
+            self._main_queue.append(('talent', (ch, cls, equip, item, talent, perk, value, new, spends)))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _finish_talent(self, ch, cls, equip, item, talent, perk, value, new, spends):
+        from . import rewards
+        self.talent_state = new
+        inv = next(((e.ch, e.cls) for e in self.entries for b in e.parsed.blocks
+                    if b.actor and b.cls_name == 'bp_archon_inventory_C'), None)
+        func = 'ClientSetWeaponTalentPerkEquipState' if equip else 'ClientSetWeaponTalentPerkUnlockState'
+        # inserted at the send position: V2 spends first in the list end up after the reply
+        if spends and inv is not None:
+            for op in reversed(rewards.v2_spend_operations(self.v2_state, spends)):
+                self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
+        self._queue_actor_rpc(ch, cls, func, {'ItemId': item, 'TalentId': talent, 'TalentPerkIndex': perk,
+                                              'NewEquipValue' if equip else 'NewUnlockValue': value})
+        print('TALENT %s %s %s[%d]=%s (spent %s)' % (func, item, talent, perk, value, spends), flush=True)
+
+    def _replay_talents(self):
+        """Join: the saved talent state, with the Client*State RPCs, on the inventory actor."""
+        from . import talents
+        state = self._talent_state()
+        inv = next(((e.ch, e.cls) for e in self.entries for b in e.parsed.blocks
+                    if b.actor and b.cls_name == 'bp_archon_inventory_C'), None)
+        if not state or inv is None:
+            return
+        rpcs = talents.replay_rpcs(state)
+        for func, params in rpcs:                   # after the whole join world (the inventory actor is open by then)
+            pos, self.pos = self.pos, len(self.entries)
+            self._queue_actor_rpc(inv[0], inv[1], func, params)
+            self.pos = pos
+        print('TALENT restored %d perk states' % len(rpcs), flush=True)
+
     def _finish_infuse(self, ch, cls, item, track, before, after, xp, spends):
         from . import progression, rewards
         self.prog_progress[track[0]] = after
@@ -1109,6 +1218,9 @@ class GenSession(ReplaySession):
             kind, body = self._main_queue.pop(0)
             if kind == 'infuse':
                 self._finish_infuse(*body)
+                continue
+            if kind == 'talent':
+                self._finish_talent(*body)
                 continue
             if kind == 'loadout':
                 self._finish_loadout(body)

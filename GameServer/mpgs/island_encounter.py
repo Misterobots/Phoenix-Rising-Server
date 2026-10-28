@@ -296,6 +296,7 @@ def start(session):
             print('ENCOUNTER engine: ability system left out (%s=0)' % ASC_FLAG, flush=True)
     print('ENCOUNTER spawn %s level=%d center=%s loc=%s guid=%d (unrevealed)' % (
         config['behemoth'], config['level'], center['name'], [round(v, 1) for v in loc], behemoth_guid), flush=True)
+    entries += _talent_setup(session)                     # first: the parts and the legendary read session.talent_tags
     if os.environ.get('MPGS_WEAPON_PARTS', '1') == '1':
         from .engine import weapon_parts
         try:
@@ -325,6 +326,22 @@ def start(session):
 def _pawn_guid(session):
     pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
     return pawn.parsed.open['guid'] if pawn and pawn.parsed and pawn.parsed.open else 0
+
+
+def _talent_setup(session):
+    """The equipped weapon's talent perks (mpgs/talents.py): their tags for the server's own ability rules
+    (session.talent_tags) and their Infinite effects on the player's ASC, as ApplyWeaponTalentGameplayModifiers does."""
+    from . import talents
+    from .engine import effects
+    weapon = (((getattr(session, 'player_records', None) or {}).get('active_loadout') or {}).get('weapon') or {})
+    state = session._talent_state() if weapon.get('instance_id') and hasattr(session, '_talent_state') else None
+    if not state:
+        session.talent_tags = set()
+        return []
+    session.talent_tags = talents.active_tags(state, weapon['instance_id'])
+    ges = talents.catalog().equipped_effects(state, weapon['instance_id'])
+    print('TALENT %s equipped %s -> tags %s' % (weapon.get('item_id'), ges, sorted(session.talent_tags)), flush=True)
+    return effects.apply_talents(session, ges, time.monotonic())
 
 
 def reveal(session):

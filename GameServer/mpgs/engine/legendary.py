@@ -17,6 +17,13 @@ both. The move is detected from the client's ServerStartNextMove into the extens
 from ..repl.structs import tag_index
 
 AVAILABLE_TAG = 'Combat.LegendaryAbilityAvailable'
+# Weapon talents (legendary_weapon_part_spawn_raptor_bpc, GetTalentStatusAct; talents.py): Act01 sets CooldownTime 100;
+# Act02 applies legendary_allure_raptordamage_ge (GlobalTargetPostMigationMultiplier Additive, magnitude 0.2, for the ultra
+# raptor's lifespan) to the ultra raptor - modelled as x1.2 on its hits (stand-in for the attribute's place in the damage
+# formula); Act03 / Act04 also spawn one random araptor / sraptor / praptor near the right hand. Act05 (something over every
+# af_raptor_archetype_bp actor) is not modelled.
+ACT01_COOLDOWN = 100.0
+ACT02_DAMAGE = 0.2
 PARTS = {
     'legendary_weapon_part_spawn_raptor_bpc_C': {
         'state': 'active_weapon_part_DP_umbral_1_animstateset',   # the extension holding the Legendary combo state
@@ -62,6 +69,8 @@ def setup(session, enc, part_classes):
     if cls is None:
         return []
     enc['legendary'] = {'cls': cls, 'ready': True, 'spawn_at': None, 'ready_at': None, **PARTS[cls]}
+    if 'weapon.talent.d24.act01' in (getattr(session, 'talent_tags', None) or set()):
+        enc['legendary']['cooldown'] = ACT01_COOLDOWN
     e = _tags_entry(session, True)
     _log('%s available (tag %s)' % (cls, AVAILABLE_TAG))
     return [e] if e is not None else []
@@ -96,8 +105,16 @@ def step(session, enc, now):
         leg['spawn_at'] = None
         from . import allies
         from ..creatures import raptors
-        out += allies.spawn_raptors(session, enc, now, group='legend', classes=['uraptor_00_bp_C'],
+        tags = getattr(session, 'talent_tags', None) or set()
+        classes = ['uraptor_00_bp_C']
+        if tags & {'weapon.talent.d24.act03', 'weapon.talent.d24.act04'}:
+            classes.append(enc.setdefault('ally_rng', __import__('random').Random(enc['guid'] + 7)).choice(raptors.PACK))
+        out += allies.spawn_raptors(session, enc, now, group='legend', classes=classes,
                                     lifespan=raptors.ULTRA_LIFESPAN, yaw_key='rot')
+        if 'weapon.talent.d24.act02' in tags:
+            for r in enc.get('allies') or ():
+                if r.group == 'legend' and r.cls == 'uraptor_00_bp_C':
+                    r.damage_mult = 1.0 + ACT02_DAMAGE
     if not leg['ready'] and leg['ready_at'] is not None and now >= leg['ready_at']:
         leg['ready'], leg['ready_at'] = True, None
         e = _tags_entry(session, True)

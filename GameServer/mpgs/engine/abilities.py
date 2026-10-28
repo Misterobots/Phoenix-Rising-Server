@@ -258,6 +258,9 @@ class PlayerAbilities:
                 % (h, spec['cls'], self.meter.value, self.meter.max))
             return
         cooldown = SERVER_ENDED.get(spec['cls'])
+        if cooldown is not None:
+            from .effects import cooldown as talent_cooldown
+            cooldown = talent_cooldown(self.s, spec['cls']) or cooldown       # SP03 shortens Q to 50 s
         now = self.s.clock() if hasattr(self.s, 'clock') else __import__('time').monotonic()
         if cooldown is not None and now < spec.get('ready_at', 0.0):
             self.s._queue_rpc(ch, req, 'ClientActivateAbilityFailed',

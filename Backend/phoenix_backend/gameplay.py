@@ -669,6 +669,28 @@ class Gameplay:
         total = self.db.add_progress(acc['account_id'], request.match_info['track'], amount, tx_id=tx_id)
         return envelope({'progression_id': request.match_info['track'], 'progress': total})
 
+    # -- weapon talents (game server only) ---------------------------------------------------------------------------
+    # Our own store, not the game's: {weapon instance id: {talent id: {'unlocked': [perk index], 'equipped': [perk index]}}}.
+    # The game keeps talents in the weapon item's itemData in a native format not read yet; the game server restores
+    # this state on join with the game's own ClientSetWeaponTalentPerk*State RPCs instead.
+    async def talents_get(self, request):
+        if not self.is_gameserver(request):
+            raise web.HTTPForbidden()
+        acc = self.account_for(request, request.match_info['account'])
+        ch = self.character_for(acc, request.match_info['character'])
+        return envelope(self.db.get(ch['character_id'], 'weapon_talents', {}))
+
+    async def talents_post(self, request):
+        if not self.is_gameserver(request):
+            raise web.HTTPForbidden()
+        acc = self.account_for(request, request.match_info['account'])
+        ch = self.character_for(acc, request.match_info['character'])
+        body = await self.routes.body(request)
+        if not isinstance(body, dict):
+            return web.json_response({'error': 'body must be an object'}, status=400)
+        self.db.put(ch['character_id'], 'weapon_talents', body)
+        return envelope(body)
+
     async def progression_config(self, request):
         for path in (os.path.join(self.data_dir, 'progression_config.json'),
                          os.path.join(HERE, '..', 'GameServer', 'data', '2.1.1', 'progression.json')):
@@ -856,6 +878,8 @@ class Gameplay:
         post('/loadout/{account}/{character}/{index:\\d+}', self.post_loadout)
         post('/loadout/{account}/{character}/persistent', self.post_persistent)
         get('/character/{account}/{character}', self.get_character_profile)
+        get('/talents/{account}/{character}', self.talents_get)
+        post('/talents/{account}/{character}', self.talents_post)
         get('/progression/config', self.progression_config)
         get('/progression/objectives/{account}', self.objectives)
         get('/progression/tracked_objectives/{account}', self.tracked_get)

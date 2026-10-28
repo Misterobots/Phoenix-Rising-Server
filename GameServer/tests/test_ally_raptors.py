@@ -87,6 +87,51 @@ class AllyRaptorTests(unittest.TestCase):
         case.run_until(s, raptors.LIFESPAN + 1.0, start=30.0, player=lambda t: player)
         self.assertEqual(enc.get('allies'), [])
 
+    def test_equipped_talents_shorten_the_cooldowns(self):
+        """SP03 (Q 50 s) and SP05 (X 10 s) equipped: their Infinite effects on the player's ASC, and the shorter cooldowns."""
+        import test_island_encounter_engine as T
+        from mpgs import talents
+        from mpgs.engine import effects
+        if not T.HAVE_DATA:
+            self.skipTest('island engine data not generated')
+        T.setUpModule()
+        self.addCleanup(T.tearDownModule)
+        T.EngineEncounterTests.setUpClass()
+        w = T.EngineEncounterTests.world
+        loadout.swap_weapon_actor(w.entries, w.schema, 'WP_DP_UMBRAL_01')
+        self.addCleanup(loadout.swap_weapon_actor, w.entries, w.schema, 'WP_EB_BEGINNER')
+        case = T.EngineEncounterTests('test_spawn_stands_on_the_landscape_and_walks')
+        with patch.dict(os.environ, {'MPGS_WEAPON_PARTS': '1'}):
+            s = case.session()
+        st = {}
+        for perk in (2, 4):
+            st = talents.set_flag(st, 'W1', 'WTP_DPISTOLS_ALLURING_TALENT2', perk, 'unlocked', True)
+            st = talents.set_flag(st, 'W1', 'WTP_DPISTOLS_ALLURING_TALENT2', perk, 'equipped', True)
+        s.talent_state = st
+        s.player_records = {'active_loadout': {'weapon': {'item_id': 'WP_DP_UMBRAL_01', 'instance_id': 'W1'}}}
+        out = island_encounter._talent_setup(s)
+        self.assertEqual(s.talent_tags, {'weapon.talent.d24.sp03', 'weapon.talent.d24.sp05'})
+        pawn_ch = next(e.ch for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
+        fx = [e for e in out for b in e.parsed.blocks for f in b.fields or () if f[1] == 'ActiveGameplayEffects']
+        self.assertEqual(len(fx), 2)
+        self.assertTrue(all(e.ch == pawn_ch for e in fx))                   # the player's ASC, not the weapon's
+        from mpgs.repl import model
+        for e in out:
+            model.encode(e.parsed, s.ctx, e.cls)
+        self.assertEqual(effects.cooldown(s, 'dp_y_ability_spawn_raptor_ab_C'), 50.0)
+        self.assertEqual(effects.cooldown(s, 'dp_x_ability_piercing_ab_C'), 10.0)
+        s.talent_tags = set()
+        self.assertEqual(effects.cooldown(s, 'dp_y_ability_spawn_raptor_ab_C'), 60.0)
+        s.talent_tags = {'weapon.talent.d24.sp01'}                          # SP01: RaptorPackSpawnQuantity 3
+        enc, pa = s._encounter, s._encounter['part_abilities']
+        h = next(k for k, v in pa.granted.items() if v['cls'] == 'dp_y_ability_spawn_raptor_ab_C')
+        bl = enc['loc']
+        s.pawn_state = {'loc': [bl[0] - 1200.0, bl[1], bl[2]], 'rot': [0.0, 0.0, 0.0], 'ctrl_rot': [0.0, 0.0, 0.0],
+                        'vel': [0.0, 0.0, 0.0], 'mode': 1}
+        island_encounter.handle_ability(s, pa.ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
+                                                           'PredictionKey': {'server': 0, 'current': 8, 'base': 7}})
+        self.assertEqual(len(enc['allies']), 3)
+
     def test_legendary_tag_move_ultra_raptor_and_cooldown(self):
         import test_island_encounter_engine as T
         from mpgs.engine import legendary

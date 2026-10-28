@@ -27,13 +27,29 @@ EFFECTS = {   # GE class -> package
     'dp_x_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/x_abilities/dp_x_ability_cooldown_ge',
     'dp_y_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/y_abilities/dp_y_ability_cooldown_ge',
 }
-# ability class -> (cooldown GE, AbilityCooldown CDO seconds, the client predicts it). Talents that shorten them (X SP05 10 s,
-# Y SP03 50 s) are not modelled. X runs StartXCooldown on the client too (LocalPredicted), so the server's effect carries the
+# the D24 weapon-talent perks (weapon_talent_catalog), each Infinite and owning one weapon.talent.d24.* tag; applied to the
+# player's ASC (ApplyWeaponTalentGameplayModifiers; the abilities read them with GetTalentStatusSP(ArchonCharacter))
+for _kind in ('act', 'sp', 'ue'):
+    for _n in range(1, 6):
+        EFFECTS['d24_weapon_talent_%s_%02d_ge_C' % (_kind, _n)] = \
+            '/Game/Blueprints/Weapons/_shared/D24Talents/d24_weapon_talent_%s_%02d_ge' % (_kind, _n)
+# ability class -> (cooldown GE, AbilityCooldown CDO seconds, the client predicts it, {talent tag: seconds}). The talent values
+# are the abilities' own: dp_x_ability_piercing_ab sets AbilityCooldown 10 when TalentSP05Active, dp_y_ability_spawn_raptor_ab
+# 50 when TalentSP03Active. X runs StartXCooldown on the client too (LocalPredicted), so the server's effect carries the
 # client's prediction key and replaces the predicted one; Y's client instance stops before StartYCooldown (see abilities.py).
 ABILITY_COOLDOWNS = {
-    'dp_x_ability_piercing_ab_C': ('dp_x_ability_cooldown_ge_C', 15.0, True),
-    'dp_y_ability_spawn_raptor_ab_C': ('dp_y_ability_cooldown_ge_C', 60.0, False),
+    'dp_x_ability_piercing_ab_C': ('dp_x_ability_cooldown_ge_C', 15.0, True, {'weapon.talent.d24.sp05': 10.0}),
+    'dp_y_ability_spawn_raptor_ab_C': ('dp_y_ability_cooldown_ge_C', 60.0, False, {'weapon.talent.d24.sp03': 50.0}),
 }
+
+
+def cooldown(session, cls):
+    """-> AbilityCooldown seconds for ability `cls` with the player's equipped talents, or None."""
+    cd = ABILITY_COOLDOWNS.get(cls)
+    if cd is None:
+        return None
+    tags = getattr(session, 'talent_tags', None) or set()
+    return next((v for t, v in cd[3].items() if t in tags), cd[1])
 
 
 def _log(msg):
@@ -47,10 +63,11 @@ def _info(guid, name, outer=None):
 
 
 class PlayerEffects:
-    """The ActiveGameplayEffects the server keeps on the weapon's ASC for one session."""
+    """The ActiveGameplayEffects the server keeps on one ASC for one session: the weapon's (cooldowns) or the pawn's (talents)."""
 
-    def __init__(self, session, clock_base=None):
+    def __init__(self, session, clock_base=None, target='weapon'):
         self.s = session
+        self.target = target
         self.ch = self.hdr = None
         self.key = self.next_id = None
         self.cdo = {}                   # GE class -> CDO guid (exported once)
@@ -68,10 +85,15 @@ class PlayerEffects:
 
     def _load(self, now):
         from .attributes import find_block
-        ch, self.owner = self._weapon()
+        if self.target == 'pawn':
+            from ..island_encounter import _pawn_guid
+            ch = next((e.ch for e in self.s.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
+            self.owner = _pawn_guid(self.s)
+        else:
+            ch, self.owner = self._weapon()
         hdr = find_block(self.s, ch, ASC_CLS) if ch is not None else None
         if hdr is None:
-            raise LookupError('no weapon %s in the sent world' % ASC_CLS)
+            raise LookupError('no %s %s in the sent world' % (self.target, ASC_CLS))
         key, ids = 0, []
         for e in self.s.entries:
             if e.ch != ch:
@@ -131,7 +153,7 @@ class PlayerEffects:
         return _entry(self.s.world, gs[0].ch, gs[0].cls, [_block(gs[0].cls, {'ReplicatedWorldTimeSeconds': self.world_time(now)})])
 
     def apply(self, cls, duration, now, prediction_key=None):
-        """Apply GE `cls` for `duration` s. -> reliable entries (game-state clock first, then the ASC delta)."""
+        """Apply GE `cls` for `duration` s (None: Infinite). -> reliable entries (game-state clock first, then the ASC delta)."""
         if self.hdr is None:
             self._load(now)
         exports, must_map = [], []
@@ -144,7 +166,7 @@ class PlayerEffects:
             self.cdo[cls] = cdo.guid
         rid = self.next_id
         self.next_id += 1
-        vals = [(P + 'Spec.Def', ('obj', self.cdo[cls])), (P + 'Spec.ModifiedAttributes', []), (P + 'Spec.Duration', float(duration)),
+        vals = [(P + 'Spec.Def', ('obj', self.cdo[cls])), (P + 'Spec.ModifiedAttributes', []), (P + 'Spec.Duration', -1.0 if duration is None else float(duration)),
                 (P + 'Spec.Period', 0.0), (P + 'Spec.ChanceToApplyToTarget', 1.0), (P + 'Spec.DynamicGrantedTags', []),
                 (P + 'Spec.DynamicAssetTags', []), (P + 'Spec.Modifiers', []), (P + 'Spec.StackCount', 1),
                 (P + 'Spec.GrantedAbilitySpecs', []), (P + 'Spec.EffectContext', {'rep': 3, 'instigator': self.owner, 'causer': self.owner}),
@@ -152,9 +174,10 @@ class PlayerEffects:
                 (P + 'StartServerWorldTime', self.world_time(now))]
         fa = {'delta_flag': 0, 'key': self.key + 1, 'base': self.key, 'deleted': [], 'changed': [(rid, vals)]}
         self.key += 1
-        self.active[rid] = {'cls': cls, 'ends': now + duration}
+        self.active[rid] = {'cls': cls, 'ends': float('inf') if duration is None else now + duration}
         clock = self._clock_entry(now)
-        _log('%s item %d for %.0f s (server time %.2f)' % (cls, rid, duration, self.world_time(now)))
+        _log('%s item %d on the %s for %s (server time %.2f)' % (cls, rid, self.target, 'ever' if duration is None else
+                                                                 '%.0f s' % duration, self.world_time(now)))
         return ([clock] if clock is not None else []) + [self._asc_entry(fa, exports, must_map)]
 
     def step(self, now):
@@ -169,11 +192,27 @@ class PlayerEffects:
         return [self._asc_entry(fa)]
 
 
-def for_session(session):
-    pe = getattr(session, '_effects', None)
+def for_session(session, target='weapon'):
+    attr = '_effects' if target == 'weapon' else '_effects_' + target
+    pe = getattr(session, attr, None)
     if pe is None:
-        pe = session._effects = PlayerEffects(session)
+        pe = PlayerEffects(session, target=target)
+        setattr(session, attr, pe)
     return pe
+
+
+def apply_talents(session, tags_and_effects, now):
+    """Hunt start: the equipped talent perks' Infinite effects on the player's ASC. -> reliable entries."""
+    out = []
+    for ge in tags_and_effects:
+        if ge not in EFFECTS:
+            _log('%s not applied (no package known)' % ge)
+            continue
+        try:
+            out += for_session(session, 'pawn').apply(ge, None, now)
+        except LookupError as exc:
+            _log('%s not applied (%s)' % (ge, exc))
+    return out
 
 
 def on_ability_activated(session, cls, client_key, now):
@@ -181,7 +220,7 @@ def on_ability_activated(session, cls, client_key, now):
     cd = ABILITY_COOLDOWNS.get(cls)
     if cd is None:
         return []
-    ge, duration, predicted = cd
+    ge, predicted, duration = cd[0], cd[2], cooldown(session, cls)
     try:
         return for_session(session).apply(ge, duration, now, prediction_key=client_key if predicted and client_key else None)
     except LookupError as exc:
