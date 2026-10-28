@@ -976,6 +976,8 @@ class GenSession(ReplaySession):
             why = 'unknown talent %s perk %s' % (talent, perk)
         elif equip and value and not talents.is_unlocked(state, item, talent, perk):
             why = 'perk not unlocked'
+        elif equip and value and perk not in (((state.get(item) or {}).get(talent) or {}).get('equipped') or [])                 and len(((state.get(item) or {}).get(talent) or {}).get('equipped') or []) >= 3:
+            why = 'row already has 3 perks equipped'      # the loadout screen shows n/3 ASSIGNED per row
         spends = []
         if why is None and not equip and value:
             if talents.is_unlocked(state, item, talent, perk):

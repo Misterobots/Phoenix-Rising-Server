@@ -121,9 +121,3 @@ class CityTests(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-
-def test_equip_replaces_the_rows_perk():
-    from mpgs import talents
-    s = talents.set_flag({}, 'I', 'T', 0, 'equipped', True)
-    s = talents.set_flag(s, 'I', 'T', 2, 'equipped', True)
-    assert s['I']['T']['equipped'] == [2]

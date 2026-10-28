@@ -163,9 +163,7 @@ def set_flag(state, item, talent, perk, key, value):
     """Copy of state with perk index added to / removed from state[item][talent][key]."""
     new = json.loads(json.dumps(state or {}))
     lst = new.setdefault(item, {}).setdefault(talent, {'unlocked': [], 'equipped': []}).setdefault(key, [])
-    if value and key == 'equipped':
-        lst[:] = [perk]         # one equipped perk per talent row: the client sends no unequip for the old one when swapping
-    elif value and perk not in lst:
+    if value and perk not in lst:
         lst.append(perk)
         lst.sort()
     elif not value and perk in lst:
