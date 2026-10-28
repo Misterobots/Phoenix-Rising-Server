@@ -691,6 +691,19 @@ class Gameplay:
         self.db.put(ch['character_id'], 'weapon_talents', body)
         return envelope(body)
 
+    async def itemdata_post(self, request):
+        """Game server: set instanced items' itemData strings ({instanceId: str | null}). The game's own server does this
+        with SetItemData; a weapon's itemData carries its talents and item level (GameServer/mpgs/talents.py)."""
+        if not self.is_gameserver(request):
+            raise web.HTTPForbidden()
+        acc = self.account_for(request, request.match_info['account'])
+        ch = self.character_for(acc, request.match_info['character'])
+        body = await self.routes.body(request)
+        if not isinstance(body, dict) or not all(isinstance(v, (str, type(None))) for v in body.values()):
+            return web.json_response({'error': 'body must map instance ids to strings'}, status=400)
+        n = self.db.set_item_data(ch['character_id'], body)
+        return envelope({'updated': n})
+
     async def progression_config(self, request):
         for path in (os.path.join(self.data_dir, 'progression_config.json'),
                          os.path.join(HERE, '..', 'GameServer', 'data', '2.1.1', 'progression.json')):
@@ -878,6 +891,7 @@ class Gameplay:
         post('/loadout/{account}/{character}/{index:\\d+}', self.post_loadout)
         post('/loadout/{account}/{character}/persistent', self.post_persistent)
         get('/character/{account}/{character}', self.get_character_profile)
+        post('/itemdata/{account}/{character}', self.itemdata_post)
         get('/talents/{account}/{character}', self.talents_get)
         post('/talents/{account}/{character}', self.talents_post)
         get('/progression/config', self.progression_config)

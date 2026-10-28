@@ -131,6 +131,16 @@ class DB:
     def items(self, character_id):
         return self.q('SELECT * FROM items WHERE character_id = ? ORDER BY rowid', (character_id,))
 
+    def set_item_data(self, character_id, data):
+        """{instance id: itemData string or None} -> rows changed (update_version bumped, as the inventory service does)."""
+        n = 0
+        with self.lock:
+            for inst, value in data.items():
+                n += self.conn.execute('UPDATE items SET item_data = ?, update_version = update_version + 1 '
+                                       'WHERE character_id = ? AND instance_id = ?', (value, character_id, inst)).rowcount
+            self.conn.commit()
+        return n
+
     def stacks(self, character_id):
         return self.q('SELECT * FROM stacks WHERE character_id = ? ORDER BY rowid', (character_id,))
 

@@ -31,13 +31,40 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(talents.active_tags(talents.set_flag(st, 'W1', SPECIAL, 2, 'equipped', False), 'W1'), set())
 
 
+class ItemDataTests(unittest.TestCase):
+    def test_custom_data_is_the_clients_own_serialization(self):
+        """Key order and form of UArchonInventoryItem_Weapon::ToCustomData (0x28d9610), so the V2 hash matches."""
+        import json
+        st = talents.set_flag({'W1': {talents.ITEM: {'level': 30}}}, 'W1', SPECIAL, 2, 'unlocked', True)
+        st = talents.set_flag(st, 'W1', SPECIAL, 0, 'unlocked', True)
+        st = talents.set_flag(st, 'W1', SPECIAL, 2, 'equipped', True)
+        out = talents.custom_data(st, [{'instanceId': 'W1', 'catalogId': MOONS}, {'instanceId': 'S', 'catalogId': 'WP_EB_BEGINNER'}],
+                                  {MOONS: 7})
+        self.assertEqual(list(out), ['W1'])                                 # only weapons with talents
+        d = json.loads(out['W1'])
+        self.assertEqual(list(d), ['TransmogCatalogID', 'UnlockedAsTransmog', 'CurrentLevel', 'EquippedWeaponParts', 'CurrentXP',
+                                   'ItemProgressionLevel', 'ItemProgressionXP', 'WeaponTalentProgression', 'EquippedCells',
+                                   'EquippedCellsv2'])
+        self.assertEqual((d['CurrentLevel'], d['ItemProgressionLevel']), (10, 30))   # StartingUpgradeLevel, stored item level
+        self.assertEqual(d['WeaponTalentProgression'][SPECIAL], {'CurrentLevel': 0, 'CurrentXP': 0, 'UnlockedPerks': 5,
+                                                                 'EquippedPerks': 4})
+        self.assertNotIn(' ', out['W1'])                                    # condensed writer
+
+    def test_v2_sync_carries_it(self):
+        from mpgs.initialization import build_v2_inventory_add_updates
+        rec = {'active_loadout': {'weapon': {'item_id': MOONS, 'instance_id': 'W1'}},
+               'inventory': {'instancedItems': [{'instanceId': 'W1', 'catalogId': MOONS, 'itemData': '{}'}], 'stackedItems': []}}
+        ups = build_v2_inventory_add_updates(rec, custom_data={'W1': '{"x":1}'})
+        self.assertEqual(ups[0]['customData'], '{"x":1}')
+
+
 @unittest.skipUnless(os.path.exists(TEMPLATE), 'world template missing')
 class CityTests(unittest.TestCase):
     def setUp(self):
         from mpgs.genworld import GenWorld
         world = GenWorld.from_template(TEMPLATE)
         self.s = world.new_session({'name': 'T', 'char': 'C', 'acct': 'A', 'session': 'S'})
-        self.s.talent_state = {}
+        self.s.talent_state = {'W1': {talents.ITEM: {'level': 10}}}       # item level 10: one perk per talent
         self.s.player_records = {'inventory': {'instancedItems': [{'instanceId': 'W1', 'catalogId': MOONS}]}}
         from mpgs.rewards import item_identity_crc
         self.s.v2_state = [{'instanceId': c, 'catalogIdCrc': item_identity_crc(c), 'quantity': q, 'customData': ''}
@@ -73,6 +100,14 @@ class CityTests(unittest.TestCase):
                   {'ItemId': 'W1', 'TalentId': SPECIAL, 'TalentPerkIndex': 0, 'NewEquipValue': 1})
         self.assertEqual(len(self._sent('ClientSetWeaponTalentPerkEquipState')), 1)
         self.assertEqual(talents.active_tags(self.s.talent_state, 'W1'), {'weapon.talent.d24.sp01'})
+
+    def test_item_level_gates_the_perk_count(self):
+        self._run('ServerSetWeaponTalentPerkUnlockedById',
+                  {'ItemId': 'W1', 'TalentId': SPECIAL, 'TalentPerkIndex': 0, 'NewUnlockValue': 1})
+        tx = self._run('ServerSetWeaponTalentPerkUnlockedById',
+                       {'ItemId': 'W1', 'TalentId': SPECIAL, 'TalentPerkIndex': 1, 'NewUnlockValue': 1})
+        tx.assert_not_called()                                              # level 10 allows 1 perk (0x28b8b50)
+        self.assertFalse(talents.is_unlocked(self.s.talent_state, 'W1', SPECIAL, 1))
 
     def test_refusals(self):
         self._run('ServerSetWeaponTalentPerkEquippedById',

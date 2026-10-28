@@ -10,8 +10,7 @@ phoenix.sqlite.bak-<name>. What it sets:
   progression config), never lowered. Weapon talents open at weapon level 10 (weapon_talent_catalog WeaponUnlockLevel).
 - stacks: talent essences, notes, gauntlet coins and marks for every talent perk recipe (crafting_recipes TALENT_SHARED_1-5).
 - weapon talents: every perk of every owned weapon's talents unlocked in the game server's /talents store (restored on join with
-  ClientSetWeaponTalentPerkUnlockState). The talent crafting screen's "requires weapon level" check is native and not matched
-  yet (live 2026-10-28: still locked at class level 10), so the perks are unlocked here; equip them in game.
+  the weapon's custom data, mpgs/talents.py) and item level 50, which the talent screen's gate needs for all 5 perks.
 Test data only: none of this is how a player earns it.
 """
 import argparse
@@ -89,6 +88,8 @@ def main():
         state = db.get(ch, 'weapon_talents', {}) or {}
         n = 0
         for it in db.items(ch):
+            if it['catalog_id'] in cat.weapons:          # the weapon's own ItemProgressionLevel: 50 opens all 5 perks
+                state.setdefault(it['instance_id'], {})[talents.ITEM] = {'level': 50}
             for t in cat.weapons.get(it['catalog_id'], []):
                 for i in range(len(cat.talents[t]['perks'])):
                     state = talents.set_flag(state, it['instance_id'], t, i, 'unlocked', True)

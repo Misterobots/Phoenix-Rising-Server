@@ -262,7 +262,8 @@ class GenSession(ReplaySession):
                 if os.environ.get('MPGS_TEST_INVENTORY_V2_ALL') == '1':
                     from .initialization import apply_backend_equipment_references, build_v2_inventory_add_updates
                     updates = build_v2_inventory_add_updates(
-                        self.player_records, include_stacks=os.environ.get('MPGS_TEST_INVENTORY_V2_STACKS', '1') == '1')
+                        self.player_records, include_stacks=os.environ.get('MPGS_TEST_INVENTORY_V2_STACKS', '1') == '1',
+                        custom_data=self._weapon_custom_data(live_ids))
                     refs = apply_backend_equipment_references(self.entries, self.player_records)
                     self.inventory_v2_updates = updates
                     stacks = sum(1 for u in updates if u['instanceId'] not in
@@ -400,8 +401,8 @@ class GenSession(ReplaySession):
         self.name = live_ids.get('name')
         self.live_ids = live_ids
         self._main_queue = []
-        if os.environ.get('MPGS_PLAYER_DATA') == '1' and live_ids.get('acct') and live_ids.get('char'):
-            self._replay_talents()
+        if os.environ.get('MPGS_TALENT_REPLAY') == '1' and live_ids.get('acct') and live_ids.get('char'):
+            self._replay_talents()           # old route: the Client*State RPCs only queue a pending change (talents.py)
 
 
     def _stage_journey(self, live_ids):
@@ -903,6 +904,48 @@ class GenSession(ReplaySession):
                 return None
         return self.talent_state
 
+    def _weapon_levels(self, live_ids):
+        """{weapon catalog id: level} from the weapon types' ExperienceTrack (stand-in for per-item weapon XP)."""
+        from . import progression
+        from .initialization import _backend_headers
+        if getattr(self, '_wlevels', None) is None:
+            try:
+                curves = progression.load_curves()
+                progress = progression.load_progress(live_ids['acct'], _backend_headers(live_ids.get('auth_token')))
+            except Exception as exc:
+                print('TALENT weapon levels unavailable (%s)' % type(exc).__name__, flush=True)
+                return {}
+            self._wlevels = (curves, progress)
+        curves, progress = self._wlevels
+        out = {}
+        for it in ((self.player_records or {}).get('inventory') or {}).get('instancedItems') or []:
+            t = progression.weapon_track(it.get('catalogId'))
+            if t and t[0] in curves:
+                out[it['catalogId']] = progression.level(curves[t[0]], progress.get(t[0], 0))[0]
+        return out
+
+    def _weapon_custom_data(self, live_ids):
+        """V2 customData for the weapons with talents: their talents and item level as the client parses it (talents.py)."""
+        from . import talents
+        self.live_ids = live_ids
+        state = self._talent_state() or {}
+        items = ((self.player_records or {}).get('inventory') or {}).get('instancedItems') or []
+        out = talents.custom_data(state, items, self._weapon_levels(live_ids))
+        self._store_item_data(out)
+        print('TALENT custom data for %d weapons' % len(out), flush=True)
+        return out
+
+    def _store_item_data(self, data):
+        from . import talents
+        from .initialization import _backend_headers
+        ids = getattr(self, 'live_ids', None) or {}
+        if not data or not (ids.get('acct') and ids.get('char')):
+            return
+        try:
+            talents.store_item_data(ids['acct'], ids['char'], data, _backend_headers(ids.get('auth_token')))
+        except Exception as exc:
+            print('TALENT itemData save failed (%s: %s)' % (type(exc).__name__, exc), flush=True)
+
     def _item_catalog(self, instance_id):
         inv = ((self.player_records or {}).get('inventory') or {}).get('instancedItems') or []
         return next((it['catalogId'] for it in inv if it.get('instanceId') == instance_id), None)
@@ -938,7 +981,11 @@ class GenSession(ReplaySession):
                 if not hasattr(self, 'v2_state'):
                     self.v2_state = rewards.state_from_updates(getattr(self, 'inventory_v2_updates', []))
                 owned = {r['instanceId']: r['quantity'] for r in self.v2_state}
-                if spends is None:
+                lvl = talents.item_level(state, item, self._weapon_levels(ids).get(self._item_catalog(item), 1))
+                have = len(((state.get(item) or {}).get(talent) or {}).get('unlocked') or [])
+                if have >= min(lvl // 10, 5):
+                    why = 'item level %d allows %d perks in this talent (has %d)' % (lvl, min(lvl // 10, 5), have)
+                elif spends is None:
                     why = 'no recipe'
                 elif any(owned.get(c, 0) < a for c, a in spends):
                     why = 'not enough: %s' % [(c, a, owned.get(c, 0)) for c, a in spends if owned.get(c, 0) < a]
@@ -971,6 +1018,18 @@ class GenSession(ReplaySession):
         inv = next(((e.ch, e.cls) for e in self.entries for b in e.parsed.blocks
                     if b.actor and b.cls_name == 'bp_archon_inventory_C'), None)
         func = 'ClientSetWeaponTalentPerkEquipState' if equip else 'ClientSetWeaponTalentPerkUnlockState'
+        if not hasattr(self, 'v2_state'):
+            self.v2_state = rewards.state_from_updates(getattr(self, 'inventory_v2_updates', []))
+        rec = next((r for r in self.v2_state if r['instanceId'] == item), None)
+        if rec is not None and inv is not None:
+            from . import talents
+            from .inventory_v2 import post_operation_hash
+            c = self._item_catalog(item)
+            rec['customData'] = talents.item_data(talents.catalog(), c, new.get(item), talents.item_level(
+                new, item, self._weapon_levels(self.live_ids).get(c, 1)))
+            self._store_item_data({item: rec['customData']})
+            op = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
+            self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
         # inserted at the send position: V2 spends first in the list end up after the reply
         if spends and inv is not None:
             for op in reversed(rewards.v2_spend_operations(self.v2_state, spends)):

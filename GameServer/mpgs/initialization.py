@@ -524,7 +524,7 @@ def spawn_weapons_at_origin(entries, schema):
     return changed
 
 
-def build_v2_inventory_add_updates(records, include_stacks=False):
+def build_v2_inventory_add_updates(records, include_stacks=False, custom_data=None):
     """Build AddItem operations for every owned instanced item, in one sync.
 
     Each item uses the live-verified weapon contract: full backend instance ID,
@@ -554,7 +554,7 @@ def build_v2_inventory_add_updates(records, include_stacks=False):
         if instance in seen:
             raise ValueError('duplicate instance ID in inventory')
         seen.add(instance)
-        if item.get('itemData') is not None:
+        if item.get('itemData') is not None and instance not in (custom_data or {}):
             raise ValueError('V2 custom-data conversion is unsupported for non-null backend itemData')
     equipped = [loadout[name]['instance_id'] for name in EQUIPMENT_SLOT_TYPES
                 if isinstance(loadout.get(name), dict)]
@@ -563,8 +563,9 @@ def build_v2_inventory_add_updates(records, include_stacks=False):
     state, updates = [], []
     for item in ordered:
         catalog_crc = item_identity_crc(item['catalogId'])
+        cd = (custom_data or {}).get(item['instanceId'], '')       # weapons: talents / item level JSON (talents.py)
         state.append({'instanceId': item['instanceId'], 'catalogIdCrc': catalog_crc,
-                      'quantity': 1, 'customData': ''})
+                      'quantity': 1, 'customData': cd})
         updates.append({
             'mismatchCount': 0,
             'operation': 'AddItem',
@@ -572,7 +573,7 @@ def build_v2_inventory_add_updates(records, include_stacks=False):
             'instanceId': item['instanceId'],
             'catalogIdCrc': catalog_crc,
             'quantity': 1,
-            'customData': '',
+            'customData': cd,
         })
     if include_stacks:
         for stack in records['inventory'].get('stackedItems') or []:
