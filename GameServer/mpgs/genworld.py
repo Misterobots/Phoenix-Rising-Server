@@ -958,7 +958,11 @@ class GenSession(ReplaySession):
         from .initialization import _backend_headers
         cat = talents.catalog()
         item = params.get('ItemId') or ''
-        perk = int(params.get('TalentPerkIndex', -1))
+        # the client sends the weapon's catalog id here (WP_DP_UMBRAL_01), not its instance id: map it to the owned instance
+        if item and self._item_catalog(item) is None:
+            items = ((self.player_records or {}).get('inventory') or {}).get('instancedItems') or []
+            item = next((it['instanceId'] for it in items if it.get('catalogId') == item), item)
+        perk = int(params.get('TalentPerkIndex', 0))      # index 0 is the default value, so the client leaves it out
         talent = params.get('TalentId') or cat.talent_id(self._item_catalog(item), int(params.get('TalentIndex', -1)))
         equip = 'Equipped' in func
         value = bool(params.get('NewEquipValue' if equip else 'NewUnlockValue', True))
@@ -1030,11 +1034,14 @@ class GenSession(ReplaySession):
             self._store_item_data({item: rec['customData']})
             op = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
             self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
+            print('TALENT UpdateItem %s customData=%s' % (item, rec['customData']), flush=True)
+        else:
+            print('TALENT no UpdateItem sent for %s (v2 record %s, inventory actor %s)' % (item, rec is not None, inv), flush=True)
         # inserted at the send position: V2 spends first in the list end up after the reply
         if spends and inv is not None:
             for op in reversed(rewards.v2_spend_operations(self.v2_state, spends)):
                 self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
-        self._queue_actor_rpc(ch, cls, func, {'ItemId': item, 'TalentId': talent, 'TalentPerkIndex': perk,
+        self._queue_actor_rpc(ch, cls, func, {'ItemId': self._item_catalog(item) or item, 'TalentId': talent, 'TalentPerkIndex': perk,
                                               'NewEquipValue' if equip else 'NewUnlockValue': value})
         print('TALENT %s %s %s[%d]=%s (spent %s)' % (func, item, talent, perk, value, spends), flush=True)
 

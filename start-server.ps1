@@ -185,7 +185,7 @@ if ($gameRunning) { Write-Host "gameserver   running, pid $($pids.gameserver)" }
 else {
     # Full inventory sync for the stock client; test helpers are opt-in (README "Game server options").
     $pids.gameserver = Start-Part 'gameserver' 'GameServer' @('-u', 'run.py', '--port', "$GamePort") @{
-        MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'
+        MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'; MPGS_DEV_RELOAD = '1'
     }
 }
 $pids | ConvertTo-Json | Set-Content $PidFile
@@ -197,7 +197,7 @@ else {
     $pids.islandserver = Start-Part 'islandserver' 'GameServer' @(
         '-u', 'run.py', '--port', "$IslandPort", '--hunt', $IslandHunt, '--template', $islandTemplate
     ) @{
-        MPGS_TRACE_ACTOR_RX = '1'; MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'
+        MPGS_TRACE_ACTOR_RX = '1'; MPGS_TEST_INVENTORY_V2_ALL = '1'; MPGS_TEST_INVENTORY_DELAY_MS = '5000'; MPGS_DEV_RELOAD = '1'
     }
 }
 $pids | ConvertTo-Json | Set-Content $PidFile

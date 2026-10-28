@@ -4,7 +4,7 @@ import socket
 import time
 import os
 
-from . import backend, control, handshake
+from . import backend, control, devreload, handshake
 from .connection import Connection
 
 MAP_PATH = '/Game/Maps/ramsgate/ramsgate_01_persistent'
@@ -198,6 +198,8 @@ class GameServer:
                         log('registered instance with backend:', self.hunt_id or 'CITY', 'udp', self.port)
                     except Exception as exc:
                         log('backend instance registration pending (%s)' % type(exc).__name__)
+                if devreload.enabled():
+                    devreload.poll(log)
                 r, _, _ = select.select([self.sock], [], [], 0.004)
                 now = time.monotonic()
                 while r:
