@@ -77,9 +77,9 @@ Free to use, copy, modify and distribute, on one condition: servers running it k
 
 ## Credits
 
-- **Undaunted** (SyST3MDeV/Undaunted) — the original Dauntless private-server project and the reference for
+- **Undaunted** (SyST3MDeV, EisigesEis) — the original Dauntless private-server project and the reference for
   most of what came after.
-- **Dauntless - Phoenix Rising** — the Python backend and game server.
+- **Dauntless - Phoenix Rising**
 
 Dauntless is a trademark of its respective owners. This project is unaffiliated and for preservation and
 private use; it contains no game assets. You need your own copy of the game client.
