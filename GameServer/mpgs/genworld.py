@@ -1034,8 +1034,15 @@ class GenSession(ReplaySession):
             rec['customData'] = talents.item_data(talents.catalog(), c, new.get(item), talents.item_level(
                 new, item, self._weapon_levels(self.live_ids).get(c, 1)))
             self._store_item_data({item: rec['customData']})
+            # The client applies UpdateItem's customData but only fires ClientOnInventoryItemsChanged (what the talent screens
+            # redraw on) when a quantity changed in the batch (UArchonInventory V2 apply, 0x288e700). So the batch bumps the
+            # weapon to 2 and back to 1; each op carries the hash of the state after it.
+            q = rec['quantity']
+            rec['quantity'] = q + 1
+            bump = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
+            rec['quantity'] = q
             op = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
-            self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
+            self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([bump, op]))
             print('TALENT UpdateItem %s customData=%s' % (item, rec['customData']), flush=True)
         else:
             print('TALENT no UpdateItem sent for %s (v2 record %s, inventory actor %s)' % (item, rec is not None, inv), flush=True)
