@@ -78,6 +78,7 @@ does.
 **Data captured** (2026-10-28) in `weapons/<key>.txt` for every type: items, parts, power-table rows, actors,
 abilities, effects, projectiles, montage damage windows and damage rows. Still to do: topics like
 `behemoth_design.md` for each weapon's combo flow (anim state sets, input buffering, meters and charge levels).
+The repeaters' server side is written up in `topics/repeaters_server.md`, with the checklist for the other types.
 
 ### 4. Buffs and status effects (elements, DoTs, debuffs)
 

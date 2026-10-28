@@ -69,6 +69,7 @@ The atlas has a ready-made **sheet** (a plain text file) for every major part of
 |---|---|
 | A behemoth | `behemoths/<name>.txt`, e.g. `lerawr_normal.txt` for Embermane, `lerawr_beta.txt` for Lesser Embermane |
 | A weapon, an attack, a special or a passive | `weapons/<type>.txt`: `sword`, `axe`, `hammer`, `chainblades`, `warpike`, `repeaters`, `strikers` |
+| A whole weapon type on the server | `topics/repeaters_server.md`: everything the repeaters needed, and a checklist for the next type |
 | Something all weapons share | `weapons/shared.txt` |
 | Armor, perks, cells, set bonuses | `weapons/armor.txt`, and `topics/armor.md` for how they work |
 | An item: lantern, potion, grenade, material, token, cosmetic | `items/` (one file per kind: `lanterns.txt`, `quick_items.txt`, `materials.txt`, ...) |

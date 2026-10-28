@@ -635,6 +635,70 @@
    "classes": [],
    "source": "python -m tools.atlas areas (data/atlas/areas.json unresolved lists)",
    "date": "2026-10-28"
+  },
+  {
+   "id": "weapon-part-components-on-equip",
+   "fact": "The server must add one component per weapon part on equip (BP_BaseArchonWeapon SpawnAndAddComponents runs only on the server: weapon_part_catalog[part].PartComponent added to WeaponPartComponents, WeaponPartID replicated) and replicate EquippedWeaponParts / WeaponPartIDs. Moves find their part through activate_weapon_part_gameplay_bpns -> GetWeaponPartByType; without the components the repeater heavy shot and Q did nothing (live).",
+   "classes": [
+    "BP_BaseArchonWeapon_C",
+    "weapon_part_base_bpc_C",
+    "dp_base_part_bpc_C"
+   ],
+   "source": "main: GameServer/mpgs/engine/weapon_parts.py; topics/repeaters_server.md",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "part-ability-prediction-key",
+   "fact": "Weapon part abilities (dp_weapon_ability_base_ab: InstancedPerActor, ReplicateYes, LocalPredicted) must be granted by the server (the client only sends ServerTryActivateAbility for granted abilities, live 2026-10-16) and confirmed with ClientActivateAbilitySucceed carrying the client's own prediction key; a new server key does not match the client's pending activation (live 2026-10-22, first with the potion).",
+   "classes": [
+    "dp_weapon_ability_base_ab_C",
+    "dp_x_ability_piercing_ab_C",
+    "dp_y_ability_spawn_raptor_ab_C"
+   ],
+   "source": "main: GameServer/mpgs/engine/abilities.py; topics/repeaters_server.md",
+   "date": "2026-10-22"
+  },
+  {
+   "id": "repeater-ammo-authoritative",
+   "fact": "The repeaters' ammo is server state: dp_weapon_bp's ammo_bpc MaxAmmoCount (12) and AuthoritativeAmmoCount must be replicated by the server (ammo_bpc BeginPlay StartWithFullAmmo; Server_Reload -> AuthReloadWeaponWithAmmoScale). While they stay 0 the client treats every attack as a reload (live).",
+   "classes": [
+    "dp_weapon_bp_C",
+    "ammo_bpc_C"
+   ],
+   "source": "main: GameServer/mpgs/island_encounter.py (_ammo_entries, handle_ranged); topics/repeaters_server.md",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "repeater-cooldown-on-weapon-asc",
+   "fact": "dp_x_ability_cooldown_ge / dp_y_ability_cooldown_ge (HasDuration, SetByCaller Duration, tags Combat.Pistols.XCooldown / YCooldown) go on the weapon actor's own ASC (dp_weapon_bp StartXCooldown -> GetAbilitySystemComponent(self)); the HUD reads GetXCooldown / GetYCooldown from the replicated effect. With the effect on the pawn's ASC no timer showed and X re-fired inside 15 s (live). Cooldowns: X 15 s (10 with talent weapon.talent.d24.sp05), Q 60 s (50 with sp03).",
+   "classes": [
+    "dp_weapon_bp_C",
+    "dp_x_ability_cooldown_ge_C",
+    "dp_y_ability_cooldown_ge_C",
+    "weapon_dp_bpw_C"
+   ],
+   "source": "main: GameServer/mpgs/engine/effects.py; topics/repeaters_server.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "repeater-q-server-ended",
+   "fact": "The client's dp_y_ability_spawn_raptor_ab instance stops at FindBuff(alluring_raptor_manager_buff) before StartYCooldown / K2_EndAbility (live), so the server must spawn the raptor pack, end the ability (ClientEndAbility, as bReplicateEndAbility does when its server instance ends in the same activation), enforce the 60 s cooldown itself and apply dp_y_ability_cooldown_ge for the HUD; the player also needs the alluring_raptor_manager_buff buff actor.",
+   "classes": [
+    "dp_y_ability_spawn_raptor_ab_C",
+    "alluring_raptor_manager_buff_C"
+   ],
+   "source": "main: GameServer/mpgs/engine/abilities.py (SERVER_ENDED), engine/buffs.py; topics/repeaters_server.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "weapon-talent-client-rules",
+   "fact": "Weapon talents in the 2.1.1 client: CanEquip (0x28b87a0) requires the perk unlocked, not already equipped and fewer than 3 equipped in its row; the unlock gate (0x28b8b50) caps unlocked perks per talent at min(item level / 10, 5). A click only sends ServerSetWeaponTalentPerkEquippedById / Unlocked...; ClientSetWeaponTalentPerk*State only queue a pending change and ClientItemCustomDataReplicated is an empty stub, so the state must be sent in the weapon's V2 inventory customData JSON (UArchonInventoryItem_Weapon::ToCustomData 0x28d9610 key order) and shows after a rejoin (live 2026-10-28); the talent screen does not redraw live.",
+   "classes": [
+    "ArchonInventoryItem_Weapon",
+    "ArchonInventory"
+   ],
+   "source": "main: GameServer/mpgs/talents.py; topics/repeaters_server.md",
+   "date": "2026-10-28"
   }
  ]
 }

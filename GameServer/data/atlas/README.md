@@ -168,3 +168,4 @@ unconfirmed.
 | `topics/behemoth_design.md` | One behemoth end to end (Embermane): classes and variants, action set, attack scoring, behavior tree, damage windows and rows, hitboxes, rage and stamina |
 | `topics/behemoth_scaling.md` | Threat levels, tuning presets, behemoth health/stagger/damage scaling, power overrides, star levels |
 | `topics/area_rules.md` | What is allowed in town vs on a hunt: quick items, cells, menus, bounty menus |
+| `topics/repeaters_server.md` | What the server does for the repeaters and why, with evidence and dates; the checklist of what every weapon type needs on the server |

@@ -479,6 +479,8 @@ def sheet(key, info, rows_index):
            'Folders: %s' % ', '.join(folders)]
     if key in TYPE_ENUM:
         out.append('Native enum: EWeaponType::WeaponType_%s' % TYPE_ENUM[key])
+    if os.path.exists(os.path.join(paths.OUT, 'topics', '%s_server.md' % key)):
+        out.append('What the server does for this type, and why: topics/%s_server.md' % key)
     if key in CODES:
         for title, fn in (('Items (gameplay catalog: the weapon items players own, their actor class and part slots)',
                            item_lines),
