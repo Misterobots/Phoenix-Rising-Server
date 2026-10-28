@@ -988,9 +988,13 @@ class GenSession(ReplaySession):
         if not state or inv is None:
             return
         rpcs = talents.replay_rpcs(state)
-        for func, params in rpcs:                   # after the whole join world (the inventory actor is open by then)
+        # after the whole join world, V2 inventory sync included (staged ~14 s in): a talent state for an item the client does
+        # not hold yet is dropped (live 2026-10-28: sent at join, the perks stayed locked)
+        t = max((e.t for e in self.entries), default=0) + 1000
+        for func, params in rpcs:
             pos, self.pos = self.pos, len(self.entries)
             self._queue_actor_rpc(inv[0], inv[1], func, params)
+            self.entries[-1].t = t
             self.pos = pos
         print('TALENT restored %d perk states' % len(rpcs), flush=True)
 
