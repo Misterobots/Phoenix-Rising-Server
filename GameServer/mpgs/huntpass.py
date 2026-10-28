@@ -3,13 +3,16 @@
 A pass is a progression path in the backend's progression config: `requirements[i].xp_required` is the XP from
 rank i-1 to rank i (rank 0 needs none), `free_rewards[i]` / `premium_rewards[i]` are rank i's rewards. Rank N =
 the first N thresholds reached. The backend keeps the confirmed (claimed) ranks; a claim grants the free rewards
-of every rank above the confirmed one, then raises it. Premium needs the path's gating entitlement (not sold).
+of every rank above the confirmed one, then raises it. Premium: everyone has it on this server (user decision
+2026-10-28: no premium lock), so the premium rewards are granted the same way from the confirmed premium rank.
 """
 import json
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from . import progression
+
+PREMIUM_FOR_ALL = True
 
 
 def load_path(pass_id, path=None):
@@ -40,16 +43,17 @@ def record(pass_id, path, xp, confirmed, confirmed_premium=0):
     top = max((q['rank_id'] for q in (path or {}).get('requirements') or []), default=0)
     out = {}
     for k, v in (('ID', (pass_id, 0)), ('bIsPrestige', False), ('bIsCompleted', bool(top) and r >= top),
-                 ('bHasPremium', False), ('Rank', r), ('ConfirmedRank', min(confirmed, r)),
+                 ('bHasPremium', PREMIUM_FOR_ALL), ('Rank', r), ('ConfirmedRank', min(confirmed, r)),
                  ('ConfirmedPremiumRank', min(confirmed_premium, r)), ('RankProgress', into)):
         out['ActiveHuntPassData[].' + k] = v
     return out
 
 
-def claim_plan(path, confirmed, current):
-    """-> (items [(catalogId, amount)], skipped [descriptions]) for the free rewards of ranks confirmed+1..current."""
+def claim_plan(path, confirmed, current, track='free_rewards'):
+    """-> (items [(catalogId, amount)], skipped [descriptions]) for the rewards of ranks confirmed+1..current;
+    track 'free_rewards' or 'premium_rewards'."""
     items, skipped = [], []
-    by_rank = {r['rank_id']: r for r in path.get('free_rewards') or []}
+    by_rank = {r['rank_id']: r for r in path.get(track) or []}
     for n in range(confirmed + 1, current + 1):
         row = by_rank.get(n) or {}
         for s in row.get('stacked_items') or []:
@@ -67,9 +71,9 @@ def transaction_seed(account, pass_id, confirmed, current):
     return 'huntpass:%s:%s:%d-%d' % (account, pass_id, confirmed, current)
 
 
-def confirm(account, pass_id, free_rank, headers, base='http://127.0.0.1:3001'):
+def confirm(account, pass_id, free_rank, headers, base='http://127.0.0.1:3001', premium_rank=0):
     hdr = dict(headers); hdr['Content-Type'] = 'application/json'
-    body = json.dumps({'free_rank': free_rank}).encode()
+    body = json.dumps({'free_rank': free_rank, 'premium_rank': premium_rank}).encode()
     url = '%s/progression/%s/%s/confirm' % (base, quote(account, safe=''), quote(pass_id, safe=''))
     with urlopen(Request(url, data=body, headers=hdr, method='POST'), timeout=3) as r:
         return r.status

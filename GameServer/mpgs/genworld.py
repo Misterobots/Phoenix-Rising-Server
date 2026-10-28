@@ -636,6 +636,8 @@ class GenSession(ReplaySession):
                             if getattr(self, '_recovering', None) == b.ch:      # recovery answered before the state change arrived
                                 self._recovering = None
                                 self._restore_state(b.ch)
+                    elif blk.actor and x[1] in ('ServerDustItem', 'ServerDustItemWithQuantity'):
+                        self._dust(x[3])
                     elif blk.actor and x[1] in ('ServerCraftItemFromCatalogData', 'ServerPurchaseItemFromCatalog'):
                         self._craft('craft' if x[1].startswith('ServerCraft') else 'purchase', x[3])
                     elif blk.actor and x[1] in ('ServerSetWeaponTalentPerkUnlockedById', 'ServerSetWeaponTalentPerkUnlockedByIndex',
@@ -688,18 +690,23 @@ class GenSession(ReplaySession):
                 xp, confirmed = int(row.get('progress') or 0), int(row.get('confirmed_fremium_rank') or 0)
                 current, _ = huntpass.rank(path, xp)
                 items, skipped = huntpass.claim_plan(path, confirmed, current)
+                confirmed_p = int(row.get('confirmed_premium_rank') or 0)
+                if huntpass.PREMIUM_FOR_ALL:
+                    p_items, p_skipped = huntpass.claim_plan(path, confirmed_p, current, 'premium_rewards')
+                    items, skipped = items + p_items, skipped + p_skipped
+                done_p = max(confirmed_p, current) if huntpass.PREMIUM_FOR_ALL else confirmed_p
                 body = None
                 if items:
                     body = rewards.build_transaction(ids['acct'], ids['char'],
-                                                     huntpass.transaction_seed(ids['acct'], pass_id, confirmed, current), items)
+                                                     huntpass.transaction_seed(ids['acct'], pass_id, confirmed, current) + ':p%d' % confirmed_p, items)
                     ok, detail = rewards.post_transaction(body, hdrs)
                     if not ok:
                         print('HUNTPASS claim grant failed -> %s' % detail, flush=True)
                         self._main_queue.append(('huntpass', (ch, request_block, False, None, None)))
                         return
-                if current > confirmed:
-                    huntpass.confirm(ids['acct'], pass_id, current, hdrs)
-                rec = huntpass.record(pass_id, path, xp, max(confirmed, current), int(row.get('confirmed_premium_rank') or 0))
+                if current > confirmed or done_p > confirmed_p:
+                    huntpass.confirm(ids['acct'], pass_id, max(confirmed, current), hdrs, premium_rank=done_p)
+                rec = huntpass.record(pass_id, path, xp, max(confirmed, current), done_p)
                 print('HUNTPASS claim %s ranks %d..%d granted %s%s' % (pass_id, confirmed + 1, current, items,
                       ' (not granted: %s)' % ', '.join(skipped) if skipped else ''), flush=True)
                 self._main_queue.append(('huntpass', (ch, request_block, True, body, rec)))
@@ -975,8 +982,10 @@ class GenSession(ReplaySession):
             why = 'unknown talent %s perk %s' % (talent, perk)
         elif equip and value and not talents.is_unlocked(state, item, talent, perk):
             why = 'perk not unlocked'
-        elif equip and value and perk not in (((state.get(item) or {}).get(talent) or {}).get('equipped') or [])                 and len(((state.get(item) or {}).get(talent) or {}).get('equipped') or []) >= 3:
-            why = 'row already has 3 perks equipped'      # the loadout screen shows n/3 ASSIGNED per row
+        elif equip and value and perk not in (((state.get(item) or {}).get(talent) or {}).get('equipped') or []) \
+                and len(((state.get(item) or {}).get(talent) or {}).get('equipped') or []) >= 3:
+            # the client's own check (0x28b87a0): unlocked, not already equipped, fewer than 3 equipped in the row
+            why = 'row already has 3 perks equipped'
         spends = []
         if why is None and not equip and value:
             if talents.is_unlocked(state, item, talent, perk):
@@ -1042,11 +1051,22 @@ class GenSession(ReplaySession):
             # The client applies UpdateItem's customData but only fires ClientOnInventoryItemsChanged (what the talent screens
             # redraw on) when a quantity changed in the batch (UArchonInventory V2 apply, 0x288e700). So the batch bumps the
             # weapon to 2 and back to 1; each op carries the hash of the state after it.
+            # The talent screen reads the item data the client fetched from the backend at join, which UpdateItem does not
+            # touch (live 2026-10-28, injected-client log). The client re-fetches when an op's postOperationHash does not match
+            # its state ("Inventory state hash mismatch detected. Refreshing inventory.", 0x288ec4d), raising its mismatch
+            # count (+0x3d0) by one; later ops must carry that count or the client drops them. Forcing it was tried live
+            # 2026-10-28 with no refetch seen, so it is off (MPGS_TALENT_REFETCH=1 to retry). Open follow-up.
+            mc = getattr(self, 'v2_mismatch', 0)
             q = rec['quantity']
             rec['quantity'] = q + 1
-            bump = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
+            bump = dict(rec, mismatchCount=mc, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
             rec['quantity'] = q
-            op = dict(rec, mismatchCount=0, operation='UpdateItem', postOperationHash=post_operation_hash(self.v2_state))
+            good = post_operation_hash(self.v2_state)
+            force = os.environ.get('MPGS_TALENT_REFETCH', '0') == '1' and mc < 10
+            op = dict(rec, mismatchCount=mc, operation='UpdateItem', postOperationHash=(good ^ 1) if force else good)
+            if force:
+                self.v2_mismatch = mc + 1
+                print('TALENT forcing inventory refetch (mismatch count %d -> %d)' % (mc, mc + 1), flush=True)
             self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([bump, op]))
             print('TALENT UpdateItem %s customData=%s' % (item, rec['customData']), flush=True)
         else:
@@ -1054,7 +1074,8 @@ class GenSession(ReplaySession):
         # inserted at the send position: V2 spends first in the list end up after the reply
         if spends and inv is not None:
             for op in reversed(rewards.v2_spend_operations(self.v2_state, spends)):
-                self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([op]))
+                self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', encode_client_item_state_updates_field([dict(op, mismatchCount=getattr(self, 'v2_mismatch', 0))]))
+        # reply with the id the client asked with (the catalog id), so its pending click matches the answer
         self._queue_actor_rpc(ch, cls, func, {'ItemId': self._item_catalog(item) or item, 'TalentId': talent, 'TalentPerkIndex': perk,
                                               'NewEquipValue' if equip else 'NewUnlockValue': value})
         print('TALENT %s %s %s[%d]=%s (spent %s)' % (func, item, talent, perk, value, spends), flush=True)
@@ -1113,7 +1134,7 @@ class GenSession(ReplaySession):
         self._queue_actor_rpc(ch, cls, 'ClientAddItemProgressionXP', grant)
         if inv is not None:
             for op in reversed(rewards.v2_spend_operations(self.v2_state, spends)):
-                field = encode_client_item_state_updates_field([op])
+                field = encode_client_item_state_updates_field([dict(op, mismatchCount=getattr(self, 'v2_mismatch', 0))])
                 self._queue_actor_rpc_field(inv[0], 'bp_archon_inventory_C', field)
         print('INFUSE reply level %s -> %s' % (grant['ExperienceGrant.PreviousLevel'], grant['ExperienceGrant.Level']), flush=True)
 
@@ -1249,7 +1270,7 @@ class GenSession(ReplaySession):
     def _queue_v2_ops(self, inv, ops):
         """V2 item-state RPCs on the inventory actor, in order (inserted at the send position: reverse)."""
         for op in reversed(ops):
-            field = encode_client_item_state_updates_field([op])
+            field = encode_client_item_state_updates_field([dict(op, mismatchCount=getattr(self, 'v2_mismatch', 0))])
             rpc = Entry()
             rpc.t, rpc.ch, rpc.cls, rpc.exports = 0, inv[0], 'bp_archon_inventory_C', []
             rpc.open = rpc.close = rpc.must_map = False
@@ -1274,8 +1295,11 @@ class GenSession(ReplaySession):
         from . import crafting, rewards
         from .initialization import _backend_headers
         item = params.get('ItemId') or ''
+        if params.get('CraftingMode') == 1:          # ECraftingMode::Purchasing: the vendor buys go through the craft RPC
+            kind = 'purchase'
         payload = params.get('Payload') or {}
-        qty = next((v for k, v in (payload.items() if isinstance(payload, dict) else ()) if k.endswith('Qty')), 1)
+        flat = list(payload.items()) if isinstance(payload, dict) else []
+        qty = next((v for k, v in flat + list(params.items()) if k.endswith('Qty')), 1)   # decoded as 'Payload.Qty'
         ids = getattr(self, 'live_ids', {}) or {}
         if not hasattr(self, 'v2_state'):
             self.v2_state = rewards.state_from_updates(getattr(self, 'inventory_v2_updates', []))
@@ -1292,6 +1316,33 @@ class GenSession(ReplaySession):
         def work():
             done, detail = rewards.post_transaction(body, _backend_headers(ids.get('auth_token')))
             print('CRAFT %s %s spent %s granted %s -> %s' % (kind, item, spends, grants, detail), flush=True)
+            if done:
+                self._main_queue.append(('craft', body))
+        threading.Thread(target=work, daemon=True).start()
+
+    def _dust(self, params):
+        """ServerDustItem / ServerDustItemWithQuantity: spend the stack, add its DustItemResult (mpgs/dust.py); V2 ops
+        from the main loop through the craft path once the backend has applied it."""
+        import threading
+        from . import crafting, dust, rewards
+        from .initialization import _backend_headers
+        item = params.get('ItemInstanceID') or ''
+        ids = getattr(self, 'live_ids', {}) or {}
+        if not hasattr(self, 'v2_state'):
+            self.v2_state = rewards.state_from_updates(getattr(self, 'inventory_v2_updates', []))
+        owned = {r['instanceId']: r['quantity'] for r in self.v2_state if not rewards.is_instanced(r['instanceId'])}
+        table = getattr(self, '_dust_table', None)
+        if table is None:
+            table = self._dust_table = dust.load() or {}
+        ok, why, spends, grants = dust.plan(table, item, params.get('Quantity', 1), owned)
+        if not ok or not (ids.get('acct') and ids.get('char')):
+            print('DUST %s refused: %s' % (item, why if not ok else 'no player ids'), flush=True)
+            return
+        body = crafting.build_transaction(ids['acct'], ids['char'], spends, grants)
+
+        def work():
+            done, detail = rewards.post_transaction(body, _backend_headers(ids.get('auth_token')))
+            print('DUST %s spent %s granted %s -> %s' % (item, spends, grants, detail), flush=True)
             if done:
                 self._main_queue.append(('craft', body))
         threading.Thread(target=work, daemon=True).start()

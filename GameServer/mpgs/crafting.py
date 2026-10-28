@@ -1,7 +1,7 @@
 """Crafting and catalog purchases: ServerCraftItemFromCatalogData / ServerPurchaseItemFromCatalog.
 
 Costs come from world/recipes.json (tools/export_recipes.py): the Level_00 crafting or purchase recipe of the
-item. The server checks the quest unlock gate and the client's stacks, then spends the ingredients and adds
+item. The server checks the quest unlock gate (CraftingUnlockCriteria / PurchaseUnlockCriteria) and the client's stacks, then spends the ingredients and adds
 the item(s) in one backend transaction (all or nothing), and shows both with V2 inventory operations.
 """
 import json
@@ -31,10 +31,9 @@ def plan(recipes, item, kind, qty, owned, quest_status):
     if rec is None or kind not in rec:
         return False, 'no %s recipe for %s' % (kind, item), [], []
     qty = max(1, min(int(qty or 1), MAX_QTY)) if kind == 'purchase' else 1
-    if kind == 'craft':
-        for quest, allowed in rec.get('unlock') or []:
-            if quest_status(quest) not in allowed:
-                return False, 'locked: quest %s status %s, needs %s' % (quest, quest_status(quest), allowed), [], []
+    for quest, allowed in rec.get('unlock' if kind == 'craft' else 'purchase_unlock') or []:
+        if quest_status(quest) not in allowed:
+            return False, 'locked: quest %s status %s, needs %s' % (quest, quest_status(quest), allowed), [], []
     spends = [(c, a * qty) for c, a in rec[kind]]
     short = [(c, a, owned.get(c, 0)) for c, a in spends if owned.get(c, 0) < a]
     if short:

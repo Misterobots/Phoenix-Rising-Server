@@ -718,8 +718,10 @@ class Gameplay:
     ENTITLEMENTS = ('ent_escalations_unlocked', 'ent_migration_d24_complete')
 
     async def entitlements(self, request):
+        # + the active pass's premium gate: no premium lock on this server (user decision 2026-10-28)
+        names = self.ENTITLEMENTS + (HUNTPASS_SEASON + '_premium',)
         return web.json_response({'entitlements': [{'activatedDate': None, 'duration': 0, 'name': n}
-                                                   for n in self.ENTITLEMENTS]})
+                                                   for n in names]})
 
     # -- client: account data and tuning ---------------------------------------------------------------------------
     async def balance(self, request):
@@ -934,6 +936,8 @@ class Gameplay:
         get('/survey/config', self.survey)
         post('/trials/leaderboards/all', self.trials)
         get('/product/skus/public', self.skus)
+        # STAND-IN: the live service's HuntPassXPConfig is not in the paks (no archived response either), so these are
+        # the SDK struct's neutral values with no per-event rules. Hunt Pass XP per hunt is not tuned by this.
         get('/game_tuning/huntpass_xp_config', self.tuning({'EventConfigs': [], 'GlobalConfig': {
             'DifficultyBias': 1, 'GlobalMultiplier': 1, 'MaxXPAwarded': 200}}))
         get('/game_tuning/seasonal_event_schedule', self.tuning({'ScheduledItems': []}))

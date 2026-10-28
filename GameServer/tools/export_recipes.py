@@ -1,6 +1,6 @@
 """Generate world/recipes.json (catalogId -> craft / purchase cost, items per craft and the quest unlock gate)
 from the 2.1.1 catalog exports (game data: generated locally, not distributed).
-python -m tools.export_recipes [all-datatables-211 directory]
+python -m tools.export_recipes [all-datatables-211 directory] [output path]
 """
 import glob
 import json
@@ -43,9 +43,10 @@ def _unlock(refs, criteria):
     return [[q, sorted(s)] for q, s in sorted(gate.items())]
 
 
-def main(src=DEFAULT):
+def main(src=DEFAULT, out_path=OUT):
     find = lambda name: _rows(glob.glob(os.path.join(src, '*_%s.json' % name))[0])
     recipes, criteria = find('crafting_recipes'), find('crafting_unlock_criteria')
+    buy_criteria = find('purchase_unlock_criteria')
     out = {}
     for path in sorted(glob.glob(os.path.join(src, '*Catalogs_*catalog*.json'))):
         for cid, row in _rows(path).items():
@@ -61,9 +62,10 @@ def main(src=DEFAULT):
                 rec['unlock'] = _unlock(row.get('CraftingUnlockCriteria'), criteria)
             if buy is not None:
                 rec['purchase'] = buy
+                rec['purchase_unlock'] = _unlock(row.get('PurchaseUnlockCriteria'), buy_criteria)
             out[cid] = rec
-    json.dump({'source': 'catalog CraftingRecipesPerLevel / PurchaseRecipesPerLevel Level_00 (2.1.1 export)',
-               'recipes': out}, open(OUT, 'w'), indent=1, sort_keys=True)
+    json.dump({'source': 'catalog CraftingRecipesPerLevel / PurchaseRecipesPerLevel Level_00, Crafting/PurchaseUnlockCriteria (2.1.1 export)',
+               'recipes': out}, open(out_path, 'w'), indent=1, sort_keys=True)
     print('recipes', len(out), 'craftable', sum('craft' in r for r in out.values()),
           'purchasable', sum('purchase' in r for r in out.values()))
 
