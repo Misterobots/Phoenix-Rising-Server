@@ -144,7 +144,6 @@ class Schema:
         """InitFromProperty_r; returns new relative handle."""
         if prop.kind == 'ArrayProperty':
             rel += 1
-            start = len(lay.cmds)
             c = Cmd('DynamicArray', prop, parent, rel, name)
             lay.cmds.append(c)
             self._init_prop(lay, parent, prop.inner, 0, name + '[]')
@@ -212,7 +211,6 @@ class Schema:
         chain = [c for c in ([cls] + self.inherit.get(cls, []))[::-1]]
         for c in chain:
             if c in self.classes:
-                seen = set()
                 for p in sorted(self.classes[c][1], key=lambda p: p.ri):
                     out.append(('prop', p.name))
             for fn in self.own_net_functions(c):

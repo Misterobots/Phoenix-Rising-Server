@@ -7,8 +7,6 @@ ClassReps order after the parent's reps, verified against Bp_Behemoth_C in the l
 """
 import json
 import os
-import re
-import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_ROOT = os.path.join(HERE, '..', '..', '..', 'debug', 'runs', 'hunt_assets')

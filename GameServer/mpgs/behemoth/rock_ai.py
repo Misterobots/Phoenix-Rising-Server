@@ -7,7 +7,6 @@ death), walking along terrain paths, facing. Inferred values (no data read yet),
   MPGS_ROCK_BT_DIR               folder with rock_bt.json and the shared_*_bt.json sub-trees (default <repo>/_dumps/bt)
 Montages whose name is not a Rock montage (the tree references one Shrike montage on an alpha-only branch) are skipped.
 """
-import math
 import os
 
 from . import bt

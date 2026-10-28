@@ -1,6 +1,5 @@
 """Repeater Q raptors (mpgs/creatures/raptors.py, mpgs/engine/allies.py): spawned on the Q activation, run their own behaviour
 tree against the Embermane, deal their damage-table damage, and leave when their lifespan ends."""
-import math
 import os
 import sys
 import unittest
@@ -12,7 +11,6 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tests'))
 from mpgs import island_encounter, loadout  # noqa: E402
 from mpgs.creatures import raptors  # noqa: E402
-from mpgs.engine import abilities  # noqa: E402
 
 DATA = raptors.load()
 
@@ -71,7 +69,6 @@ class AllyRaptorTests(unittest.TestCase):
         self.assertEqual(s._effects.step(s._effects.active[rid]['ends'] - 1.0), [])
         gone = s._effects.step(s._effects.active[rid]['ends'])
         self.assertEqual(gone[0].parsed.blocks[0].fields[0][3]['deleted'], [rid])   # removed when it runs out
-        n = len(s.entries)
         island_encounter.handle_ability(s, asc_ch, pa.hdr, {'AbilityToActivate.Handle': h, 'InputPressed': 0,
                                                             'PredictionKey': {'server': 0, 'current': 10, 'base': 9}})
         self.assertTrue(any(f[1] == 'ClientActivateAbilityFailed' for e in s.entries[s.pos:] for b in e.parsed.blocks

@@ -13,7 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.normpath(os.path.join(HERE, '..')))
 
 from mpgs.behemoth.mover import FPS, MOVE_EPS, ROOTMOTION_DIR, Mover, RootCurve  # noqa: E402
-from mpgs.world.terrain import NODATA, Terrain, default_base  # noqa: E402
+from mpgs.world.terrain import Terrain, default_base  # noqa: E402
 
 REAL_CURVE = os.path.join(ROOTMOTION_DIR, 'b_sq_rok_00_atk_fronttackle_fwd_00.rootmotion.json')
 

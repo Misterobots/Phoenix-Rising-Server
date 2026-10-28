@@ -1,7 +1,6 @@
 """RockDirector against a fake session: spawn timing, facing, attacks, montage entries, failure isolation (offline)."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))  # GameServer/, for mpgs
-import math
 import os
 import unittest
 from types import SimpleNamespace

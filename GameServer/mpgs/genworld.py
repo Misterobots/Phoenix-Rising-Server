@@ -546,7 +546,6 @@ class GenSession(ReplaySession):
             who = 'actor' if blk.actor else self.ctx._names.get(blk.guid, (0, 'guid%s' % blk.guid))[1]
             if not blk.actor and blk.cls_name is None and getattr(self, '_dbg_unres', 0) < 80:       # diagnosis: client RPC on a component we cannot name
                 self._dbg_unres = getattr(self, '_dbg_unres', 0) + 1
-                sm = [(g, n) for g, (o, n) in self.ctx._names.items() if n and ('state_machine' in n or 'AbilitySystem' in n)]
                 bits_ = bin(f.bits)[2:].zfill(f.nbits)[::-1]
                 print('UNRES ch%d guid=%s stable=%s cls=%s outer=%s raw=%s bunch=%d bits LSB-first: %s' % (b.ch, blk.guid, blk.stable, blk.cls, blk.outer,
                       None if blk.raw is None else blk.raw[1], f.nbits, bits_[:200]), flush=True)

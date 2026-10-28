@@ -15,10 +15,9 @@ the native GetAttackTargetScore (a threat-weighted stand-in is used, flagged bel
 triggers (states are set by the caller), part breaking and stagger, hit detection against player bodies.
 """
 import json
-import math
 import os
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from . import geometry
 

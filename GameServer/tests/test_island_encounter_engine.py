@@ -2,7 +2,6 @@
 encounter adapter turns its events into encounter-channel bunches. Spawn, reveal, damage and rewards are shared with the scripted
 path (test_island_encounter.py, flag 0). Skipped where the local engine game data has not been generated."""
 import json
-import math
 import os
 import time
 import sys
@@ -65,7 +64,6 @@ class EngineEncounterTests(unittest.TestCase):
         while t < until:
             if player is not None:
                 session.pawn_state = {'loc': list(player(t)), 'rot': [0.0, 0.0, 0.0], 'vel': [0.0, 0.0, 0.0], 'mode': 1}
-            before = len(session.entries)
             bunches = island_encounter.step_movement(session, enc['spawn_mono'] + t)
             queued = session.entries[session.pos:]
             out.append((t, bunches, list(queued)))
@@ -219,7 +217,6 @@ class HealthAndHitTests(EngineEncounterTests):
         from mpgs.repl.guid import flatten
         with patch.dict(os.environ, {island_encounter.STAGGER_PROBE_FLAG: '1'}):
             s = self.session()
-            enc = s._encounter
             self.attack_until_hit(s)
         pawn = next(e for e in s.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
         joined = next(i.guid for r in pawn.exports for i in flatten(r) if i.name == 'hit_reaction_bpc')

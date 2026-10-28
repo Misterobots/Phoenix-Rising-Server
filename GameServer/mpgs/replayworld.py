@@ -1,8 +1,5 @@
 """Session base: per-connection cursor over the world's events, identity handling and client RPC labelling.
 GenWorld / GenSession (genworld.py) build on it."""
-import math
-import re
-import sys
 import os
 
 from . import crypto, wire
@@ -193,7 +190,6 @@ class _RawReplayRxDecoder:
 
 class _RawReplayRxSession:
     def __init__(self, world):
-        from .repl.chan import Reassembler
 
         self.world = world
         self.ctx_names = dict(world.names)

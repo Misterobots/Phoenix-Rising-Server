@@ -593,7 +593,6 @@ def _health_update(session, enc):
 def _send_hit(session, enc, action, key, row):
     """A damage window caught the player: ClientTryHit to their player_hittable_bpc; damage waits for ServerAcceptHit."""
     from .engine import hits
-    from .repl.decode import OrderedFields
     pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
     if pawn is None or row is None or enc.get('player_downed'):
         return None
@@ -758,7 +757,7 @@ def _stagger_probe(session, pawn, damage):
 def _damage_entries(session, enc, info):
     """Lower the player's CurrentHealth (ASC sub-object property) and send ClientHandlePostMitigationDamage (pawn actor RPC)."""
     from .engine import hits
-    from .engine.attributes import find_block, property_update
+    from .engine.attributes import find_block
     pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
     header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
     if enc.get('player_health') is None:
@@ -845,7 +844,7 @@ def handle_ability(session, ch, req_block, params):
 
 
 def _apply_heals(session, enc):
-    from .engine.attributes import find_block, property_update
+    from .engine.attributes import find_block
     due = [x for x in enc.get('pending_heals', []) if x[0] <= time.monotonic()]
     if not due or enc.get('player_downed'):
         if due:
@@ -966,7 +965,6 @@ DIRECT_PROBE_FLAG = 'MPGS_HIT_DIRECT_PROBE'   # engine path: 0 drops hits the cl
 def handle_hit_reply(session, func, params):
     """player_hittable_bpc.ServerAcceptHit / ServerRefuseHit for a ClientTryHit this encounter sent."""
     from .engine import hits
-    from .engine.attributes import find_block, property_update
     enc = getattr(session, '_encounter', None)
     if not enc or enc.get('pending_hits') is None or not isinstance(params, dict):
         return False
@@ -1348,7 +1346,6 @@ def handle_ranged(session, ch, req_block, func, params):
     distance and ammo scale (both taken as 1 here). Server_Reload: ammo_bpc.AuthReloadWeaponWithAmmoScale(1.0)."""
     enc = session._encounter
     weapon_cls = session.chan_cls.get(ch) or getattr(req_block, 'cls_name', None)
-    guid = getattr(req_block, 'guid', 0) or None
     ammo = enc.setdefault('ammo', {})
     if func == 'Server_Reload':
         ammo[ch] = AMMO_MAX

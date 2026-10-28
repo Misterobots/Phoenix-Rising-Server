@@ -1,5 +1,4 @@
 """Weapon parts (mpgs/engine/weapon_parts.py): the equipped weapon's default part components and the part abilities."""
-import os
 import sys
 import unittest
 from pathlib import Path

@@ -1,6 +1,5 @@
 """Repeater heavy (dp_x_ability_piercing_ab): the activation request's leading params, SpawnProjectile on the ability instance,
 and the projectile's ray hit."""
-import json
 import sys
 import unittest
 from pathlib import Path
@@ -11,7 +10,6 @@ from mpgs.engine import abilities, projectiles  # noqa: E402
 from mpgs.loadout import register_atlas_class_full  # noqa: E402
 from mpgs.repl import rpc  # noqa: E402
 from mpgs.repl.schema import Schema  # noqa: E402
-from mpgs.bitio import BitWriter  # noqa: E402
 
 LIVE = '1b0000001c02c00140190200000030000000000000'   # ServerTryActivateAbilityWithEventData, 166 bits (live 2026-10-26)
 

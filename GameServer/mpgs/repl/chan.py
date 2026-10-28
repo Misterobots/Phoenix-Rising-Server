@@ -1,6 +1,6 @@
 """Actor-channel bunch reading: partial reassembly, SerializeNewActor header, content blocks (UE5.1)."""
 from ..bitio import BitReader
-from .guid import read_export_bunch, read_load_object, is_dynamic, flatten, write_export_bunch
+from .guid import read_export_bunch, read_load_object, is_dynamic
 
 
 class Full:

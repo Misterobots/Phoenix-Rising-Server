@@ -12,7 +12,6 @@ rock.json (class, montage, montage_data, cooldown, intensity, attack targeting).
 Packages that cannot be dumped are reported, not skipped silently.
 """
 import argparse
-import glob
 import json
 import os
 import re
@@ -62,7 +61,7 @@ class Dumper:
         out = self.path(pkg)
         if os.path.exists(out):
             return out
-        r = subprocess.run(['dotnet', ASSETDUMP, 'dump', os.path.abspath(self.work), 'Archon/' + pkg.split('Archon/', 1)[-1]],
+        subprocess.run(['dotnet', ASSETDUMP, 'dump', os.path.abspath(self.work), 'Archon/' + pkg.split('Archon/', 1)[-1]],
                            stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=600)
         if not os.path.exists(out):
             self.failed.append(pkg)

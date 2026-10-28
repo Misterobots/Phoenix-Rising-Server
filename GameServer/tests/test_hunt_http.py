@@ -1,5 +1,4 @@
 """Exercise the client/server hunt handoff over separate HTTP listeners."""
-import json
 from pathlib import Path
 import sys
 import tempfile

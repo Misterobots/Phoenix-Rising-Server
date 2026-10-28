@@ -43,7 +43,7 @@ def components(map_json):
         if not m:
             continue
         comps.append((int(round(loc.get('X', 0.0))), int(round(loc.get('Y', 0.0))), int(m.group(1))))
-    land = next(e for e in d if e.get('Type') == 'Landscape')
+    next(e for e in d if e.get('Type') == 'Landscape')   # the export must hold a Landscape
     root = next(e for e in d if e.get('Type') == 'SceneComponent' and e.get('Outer', {}).get('ObjectName', '').startswith("Landscape'"))
     rp = root['Properties']
     return comps, rp['RelativeLocation'], rp['RelativeScale3D']
@@ -58,7 +58,6 @@ def texel_heights(tex_path, hi, lo):
 
 
 def build(comps, tex_dir, name, hi, lo):
-    grid = {}
     samples = {}  # (qx, qy) -> list of heights from each component covering that quad
     for qx0, qy0, tn in comps:
         path = None

@@ -6,7 +6,6 @@ unreliable ReplicatedMovement updates, and a channel close when its lifespan end
 """
 import math
 import random
-import time
 
 from ..repl import compose, model
 

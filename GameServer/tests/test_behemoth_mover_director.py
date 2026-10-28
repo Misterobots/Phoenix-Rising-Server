@@ -13,7 +13,6 @@ from mpgs.behemoth import bp_schema
 from mpgs.behemoth.brain import ROCK
 from mpgs.behemoth.mover import ROOTMOTION_DIR, RootCurve, compose, montage_curve
 from mpgs.behemoth.session import RockDirector
-from mpgs.world.terrain import Terrain, default_base
 
 from test_behemoth_session import FakeSession
 

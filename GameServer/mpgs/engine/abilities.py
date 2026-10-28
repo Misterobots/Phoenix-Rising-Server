@@ -21,7 +21,6 @@ Env:
 import os
 
 from ..repl import model
-from ..repl.decode import OrderedFields
 from ..repl.guid import GuidInfo
 
 ASC_CLS = 'ArchonAbilitySystemComponent'
