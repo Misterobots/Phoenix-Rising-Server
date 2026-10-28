@@ -33,7 +33,7 @@ import os
 from urllib.request import Request, urlopen
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ASSETS = os.path.join(HERE, 'data', 'atlas', 'assets')
+ASSETS = os.path.join(HERE, 'data', '2.1.1', 'talents')     # the game's tables (tools/export_runtime_data.py)
 WEAPON_CATALOGS = ('weapon_dp_gameplay_catalog',)          # dumped so far: the repeaters
 BACKEND = 'http://127.0.0.1:3001'
 

@@ -120,32 +120,38 @@ def weapon_entry(entries, schema):
     return equipment_entry(entries, schema, 1)
 
 
-ATLAS_CLASSES = os.path.join(HERE, 'data', 'atlas', 'classes')
+CLASS_LAYOUTS = os.path.join(HERE, 'data', '2.1.1', 'class_layouts.json')
+_class_layouts = None
 
 
-def register_atlas_class(schema, cls_name, atlas_dir=ATLAS_CLASSES, props_only=False):
-    """Give a Blueprint class the schema has no layout for the layout of its nearest known ancestor, when the atlas shows
-    that no class in between adds a replicated property or an RPC (so the client's field indexes match). -> True when
-    `cls_name` is now in the schema. A weapon class missing from the schema made its RPCs (e.g. dp_weapon_bp.ServerShoot)
-    undecodable: they were read with the slot's base layout (live 2026-10-26). props_only: accept classes that add only
-    RPCs - their property layout (what the server sends) still matches; their own RPCs cannot be decoded."""
+def class_layout(cls_name, path=CLASS_LAYOUTS):
+    """{'parent', 'properties' (replicated), 'rpcs'} for a class from the game's Blueprints and SDK
+    (tools/export_runtime_data.py), or None."""
+    global _class_layouts
+    if _class_layouts is None:
+        with open(path, encoding='utf-8') as f:
+            _class_layouts = json.load(f)
+    return _class_layouts.get(cls_name)
+
+
+def register_atlas_class(schema, cls_name, props_only=False):
+    """Give a Blueprint class the schema has no layout for the layout of its nearest known ancestor, when the game data
+    shows that no class in between adds a replicated property or an RPC (so the client's field indexes match). -> True
+    when `cls_name` is now in the schema. A weapon class missing from the schema made its RPCs (e.g.
+    dp_weapon_bp.ServerShoot) undecodable: they were read with the slot's base layout (live 2026-10-26). props_only:
+    accept classes that add only RPCs - their property layout (what the server sends) still matches; their own RPCs
+    cannot be decoded."""
     if cls_name in schema.inherit:
         return True
     chain, cur = [], cls_name
     while cur not in schema.inherit:
-        path = os.path.join(atlas_dir, cur + '.json')
-        if not os.path.exists(path):
-            return False
-        with open(path, encoding='utf-8') as f:
-            info = json.load(f)
-        if any(p.get('net') for p in info.get('properties') or ()) or (
-                not props_only and any(fn.get('rpc') for fn in info.get('functions') or ())):
+        info = class_layout(cur)
+        if info is None or info['properties'] or (not props_only and info['rpcs']):
             return False
         chain.append(cur)
-        parents = info.get('parents') or []
-        if not parents:
+        if not info['parent']:
             return False
-        cur = parents[0]
+        cur = info['parent']
     for c in reversed(chain):
         parent = cur if c == chain[-1] else chain[chain.index(c) + 1]
         schema.classes[c] = (parent, [])
@@ -160,31 +166,27 @@ _ATLAS_PARAM = {'StructProperty<Vector>': ['FVector', 'S', '', []], 'StructPrope
                 'DoubleProperty': ['double', 'D', '', []]}
 
 
-def register_atlas_class_full(schema, cls_name, atlas_dir=ATLAS_CLASSES):
+def register_atlas_class_full(schema, cls_name):
     """Like register_atlas_class, but also for a Blueprint that adds its own bool properties and RPCs with simple parameters
     (vectors, rotators, numbers): the class gets those properties and RPCs, so the client's RPCs on it decode (e.g.
     dp_x_ability_piercing_ab.SpawnProjectile(Loc, Rot), a server RPC on the ability instance). Its parent must be known
     (or registrable the same way). -> True when cls_name is in the schema."""
     if cls_name in schema.inherit:
         return True
-    path = os.path.join(atlas_dir, cls_name + '.json')
-    if not os.path.exists(path):
+    info = class_layout(cls_name)
+    if info is None:
         return False
-    with open(path, encoding='utf-8') as f:
-        info = json.load(f)
-    parent = (info.get('parents') or [None])[0]
-    if parent is None or not (parent in schema.inherit or register_atlas_class_full(schema, parent, atlas_dir)):
+    parent = info['parent']
+    if parent is None or not (parent in schema.inherit or register_atlas_class_full(schema, parent)):
         return False
     from .repl.schema import Prop
     props = []
-    for i, p in enumerate(q for q in info.get('properties') or () if q.get('net')):
+    for i, p in enumerate(info['properties']):
         if p.get('type') != 'BoolProperty':
             return False
         props.append(Prop({'n': p['name'], 'ri': i, 'off': i, 'dim': 1, 'fl': '20', 'k': 'BoolProperty', 'bsz': 1}))
     funcs = []
-    for fn in info.get('functions') or ():
-        if not fn.get('rpc'):
-            continue
+    for fn in info['rpcs']:
         params = []
         for prm in fn.get('params') or ():
             pt = prm.get('type') or ''

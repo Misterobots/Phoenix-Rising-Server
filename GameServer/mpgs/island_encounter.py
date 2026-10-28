@@ -1377,7 +1377,7 @@ def _projectile_entry(session, enc, loc, rot):
     package, cls = PIERCING_PROJECTILE
     schema = session.world.schema
     if not register_atlas_class_full(schema, cls):
-        print('ENCOUNTER projectile skipped: %s has no atlas layout' % cls, flush=True)
+        print('ENCOUNTER projectile skipped: %s has no class layout' % cls, flush=True)
         return None
     session._live_ch = getattr(session, '_live_ch', 900)
     ch = session._live_ch

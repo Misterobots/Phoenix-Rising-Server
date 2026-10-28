@@ -55,8 +55,13 @@ The server and the game run on the same PC.
 
 ## Development
 
-- **Tests**: `cd GameServer` then `python -m pytest tests -q`. A few tests read the game-logic atlas and fail
-  without it (see below).
+- **Tests**: `cd GameServer` then `python -m pytest tests -q`. Hunt tests need the generated hunt world data (see
+  next point) and fail without it.
+- **Hunt world data**: `GameServer/world/` (behemoth bodies, hunt sources, islands) is generated on your PC from
+  your own game files by the `GameServer/tools/export_*` tools and is not in the repository; see
+  `HUNT_IMPLEMENTATION.md`.
+- **Runtime game data**: `GameServer/data/2.1.1/class_layouts.json` (network layouts of the game's classes) and
+  `data/2.1.1/talents/` are written from the atlas by `python -m tools.export_runtime_data <atlas dir>`.
 - **Live reload**: with `MPGS_DEV_RELOAD=1` (on in `start-server.ps1`), saving a change to a `GameServer/mpgs`
   file takes effect in the running server without restarting it or the game. Code that only runs while joining
   still needs a rejoin.
