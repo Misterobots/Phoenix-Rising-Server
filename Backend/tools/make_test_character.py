@@ -9,6 +9,9 @@ phoenix.sqlite.bak-<name>. What it sets:
 - weapon levels: every ExperienceTrack_Weapon_* progression raised to the XP total of --level (curves from the game's
   progression config), never lowered. Weapon talents open at weapon level 10 (weapon_talent_catalog WeaponUnlockLevel).
 - stacks: talent essences, notes, gauntlet coins and marks for every talent perk recipe (crafting_recipes TALENT_SHARED_1-5).
+- weapon talents: every perk of every owned weapon's talents unlocked in the game server's /talents store (restored on join with
+  ClientSetWeaponTalentPerkUnlockState). The talent crafting screen's "requires weapon level" check is native and not matched
+  yet (live 2026-10-28: still locked at class level 10), so the perks are unlocked here; equip them in game.
 Test data only: none of this is how a player earns it.
 """
 import argparse
@@ -79,6 +82,19 @@ def main():
                              add_stacked=[{'catalogId': c, 'quantity': q} for c, q in STACKS.items()])
         print('%s: stacks %s' % (ch, STACKS))
     con.close()
+
+    from mpgs import talents
+    cat = talents.catalog()
+    for ch in chars:
+        state = db.get(ch, 'weapon_talents', {}) or {}
+        n = 0
+        for it in db.items(ch):
+            for t in cat.weapons.get(it['catalog_id'], []):
+                for i in range(len(cat.talents[t]['perks'])):
+                    state = talents.set_flag(state, it['instance_id'], t, i, 'unlocked', True)
+                    n += 1
+        db.put(ch, 'weapon_talents', state)
+        print('%s: %d talent perks unlocked' % (ch, n))
 
     curves = progression.load_curves()
     for track, curve in sorted(curves.items()):
