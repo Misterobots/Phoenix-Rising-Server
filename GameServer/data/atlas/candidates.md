@@ -131,7 +131,8 @@ revive talisman), grenades, lantern Blueprints and `ArchonLanternAttributeSet`. 
 `potion-heal`; the rest is open.
 
 **Data captured** (2026-10-28): lantern and quick-item catalogs, their Blueprints and abilities
-(`items/lanterns.txt`, `items/quick_items.txt`, `items/classes.txt`). The 418 flare colour variants are not dumped.
+(`items/lanterns.txt`, `items/quick_items.txt`, `items/classes.txt`). The 418 flare colour variants' class defaults come
+in with `area-rules --dump`; their code is not built.
 
 ### 9. Wildlife, creatures and gatherables
 

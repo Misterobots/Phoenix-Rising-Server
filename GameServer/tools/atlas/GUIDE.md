@@ -76,6 +76,7 @@ The atlas has a ready-made **sheet** (a plain text file) for every major part of
 | An island or a hunt | `islands/hunts.txt`, then `islands/specs/<island>.txt` |
 | Escalation, gauntlet, portals, events | `islands/escalation.txt`, `islands/modes.txt` |
 | Hunt modifiers | `islands/hunt_modifiers.txt` |
+| Whether something works in town or only on a hunt | `area_rules.txt`, and `topics/area_rules.md` for what the rules mean |
 
 Each area also has a summary file one folder up (`behemoths.txt`, `weapons.txt`, `items.txt`, `rewards.txt`,
 `islands.txt`) that says how much is covered and lists anything the game is missing.
@@ -249,7 +250,7 @@ This is how the atlas keeps growing, and how nobody has to rediscover the same t
 | `uses-table <table>` | Finds what reads a table |
 | `verified [word]` | Facts already confirmed |
 | `native <name>` | For the game's built-in C++ code: where it is and any notes on it |
-| `behemoths`, `weapons`, `areas` | Rebuilds the sheets (add `--dump ...` to re-read the game files first) |
+| `behemoths`, `weapons`, `areas`, `area-rules` | Rebuilds the sheets (add `--dump ...` to re-read the game files first) |
 | `assets <name>` / `build <name>` | Adds something the atlas doesn't have yet |
 
 ## Checklist

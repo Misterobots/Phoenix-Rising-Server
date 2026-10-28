@@ -21,6 +21,9 @@
                                                                     per catalog group, reward kind and island spec
                                                                     -> data/atlas/{items,rewards,islands}/ and
                                                                     items.txt, rewards.txt, islands.txt
+  python -m tools.atlas area-rules [--dump] [--refresh]            what is allowed in town vs on a hunt (quick
+                                                                    items, area checks in code, menu flags)
+                                                                    -> data/atlas/area_rules.txt / .json
 Names match case-insensitively; who-*/uses-table also accept substrings.
 """
 import argparse
@@ -246,6 +249,13 @@ def cmd_areas(a):
     areas.sheets()
 
 
+def cmd_area_rules(a):
+    from . import area_rules
+    if a.dump:
+        area_rules.dump(refresh=a.refresh)
+    area_rules.main()
+
+
 def cmd_damage_windows(a):
     from .windows import build as build_windows
     build_windows(a.patterns or None, refresh=a.refresh)
@@ -322,6 +332,10 @@ def main():
                     help='dump these first: items, rewards, islands')
     ar.add_argument('--refresh', action='store_true', help='re-dump packages already in the cache')
     ar.set_defaults(f=cmd_areas)
+    rr = sub.add_parser('area-rules')
+    rr.add_argument('--dump', action='store_true', help='dump the menu tables and quick item classes first')
+    rr.add_argument('--refresh', action='store_true', help='re-dump packages already in the cache')
+    rr.set_defaults(f=cmd_area_rules)
     a = ap.parse_args()
     a.f(a)
 

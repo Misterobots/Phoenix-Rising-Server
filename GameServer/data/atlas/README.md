@@ -118,9 +118,17 @@ Written by `python -m tools.atlas areas`. Every dumped table is rendered row by 
 Every area also has `classes.txt` (its Blueprint classes by kind, as in the weapon sheets) and `other_assets.txt`.
 A table's values shared by at least 90% of its rows are printed once (`most rows:`) and the rows list only what
 differs. Marks: `ITEM{catalog}` an item id and the catalog that has it, `table[Row]` a row found, `?` not in the
-atlas, `<behemoths>` a behemoth with a sheet, `~` looks only (flare variants, atmospheres, animations, UI; not
-dumped). `items.txt`, `rewards.txt` and `islands.txt` are the coverage tables (packages, classes, tables, rows,
+atlas, `<behemoths>` a behemoth with a sheet, `~` looks only (atmospheres, animations, UI, flare variants not
+dumped); not dumped. `items.txt`, `rewards.txt` and `islands.txt` are the coverage tables (packages, classes, tables, rows,
 links found/named, and every name not in the atlas); `areas.json` has the same per area.
+
+## area_rules.txt and .json
+
+Written by `python -m tools.atlas area-rules`: what the game allows in town (Ramsgate, the lobby) and on a hunt.
+Three lists: every quick item and curiosity with whether it can be used in town (`CanUseInCity`, read through the
+item's ability and its parent classes; `TOWN`, `hunt` or `?`), every Blueprint function that checks the area
+(`IsInCity`, `IsInLobby`, `IsInIsland`, `IsInBountyFriendlyLocation`), and menu rows with area flags such as
+`bDisableDuringHunts`. What the rules mean: `topics/area_rules.md`.
 
 ## damage_windows.json and .txt
 
@@ -159,3 +167,4 @@ unconfirmed.
 | `topics/armor.md` | Armor resistances, the damage formula for hits on players, damage curves, pre-mitigation hooks, defence attributes, armor perks/cells, gear stats, set bonuses |
 | `topics/behemoth_design.md` | One behemoth end to end (Embermane): classes and variants, action set, attack scoring, behavior tree, damage windows and rows, hitboxes, rage and stamina |
 | `topics/behemoth_scaling.md` | Threat levels, tuning presets, behemoth health/stagger/damage scaling, power overrides, star levels |
+| `topics/area_rules.md` | What is allowed in town vs on a hunt: quick items, cells, menus, bounty menus |

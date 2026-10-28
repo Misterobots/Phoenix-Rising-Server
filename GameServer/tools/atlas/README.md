@@ -50,6 +50,7 @@ island spec, hunts, escalation and game modes), with coverage tables in `behemot
 | `behemoths [--dump] [--build]` | One data sheet per behemoth in the game's roster, plus a coverage table (see below) |
 | `weapons [--dump key ...]` | One data sheet per player weapon type (sword, axe, ...), one for shared weapon infrastructure and one for armor (items, perks, cells, set bonuses), plus the prefix list and a coverage table (see below) |
 | `areas [--dump area ...]` | Items, shops/loot/rewards and islands: sheets per catalog group, reward kind and island spec, with every item id, class, row and behemoth they name checked, and a coverage table per area (see below) |
+| `area-rules [--dump]` | What the game allows in town vs on a hunt: which quick items work in town, every Blueprint function that checks the area, menu rows with area flags (`--dump` first adds the menu tables and quick item classes) |
 | `damage-windows [glob ...]` | Every damage window in every behemoth montage, with non-default settings listed first, into `data/atlas/damage_windows.json` / `.txt` |
 | `build ...` | Regenerate the data (see below) |
 
@@ -107,6 +108,7 @@ Tool (`GameServer/tools/atlas/`):
 | `weapons.py` | The `weapons` command: finds each weapon type's (and armor's) packages, dumps them and their code, writes the sheets |
 | `proposals/` | Generators for our own proposed data (not from the game), e.g. `beaver_frost_damage.py` |
 | `areas.py` | The `areas` command: dumps items, rewards and islands (reusing `weapons.dump`), follows the tables, classes and assets their rows name, writes the sheets |
+| `area_rules.py` | The `area-rules` command: reads quick item settings, area checks in the code and menu flags into `area_rules.txt` |
 | `behemoths.py` | The `behemoths` command: dumps every behemoth data package, builds their Blueprint code, writes the sheets |
 | `windows.py` | The `damage-windows` survey: finds every AnimMontage under `Archon/Content/Monsters` and collects its damage windows |
 | `paths.py` | Every input and output location, with environment overrides |
@@ -126,6 +128,7 @@ Data (`GameServer/data/atlas/`; see the README there for the JSON fields):
 | `weapons/<key>.txt`, `weapons.json` / `.txt` | One sheet per weapon type, `shared.txt` (shared weapon infrastructure) and `armor.txt` (armor, perks, cells, set bonuses); prefixes and coverage table | yes, by `weapons` |
 | `proposals/` | Our proposed data, clearly marked as not from the game (e.g. frost Gnasher damage rows) | yes, by its generator in `tools/atlas/proposals/` |
 | `items/`, `rewards/`, `islands/`, `items.txt` / `rewards.txt` / `islands.txt`, `areas.json` | Area sheets (tables row by row, asset trees, classes), coverage tables, counts and unresolved names per area | yes, by `areas` |
+| `area_rules.txt` / `.json` | What is allowed where (town vs hunt) | yes, by `area-rules` |
 | `damage_windows.json` / `.txt` | Every behemoth damage window: start, duration, keys, bodies per role, requirements, non-default settings | yes, by `damage-windows` |
 | `verified.json` | Layer 5 facts | never; hand-written |
 | `native_notes.json` | Decompile notes per native function | never; hand-written |
@@ -223,8 +226,8 @@ python -m tools.atlas areas                                # sheets only
 `rewards` the bounty, experience, mastery, player journey, progression, Hunt Pass, achievement and VIP folders;
 `islands` all of `gamemodes/` (island specs, content assets, escalation, portals, events, encounters), `Gameplay/hunts`
 (modifiers, atmosphere and behemoth lists, matchmaker hunts, schedules) and the gauntlet objects. After the dump it
-follows the tables, classes and assets their rows name (three steps). The 418 flare colour variants are not dumped
-(marked `~`, like other looks-only paths). Each table goes to the first sheet whose name pattern matches
+follows the tables, classes and assets their rows name (three steps). The 418 flare colour variants are left out
+(marked `~`, like other looks-only paths) until `area-rules --dump` adds their class defaults. Each table goes to the first sheet whose name pattern matches
 (`areas.SHEETS`), so loot, crafting and unlock catalogs land in `rewards/` whatever folder they come from.
 
 ## Adding knowledge
