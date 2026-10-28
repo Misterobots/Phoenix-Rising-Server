@@ -120,6 +120,10 @@ class AllyRaptorTests(unittest.TestCase):
         legendary.on_move(s, enc, {'ComboInputBuffer.DestState': dest}, 3.0)      # on cooldown: nothing more
         case.run_until(s, 122.0, start=3.0, player=lambda t: player)
         self.assertTrue(enc['legendary']['ready'])
+        refreshed = [e for e in s.entries for b in e.parsed.blocks for f in b.fields or ()
+                     if f[1] == 'Multicast_OnLegendaryAbilityRefreshed']
+        self.assertEqual(len(refreshed), 1)                                 # the client clears its own cooldown timer
+        model.encode(refreshed[0].parsed, s.ctx, refreshed[0].cls)
         self.assertEqual(len([r for r in enc['allies'] if r.group == 'legend']), 1)
 
 

@@ -41,6 +41,21 @@ def _tags_entry(session, on):
     return property_update(session, pawn.ch, header, {'ReplicatedLooseTags': [idx] if on else []})
 
 
+def _refreshed(session, cls):
+    """Auth_RefreshLegendaryAbility's Multicast_OnLegendaryAbilityRefreshed on the part: the client clears the cooldown timer its
+    own Activate notify started (CommitAbility runs on both sides; the HUD's legendary icon reads that timer) and refreshes the
+    part's VFX/audio."""
+    from ..loadout import register_atlas_class_full
+    from .attributes import find_block
+    hdr = next((b for e in session.entries for b in e.parsed.blocks if b.cls_name == cls and not b.actor), None)
+    ch = next((e.ch for e in session.entries for b in e.parsed.blocks if b is hdr), None)
+    if hdr is None or not register_atlas_class_full(session.world.schema, cls):
+        _log('Multicast_OnLegendaryAbilityRefreshed not sent (%s)' % ('no part in the world' if hdr is None else 'no layout'))
+        return
+    session._queue_rpc(ch, find_block(session, ch, cls) or hdr, 'Multicast_OnLegendaryAbilityRefreshed', {})
+    _log('Multicast_OnLegendaryAbilityRefreshed on ch%d' % ch)
+
+
 def setup(session, enc, part_classes):
     """At hunt start: the equipped legendary part (if this server runs it) becomes available. -> entries."""
     cls = next((c for c in part_classes if c in PARTS), None)
@@ -88,5 +103,6 @@ def step(session, enc, now):
         e = _tags_entry(session, True)
         if e is not None:
             out.append(e)
+        _refreshed(session, leg['cls'])
         _log('available again')
     return out
