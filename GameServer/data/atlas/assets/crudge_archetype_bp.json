@@ -1,0 +1,937 @@
+{
+ "name": "crudge_archetype_bp",
+ "package": "Archon/Content/Monsters/ap/crudge/shared/blueprints/crudge_archetype_bp",
+ "type": "ClassDefaults",
+ "class": "crudge_archetype_bp_C",
+ "refs": [
+  "AlignmentComponent",
+  "CharMoveComp",
+  "CharacterEventDispatcherComponent",
+  "CharacterMesh0",
+  "CollisionCylinder",
+  "EncounterThreatComponent",
+  "GameplayActionComponent",
+  "GameplayActionComponent.PhxComboGameplayActionActorData_0",
+  "GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0",
+  "PartCollisionComponent",
+  "PhxGameplayPropertyOverrideComponent",
+  "SyncedAnimationComponent",
+  "ap_crudge_00",
+  "ap_crudge_00_Player_phat",
+  "ap_crudge_animbp_C",
+  "ap_crudge_generic_action_table_C",
+  "ap_crudge_stagger_table_C",
+  "b_ap_crudge_00_loco_turninplace_135_left_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_135_right_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_180_left_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_180_right_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_45_left_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_45_right_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_90_left_00_Montage",
+  "b_ap_crudge_00_loco_turninplace_90_right_00_Montage",
+  "behemoth_base_loco_table_C",
+  "body_standard_ptpreset_C",
+  "crudge_action_set_table",
+  "crudge_bt",
+  "crudge_head_break_bspreset_C",
+  "crudge_horn_l_sever_bp_C",
+  "crudge_loco_table_C",
+  "crudge_missile_spawner_asset",
+  "crudge_normal_damage_table",
+  "crudge_tail_sever_bp_C",
+  "horn_standard_ptpreset_C",
+  "leg_standard_ptpreset_C",
+  "light_part_bspreset_C",
+  "severable_special_part_break_bspreset_C",
+  "special_part_2_bspreset_C",
+  "special_part_3_bspreset_C",
+  "tail_standard_ptpreset_C"
+ ],
+ "exports": {
+  "behemoth_lookat_bpc_GEN_VARIABLE": {
+   "type": "behemoth_lookat_bpc_C",
+   "props": {
+    "HeadJointName": "head",
+    "TorsoJointName": "spine_05"
+   }
+  },
+  "behemoth_marker_bpc_GEN_VARIABLE": {
+   "type": "behemoth_marker_bpc_C",
+   "props": {
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -200.0
+    }
+   }
+  },
+  "behemoth_statemanager_bpc_GEN_VARIABLE": {
+   "type": "behemoth_statemanager_bpc_C",
+   "props": {
+    "StateInfos": [
+     {
+      "State": "behemoth_states_enum::ReadyToAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Combat",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         60.0,
+         45.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [
+       "behemoth_states_enum::ReadyToFlee",
+       "behemoth_states_enum::Injured/PrepToFlee",
+       "behemoth_states_enum::AtherCharged",
+       "behemoth_states_enum::Rage",
+       "behemoth_states_enum::ReadyToExitRage",
+       "behemoth_states_enum::ReadyToEnterRage"
+      ],
+      "RequiredStates": [
+       "behemoth_states_enum::Combat"
+      ]
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToExitAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         45.0,
+         60.0,
+         90.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [],
+      "RequiredStates": [
+       "behemoth_states_enum::AtherCharged"
+      ]
+     }
+    ]
+   }
+  },
+  "ComponentDelegateBinding_0": {
+   "type": "ComponentDelegateBinding",
+   "props": {
+    "ComponentDelegateBindings": [
+     {
+      "ComponentPropertyName": "HandRight",
+      "DelegatePropertyName": "OnStageChangedByBreak",
+      "FunctionNameToBind": "BndEvt__crudge_archetype_bp_HandRight_K2Node_ComponentBoundEvent_1_OnStageChangedByBreak__DelegateSignature"
+     }
+    ]
+   }
+  },
+  "Default__crudge_archetype_bp_C": {
+   "type": "crudge_archetype_bp_C",
+   "props": {
+    "UberGraphFrame": {},
+    "SimpleTargettingData": [
+     {
+      "TargettingType": "behemoth_targetting_type::Arc",
+      "ArcData": {
+       "Range": 10000.0,
+       "Angle": 360.0,
+       "ArcCenterAngle": 0.0,
+       "CenterOffset": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+       }
+      },
+      "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"
+     }
+    ],
+    "MissileSpawnerAsset": "ProjectileSpawnerDataAsset crudge_missile_spawner_asset",
+    "BaseHealth": 38000.0,
+    "RageDuration": 120.0,
+    "RageCooldown": 30.0,
+    "BehaviorTree": "BehaviorTree crudge_bt",
+    "Soundbanks - Sounds": [
+     null
+    ],
+    "PivotAnimations": [
+     {
+      "Angle": 45.0,
+      "Left_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_45_left_00_Montage",
+      "Right_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_45_right_00_Montage"
+     },
+     {
+      "Angle": 90.0,
+      "Left_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_90_left_00_Montage",
+      "Right_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_90_right_00_Montage"
+     },
+     {
+      "Angle": 135.0,
+      "Left_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_135_left_00_Montage",
+      "Right_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_135_right_00_Montage"
+     },
+     {
+      "Angle": 180.0,
+      "Left_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_180_left_00_Montage",
+      "Right_Montage": "AnimMontage b_ap_crudge_00_loco_turninplace_180_right_00_Montage"
+     }
+    ],
+    "Behemoth Music": "Crudge",
+    "ArchetypeName": "Crudge ",
+    "GenericActionLists": [
+     "BlueprintGeneratedClass ap_crudge_generic_action_table_C"
+    ],
+    "StaggerLists": [
+     "BlueprintGeneratedClass ap_crudge_stagger_table_C"
+    ],
+    "BehemothLocoTypes": [
+     "BlueprintGeneratedClass behemoth_base_loco_table_C",
+     "BlueprintGeneratedClass crudge_loco_table_C"
+    ],
+    "BehemothElementalResistAndPowerSet": "behemoth_resistset_type::Umbral",
+    "MetadataTableName": "crudge_normal",
+    "HasEnterArenaBehavior": true,
+    "ActionSetTable": "DataTable crudge_action_set_table",
+    "PrimaryOffenseElementType": "EArchonElementType::ElementType_UMBRAL",
+    "GlobalResistance": 200.0,
+    "RadiantResistance": -0.5,
+    "UmbralResistance": 0.5,
+    "BehemothMusicName": "Crudge",
+    "GameplayActionComponent": "PhxGameplayActionComponent GameplayActionComponent",
+    "AlignmentComponent": "PhxAlignmentComponent AlignmentComponent",
+    "SyncedAnimationComponent": "PhxSyncedAnimationComponent SyncedAnimationComponent",
+    "EncounterThreatComponent": "EncounterThreatComponent EncounterThreatComponent",
+    "PartCollisionComponent": "ArchonPartCollisionComponent PartCollisionComponent",
+    "PhxGameplayPropertyOverrideComponent": "PhxGameplayPropertyOverrideComponent PhxGameplayPropertyOverrideComponent",
+    "CharacterEventDispatcherComponent": "ArchonCharacterEventDispatcherComponent CharacterEventDispatcherComponent",
+    "Mesh": "SkeletalMeshComponentBudgeted CharacterMesh0",
+    "CharacterMovement": "ArchonBehemothMovementComponent CharMoveComp",
+    "CapsuleComponent": "CapsuleComponent CollisionCylinder",
+    "RootComponent": "CapsuleComponent CollisionCylinder"
+   }
+  },
+  "DamageComp_GEN_VARIABLE": {
+   "type": "DamageComponent",
+   "props": {
+    "DamageTable": "DataTable crudge_normal_damage_table"
+   }
+  },
+  "elemental_health_updated_bpc_GEN_VARIABLE": {
+   "type": "elemental_health_updated_bpc_C",
+   "props": {
+    "DebuffsOnProc": [],
+    "ElementalHealthStageData": {
+     "StageData": []
+    }
+   }
+  },
+  "TargetMarker_GEN_VARIABLE": {
+   "type": "MarkerComponent",
+   "props": {
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -200.0
+    }
+   }
+  },
+  "BackLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass light_part_bspreset_C",
+    "PartName": "LeftHindLeg",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "thigh_back_l",
+     "calf_back_l",
+     "foot_back_l",
+     "ball_back_l",
+     "toe_back_l"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "ball_back_l",
+     "foot_back_l"
+    ]
+   }
+  },
+  "BackRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass light_part_bspreset_C",
+    "PartName": "RightHindLeg",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "thigh_back_r",
+     "calf_back_r",
+     "foot_back_r",
+     "ball_back_r",
+     "toe_back_r"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "ball_back_r",
+     "foot_back_r"
+    ]
+   }
+  },
+  "Body_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass body_standard_ptpreset_C",
+    "PartName": "Body",
+    "ForceChildToBeDifferentThanParent": 1,
+    "VFXBoneName": "neck_01",
+    "BehemothAttributeTag": [
+     "Behemoth.Attribute.Part.Body"
+    ],
+    "PhATBones": [
+     "shell",
+     "pelvis",
+     "spine_01",
+     "spine_02",
+     "spine_03",
+     "spine_04",
+     "spine_05"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "shell"
+    ]
+   }
+  },
+  "FrontLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass light_part_bspreset_C",
+    "PartName": "LeftFrontLeg",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "thigh_front_l",
+     "calf_front_l",
+     "foot_front_l",
+     "ball_front_l",
+     "toe_front_l"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "ball_front_l",
+     "foot_front_l"
+    ]
+   }
+  },
+  "FrontRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass light_part_bspreset_C",
+    "PartName": "RightFrontLeg",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "thigh_front_r",
+     "calf_front_r",
+     "foot_front_r",
+     "ball_front_r",
+     "toe_front_r"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "ball_front_r",
+     "foot_front_r"
+    ]
+   }
+  },
+  "HandLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass special_part_2_bspreset_C",
+    "PartName": "LeftHand",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "clavicle_l",
+     "upperarm_l",
+     "lowerarm_l",
+     "hand_l",
+     "finger_l"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "hand_l",
+     "upperarm_l",
+     "lowerarm_l"
+    ]
+   }
+  },
+  "HandRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass special_part_3_bspreset_C",
+    "PartName": "RightHand",
+    "ForceChildToBeDifferentThanParent": 1,
+    "PhATBones": [
+     "clavicle_r",
+     "upperarm_r",
+     "lowerarm_r",
+     "hand_r",
+     "finger_r"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "hand_r",
+     "upperarm_r",
+     "lowerarm_r"
+    ]
+   }
+  },
+  "Head_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass horn_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass crudge_head_break_bspreset_C",
+    "PartName": "Head",
+    "SeverPartOnPartBreak": true,
+    "Severable Spawn Socket": "horn_01_l",
+    "Severable Actor To Spawn": "BlueprintGeneratedClass crudge_horn_l_sever_bp_C",
+    "Sever PhAT Bones": [
+     "horn_01_l",
+     "horn_02_l",
+     "horn_03_l",
+     "horn_04_l",
+     "horn_01_r",
+     "horn_02_r",
+     "horn_03_r",
+     "horn_04_r"
+    ],
+    "PhATBones": [
+     "neck_01",
+     "neck_02",
+     "neck_03",
+     "head",
+     "antenna_01_l",
+     "antenna_02_l",
+     "antenna_03_l",
+     "antenna_04_l",
+     "antenna_05_l",
+     "antenna_01_r",
+     "antenna_02_r",
+     "antenna_03_r",
+     "antenna_04_r",
+     "antenna_05_r",
+     "jaw",
+     "tongue_04",
+     "tongue_03",
+     "tongue_02",
+     "tongue_01",
+     "mandible_01_l",
+     "mandible_02_l",
+     "mandible_03_l",
+     "mandible_04_l",
+     "mandible_01_r",
+     "mandible_02_r",
+     "mandible_03_r",
+     "mandible_04_r",
+     "horn_01_l",
+     "horn_02_l",
+     "horn_03_l",
+     "horn_04_l",
+     "horn_01_r",
+     "horn_02_r",
+     "horn_03_r",
+     "horn_04_r"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "head",
+     "horn_01_l",
+     "horn_02_l",
+     "horn_03_l",
+     "horn_04_l",
+     "horn_01_r",
+     "horn_02_r",
+     "horn_03_r",
+     "horn_04_r"
+    ]
+   }
+  },
+  "Tail_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass tail_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass severable_special_part_break_bspreset_C",
+    "SeverPartOnPartBreak": true,
+    "Severable Spawn Socket": "tail_09",
+    "Severable Actor To Spawn": "BlueprintGeneratedClass crudge_tail_sever_bp_C",
+    "VFXBoneName": "tail_09",
+    "PhATBones": [
+     "tail_01",
+     "tail_02",
+     "fin_01",
+     "fin_01_01_l",
+     "fin_01_02_l",
+     "fin_01_01_r",
+     "fin_01_02_r",
+     "tail_03",
+     "fin_02",
+     "fin_02_01_l",
+     "fin_02_02_l",
+     "fin_02_01_r",
+     "fin_02_02_r",
+     "tail_04",
+     "fin_03",
+     "fin_03_01_l",
+     "fin_03_02_l",
+     "fin_03_01_r",
+     "fin_03_02_r",
+     "tail_05",
+     "tail_06",
+     "tail_07",
+     "tail_08",
+     "ball",
+     "ball_b",
+     "ball_l",
+     "ball_r",
+     "tail_09"
+    ],
+    "MovementPhATAsset": "PhysicsAsset ap_crudge_00_Player_phat",
+    "MovementPhATBones": [
+     "tail_01",
+     "tail_02",
+     "fin_01",
+     "fin_01_01_l",
+     "fin_01_02_l",
+     "fin_01_01_r",
+     "fin_01_02_r",
+     "tail_03",
+     "fin_02",
+     "fin_02_01_l",
+     "fin_02_02_l",
+     "fin_02_01_r",
+     "fin_02_02_r",
+     "tail_04",
+     "fin_03",
+     "fin_03_01_l",
+     "fin_03_02_l",
+     "fin_03_01_r",
+     "fin_03_02_r",
+     "tail_05",
+     "tail_06",
+     "tail_07",
+     "tail_08",
+     "ball",
+     "ball_b",
+     "ball_l",
+     "ball_r",
+     "tail_09"
+    ]
+   }
+  },
+  "NavMeshCollision_GEN_VARIABLE": {
+   "type": "NavMeshCollisionComponent",
+   "props": {
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -200.0
+    }
+   }
+  },
+  "GameplayActionComponent": {
+   "type": "PhxGameplayActionComponent",
+   "props": {
+    "GameplayActionData": [
+     "PhxComboGameplayActionActorData GameplayActionComponent.PhxComboGameplayActionActorData_0",
+     "PhxMoveAndDoGameplayActionActorData GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0"
+    ]
+   }
+  },
+  "CharacterMesh0": {
+   "type": "SkeletalMeshComponentBudgeted",
+   "props": {
+    "AnimClass": "AnimBlueprintGeneratedClass ap_crudge_animbp_C",
+    "SkeletalMesh": "SkeletalMesh ap_crudge_00",
+    "SkinnedAsset": "SkeletalMesh ap_crudge_00",
+    "BodyInstance": {
+     "ObjectType": "ECollisionChannel::ECC_PhysicsBody",
+     "CollisionEnabled": "ECollisionEnabled::QueryAndPhysics",
+     "CollisionProfileName": "BehemothPhysicsMesh",
+     "CollisionResponses": {
+      "ResponseArray": [
+       {
+        "Channel": "Pawn",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Visibility",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Camera",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "PhysicsBody",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Vehicle",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Destructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Player",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterPart",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableActor",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Projectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Explosion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterCapsule",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterOnlyDestructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Influence",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "QueryVolume",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "ReflectableProjectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "SoundOcclusion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableByHitScan",
+        "Response": "ECollisionResponse::ECR_Block"
+       }
+      ]
+     },
+     "bSimulatePhysics": true
+    },
+    "AttachParent": "CapsuleComponent CollisionCylinder",
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -200.0
+    }
+   }
+  },
+  "BehemothVsBehemothForceField_GEN_VARIABLE": {
+   "type": "SphereComponent",
+   "props": {
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": 120.0
+    }
+   }
+  },
+  "BodyInfluence_GEN_VARIABLE": {
+   "type": "SphereComponent",
+   "props": {
+    "SphereRadius": 500.0,
+    "CanCharacterStepUpOn": "ECanBeCharacterBase::ECB_No",
+    "BodyInstance": {
+     "ObjectType": "ECollisionChannel::ECC_GameTraceChannel12",
+     "CollisionProfileName": "BehemothInfluenceVolume",
+     "CollisionResponses": {
+      "ResponseArray": [
+       {
+        "Channel": "WorldStatic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "WorldDynamic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Pawn",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Visibility",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Camera",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "PhysicsBody",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Vehicle",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Destructible",
+        "Response": "ECollisionResponse::ECR_Overlap"
+       },
+       {
+        "Channel": "Player",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterPart",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableActor",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Projectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Explosion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterCapsule",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterOnlyDestructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "ReflectableProjectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "SoundOcclusion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       }
+      ]
+     }
+    },
+    "RelativeLocation": {
+     "X": -180.0,
+     "Y": 0.0,
+     "Z": 370.0
+    }
+   }
+  },
+  "HeadInfluence_GEN_VARIABLE": {
+   "type": "SphereComponent",
+   "props": {
+    "SphereRadius": 300.0,
+    "CanCharacterStepUpOn": "ECanBeCharacterBase::ECB_No",
+    "BodyInstance": {
+     "ObjectType": "ECollisionChannel::ECC_GameTraceChannel12",
+     "CollisionProfileName": "BehemothInfluenceVolume",
+     "CollisionResponses": {
+      "ResponseArray": [
+       {
+        "Channel": "WorldStatic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "WorldDynamic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Pawn",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Visibility",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Camera",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "PhysicsBody",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Vehicle",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Destructible",
+        "Response": "ECollisionResponse::ECR_Overlap"
+       },
+       {
+        "Channel": "Player",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterPart",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableActor",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Projectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Explosion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterCapsule",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterOnlyDestructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "ReflectableProjectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "SoundOcclusion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       }
+      ]
+     }
+    },
+    "RelativeLocation": {
+     "X": 350.0,
+     "Y": 0.0,
+     "Z": 180.0
+    }
+   }
+  },
+  "TailInfluence_GEN_VARIABLE": {
+   "type": "SphereComponent",
+   "props": {
+    "SphereRadius": 300.0,
+    "CanCharacterStepUpOn": "ECanBeCharacterBase::ECB_No",
+    "BodyInstance": {
+     "ObjectType": "ECollisionChannel::ECC_GameTraceChannel12",
+     "CollisionProfileName": "BehemothInfluenceVolume",
+     "CollisionResponses": {
+      "ResponseArray": [
+       {
+        "Channel": "WorldStatic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "WorldDynamic",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Pawn",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Visibility",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Camera",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "PhysicsBody",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Vehicle",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Destructible",
+        "Response": "ECollisionResponse::ECR_Overlap"
+       },
+       {
+        "Channel": "Player",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterPart",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableActor",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Projectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Explosion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterCapsule",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterOnlyDestructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "ReflectableProjectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "SoundOcclusion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       }
+      ]
+     }
+    },
+    "RelativeLocation": {
+     "X": -890.0,
+     "Y": 0.0,
+     "Z": 190.0
+    }
+   }
+  },
+  "Spline085F5DF54DE602372EB99B9FD6AF32AB": {
+   "type": "SplineComponent",
+   "props": {
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -200.0
+    }
+   }
+  }
+ }
+}

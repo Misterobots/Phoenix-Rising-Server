@@ -1,0 +1,318 @@
+# escalation_buff_gatherable_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthDisableCrystalAtEndOfHunt
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @79
+  [35] self.CrystalDisabledByEndOfHunt = true
+  [46] self.base_interactioncode_component.SetInteractionDisabled(true)
+  [79] return nothing
+  [81] end
+
+=== AuthEnableInteractable
+  [0] if !(self.CrystalDisabledByEndOfHunt) goto @19
+  [14] goto @52
+  [19] self.base_interactioncode_component.SetInteractionDisabled(false)
+  [52] return nothing
+  [54] end
+
+=== CreateSplineInstance
+  [0] push @551
+  [5] Temp_struct_Variable = EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': -0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})
+  [104] CallFunc_AddComponent_ReturnValue = AddComponent('NODE_AddSplineComponent-1', false, Temp_struct_Variable, self, false)
+  [149] Temp_int_Variable = 0
+  [172] CallFunc_GetNumberOfSplinePoints_ReturnValue = SplineTemplate.GetNumberOfSplinePoints()
+  [222] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_GetNumberOfSplinePoints_ReturnValue)
+  [260] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @409
+  [274] push @477
+  [279] CallFunc_GetLocationAtSplinePoint_ReturnValue = SplineTemplate.GetLocationAtSplinePoint(Temp_int_Variable, 0)
+  [340] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Points, CallFunc_GetLocationAtSplinePoint_ReturnValue)
+  [408] pop
+  [409] CallFunc_AddComponent_ReturnValue.SetSplinePoints(L_Points, 0, true)
+  [453] ReturnValue = CallFunc_AddComponent_ReturnValue
+  [472] goto @551
+  [477] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [519] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [546] goto @172
+  [551] return ReturnValue
+  [561] end
+
+=== CreateSplineInstances
+  [0] push @461
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Array)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @355
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @387
+  [194] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_CreateSplineInstance_ReturnValue = CreateSplineInstance(CallFunc_Array_Get_Item)
+  [286] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Splines, CallFunc_CreateSplineInstance_ReturnValue)
+  [354] pop
+  [355] Splines = L_Splines
+  [382] goto @461
+  [387] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [429] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [456] goto @51
+  [461] return nothing
+  [463] end
+
+=== DeactivateLanternFX
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(5212)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_escalation_buff_gatherable_bp
+  [0] push @6383
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [43] PlayWorldCameraShake(self, escalation_gatherable_camera_shake_C, CallFunc_K2_GetActorLocation_ReturnValue, 0.0, 7500.0, 1.0, false)
+  [88] CallFunc_Is_Using_Gamepad_ReturnValue_1 = Default__UserWidgetFunctions_C.Is Using Gamepad(self)
+  [135] if !(CallFunc_Is_Using_Gamepad_ReturnValue_1) pop
+  [145] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [173] CallFunc_SpawnForceFeedbackAtLocation_ReturnValue = SpawnForceFeedbackAtLocation(self, player_hitreaction_mid, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, 1.0, 0.0, null, true)
+  [250] pop
+  [251] push @997
+  [256] push @942
+  [261] push @300
+  [266] self.base_interactioncode_component.self.LocalInteractionDisabled = false
+  [299] pop
+  [300] self.Mineral_Escalation_Buff_Gatherable_Anim.SetComponentTickEnabled(true)
+  [337] self.Mineral_Escalation_Buff_Gatherable_Anim.PlayAnimation(mineral_escalation_buff_gatherable_anim_mot, false)
+  [379] CallFunc_SpawnEmitterAttached_ReturnValue_1 = SpawnEmitterAttached(self.CrystalActivatedIdleTemplate, self.Mineral_Escalation_Buff_Gatherable_Anim, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [511] self.CrystalChargeIdleFX = CallFunc_SpawnEmitterAttached_ReturnValue_1
+  [530] CallFunc_PostEvent_ReturnValue_6 = Default__AkGameplayStatics.PostEvent(Play_vfx_escalation_gatherable_activated_lp, self, 0, Temp_delegate_Variable_6, false)
+  [605] Temp_int_Loop_Counter_Variable_1 = 0
+  [628] Temp_int_Array_Index_Variable_1 = 0
+  [651] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.CrystalChargeFX)
+  [710] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [748] if !(CallFunc_Less_IntInt_ReturnValue) goto @900
+  [762] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [789] push @1012
+  [794] Default__KismetArrayLibrary.Array_Get(self.CrystalChargeFX, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [853] Default__archon_function_library_C.TryDeactivateComponent(CallFunc_Array_Get_Item, self)
+  [899] pop
+  [900] Default__KismetArrayLibrary.Array_Clear(self.CrystalChargeFX)
+  [941] pop
+  [942] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), -1107360410, 'ExecuteUbergraph_escalation_buff_gatherable_bp', self})
+  [996] pop
+  [997] OnCrystalActivated()
+  [1011] pop
+  [1012] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1054] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [1081] goto @651
+  [1086] self.Mineral_Escalation_Buff_Gatherable_Anim.SetComponentTickEnabled(false)
+  [1123] pop
+  [1124] push @2409
+  [1129] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1188] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_Array_Get_Item_1)
+  [1224] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [1253] if !(K2Node_DynamicCast_bSuccess_4) goto @2393
+  [1267] K2Node_DynamicCast_AsBehemoth_Interface.GetIsDead(CallFunc_GetIsDead_return)
+  [1313] if !(CallFunc_GetIsDead_return) pop
+  [1323] array{self.Spline_01, self.Spline_02, self.Spline_03, self.Spline_04, self.Spline_05}
+  [1379] CreateSplineInstances(K2Node_MakeArray_Array_1, CallFunc_CreateSplineInstances_Splines)
+  [1411] array{self.Scene_01, self.Scene_02, self.Scene_03, self.Scene_04, self.Scene_05}
+  [1467] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1526] self.spline_fx_spawner_bpc.InitializeSplineFX(CallFunc_Array_Get_Item_1, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), -200.0, 200.0, self.BehemothEssenceProjectileTemplate, Play_vfx_escalation_gatherable_projectile, Stop_vfx_escalation_gatherable_projectile, self.CrystalAbsorbEssenceTemplate, Play_vfx_escalation_gatherable_projectile_impact, CallFunc_CreateSplineInstances_Splines, 2.0, 2.5, K2Node_MakeArray_Array, 0.0, 1.0, false, 8000.0, 1.0, 1.100000023841858, false)
+  [1742] array{self.Spline_01, self.Spline_02, self.Spline_03, self.Spline_04, self.Spline_05}
+  [1798] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_MakeArray_Array_1)
+  [1857] self.NumOfHomingFXToSpawn = CallFunc_Array_Length_ReturnValue_1
+  [1884] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1943] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item_1.GetComponentByClass(SkeletalMeshComponent)
+  [1994] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [2023] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [2033] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [2092] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item_1.GetComponentByClass(SkeletalMeshComponent)
+  [2143] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(self.BehemothEssenceBodyParticleTemplate, CallFunc_GetComponentByClass_ReturnValue, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [2275] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [2334] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', CallFunc_Array_Get_Item_1)
+  [2392] pop
+  [2393] CallFunc_GetIsDead_return = false
+  [2404] goto @1313
+  [2409] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2451] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2478] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [2537] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [2575] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [2585] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [2612] goto @1124
+  [2617] Temp_int_Loop_Counter_Variable = 0
+  [2640] Temp_int_Array_Index_Variable = 0
+  [2663] goto @2478
+  [2668] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [2689] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @2704
+  [2703] pop
+  [2704] push @3214
+  [2709] CallFunc_IsValid_ReturnValue_1 = IsValid(K2Node_DynamicCast_AsArchon_Character.self.Mesh)
+  [2760] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2770] CallFunc_SpawnEmitterAttached_ReturnValue_3 = SpawnEmitterAttached(self.LanternBuffBeamTemplate, K2Node_DynamicCast_AsArchon_Character.self.Mesh, self.user_connection_socket, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, false, 0, true)
+  [2920] CallFunc_K2_GetComponentLocation_ReturnValue = self.InteractionCallout.K2_GetComponentLocation()
+  [2970] CallFunc_SpawnEmitterAttached_ReturnValue_3.SetBeamTargetPoint(0, CallFunc_K2_GetComponentLocation_ReturnValue, 0)
+  [3025] self.lantern_collection_beam = CallFunc_SpawnEmitterAttached_ReturnValue_3
+  [3044] CallFunc_SpawnEmitterAttached_ReturnValue_5 = SpawnEmitterAttached(self.LanternChargingFX, K2Node_DynamicCast_AsArchon_Character.self.Mesh, self.user_connection_socket, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, false, 0, true)
+  [3194] self.lantern_collection_loopfx = CallFunc_SpawnEmitterAttached_ReturnValue_5
+  [3213] pop
+  [3214] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_vfx_escalation_gatherable_interaction_riser, K2Node_DynamicCast_AsArchon_Character, 0, Temp_delegate_Variable_2, false)
+  [3297] pop
+  [3298] ReceiveBeginPlay()
+  [3308] push @3456
+  [3313] push @3557
+  [3318] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [3339] K2Node_DynamicCast_AsBPGS_Archon_Escalation_Game_State = cast<BPGS_ArchonEscalation_GameState_C>(CallFunc_GetArchonGameState_ReturnValue)
+  [3375] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGS_Archon_Escalation_Game_State)
+  [3404] if !(K2Node_DynamicCast_bSuccess) pop
+  [3414] self.EscalationGameStateComp = K2Node_DynamicCast_AsBPGS_Archon_Escalation_Game_State.self.escalation_gamestate_bpc
+  [3455] pop
+  [3456] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [3477] if !(CallFunc_IsDedicatedServer_ReturnValue_1) goto @3492
+  [3491] pop
+  [3492] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnInteractionEnabled)
+  [3515] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [3556] pop
+  [3557] self.Mineral_Escalation_Buff_Gatherable_Anim.SetComponentTickEnabled(false)
+  [3594] pop
+  [3595] OnUserCompletedInteraction(K2Node_Event_User_2)
+  [3614] push @3836
+  [3619] push @3987
+  [3624] push @4002
+  [3629] CallFunc_GetOwner_ReturnValue = K2Node_Event_User_2.GetOwner()
+  [3671] CallFunc_GetInstigatorController_ReturnValue = CallFunc_GetOwner_ReturnValue.GetInstigatorController()
+  [3713] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetInstigatorController_ReturnValue)
+  [3749] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [3778] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [3788] self.PlayerController = K2Node_DynamicCast_AsArchon_Player_Controller
+  [3807] OnInteractionCompleted__DelegateSignature(self.PlayerController)
+  [3835] pop
+  [3836] CallFunc_PostEvent_ReturnValue_5 = Default__AkGameplayStatics.PostEvent(Stop_vfx_escalation_gatherable_activated_lp, self, 0, Temp_delegate_Variable_5, false)
+  [3911] CallFunc_PostEvent_ReturnValue_4 = Default__AkGameplayStatics.PostEvent(Stop_vfx_escalation_gatherable_interaction_riser, self, 0, Temp_delegate_Variable_4, false)
+  [3986] pop
+  [3987] DeactivateLanternFX()
+  [4001] pop
+  [4002] CallFunc_GetOwner_ReturnValue = K2Node_Event_User_2.GetOwner()
+  [4044] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue.self.Instigator)
+  [4095] if !(CallFunc_IsValid_ReturnValue) pop
+  [4105] CallFunc_GetOwner_ReturnValue = K2Node_Event_User_2.GetOwner()
+  [4147] CallFunc_IsLocallyControlled_ReturnValue = CallFunc_GetOwner_ReturnValue.self.Instigator.IsLocallyControlled()
+  [4215] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [4225] Default__archon_function_library_C.TryDestroyComponent(self.CrystalChargeIdleFX, self)
+  [4271] self.Mineral_Escalation_Buff_Gatherable_Anim.SetPosition(0.0, false)
+  [4309] self.Mineral_Escalation_Buff_Gatherable_Anim.Stop()
+  [4341] push @4401
+  [4346] Delay(self, 1.0, LatentActionInfo{EX_SkipOffsetConst(Value=1086), -67775744, 'ExecuteUbergraph_escalation_buff_gatherable_bp', self})
+  [4400] pop
+  [4401] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PlayerController)
+  [4430] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [4440] CallFunc_StartCameraShake_ReturnValue = self.PlayerController.self.PlayerCameraManager.StartCameraShake(escalation_gatherable_camera_shake_C, 1.0, 1.0, 0, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}))
+  [4554] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_vfx_escalation_gatherable_gather, self, 0, Temp_delegate_Variable, false)
+  [4629] CallFunc_SpawnEmitterAttached_ReturnValue_4 = SpawnEmitterAttached(self.CrystalGrantBuffTemplate, self.Mineral_Escalation_Buff_Gatherable_Anim, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [4761] CallFunc_Is_Using_Gamepad_ReturnValue = Default__UserWidgetFunctions_C.Is Using Gamepad(self)
+  [4808] if !(CallFunc_Is_Using_Gamepad_ReturnValue) pop
+  [4818] self.PlayerController.K2_ClientPlayForceFeedback(player_hitreaction_small, 'None', false, false, false)
+  [4875] pop
+  [4876] OnUserStartedInteraction(K2Node_Event_User_1)
+  [4895] CallFunc_GetOwner_ReturnValue_1 = K2Node_Event_User_1.GetOwner()
+  [4937] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [4973] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [5002] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [5012] goto @2668
+  [5017] OnUserCanceledInteraction(K2Node_Event_User)
+  [5036] Default__archon_function_library_C.TryDeactivateComponent(self.lantern_collection_beam, self)
+  [5082] Default__archon_function_library_C.TryDeactivateComponent(self.lantern_collection_loopfx, self)
+  [5128] CallFunc_PostEvent_ReturnValue_3 = Default__AkGameplayStatics.PostEvent(Stop_vfx_escalation_gatherable_interaction_riser, K2Node_DynamicCast_AsArchon_Character, 0, Temp_delegate_Variable_3, false)
+  [5211] pop
+  [5212] goto @5036
+  [5217] self.HomingFXCount = 0
+  [5240] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.Failsafe_EnableInteraction)
+  [5263] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 8.0, false, 0.0, 0.0)
+  [5316] K2Node_CreateDelegate_OutputDelegate = bind(self.OnParticleDeactivated_Event_0)
+  [5339] K2Node_CreateDelegate_OutputDelegate += None
+  [5380] CallFunc_GetArchonGameState_ReturnValue_1 = GetArchonGameState(self)
+  [5401] K2Node_DynamicCast_AsBpi_Gamestate = cast<bpi_gamestate_C>(CallFunc_GetArchonGameState_ReturnValue_1)
+  [5437] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate)
+  [5466] if !(K2Node_DynamicCast_bSuccess_3) goto @5617
+  [5480] K2Node_DynamicCast_AsBpi_Gamestate.GetSpawnedBehemoths(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [5526] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [5585] self.NumberOfBehemoths = CallFunc_Array_Length_ReturnValue_3
+  [5612] goto @2617
+  [5617] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [5658] goto @5526
+  [5663] CallFunc_IsDedicatedServer_ReturnValue_2 = IsDedicatedServer(self)
+  [5684] if !(CallFunc_IsDedicatedServer_ReturnValue_2) goto @5217
+  [5698] pop
+  [5699] Delay(self, 0.8, LatentActionInfo{EX_SkipOffsetConst(Value=251), -767327255, 'ExecuteUbergraph_escalation_buff_gatherable_bp', self})
+  [5753] pop
+  [5754] self.HomingFXCount = Temp_int_Variable
+  [5781] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.NumOfHomingFXToSpawn, self.NumberOfBehemoths)
+  [5827] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(self.HomingFXCount, CallFunc_Multiply_IntInt_ReturnValue)
+  [5865] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @6181
+  [5879] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.HomingFXCount, 1)
+  [5921] Default__KismetArrayLibrary.Array_Get(self.CrystalChargeHomingTemplates, CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2)
+  [5980] CallFunc_SpawnEmitterAttached_ReturnValue_2 = SpawnEmitterAttached(CallFunc_Array_Get_Item_2, self.Mineral_Escalation_Buff_Gatherable_Anim, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [6112] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.CrystalChargeFX, CallFunc_SpawnEmitterAttached_ReturnValue_2)
+  [6180] pop
+  [6181] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_vfx_escalation_gatherable_charged, self, 0, Temp_delegate_Variable_1, false)
+  [6256] goto @5699
+  [6261] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.HomingFXCount, 1)
+  [6303] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [6330] goto @5754
+  [6335] goto @6261
+  [6340] if !(self.base_interactioncode_component.self.LocalInteractionDisabled) pop
+  [6372] goto @6181
+  [6377] pop
+  [6378] goto @5663
+  [6383] return nothing
+  [6385] end
+
+=== Failsafe_EnableInteraction
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(6340)
+  [15] return nothing
+  [17] end
+
+=== GetAttachPointTransform
+  [0] CallFunc_K2_GetComponentToWorld_ReturnValue = self.InteractionCallout.K2_GetComponentToWorld()
+  [50] AttachPointTransform = CallFunc_K2_GetComponentToWorld_ReturnValue
+  [77] return nothing
+  [79] end
+
+=== OnCrystalActivated
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(6377)
+  [15] return nothing
+  [17] end
+
+=== OnInteractionCompleted__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnInteractionEnabled
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(6378)
+  [15] return nothing
+  [17] end
+
+=== OnParticleDeactivated_Event_0
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(6335)
+  [15] return nothing
+  [17] end
+
+=== OnUserCanceledInteraction
+  [0] frame.K2Node_Event_User = User
+  [18] ExecuteUbergraph_escalation_buff_gatherable_bp(5017)
+  [33] return nothing
+  [35] end
+
+=== OnUserCompletedInteraction
+  [0] frame.K2Node_Event_User_2 = User
+  [18] ExecuteUbergraph_escalation_buff_gatherable_bp(3595)
+  [33] return nothing
+  [35] end
+
+=== OnUserStartedInteraction
+  [0] frame.K2Node_Event_User_1 = User
+  [18] ExecuteUbergraph_escalation_buff_gatherable_bp(4876)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_escalation_buff_gatherable_bp(3298)
+  [15] return nothing
+  [17] end

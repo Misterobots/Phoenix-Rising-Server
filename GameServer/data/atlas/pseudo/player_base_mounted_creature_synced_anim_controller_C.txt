@@ -1,0 +1,808 @@
+# player_base_mounted_creature_synced_anim_controller_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_SelectAnimationBlueprint
+  [0] ReturnValue = PhxSyncedAnimInstanceSelection{null}
+  [33] return ReturnValue
+  [43] end
+
+=== Client_RevertAnimationBlueprint
+  [0] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(777)
+  [15] return nothing
+  [17] end
+
+=== DestroySpeedlineEffects
+  [0] self.SpeedlineParticleMaterial = null
+  [11] CallFunc_IsValid_ReturnValue = IsValid(self.SpeedlineParticleSystem)
+  [40] if !(CallFunc_IsValid_ReturnValue) goto @134
+  [54] self.SpeedlineParticleSystem.Deactivate()
+  [90] self.SpeedlineParticleSystem.K2_DestroyComponent(self)
+  [123] self.SpeedlineParticleSystem = null
+  [134] return nothing
+  [136] end
+
+=== ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller
+  [0] goto computed(EntryPoint)
+  [10] self.NeedServerEndTask = true
+  [21] goto @908
+  [26] Internal_OnStarted()
+  [40] goto @908
+  [45] Internal_OnFinished()
+  [59] goto @908
+  [64] self.DismountType = K2Node_CustomEvent_DismountType
+  [91] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 0)
+  [122] if !(K2Node_SwitchEnum_CmpSuccess) goto @321
+  [136] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 1)
+  [167] if !(K2Node_SwitchEnum_CmpSuccess) goto @321
+  [181] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 2)
+  [212] if !(K2Node_SwitchEnum_CmpSuccess) goto @321
+  [226] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 3)
+  [257] if !(K2Node_SwitchEnum_CmpSuccess) goto @557
+  [271] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 4)
+  [302] if !(K2Node_SwitchEnum_CmpSuccess) goto @557
+  [316] goto @908
+  [321] Server_EndTask(0)
+  [333] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [353] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwningActor_ReturnValue)
+  [382] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [411] if !(CallFunc_IsValid_ReturnValue_1) goto @908
+  [425] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [445] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwningActor_ReturnValue)
+  [474] CallFunc_BP_ApplyGameplayEffectToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectToSelf(dismount_iframe_ge_C, 0.0, GameplayEffectContextHandle{})
+  [552] goto @908
+  [557] if !(self.bOwningClientAnimInstanceInitialized) goto @321
+  [571] RevertAnimationBlueprint()
+  [581] Client_RevertAnimationBlueprint()
+  [595] goto @908
+  [600] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [620] if !(CallFunc_IsOwningClient_ReturnValue) goto @908
+  [634] CallFunc_IsValid_ReturnValue = IsValid(K2Node_Event_AnimInstance)
+  [663] if !(CallFunc_IsValid_ReturnValue) goto @10
+  [677] K2Node_DynamicCast_AsPhx_Base_Synced_Anim_Instance = cast<PhxBaseSyncedAnimInstance>(K2Node_Event_AnimInstance)
+  [713] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Base_Synced_Anim_Instance)
+  [742] if !(K2Node_DynamicCast_bSuccess) goto @10
+  [756] goto @908
+  [761] self.bOwningClientAnimInstanceInitialized = true
+  [772] goto @908
+  [777] RevertAnimationBlueprint()
+  [787] goto @908
+  [792] ReceiveOnStarted()
+  [802] goto @26
+  [807] ReceiveOnFinished()
+  [817] goto @45
+  [822] goto @807
+  [827] ReceiveOnTick(K2Node_Event_DeltaTime)
+  [846] CallFunc_Internal_OnTick_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaTime)
+  [875] Internal_OnTick(CallFunc_Internal_OnTick_DeltaTime_ImplicitCast)
+  [898] goto @908
+  [903] goto @792
+  [908] return nothing
+  [910] end
+
+=== GetDesiredCameraSettings
+  [0] IsAttacking = false
+  [11] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 0)
+  [42] if !(K2Node_SwitchEnum_CmpSuccess) goto @196
+  [56] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 1)
+  [87] if !(K2Node_SwitchEnum_CmpSuccess) goto @336
+  [101] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 2)
+  [132] if !(K2Node_SwitchEnum_CmpSuccess) goto @336
+  [146] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 3)
+  [177] if !(K2Node_SwitchEnum_CmpSuccess) goto @476
+  [191] goto @859
+  [196] CameraDistance = DefaultCameraDistance
+  [223] CameraFOV = DefaultCameraFOV
+  [250] CameraOffset = DefaultCameraOffset
+  [277] CameraTargetOffset = DefaultCameraTargetOffset
+  [304] CameraLagSpeed = DefaultCameraLagSpeed
+  [331] goto @859
+  [336] CameraDistance = self.PullDesiredCameraDistance
+  [363] CameraFOV = DefaultCameraFOV
+  [390] CameraOffset = self.PullDesiredCameraOffset
+  [417] CameraTargetOffset = DefaultCameraTargetOffset
+  [444] CameraLagSpeed = self.PullDesiredCameraLagSpeed
+  [471] goto @859
+  [476] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [496] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwningActor_ReturnValue)
+  [532] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [561] if !(K2Node_DynamicCast_bSuccess) goto @843
+  [575] K2Node_DynamicCast_AsPlayer_Interface.GetIsAttackingInterface(CallFunc_GetIsAttackingInterface_IsAttacking)
+  [621] IsAttacking = CallFunc_GetIsAttackingInterface_IsAttacking
+  [640] Temp_bool_Variable = IsAttacking
+  [659] CameraDistance = switch(Temp_bool_Variable){false: self.LandedIdleDesiredCameraDistance, true: self.LandedAttackingDesiredCameraDistance, default: K2Node_Select_Default}
+  [730] CameraFOV = DefaultCameraFOV
+  [757] CameraOffset = DefaultCameraOffset
+  [784] CameraTargetOffset = DefaultCameraTargetOffset
+  [811] CameraLagSpeed = self.LandedDesiredCameraLagSpeed
+  [838] goto @859
+  [843] CallFunc_GetIsAttackingInterface_IsAttacking = false
+  [854] goto @621
+  [859] return nothing
+  [861] end
+
+=== GetDismountJumpDirection
+  [0] CallFunc_Vector_Up_ReturnValue = Vector_Up()
+  [28] GetHorizontalDismountDirection(CallFunc_GetHorizontalDismountDirection_DismountDirection)
+  [51] CallFunc_Cross_VectorVector_ReturnValue = Cross_VectorVector(CallFunc_GetHorizontalDismountDirection_DismountDirection, CallFunc_Vector_Up_ReturnValue)
+  [97] CallFunc_Normal_ReturnValue = Normal(CallFunc_Cross_VectorVector_ReturnValue, 0.0001)
+  [139] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(self.DismountJumpPitch)
+  [168] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(CallFunc_GetHorizontalDismountDirection_DismountDirection, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, CallFunc_Normal_ReturnValue)
+  [223] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_RotateAngleAxis_ReturnValue, 0.0001)
+  [265] DismountLaunchDirection = CallFunc_Normal_ReturnValue_1
+  [292] return nothing
+  [294] end
+
+=== GetDismountRelaunchDirection
+  [0] CallFunc_Vector_Up_ReturnValue = Vector_Up()
+  [28] GetHorizontalDismountDirection(CallFunc_GetHorizontalDismountDirection_DismountDirection)
+  [51] CallFunc_Cross_VectorVector_ReturnValue = Cross_VectorVector(CallFunc_GetHorizontalDismountDirection_DismountDirection, CallFunc_Vector_Up_ReturnValue)
+  [97] CallFunc_Normal_ReturnValue = Normal(CallFunc_Cross_VectorVector_ReturnValue, 0.0001)
+  [139] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(self.DismountRelaunchPitch)
+  [168] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(CallFunc_GetHorizontalDismountDirection_DismountDirection, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, CallFunc_Normal_ReturnValue)
+  [223] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_RotateAngleAxis_ReturnValue, 0.0001)
+  [265] DismountLaunchDirection = CallFunc_Normal_ReturnValue_1
+  [292] return nothing
+  [294] end
+
+=== GetHorizontalDismountDirection
+  [0] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwningActor_ReturnValue_1)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @674
+  [99] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [135] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [164] if !(K2Node_DynamicCast_bSuccess_1) goto @557
+  [178] K2Node_DynamicCast_AsPlayer_Interface.GetRawMovementInput(CallFunc_GetRawMovementInput_RawInput)
+  [224] CallFunc_Vector_IsNearlyZero_ReturnValue = Vector_IsNearlyZero(CallFunc_GetRawMovementInput_RawInput, 0.01)
+  [258] if !(CallFunc_Vector_IsNearlyZero_ReturnValue) goto @605
+  [272] Temp_real_Variable = -1.0
+  [299] Temp_real_Variable_1 = 1.0
+  [326] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [346] CallFunc_RandomBool_ReturnValue = RandomBool()
+  [366] CallFunc_GetActorRightVector_ReturnValue = CallFunc_GetOwningActor_ReturnValue.GetActorRightVector()
+  [416] Temp_bool_Variable = CallFunc_RandomBool_ReturnValue
+  [435] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetActorRightVector_ReturnValue, switch(Temp_bool_Variable){false: Temp_real_Variable_1, true: Temp_real_Variable, default: K2Node_Select_Default})
+  [525] DismountDirection = CallFunc_Multiply_VectorFloat_ReturnValue
+  [552] goto @674
+  [557] CallFunc_GetRawMovementInput_RawInput = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [600] goto @224
+  [605] CallFunc_Normal_ReturnValue = Normal(CallFunc_GetRawMovementInput_RawInput, 0.0001)
+  [647] DismountDirection = CallFunc_Normal_ReturnValue
+  [674] return nothing
+  [676] end
+
+=== HasDesiredCameraSettings
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 0)
+  [31] if !(K2Node_SwitchEnum_CmpSuccess) goto @185
+  [45] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 1)
+  [76] if !(K2Node_SwitchEnum_CmpSuccess) goto @201
+  [90] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 2)
+  [121] if !(K2Node_SwitchEnum_CmpSuccess) goto @201
+  [135] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 3)
+  [166] if !(K2Node_SwitchEnum_CmpSuccess) goto @201
+  [180] goto @212
+  [185] bReturnValue = false
+  [196] goto @212
+  [201] bReturnValue = true
+  [212] return nothing
+  [214] end
+
+=== HasFinishedAlignment
+  [0] CallFunc_GetSyncedAnimationTask_ReturnValue = GetSyncedAnimationTask()
+  [20] K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task = cast<PhxChildActorSyncedAnimationTask>(CallFunc_GetSyncedAnimationTask_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @199
+  [99] CallFunc_GetAlignmentState_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task.GetAlignmentState()
+  [149] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetAlignmentState_ReturnValue, 2)
+  [180] bHasFinishedAlignment = CallFunc_EqualEqual_ByteByte_ReturnValue
+  [199] return nothing
+  [201] end
+
+=== Internal_DismountJump
+  [0] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwningActor_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @334
+  [99] GetDismountJumpDirection(CallFunc_GetDismountJumpDirection_DismountLaunchDirection)
+  [122] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetDismountJumpDirection_DismountLaunchDirection, self.DismountJumpForce)
+  [168] K2Node_DynamicCast_AsArchon_Character.LaunchCharacter(CallFunc_Multiply_VectorFloat_ReturnValue, true, true)
+  [215] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [251] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [280] if !(K2Node_DynamicCast_bSuccess_1) goto @334
+  [294] K2Node_DynamicCast_AsPlayer_Interface.SetJumping(5, true)
+  [334] return nothing
+  [336] end
+
+=== Internal_DismountRelaunch
+  [0] push @1028
+  [5] push @931
+  [10] push @490
+  [15] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [35] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwningActor_ReturnValue)
+  [71] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [100] if !(K2Node_DynamicCast_bSuccess) pop
+  [110] GetDismountRelaunchDirection(CallFunc_GetDismountRelaunchDirection_DismountLaunchDirection)
+  [133] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetDismountRelaunchDirection_DismountLaunchDirection, self.DismountRelaunchForce)
+  [179] K2Node_DynamicCast_AsArchon_Character.LaunchCharacter(CallFunc_Multiply_VectorFloat_ReturnValue, true, true)
+  [226] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [262] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [291] if !(K2Node_DynamicCast_bSuccess_1) goto @345
+  [305] K2Node_DynamicCast_AsPlayer_Interface.SetJumping(4, true)
+  [345] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [381] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [410] if !(K2Node_DynamicCast_bSuccess_2) goto @1012
+  [424] K2Node_DynamicCast_AsPlayer_Interface_1.GetMountingComponent(CallFunc_GetMountingComponent_Return)
+  [470] PlayerMountingComponent = CallFunc_GetMountingComponent_Return
+  [489] pop
+  [490] array{player_mounting_creature_top_type}
+  [510] MountingLaunchData.AimingMountingTypes = K2Node_MakeArray_Array
+  [546] CallFunc_IsValid_ReturnValue = IsValid(PlayerMountingComponent)
+  [575] if !(CallFunc_IsValid_ReturnValue) pop
+  [585] CallFunc_GetMountedTarget_ReturnValue = PlayerMountingComponent.GetMountedTarget()
+  [635] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetMountedTarget_ReturnValue.MountableComponent)
+  [673] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [683] array{player_mounting_creature_top_type}
+  [703] CallFunc_GetMountedTarget_ReturnValue = PlayerMountingComponent.GetMountedTarget()
+  [753] CallFunc_GetFirstDefaultTargetingSocket_ReturnValue = CallFunc_GetMountedTarget_ReturnValue.MountableComponent.GetFirstDefaultTargetingSocket(K2Node_MakeArray_Array)
+  [821] K2Node_MakeStruct_ArchonMountableTarget.MountableComponent = CallFunc_GetMountedTarget_ReturnValue.MountableComponent
+  [858] K2Node_MakeStruct_ArchonMountableTarget.MountableSocket = CallFunc_GetFirstDefaultTargetingSocket_ReturnValue
+  [894] MountingLaunchData.AutoAimTarget = K2Node_MakeStruct_ArchonMountableTarget
+  [930] pop
+  [931] CallFunc_IsValid_ReturnValue_2 = IsValid(PlayerMountingComponent)
+  [960] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [970] PlayerMountingComponent.OnOwnerLaunched(MountingLaunchData)
+  [1011] pop
+  [1012] CallFunc_GetMountingComponent_Return = null
+  [1023] goto @470
+  [1028] return nothing
+  [1030] end
+
+=== Internal_OnFinished
+  [0] push @431
+  [5] push @416
+  [10] push @205
+  [15] push @116
+  [20] CallFunc_IsValid_ReturnValue_1 = IsValid(self.OwnerWeapon)
+  [49] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [59] Default__animation_function_library_C.RemoveAnimStateOverrides(self.OwnerWeapon, self.AnimStateOverrideGuid, self, self)
+  [115] pop
+  [116] CallFunc_IsValid_ReturnValue = IsValid(self.PullAlignmentTask)
+  [145] if !(CallFunc_IsValid_ReturnValue) pop
+  [155] self.PullAlignmentTask.Local_EndTask(0)
+  [193] self.PullAlignmentTask = null
+  [204] pop
+  [205] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 1)
+  [236] if !(K2Node_SwitchEnum_CmpSuccess) goto @401
+  [250] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 2)
+  [281] if !(K2Node_SwitchEnum_CmpSuccess) goto @386
+  [295] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 3)
+  [326] if !(K2Node_SwitchEnum_CmpSuccess) goto @401
+  [340] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.DismountType, 4)
+  [371] if !(K2Node_SwitchEnum_CmpSuccess) goto @401
+  [385] pop
+  [386] Internal_DismountRelaunch()
+  [400] pop
+  [401] Internal_DismountJump()
+  [415] pop
+  [416] DestroySpeedlineEffects()
+  [430] pop
+  [431] return nothing
+  [433] end
+
+=== Internal_OnStarted
+  [0] push @1735
+  [5] push @1562
+  [10] push @1050
+  [15] push @509
+  [20] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [40] OwningActor = CallFunc_GetOwningActor_ReturnValue
+  [59] CallFunc_IsValid_ReturnValue_3 = IsValid(OwningActor)
+  [88] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [98] CallFunc_GetComponentByClass_ReturnValue_1 = OwningActor.GetComponentByClass(PhxAlignmentComponent)
+  [149] self.AlignmentComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [168] CallFunc_GetComponentByClass_ReturnValue = OwningActor.GetComponentByClass(ArchonMountingComponent)
+  [219] self.MountingComponent = CallFunc_GetComponentByClass_ReturnValue
+  [238] CallFunc_IsValid_ReturnValue_5 = IsValid(self.MountingComponent)
+  [267] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [277] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [327] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_GetMountedTarget_ReturnValue.MountableComponent)
+  [365] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [375] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [425] Default__archon_function_library_C.GetOwnerMesh(CallFunc_GetMountedTarget_ReturnValue.MountableComponent, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [489] self.MountedMeshComponent = CallFunc_GetOwnerMesh_SkeletalMeshComponent
+  [508] pop
+  [509] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [529] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [549] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsOwningClient_ReturnValue, CallFunc_HasAuthority_ReturnValue)
+  [587] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [597] CallFunc_GetOwningActor_ReturnValue_2 = GetOwningActor()
+  [617] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetOwningActor_ReturnValue_2)
+  [653] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [682] if !(K2Node_DynamicCast_bSuccess) goto @1034
+  [696] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [742] self.OwnerWeapon = CallFunc_GetOwnedWeapon_Weapon
+  [761] CallFunc_IsValid_ReturnValue_1 = IsValid(self.OwnerWeapon)
+  [790] if !(CallFunc_IsValid_ReturnValue_1) goto @1719
+  [804] SelectAnimStateOverrides(self.OwnerWeapon, CallFunc_SelectAnimStateOverrides_AnimStateOverrides)
+  [836] self.Selected_AnimStateOverrides = CallFunc_SelectAnimStateOverrides_AnimStateOverrides
+  [855] CallFunc_IsValid_ReturnValue = IsValid(self.Selected_AnimStateOverrides)
+  [884] if !(CallFunc_IsValid_ReturnValue) goto @1719
+  [898] Default__animation_function_library_C.AddAnimStateOverrides(self.OwnerWeapon, self.Selected_AnimStateOverrides, self, self, CallFunc_AddAnimStateOverrides_OverrideID)
+  [963] self.AnimStateOverrideGuid = CallFunc_AddAnimStateOverrides_OverrideID
+  [990] CallFunc_IsValid_Guid_ReturnValue = IsValid_Guid(self.AnimStateOverrideGuid)
+  [1019] if !(CallFunc_IsValid_Guid_ReturnValue) goto @1719
+  [1033] pop
+  [1034] CallFunc_GetOwnedWeapon_Weapon = null
+  [1045] goto @742
+  [1050] CallFunc_IsOwningClient_ReturnValue_1 = IsOwningClient()
+  [1070] if !(CallFunc_IsOwningClient_ReturnValue_1) pop
+  [1080] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PlayerInputComponent)
+  [1109] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1119] K2Node_MakeStruct_InputActionBinding_1.KeyEvent = 0
+  [1148] K2Node_MakeStruct_InputActionBinding_1.ActionName = 'Dodge'
+  [1188] CallFunc_AddActionBinding_ReturnValue_1 = self.PlayerInputComponent.AddActionBinding(K2Node_MakeStruct_InputActionBinding_1)
+  [1247] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnInputActionPressed)
+  [1270] CallFunc_GetBindingDispatcher_ReturnValue_1 = GetBindingDispatcher(CallFunc_AddActionBinding_ReturnValue_1)
+  [1299] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1340] K2Node_MakeStruct_InputActionBinding.KeyEvent = 0
+  [1369] K2Node_MakeStruct_InputActionBinding.ActionName = 'Jump'
+  [1409] CallFunc_AddActionBinding_ReturnValue = self.PlayerInputComponent.AddActionBinding(K2Node_MakeStruct_InputActionBinding)
+  [1468] K2Node_CreateDelegate_OutputDelegate = bind(self.OnInputActionPressed)
+  [1491] CallFunc_GetBindingDispatcher_ReturnValue = GetBindingDispatcher(CallFunc_AddActionBinding_ReturnValue)
+  [1520] K2Node_CreateDelegate_OutputDelegate += None
+  [1561] pop
+  [1562] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [1582] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_GetOwningActor_ReturnValue_1)
+  [1611] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [1621] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [1641] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.K2_GetActorRotation()
+  [1691] self.OwnerPrevRotation = CallFunc_K2_GetActorRotation_ReturnValue
+  [1718] pop
+  [1719] Server_Dismount(0)
+  [1735] return nothing
+  [1737] end
+
+=== Internal_OnTick
+  [0] push @1337
+  [5] push @701
+  [10] push @637
+  [15] push @318
+  [20] push @161
+  [25] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 1)
+  [56] if !(K2Node_SwitchEnum_CmpSuccess) goto @1265
+  [70] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 2)
+  [101] if !(K2Node_SwitchEnum_CmpSuccess) goto @1289
+  [115] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.CurrentAnimState, 3)
+  [146] if !(K2Node_SwitchEnum_CmpSuccess) goto @1313
+  [160] pop
+  [161] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [181] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_GetOwningActor_ReturnValue)
+  [210] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [220] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [240] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetOwningActor_ReturnValue.K2_GetActorRotation()
+  [290] self.OwnerPrevRotation = CallFunc_K2_GetActorRotation_ReturnValue
+  [317] pop
+  [318] CallFunc_IsOwningClient_ReturnValue_1 = IsOwningClient()
+  [338] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.bOwningClientAnimInstanceInitialized)
+  [367] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_IsOwningClient_ReturnValue_1, CallFunc_Not_PreBool_ReturnValue)
+  [405] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [415] CallFunc_GetSkeletalMeshComponent_ReturnValue = GetSkeletalMeshComponent()
+  [435] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetSkeletalMeshComponent_ReturnValue)
+  [464] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [474] CallFunc_GetSkeletalMeshComponent_ReturnValue = GetSkeletalMeshComponent()
+  [494] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetSkeletalMeshComponent_ReturnValue.GetAnimInstance()
+  [536] K2Node_DynamicCast_AsPhx_Base_Synced_Anim_Instance = cast<PhxBaseSyncedAnimInstance>(CallFunc_GetAnimInstance_ReturnValue)
+  [572] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Base_Synced_Anim_Instance)
+  [601] if !(K2Node_DynamicCast_bSuccess) pop
+  [611] Server_OwningClientAnimationBlueprintInitialized()
+  [625] self.bOwningClientAnimInstanceInitialized = true
+  [636] pop
+  [637] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [657] if !(CallFunc_IsOwningClient_ReturnValue) pop
+  [667] if !(self.NeedServerEndTask) pop
+  [677] Server_EndTask(0)
+  [689] self.NeedServerEndTask = false
+  [700] pop
+  [701] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.DismountType, 0)
+  [732] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [752] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasAuthority_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [790] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [800] CallFunc_IsValid_ReturnValue = IsValid(self.MountingComponent)
+  [829] if !(CallFunc_IsValid_ReturnValue) pop
+  [839] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [889] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetMountedTarget_ReturnValue.MountableComponent)
+  [927] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [937] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [987] CallFunc_GetOwner_ReturnValue = CallFunc_GetMountedTarget_ReturnValue.MountableComponent.GetOwner()
+  [1038] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [1067] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1077] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [1127] CallFunc_GetOwner_ReturnValue = CallFunc_GetMountedTarget_ReturnValue.MountableComponent.GetOwner()
+  [1178] Default__archon_function_library_C.ActorIsAlive(CallFunc_GetOwner_ReturnValue, self, CallFunc_ActorIsAlive_IsAlive)
+  [1233] if !(CallFunc_ActorIsAlive_IsAlive) goto @1248
+  [1247] pop
+  [1248] Server_Dismount(1)
+  [1264] pop
+  [1265] Internal_TickFireAnimState(DeltaTime)
+  [1288] pop
+  [1289] Internal_TickPullAnimState(DeltaTime)
+  [1312] pop
+  [1313] Internal_TickLandedAnimState(DeltaTime)
+  [1336] pop
+  [1337] return nothing
+  [1339] end
+
+=== Internal_TickFireAnimState
+  [0] RotatePlayerToFaceMountedTarget(DeltaTime)
+  [23] return nothing
+  [25] end
+
+=== Internal_TickLandedAnimState
+  [0] push @892
+  [5] push @102
+  [10] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [30] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bAutoRotateCamera, CallFunc_IsOwningClient_ReturnValue)
+  [68] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [78] RotateCameraToMaintainRelativeOffset(DeltaTime)
+  [101] pop
+  [102] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.DismountType, 0)
+  [133] HasFinishedAlignment(CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [156] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [176] CallFunc_IsOwningClient_ReturnValue_1 = IsOwningClient()
+  [196] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsOwningClient_ReturnValue_1, CallFunc_HasAuthority_ReturnValue)
+  [234] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanOR_ReturnValue, CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [272] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [310] if !(CallFunc_BooleanAND_ReturnValue_2) pop
+  [320] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [340] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetOwningActor_ReturnValue_1, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:Stamina'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [453] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [482] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [520] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [558] if !(CallFunc_BooleanAND_ReturnValue_3) goto @646
+  [572] CallFunc_IsOwningClient_ReturnValue_2 = IsOwningClient()
+  [592] if !(CallFunc_IsOwningClient_ReturnValue_2) pop
+  [602] self.DismountType = 3
+  [622] Server_Dismount(self.DismountType)
+  [645] pop
+  [646] CallFunc_HasAuthority_ReturnValue_1 = HasAuthority()
+  [666] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [676] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [696] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwningActor_ReturnValue)
+  [732] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [761] if !(K2Node_DynamicCast_bSuccess) goto @880
+  [775] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.StaminaDrainPerSecond, DeltaTime)
+  [821] K2Node_DynamicCast_AsPlayer_Interface.ConsumeStamina(CallFunc_Multiply_DoubleDouble_ReturnValue, 8, false, CallFunc_ConsumeStamina_Success)
+  [879] pop
+  [880] CallFunc_ConsumeStamina_Success = false
+  [891] pop
+  [892] return nothing
+  [894] end
+
+=== Internal_TickPullAnimState
+  [0] push @526
+  [5] push @511
+  [10] push @487
+  [15] CallFunc_GetSyncedAnimationTask_ReturnValue = GetSyncedAnimationTask()
+  [35] K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task = cast<PhxChildActorSyncedAnimationTask>(CallFunc_GetSyncedAnimationTask_ReturnValue)
+  [71] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task)
+  [100] if !(K2Node_DynamicCast_bSuccess) pop
+  [110] CallFunc_IsAlignmentWindowOpen_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task.IsAlignmentWindowOpen()
+  [152] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_IsAlignmentWindowOpen_ReturnValue)
+  [181] if !(CallFunc_Not_PreBool_ReturnValue_1) pop
+  [191] CallFunc_IsValid_ReturnValue = IsValid(self.PullAlignmentTask)
+  [220] if !(CallFunc_IsValid_ReturnValue) goto @395
+  [234] CallFunc_IsFinishedLocally_ReturnValue = self.PullAlignmentTask.IsFinishedLocally()
+  [276] CallFunc_HasActiveLocationAlignment_ReturnValue = self.AlignmentComponent.HasActiveLocationAlignment()
+  [318] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasActiveLocationAlignment_ReturnValue)
+  [347] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsFinishedLocally_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [385] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [395] CallFunc_OpenAlignmentWindow_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.LandingAlignmentDuration)
+  [424] CallFunc_OpenAlignmentWindow_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task.OpenAlignmentWindow(CallFunc_OpenAlignmentWindow_Duration_ImplicitCast)
+  [475] self.PullAlignmentTask = null
+  [486] pop
+  [487] RotatePlayerToFaceMountedTarget(DeltaTime)
+  [510] pop
+  [511] TickSpeedlineEffects()
+  [525] pop
+  [526] return nothing
+  [528] end
+
+=== OnDodgeKeyPressed
+  [0] if !(bIsPressed) goto @163
+  [14] HasFinishedAlignment(CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [37] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.DismountType, 0)
+  [68] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasFinishedAlignment_bHasFinishedAlignment, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [106] if !(CallFunc_BooleanAND_ReturnValue) goto @163
+  [120] self.DismountType = 2
+  [140] Server_Dismount(self.DismountType)
+  [163] return nothing
+  [165] end
+
+=== OnEnteredFireAnimState
+  [0] self.CurrentAnimState = 1
+  [20] return nothing
+  [22] end
+
+=== OnEnteredLandedAnimState
+  [0] push @173
+  [5] push @84
+  [10] push @56
+  [15] push @41
+  [20] self.CurrentAnimState = 3
+  [40] pop
+  [41] DestroySpeedlineEffects()
+  [55] pop
+  [56] self.DesiredPitchRotation = 0.0
+  [83] pop
+  [84] CallFunc_IsValid_ReturnValue = IsValid(self.PullAlignmentTask)
+  [113] if !(CallFunc_IsValid_ReturnValue) pop
+  [123] self.PullAlignmentTask.Local_EndTask(0)
+  [161] self.PullAlignmentTask = null
+  [172] pop
+  [173] return nothing
+  [175] end
+
+=== OnEnteredPullAnimState
+  [0] push @1929
+  [5] push @1765
+  [10] push @562
+  [15] push @61
+  [20] push @46
+  [25] self.CurrentAnimState = 2
+  [45] pop
+  [46] SpawnSpeedlineEffects()
+  [60] pop
+  [61] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [81] if !(CallFunc_IsOwningClient_ReturnValue) pop
+  [91] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [111] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.GetComponentByClass(weapon_sheathe_bpc_C)
+  [162] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [191] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [201] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [221] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.GetComponentByClass(weapon_sheathe_bpc_C)
+  [272] CallFunc_GetComponentByClass_ReturnValue.GetWeaponSheatheState(CallFunc_GetWeaponSheatheState_SheatheState)
+  [317] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 0)
+  [348] if !(K2Node_SwitchEnum_CmpSuccess) goto @453
+  [362] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 1)
+  [393] if !(K2Node_SwitchEnum_CmpSuccess) goto @453
+  [407] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 2)
+  [438] if !(K2Node_SwitchEnum_CmpSuccess) goto @453
+  [452] pop
+  [453] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [473] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.GetComponentByClass(weapon_sheathe_bpc_C)
+  [524] CallFunc_GetComponentByClass_ReturnValue.SetUnSheatheWeapon(false)
+  [561] pop
+  [562] CallFunc_IsValid_ReturnValue = IsValid(self.MountingComponent)
+  [591] CallFunc_IsValid_ReturnValue_1 = IsValid(self.AlignmentComponent)
+  [620] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue_1, CallFunc_IsValid_ReturnValue)
+  [658] CallFunc_IsValid_ReturnValue_2 = IsValid(self.MountedMeshComponent)
+  [687] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_IsValid_ReturnValue_2)
+  [725] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [735] K2Node_MakeStruct_PhxAlignmentKinematicProperties.FollowAccelerationFactor = 1.0
+  [767] K2Node_MakeStruct_Acceleration_ImplicitCast = cast<CST_DoubleToFloat>(self.PullAlignmentSpeed)
+  [796] K2Node_MakeStruct_PhxAlignmentKinematicProperties.Acceleration = K2Node_MakeStruct_Acceleration_ImplicitCast
+  [832] K2Node_MakeStruct_MaxSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.PullAlignmentSpeed)
+  [861] K2Node_MakeStruct_PhxAlignmentKinematicProperties.MaxSpeed = K2Node_MakeStruct_MaxSpeed_ImplicitCast
+  [897] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription.Socket = 'None'
+  [937] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription.LocalOffsetRotation = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [989] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription.LocalOffsetTranslation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [1041] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [1091] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription_1.Socket = CallFunc_GetMountedTarget_ReturnValue.MountableSocket.SocketName
+  [1145] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription_1.LocalOffsetRotation = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [1197] K2Node_MakeStruct_PhxRelativeAlignmentPointDescription_1.LocalOffsetTranslation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [1249] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.TargetAlignmentPoint = K2Node_MakeStruct_PhxRelativeAlignmentPointDescription_1
+  [1285] K2Node_MakeStruct_TargetRadius_ImplicitCast = cast<CST_DoubleToFloat>(self.PullAlignmentTargetRadius)
+  [1314] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.TargetRadius = K2Node_MakeStruct_TargetRadius_ImplicitCast
+  [1350] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.AlignmentChannelFlags = 3
+  [1382] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.CollisionMode = 1
+  [1411] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.AlignmentPoint = K2Node_MakeStruct_PhxRelativeAlignmentPointDescription
+  [1447] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.AlignmentMode = 2
+  [1476] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.AlignmentCurve = 5
+  [1505] K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription.AlignmentKinematics = K2Node_MakeStruct_PhxAlignmentKinematicProperties
+  [1541] CallFunc_CreateActorComponentLocationAlignmentTask_ReturnValue = CreateActorComponentLocationAlignmentTask(self.AlignmentComponent, null, self.MountedMeshComponent, K2Node_MakeStruct_PhxActorLocationAlignmentTaskDescription)
+  [1589] self.PullAlignmentTask = CallFunc_CreateActorComponentLocationAlignmentTask_ReturnValue
+  [1608] CallFunc_IsValid_ReturnValue_4 = IsValid(self.PullAlignmentTask)
+  [1637] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [1647] CallFunc_StartLocationAlignmentTask_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.PullAlignmentMaxDuration)
+  [1676] CallFunc_StartLocationAlignmentTask_ReturnValue = self.AlignmentComponent.StartLocationAlignmentTask(self.PullAlignmentTask, 0, CallFunc_StartLocationAlignmentTask_MaxDuration_ImplicitCast)
+  [1738] if !(CallFunc_StartLocationAlignmentTask_ReturnValue) goto @1753
+  [1752] pop
+  [1753] self.PullAlignmentTask = null
+  [1764] pop
+  [1765] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1786] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsDedicatedServer_ReturnValue)
+  [1815] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [1825] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [1845] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_wep_mounting_pull, CallFunc_GetOwningActor_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1928] pop
+  [1929] return nothing
+  [1931] end
+
+=== OnInputActionPressed
+  [0] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(ActionName, 'Dodge')
+  [42] if !(K2Node_SwitchName_CmpSuccess) goto @117
+  [56] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(ActionName, 'Jump')
+  [98] if !(K2Node_SwitchName_CmpSuccess) goto @117
+  [112] goto @171
+  [117] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(InputEvent, 0)
+  [148] OnDodgeKeyPressed(CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [171] return nothing
+  [173] end
+
+=== OnJumpKeyPressed
+  [0] if !(bIsPressed) goto @163
+  [14] HasFinishedAlignment(CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [37] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.DismountType, 0)
+  [68] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasFinishedAlignment_bHasFinishedAlignment, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [106] if !(CallFunc_BooleanAND_ReturnValue) goto @163
+  [120] self.DismountType = 1
+  [140] Server_Dismount(self.DismountType)
+  [163] return nothing
+  [165] end
+
+=== ReceiveOnAnimationBlueprintInitialized
+  [0] frame.K2Node_Event_AnimInstance = AnimInstance
+  [18] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(600)
+  [33] return nothing
+  [35] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(822)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(903)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTick
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(827)
+  [33] return nothing
+  [35] end
+
+=== RotateCameraToMaintainRelativeOffset
+  [0] push @1284
+  [5] push @1028
+  [10] push @639
+  [15] push @376
+  [20] HasFinishedAlignment(CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [43] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [63] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bAutoRotateCamera, CallFunc_IsOwningClient_ReturnValue)
+  [101] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_HasFinishedAlignment_bHasFinishedAlignment)
+  [139] if !(CallFunc_BooleanAND_ReturnValue_1) goto @1284
+  [153] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [173] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwningActor_ReturnValue)
+  [209] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [238] if !(K2Node_DynamicCast_bSuccess) goto @1284
+  [252] OwningPawn = K2Node_DynamicCast_AsPawn
+  [271] CallFunc_GetController_ReturnValue = OwningPawn.GetController()
+  [313] OwningController = CallFunc_GetController_ReturnValue
+  [332] CallFunc_IsValid_ReturnValue = IsValid(OwningController)
+  [361] if !(CallFunc_IsValid_ReturnValue) goto @1284
+  [375] pop
+  [376] CallFunc_K2_GetActorRotation_ReturnValue = OwningPawn.K2_GetActorRotation()
+  [426] CallFunc_NormalizedDeltaRotator_ReturnValue_1 = NormalizedDeltaRotator(CallFunc_K2_GetActorRotation_ReturnValue, self.OwnerPrevRotation)
+  [472] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue_1, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [518] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw_1)
+  [565] CallFunc_ComposeRotators_ReturnValue_3 = ComposeRotators(self.AutoRotateCameraLag, CallFunc_MakeRotator_ReturnValue_1)
+  [611] self.AutoRotateCameraLag = CallFunc_ComposeRotators_ReturnValue_3
+  [638] pop
+  [639] CallFunc_GetControlRotation_ReturnValue = OwningController.GetControlRotation()
+  [693] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [739] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [786] CallFunc_ComposeRotators_ReturnValue_1 = ComposeRotators(CallFunc_MakeRotator_ReturnValue, self.AutoRotateCameraLag)
+  [832] CallFunc_RInterpTo_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(DeltaTime)
+  [861] CallFunc_RInterpTo_InterpSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.AutoRotateCameraSpeed)
+  [890] CallFunc_RInterpTo_ReturnValue = RInterpTo(CallFunc_MakeRotator_ReturnValue, CallFunc_ComposeRotators_ReturnValue_1, CallFunc_RInterpTo_DeltaTime_ImplicitCast, CallFunc_RInterpTo_InterpSpeed_ImplicitCast)
+  [954] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_RInterpTo_ReturnValue, CallFunc_MakeRotator_ReturnValue)
+  [1000] AutoCameraRotationToApplyThisTick = CallFunc_NormalizedDeltaRotator_ReturnValue
+  [1027] pop
+  [1028] CallFunc_GetControlRotation_ReturnValue_1 = OwningController.GetControlRotation()
+  [1082] CallFunc_ComposeRotators_ReturnValue_2 = ComposeRotators(CallFunc_GetControlRotation_ReturnValue_1, AutoCameraRotationToApplyThisTick)
+  [1128] OwningController.SetControlRotation(CallFunc_ComposeRotators_ReturnValue_2)
+  [1173] CallFunc_NegateRotator_ReturnValue = NegateRotator(AutoCameraRotationToApplyThisTick)
+  [1210] CallFunc_ComposeRotators_ReturnValue = ComposeRotators(self.AutoRotateCameraLag, CallFunc_NegateRotator_ReturnValue)
+  [1256] self.AutoRotateCameraLag = CallFunc_ComposeRotators_ReturnValue
+  [1283] pop
+  [1284] return nothing
+  [1286] end
+
+=== RotatePlayerToFaceMountedTarget
+  [0] CallFunc_IsValid_ReturnValue_1 = IsValid(self.MountingComponent)
+  [29] if !(CallFunc_IsValid_ReturnValue_1) goto @1176
+  [43] CallFunc_IsValid_ReturnValue = IsValid(self.MountedMeshComponent)
+  [72] if !(CallFunc_IsValid_ReturnValue) goto @1176
+  [86] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [106] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [126] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.K2_GetActorLocation()
+  [176] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.K2_GetActorRotation()
+  [226] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [272] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [322] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [369] CallFunc_GetSocketLocation_ReturnValue = self.MountedMeshComponent.GetSocketLocation(CallFunc_GetMountedTarget_ReturnValue.MountableSocket.SocketName)
+  [450] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetSocketLocation_ReturnValue)
+  [496] BreakRotator(CallFunc_FindLookAtRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [542] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw_1)
+  [589] CallFunc_RInterpTo_Constant_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(DeltaTime)
+  [618] CallFunc_RInterpTo_Constant_InterpSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.PullRotationSpeed)
+  [647] CallFunc_RInterpTo_Constant_ReturnValue = RInterpTo_Constant(CallFunc_MakeRotator_ReturnValue, CallFunc_MakeRotator_ReturnValue_1, CallFunc_RInterpTo_Constant_DeltaTime_ImplicitCast, CallFunc_RInterpTo_Constant_InterpSpeed_ImplicitCast)
+  [711] CallFunc_K2_SetActorRotation_ReturnValue = CallFunc_GetOwningActor_ReturnValue.K2_SetActorRotation(CallFunc_RInterpTo_Constant_ReturnValue, false)
+  [763] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [783] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.K2_GetActorLocation()
+  [833] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [883] CallFunc_GetSocketLocation_ReturnValue = self.MountedMeshComponent.GetSocketLocation(CallFunc_GetMountedTarget_ReturnValue.MountableSocket.SocketName)
+  [964] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetSocketLocation_ReturnValue)
+  [1010] BreakRotator(CallFunc_FindLookAtRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [1056] CallFunc_FInterpTo_Constant_Target_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [1085] CallFunc_FInterpTo_Constant_ReturnValue = FInterpTo_Constant(self.DesiredPitchRotation, CallFunc_FInterpTo_Constant_Target_ImplicitCast, DeltaTime, self.PullRotationSpeed)
+  [1149] self.DesiredPitchRotation = CallFunc_FInterpTo_Constant_ReturnValue
+  [1176] return nothing
+  [1178] end
+
+=== SelectAnimStateOverrides
+  [0] AnimStateOverrides = null
+  [11] return nothing
+  [13] end
+
+=== Server_Dismount
+  [0] frame.K2Node_CustomEvent_DismountType = DismountType
+  [18] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(64)
+  [33] return nothing
+  [35] end
+
+=== Server_OwningClientAnimationBlueprintInitialized
+  [0] ExecuteUbergraph_player_base_mounted_creature_synced_anim_controller(761)
+  [15] return nothing
+  [17] end
+
+=== SpawnSpeedlineEffects
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.SpeedlineParticleSystem)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @57
+  [43] DestroySpeedlineEffects()
+  [57] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [77] if !(CallFunc_IsOwningClient_ReturnValue) goto @401
+  [91] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [111] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwningActor_ReturnValue.K2_GetActorLocation()
+  [161] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, thunderbird_mounting_speedlines_p, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [254] CallFunc_CreateDynamicMaterialInstance_ReturnValue = CreateDynamicMaterialInstance(self, thunderbird_mounting_m, 'None', 0)
+  [299] self.SpeedlineParticleMaterial = CallFunc_CreateDynamicMaterialInstance_ReturnValue
+  [318] CallFunc_SpawnEmitterAtLocation_ReturnValue.SetMaterial(0, self.SpeedlineParticleMaterial)
+  [368] self.SpeedlineParticleSystem = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [387] TickSpeedlineEffects()
+  [401] return nothing
+  [403] end
+
+=== TickSpeedlineEffects
+  [0] MountedSocketLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [63] OwningActor = CallFunc_GetOwningActor_ReturnValue
+  [82] CallFunc_IsValid_ReturnValue = IsValid(self.MountingComponent)
+  [111] CallFunc_IsValid_ReturnValue_1 = IsValid(OwningActor)
+  [140] CallFunc_IsValid_ReturnValue_4 = IsValid(self.SpeedlineParticleSystem)
+  [169] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue_1, CallFunc_IsValid_ReturnValue_4)
+  [207] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_IsValid_ReturnValue)
+  [245] if !(CallFunc_BooleanAND_ReturnValue_1) goto @1209
+  [259] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [309] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetMountedTarget_ReturnValue.MountableComponent)
+  [347] if !(CallFunc_IsValid_ReturnValue_2) goto @1209
+  [361] CallFunc_GetMountedTarget_ReturnValue = self.MountingComponent.GetMountedTarget()
+  [411] CallFunc_GetSocketLocation_ReturnValue = CallFunc_GetMountedTarget_ReturnValue.MountableComponent.GetSocketLocation(CallFunc_GetMountedTarget_ReturnValue.MountableSocket, CallFunc_GetSocketLocation_OutSocketLocation)
+  [489] MountedSocketLocation = CallFunc_GetSocketLocation_OutSocketLocation
+  [516] CallFunc_K2_GetActorLocation_ReturnValue = OwningActor.K2_GetActorLocation()
+  [566] CallFunc_K2_GetActorLocation_ReturnValue_1 = OwningActor.K2_GetActorLocation()
+  [616] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(MountedSocketLocation, CallFunc_K2_GetActorLocation_ReturnValue)
+  [662] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_Subtract_VectorVector_ReturnValue)
+  [699] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_Conv_VectorToRotator_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [770] self.SpeedlineParticleSystem.K2_SetWorldTransform(CallFunc_MakeTransform_ReturnValue, false, CallFunc_K2_SetWorldTransform_SweepHitResult, false)
+  [822] CallFunc_IsValid_ReturnValue_3 = IsValid(self.SpeedlineParticleMaterial)
+  [851] if !(CallFunc_IsValid_ReturnValue_3) goto @1209
+  [865] CallFunc_K2_GetActorLocation_ReturnValue = OwningActor.K2_GetActorLocation()
+  [915] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(MountedSocketLocation, CallFunc_K2_GetActorLocation_ReturnValue)
+  [961] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [998] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_VSize_ReturnValue, 750.0, 2500.0, 0.0, 1.0)
+  [1071] CallFunc_Lerp_ReturnValue = Lerp(0.0, 1.0, CallFunc_MapRangeClamped_ReturnValue)
+  [1126] CallFunc_SetScalarParameterValue_Value_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Lerp_ReturnValue)
+  [1155] self.SpeedlineParticleMaterial.SetScalarParameterValue('OpacityMult', CallFunc_SetScalarParameterValue_Value_ImplicitCast)
+  [1209] return nothing
+  [1211] end

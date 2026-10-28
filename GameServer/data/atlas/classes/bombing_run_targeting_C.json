@@ -1,0 +1,300 @@
+{
+ "name": "bombing_run_targeting_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BeamParticle",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveDecal",
+   "type": "ObjectProperty<DecalComponent>",
+   "bp_type": "ObjectProperty<DecalComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveEffect",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxRange",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Character",
+   "type": "ObjectProperty<Pawn>",
+   "bp_type": "ObjectProperty<Pawn>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AimDecal",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "ActiveDecal",
+    "ActiveEffect",
+    "Character",
+    "MaxRange"
+   ],
+   "sets": [],
+   "calls": [
+    "FindCameraGroundTarget",
+    "KismetSystemLibrary.IsValid",
+    "SceneComponent.K2_SetWorldLocation"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_bombing_run_targeting",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 45,
+   "reads": [
+    "ActiveDecal",
+    "ActiveEffect",
+    "Character",
+    "MaxRange"
+   ],
+   "sets": [
+    "ActiveDecal",
+    "ActiveEffect",
+    "Character"
+   ],
+   "calls": [
+    "Actor.GetInstigator",
+    "AimDecal",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "FindCameraGroundTarget",
+    "GameplayStatics.SpawnDecalAtLocation",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "KismetMaterialLibrary.CreateDynamicMaterialInstance",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "MaterialInstanceDynamic.SetVectorParameterValue",
+    "PlaceDecal",
+    "TryDestroyComponent",
+    "UpdateDecal"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "Material targeting_radius_dc",
+    "ParticleSystem flyby_targeting_p"
+   ]
+  },
+  {
+   "name": "PlaceDecal",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bombing_run_targeting_C.ExecuteUbergraph_bombing_run_targeting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bombing_run_targeting_C.ExecuteUbergraph_bombing_run_targeting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveEndPlay",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EndPlayReason",
+     "type": "ByteProperty<EEndPlayReason>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bombing_run_targeting_C.ExecuteUbergraph_bombing_run_targeting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bombing_run_targeting_C.ExecuteUbergraph_bombing_run_targeting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateDecal",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bombing_run_targeting_C.ExecuteUbergraph_bombing_run_targeting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/game/consumables/bombing_run_targeting",
+ "pseudo_file": "pseudo/bombing_run_targeting_C.txt",
+ "game_data": {}
+}

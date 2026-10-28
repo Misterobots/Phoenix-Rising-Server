@@ -1,0 +1,83 @@
+# base_periodic_global_effect_hunt_modifier_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateEffect
+  [0] ExecuteUbergraph_base_periodic_global_effect_hunt_modifier(717)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_base_periodic_global_effect_hunt_modifier
+  [0] push @1036
+  [5] goto computed(EntryPoint)
+  [15] if !(self.ModifierIsActive) pop
+  [25] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [46] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [82] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [111] if !(K2Node_DynamicCast_bSuccess) goto @345
+  [125] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetIsAnyBehemothInCombat(CallFunc_GetIsAnyBehemothInCombat_Return)
+  [171] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.OnlyActivateIfBehemothIsInCombat)
+  [200] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetIsAnyBehemothInCombat_Return, self.OnlyActivateIfBehemothIsInCombat)
+  [238] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [276] if !(CallFunc_BooleanOR_ReturnValue) goto @361
+  [290] K2_ClearAndInvalidateTimerHandle(self, self.NextActivationTimer)
+  [310] push @459
+  [315] push @376
+  [320] if !(self.AutomaticallyRestartTimerOnActivation) pop
+  [330] SetupTimerForNextActivation()
+  [344] pop
+  [345] CallFunc_GetIsAnyBehemothInCombat_Return = false
+  [356] goto @171
+  [361] SetupTimerForNextActivation()
+  [375] pop
+  [376] CallFunc_TextIsEmpty_ReturnValue = TextIsEmpty(self.OptionalStatusEffectTextOnActivateEffect)
+  [405] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_TextIsEmpty_ReturnValue)
+  [434] if !(CallFunc_Not_PreBool_ReturnValue_1) pop
+  [444] MulticastStatusEffectText()
+  [458] pop
+  [459] ActivateEffect()
+  [473] pop
+  [474] ReceiveBeginPlay()
+  [484] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [504] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [514] SetupTimerForNextActivation()
+  [528] pop
+  [529] goto @15
+  [534] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(self.MinTimeBetweenEffectActivation, self.MaxTimeBetweenEffectActivation)
+  [580] K2Node_CreateDelegate_OutputDelegate = bind(self.TryActivateEffect)
+  [603] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [632] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [689] self.NextActivationTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [716] pop
+  [717] pop
+  [718] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [739] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLocalArchonCharacter_ReturnValue)
+  [768] if !(CallFunc_IsValid_ReturnValue) pop
+  [778] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [799] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetLocalArchonCharacter_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [850] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [879] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [889] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [910] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetLocalArchonCharacter_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [961] OnStatusWorthHUDNotifyingOccured__DelegateSignature(self.OptionalStatusEffectTextOnActivateEffect, self.OptionalStatusEffectIconOnActivateEffect, 'None', false, false)
+  [1035] pop
+  [1036] return nothing
+  [1038] end
+
+=== MulticastStatusEffectText
+  [0] ExecuteUbergraph_base_periodic_global_effect_hunt_modifier(718)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_base_periodic_global_effect_hunt_modifier(474)
+  [15] return nothing
+  [17] end
+
+=== SetupTimerForNextActivation
+  [0] ExecuteUbergraph_base_periodic_global_effect_hunt_modifier(534)
+  [15] return nothing
+  [17] end
+
+=== TryActivateEffect
+  [0] ExecuteUbergraph_base_periodic_global_effect_hunt_modifier(529)
+  [15] return nothing
+  [17] end

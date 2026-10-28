@@ -1,0 +1,1467 @@
+{
+ "name": "staggerable_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonStaggerComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 368,
+ "sdk_header": "staggerable_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "StaggerData",
+   "type": "TArray<Fstagger_stage>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "ArrayProperty",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "PerPlayerScaling",
+   "type": "double",
+   "offset": "0xB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "CurrentStaggerHealth",
+   "type": "double",
+   "offset": "0xC0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 3,
+   "schema_rep_index": 3
+  },
+  {
+   "name": "CurrentStaggerStage",
+   "type": "int32",
+   "offset": "0xC8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "IntProperty",
+   "rep_index": 4,
+   "schema_rep_index": 4
+  },
+  {
+   "name": "FinalStageStrategy",
+   "type": "Efinal_stagger_stage_strategy",
+   "offset": "0xCC",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<final_stagger_stage_strategy>"
+  },
+  {
+   "name": "FinishedStaggerStages",
+   "type": "bool",
+   "offset": "0xCD",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "DebugStaggers",
+   "type": "bool",
+   "offset": "0xCE",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CurrentStaggerMaxHealth",
+   "type": "double",
+   "offset": "0xD0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 5,
+   "schema_rep_index": 5
+  },
+  {
+   "name": "Debug1HitStagger",
+   "type": "bool",
+   "offset": "0xD8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "StaggerTelemetryData",
+   "type": "TArray<Fstagger_telemetry_data>",
+   "offset": "0xE0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "StaggerArmorDuration",
+   "type": "double",
+   "offset": "0xF0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "CloseToStaggerEffectsActive",
+   "type": "bool",
+   "offset": "0xF8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_CloseToStaggerEffectsActive",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "BoolProperty",
+   "rep_index": 6,
+   "schema_rep_index": 6
+  },
+  {
+   "name": "AlmostStaggeredVFX",
+   "type": "UParticleSystemComponent*",
+   "offset": "0x100",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "BaseStaggerData",
+   "type": "TArray<Fstagger_stage>",
+   "offset": "0x108",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "StaggerArmorStack",
+   "type": "TArray<Fstagger_armor_data>",
+   "offset": "0x118",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_armorIndex",
+   "type": "int32",
+   "offset": "0x128",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "ArmorScalingFactor",
+   "type": "double",
+   "offset": "0x130",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "TotalArmorValueForUI",
+   "type": "double",
+   "offset": "0x138",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 7,
+   "schema_rep_index": 7
+  },
+  {
+   "name": "TotalInitialArmorValueForUI",
+   "type": "double",
+   "offset": "0x140",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 8,
+   "schema_rep_index": 8
+  },
+  {
+   "name": "StaggerVFX",
+   "type": "Astagger_behemoth_telegraph_bp_C*",
+   "offset": "0x148",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<stagger_behemoth_telegraph_bp_C>"
+  },
+  {
+   "name": "VFX Offset",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Staggerable VFX Socket",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "AlmostStaggeredVFX",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AddStaggerArmor",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "UnscaledArmorAmount",
+     "type": "double"
+    },
+    {
+     "name": "ArmorDuration",
+     "type": "double"
+    },
+    {
+     "name": "Player_Count",
+     "type": "int32"
+    },
+    {
+     "name": "ArmorGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 25,
+   "reads": [
+    "ArmorScalingFactor",
+    "Debug1HitStagger",
+    "StaggerArmorStack"
+   ],
+   "sets": [],
+   "calls": [
+    "GetPlayerScalingFactor",
+    "KismetArrayLibrary.Array_Insert",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSendStaggerTelemetryData",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanReceiveStaggerDamage",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Staggerable",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 19,
+   "reads": [
+    "CurrentStaggerStage",
+    "FinalStageStrategy",
+    "StaggerData"
+   ],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "IsStaggered",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Greater_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ChangeStaggerStage",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DoStagger",
+     "type": "bool"
+    },
+    {
+     "name": "NewStaggerStage",
+     "type": "int32"
+    },
+    {
+     "name": "StaggeredPart",
+     "type": "UMonsterPartComponent*"
+    },
+    {
+     "name": "StaggerType",
+     "type": "Estagger_type"
+    },
+    {
+     "name": "StaggerCauser",
+     "type": "AActor*"
+    },
+    {
+     "name": "StaggerAttackDamageEventTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 47,
+   "reads": [
+    "StaggerArmorDuration",
+    "StaggerData"
+   ],
+   "sets": [
+    "CurrentStaggerHealth",
+    "CurrentStaggerMaxHealth",
+    "CurrentStaggerStage"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "AddStaggerArmor",
+    "ArchonGameplayStatics.IsShipping",
+    "GameplayStatics.GetGameMode",
+    "GetConnectedPlayerCount",
+    "GetStaggerMaxHealthForStage",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "StaggerBehemoth_interface"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DegenStaggerArmor",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_staggerable_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 147,
+   "reads": [
+    "CloseToStaggerEffectsActive",
+    "CurrentStaggerHealth",
+    "CurrentStaggerMaxHealth",
+    "CurrentStaggerStage",
+    "DebugStaggers",
+    "L_armorIndex",
+    "Scene",
+    "StaggerArmorStack",
+    "StaggerData",
+    "StaggerTelemetryData",
+    "StaggerVFX"
+   ],
+   "sets": [
+    "BaseStaggerData",
+    "CloseToStaggerEffectsActive",
+    "CurrentStaggerHealth",
+    "L_armorIndex",
+    "StaggerTelemetryData",
+    "TotalArmorValueForUI",
+    "TotalInitialArmorValueForUI"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonFunctionalUtility.IsBuildShipping",
+    "BehemothInState",
+    "ChangeStaggerStage",
+    "GetTotalArmor",
+    "HasMatchingGameplayTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.DoesImplementInterface",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MulticastTelemetryData",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_CloseToStaggerEffectsActive",
+    "SceneComponent.SetVisibility"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass behemoth_interface_C"
+   ]
+  },
+  {
+   "name": "GetCurrentStaggerData",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StaggerData",
+     "type": "Fstagger_stage"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 21,
+   "reads": [
+    "CurrentStaggerStage",
+    "StaggerData"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetIndexOfStaggerData",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Instigator",
+     "type": "AActor*"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "StaggerTelemetryData"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetPlayerScalingFactor",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Player_Count",
+     "type": "int32"
+    },
+    {
+     "name": "ScalingFactor",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 33,
+   "reads": [
+    "PerPlayerScaling"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetGameMode",
+    "GetPerGameModeBehemothTuningOverrides",
+    "GetPerPlayerScalingValuesForNewTuning",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "UseNewHealthTuning"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetStaggerMaxHealthForStage",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Stage",
+     "type": "int32"
+    },
+    {
+     "name": "Player_Count",
+     "type": "int32"
+    },
+    {
+     "name": "Max_Health",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 12,
+   "reads": [
+    "Debug1HitStagger",
+    "StaggerData"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "GetPlayerScalingFactor",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetTotalArmor",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TotalArmor",
+     "type": "double"
+    },
+    {
+     "name": "TotalInitalArmor",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "StaggerArmorStack"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HideStaggerVFX",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastTelemetryData",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StaggerTelemetryData",
+     "type": "TArray<Fstagger_telemetry_data>"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_CloseToStaggerEffectsActive",
+   "flags": [
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 37,
+   "reads": [
+    "CloseToStaggerEffectsActive",
+    "CurrentStaggerStage",
+    "StaggerVFX",
+    "Staggerable VFX Socket",
+    "VFX Offset"
+   ],
+   "sets": [
+    "StaggerVFX",
+    "bAbsoluteRotation"
+   ],
+   "calls": [
+    "Actor.K2_AttachToComponent",
+    "Actor.K2_GetRootComponent",
+    "ActorComponent.GetOwner",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GetMesh",
+    "GetSocketTransform",
+    "K2_DestroyActor",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "SceneComponent.K2_AddWorldOffset"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass stagger_behemoth_telegraph_bp_C"
+   ]
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RecordStaggerDamage",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Instigator",
+     "type": "AActor*"
+    },
+    {
+     "name": "StaggerDamage",
+     "type": "double"
+    },
+    {
+     "name": "CausedAStagger",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 26,
+   "reads": [
+    "StaggerTelemetryData"
+   ],
+   "sets": [],
+   "calls": [
+    "GetIndexOfStaggerData",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReduceArmor",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Amount",
+     "type": "double"
+    },
+    {
+     "name": "AmountRemaining",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 32,
+   "reads": [
+    "StaggerArmorStack"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshStaggerEffectsActive",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RetroactivelyAdjustStaggerHealthForPlayerCount",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Player_Count",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 15,
+   "reads": [
+    "CurrentStaggerHealth",
+    "CurrentStaggerMaxHealth",
+    "CurrentStaggerStage"
+   ],
+   "sets": [
+    "CurrentStaggerHealth",
+    "CurrentStaggerMaxHealth"
+   ],
+   "calls": [
+    "GetStaggerMaxHealthForStage",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShowStaggerVFX",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryAddStaggerDamage",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TotalBaseStaggerDamage",
+     "type": "double"
+    },
+    {
+     "name": "Instigator",
+     "type": "AActor*"
+    },
+    {
+     "name": "PostCalcStaggerMultiplier",
+     "type": "double"
+    },
+    {
+     "name": "BaseDamageStaggerMultiplier",
+     "type": "double"
+    },
+    {
+     "name": "PerHitStaggerBonus",
+     "type": "double"
+    },
+    {
+     "name": "StaggerResistPenetrationPercent",
+     "type": "double"
+    },
+    {
+     "name": "StaggeredPart",
+     "type": "UMonsterPartComponent*"
+    },
+    {
+     "name": "StaggerAttackDamageEventTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "StaggerCausedByThisDamage",
+     "type": "bool"
+    },
+    {
+     "name": "StaggerDamageDealt",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 111,
+   "reads": [
+    "CurrentStaggerHealth",
+    "CurrentStaggerStage",
+    "FinalStageStrategy",
+    "FinishedStaggerStages",
+    "StaggerData"
+   ],
+   "sets": [
+    "CurrentStaggerHealth",
+    "FinishedStaggerStages"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ActorComponent.GetOwner",
+    "ArchonFunctionalUtility.IsBuildShipping",
+    "CanReceiveStaggerDamage",
+    "ChangeStaggerStage",
+    "GetCurrentStaggerData",
+    "HasMatchingGameplayTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.IsServer",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "RecordStaggerDamage",
+    "ReduceArmor"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateSpecialCaseSignificanceManagement",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewSignificance",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "staggerable_bpc_C.ExecuteUbergraph_staggerable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UsesSpecialCaseSignificanceManagement",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "bool",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/staggerable_bpc",
+ "pseudo_file": "pseudo/staggerable_bpc_C.txt",
+ "game_data": {}
+}

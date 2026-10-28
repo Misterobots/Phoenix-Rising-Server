@@ -1,0 +1,775 @@
+{
+ "name": "shockmane_balllightning_proj_C",
+ "kind": "blueprint",
+ "parents": [
+  "projectile_base_bp_C",
+  "ArchonProjectileBase",
+  "AbilityActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Damage Volume",
+   "type": "ObjectProperty<CapsuleComponent>",
+   "bp_type": "ObjectProperty<CapsuleComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WeaponCollision",
+   "type": "ObjectProperty<SphereComponent>",
+   "bp_type": "ObjectProperty<SphereComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RotatingMovement",
+   "type": "ObjectProperty<RotatingMovementComponent>",
+   "bp_type": "ObjectProperty<RotatingMovementComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Default Grass Push Strength",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Flatten Grass Delay",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Projectile Starting Position",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Explosion Location",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxReflectDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinReflectDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ReflectDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SpawnedFromActor",
+   "type": "ObjectProperty<Actor>",
+   "bp_type": "ObjectProperty<Actor>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "ExposeOnSpawn"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ReflectTargetType",
+   "type": "ByteProperty<reflectable_projectile_returntarget_type>",
+   "bp_type": "ByteProperty<reflectable_projectile_returntarget_type>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TagsOnReflectHit",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WasReflected",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 29
+  },
+  {
+   "name": "StunReflectDamageThreshold",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RequiresReflectToHitInstigator",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinReflectSpeed",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Damage Volume",
+   "class": "CapsuleComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "WeaponCollision",
+   "class": "SphereComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "RotatingMovement",
+   "class": "RotatingMovementComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthOnProjectileDamageOverlap",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OtherActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "OtherComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "SweepResult",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthOnReflected",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReflectingActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSweepHitEvent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanHitThisTarget",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TargetActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "ByteProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 30,
+   "reads": [
+    "Instigator",
+    "RequiresReflectToHitInstigator",
+    "SpawnedFromActor",
+    "WasReflected"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_ObjectObject",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetNodeHelperLibrary.GetValidValue",
+    "KismetSystemLibrary.MakeLiteralByte",
+    "projectile_base_bp_C.CanHitThisTarget"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "UserDefinedEnum can_hit_target_result"
+   ]
+  },
+  {
+   "name": "ExecuteUbergraph_shockmane_balllightning_proj",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_CustomEvent_HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_Event_SweepResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<GameplayTag>"
+    },
+    {
+     "name": "Temp_struct_Variable_1",
+     "type": "StructProperty<GameplayTag>"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_1",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_2",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_3",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_4",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_5",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "K2Node_Event_InExtendedDamageInfo",
+     "type": "StructProperty<ArchonExtendedDamageInfo>"
+    },
+    {
+     "name": "Temp_delegate_Variable_6",
+     "type": "DelegateProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 250,
+   "reads": [
+    "Colliding Body",
+    "Damage Volume",
+    "InitialLifeSpan",
+    "Instigator",
+    "MaxReflectDamage",
+    "MaxSpeed",
+    "MinReflectDamage",
+    "ParticleSystem",
+    "Projectile Starting Position",
+    "ProjectileMovement",
+    "ReflectDamage",
+    "ReflectTargetType",
+    "RotatingMovement",
+    "SpawnedFromActor",
+    "StunReflectDamageThreshold",
+    "TagsOnReflectHit",
+    "Velocity",
+    "WasReflected"
+   ],
+   "sets": [
+    "CanHitOwnerObjects",
+    "HomingAccel",
+    "HomingLockOnAngle",
+    "HomingTarget",
+    "Instigator",
+    "MaxSpeed",
+    "ObjectTypesOnHitSweep_Native",
+    "Projectile Starting Position",
+    "ReflectDamage",
+    "SpawnedFromActor",
+    "WasReflected"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetActorForwardVector",
+    "Actor.GetOwner",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "Actor.ReceiveBeginPlay",
+    "Actor.SetActorEnableCollision",
+    "AkGameplayStatics.PostEvent",
+    "AkGameplayStatics.PostEventAtLocation",
+    "ArchonCharacter.GetIsInvincible",
+    "ArchonGameplayStatics.ApplyArchonTruePointDamage",
+    "ArchonGameplayStatics.GetOuter",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "AuthOnReflected",
+    "AuthSweepHit",
+    "BehemothStateMeetsRequirements",
+    "Controller.K2_GetPawn",
+    "Deactivate",
+    "Explode On Hit",
+    "GameplayStatics.MakeHitResult",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "GetGlobalBlueprintValue",
+    "GetLifeSpan",
+    "GetMaxSpeed",
+    "K2_DestroyActor",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.FindLookAtRotation",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.Normal",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_ObjectObject",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.DoesImplementInterface",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "MulticastVelocity",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "Pawn.GetController",
+    "RescaleAndClamp",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.SetHiddenInGame",
+    "Server - Apply Damage",
+    "SetFloatParameter",
+    "SetLifeSpan",
+    "SetUpdatedComponent",
+    "StaggerBehemoth_interface",
+    "StopSimulating",
+    "projectile_base_bp_C.AuthOnProjectileDamageOverlap",
+    "projectile_base_bp_C.OnProjectileStopped",
+    "projectile_base_bp_C.ProjectileExploded"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Generic_Elemental_Shock_Projectile_Ball_01",
+    "AkAudioEvent Play_Generic_Elemental_Shock_Spark_Medium",
+    "AkAudioEvent Play_Generic_Passby_Shock_Projectile_Ball_01",
+    "AkAudioEvent Stop_Generic_Elemental_Shock_Projectile_Ball_01",
+    "AkAudioEvent Stop_Generic_Passby_Shock_Projectile_Ball_01",
+    "BlueprintGeneratedClass DamageType_Cutting_C",
+    "BlueprintGeneratedClass behemoth_interface_C",
+    "ParticleSystem impact_shock_p",
+    "ParticleSystem shock_projectile_impact_reflect_p"
+   ]
+  },
+  {
+   "name": "Explode On Hit",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Explosion Location",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ReflectDamage",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnProjectileStopped",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ProjectileExploded",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ExplosionLocation",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "ExplodeType",
+     "type": "EnumProperty<EProjectileExplodeType>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveArchonPointDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Damage",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "HitLocation",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "HitNormal",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "HitComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "BoneName",
+     "type": "NameProperty"
+    },
+    {
+     "name": "ShotFromDirection",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "InExtendedDamageInfo",
+     "type": "StructProperty<ArchonExtendedDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shockmane_balllightning_proj_C.ExecuteUbergraph_shockmane_balllightning_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UserConstructionScript",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [
+    "Damage Volume"
+   ],
+   "sets": [
+    "CollidingBody_Native"
+   ],
+   "calls": [
+    "projectile_base_bp_C.UserConstructionScript"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/aq/shockmane/projectiles/shockmane_balllightning_proj",
+ "pseudo_file": "pseudo/shockmane_balllightning_proj_C.txt",
+ "game_data": {}
+}

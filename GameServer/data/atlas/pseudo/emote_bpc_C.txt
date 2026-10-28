@@ -1,0 +1,227 @@
+# emote_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CanPerformEmote
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] array{GameplayTag{'State.NoHealth'}, GameplayTag{'Abilities.Stagger'}}
+  [85] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [114] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [151] CallFunc_GetAbilitySystemComponent_ReturnValue.GetOwnedGameplayTags(CallFunc_GetOwnedGameplayTags_TagContainer)
+  [197] CallFunc_CanPerformAction_ReturnValue = Default__archon_function_library_C.CanPerformAction(CallFunc_GetOwner_ReturnValue, self)
+  [253] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(CallFunc_GetOwnedGameplayTags_TagContainer, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [292] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasAnyTags_ReturnValue)
+  [321] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.IsPlayingEmote?, CallFunc_Not_PreBool_ReturnValue)
+  [359] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_CanPerformAction_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [397] ReturnValue = CallFunc_BooleanOR_ReturnValue
+  [416] return ReturnValue
+  [426] end
+
+=== ExecuteUbergraph_emote_bpc
+  [0] push @3772
+  [5] goto computed(EntryPoint)
+  [15] StopEmoteAudio()
+  [29] self.IsPlayingEmote? = true
+  [40] MarkPropertyDirtyFromRepIndex(self, 2, 'IsPlayingEmote?')
+  [69] ServerSetEmoteState(true)
+  [84] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnLoaded_00A792C4495B9DB0E50C8D83189B60A1)
+  [107] LoadAsset(self, K2Node_CustomEvent_Asset, K2Node_CreateDelegate_OutputDelegate_2, LatentActionInfo{-1, -1701549641, 'ExecuteUbergraph_emote_bpc', self})
+  [174] pop
+  [175] MarkPropertyDirtyFromRepIndex(self, 2, 'IsPlayingEmote?')
+  [204] self.CurrentEmoteMontage = null
+  [215] ServerSetEmoteState(false)
+  [230] pop
+  [231] MarkPropertyDirtyFromRepIndex(self, 2, 'IsPlayingEmote?')
+  [260] pop
+  [261] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [281] CallFunc_GetComponentByClass_ReturnValue_3 = CallFunc_GetOwner_ReturnValue.GetComponentByClass(weapon_sheathe_bpc_C)
+  [332] self.SheatheComponent = CallFunc_GetComponentByClass_ReturnValue_3
+  [351] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [371] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetOwner_ReturnValue.GetComponentByClass(NetworkedMontageComponent)
+  [422] self.NetworkMontageComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [441] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [461] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [512] self.PlayerEventDispatcherComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [531] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [551] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_state_machine_bpc_C)
+  [602] self.PlayerLocomotionComponent = CallFunc_GetComponentByClass_ReturnValue
+  [621] K2Node_CreateDelegate_OutputDelegate = bind(self.OnMovementModeChanged_Event_0)
+  [644] K2Node_CreateDelegate_OutputDelegate += None
+  [685] pop
+  [686] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [707] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @722
+  [721] pop
+  [722] CallFunc_PlayMontage_ReturnValue = self.NetworkMontageComponent.PlayMontage(self.CurrentEmoteMontage, 1.0, 'None', 1.0)
+  [804] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnEmoteBlendOut)
+  [827] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [874] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetOwnerMesh_SkeletalMeshComponent.GetAnimInstance()
+  [916] CallFunc_GetAnimInstance_ReturnValue.Montage_SetBlendingOutDelegate(K2Node_CreateDelegate_OutputDelegate_1, self.CurrentEmoteMontage)
+  [966] pop
+  [967] CallFunc_IsValid_ReturnValue = IsValid(self.CurrentEmoteMontage)
+  [996] if !(CallFunc_IsValid_ReturnValue) pop
+  [1006] self.NetworkMontageComponent.CurrentMontageStop(0.2, null)
+  [1044] pop
+  [1045] self.IsPlayingEmote? = false
+  [1056] goto @175
+  [1061] goto @15
+  [1066] self.SheatheComponent.SetSheatheWeapon(true)
+  [1103] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnSheatheWeaponEnd_Event_0)
+  [1126] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [1167] pop
+  [1168] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnSheatheWeaponEnd_Event_0)
+  [1191] K2Node_CreateDelegate_OutputDelegate_3 -= None
+  [1232] if !(K2Node_CustomEvent_Success) pop
+  [1242] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [1288] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [1330] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_GetLoadout_ReturnValue)
+  [1359] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [1369] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [1415] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [1457] CallFunc_GetManualEmote_ReturnValue = CallFunc_GetLoadout_ReturnValue.GetManualEmote(K2Node_CustomEvent_EmoteIndex)
+  [1508] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_GetManualEmote_ReturnValue)
+  [1537] if !(CallFunc_IsValid_ReturnValue_5) goto @2291
+  [1551] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1571] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetOwner_ReturnValue_1)
+  [1607] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [1636] if !(K2Node_DynamicCast_bSuccess_1) goto @2570
+  [1650] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [1696] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [1742] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [1784] CallFunc_GetManualEmote_ReturnValue = CallFunc_GetLoadout_ReturnValue.GetManualEmote(K2Node_CustomEvent_EmoteIndex)
+  [1835] CallFunc_HasReference_ReturnValue_1 = HasReference(CallFunc_GetManualEmote_ReturnValue.self.AnimSequenceAsset)
+  [1886] if !(CallFunc_HasReference_ReturnValue_1) goto @2291
+  [1900] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [1946] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [1988] CallFunc_GetManualEmote_ReturnValue = CallFunc_GetLoadout_ReturnValue.GetManualEmote(K2Node_CustomEvent_EmoteIndex)
+  [2039] CallFunc_EqualEqual_ByteByte_ReturnValue_5 = EqualEqual_ByteByte(CallFunc_GetManualEmote_ReturnValue.self.WeaponRestriction, 0)
+  [2092] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_5) goto @2586
+  [2106] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [2152] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [2194] CallFunc_GetManualEmote_ReturnValue = CallFunc_GetLoadout_ReturnValue.GetManualEmote(K2Node_CustomEvent_EmoteIndex)
+  [2245] PlayEmoteAnim(CallFunc_GetManualEmote_ReturnValue.self.AnimSequenceAsset)
+  [2290] pop
+  [2291] Default__KismetArrayLibrary.Array_Get(self.DefaultEmotes, K2Node_CustomEvent_EmoteIndex, CallFunc_Array_Get_Item)
+  [2350] CallFunc_HasReference_ReturnValue = HasReference(CallFunc_Array_Get_Item)
+  [2379] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.DefaultEmotes, K2Node_CustomEvent_EmoteIndex)
+  [2439] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Array_IsValidIndex_ReturnValue, CallFunc_HasReference_ReturnValue)
+  [2477] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [2487] Default__KismetArrayLibrary.Array_Get(self.DefaultEmotes, K2Node_CustomEvent_EmoteIndex, CallFunc_Array_Get_Item)
+  [2546] PlayEmoteAnim(CallFunc_Array_Get_Item)
+  [2569] pop
+  [2570] CallFunc_GetOwnedWeapon_Weapon = null
+  [2581] goto @1696
+  [2586] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwnedWeapon_Weapon)
+  [2615] if !(CallFunc_IsValid_ReturnValue_1) goto @2291
+  [2629] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [2675] CallFunc_GetLoadout_ReturnValue = CallFunc_GetLocalController_ArchonPlayerController.GetLoadout()
+  [2717] CallFunc_GetManualEmote_ReturnValue = CallFunc_GetLoadout_ReturnValue.GetManualEmote(K2Node_CustomEvent_EmoteIndex)
+  [2768] CallFunc_EqualEqual_ByteByte_ReturnValue_4 = EqualEqual_ByteByte(CallFunc_GetManualEmote_ReturnValue.self.WeaponRestriction, CallFunc_GetOwnedWeapon_Weapon.self.WeaponType)
+  [2850] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_4) goto @2291
+  [2864] goto @2106
+  [2869] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Temp_object_Variable)
+  [2905] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [2934] if !(K2Node_DynamicCast_bSuccess) pop
+  [2944] self.CurrentEmoteMontage = K2Node_DynamicCast_AsAnim_Montage
+  [2963] goto @686
+  [2968] Temp_object_Variable = K2Node_CustomEvent_Loaded
+  [2987] goto @2869
+  [2992] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_CustomEvent_Montage, self.CurrentEmoteMontage)
+  [3030] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [3040] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnEmoteBlendOut)
+  [3063] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent_1)
+  [3110] CallFunc_GetAnimInstance_ReturnValue_1 = CallFunc_GetOwnerMesh_SkeletalMeshComponent_1.GetAnimInstance()
+  [3152] CallFunc_GetAnimInstance_ReturnValue_1.Montage_RemoveBlendingOutDelegate(K2Node_CreateDelegate_OutputDelegate_1, self.CurrentEmoteMontage)
+  [3202] goto @1045
+  [3207] CallFunc_IsValid_ReturnValue_2 = IsValid(self.SheatheComponent)
+  [3236] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [3246] self.SheatheComponent.GetWeaponSheatheState(CallFunc_GetWeaponSheatheState_SheatheState)
+  [3291] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 1)
+  [3322] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 2)
+  [3353] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(CallFunc_GetWeaponSheatheState_SheatheState, 4)
+  [3384] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue_2)
+  [3422] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_3)
+  [3460] if !(CallFunc_BooleanOR_ReturnValue_1) goto @1066
+  [3474] goto @1242
+  [3479] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(K2Node_CustomEvent_NewMovementMode, 1)
+  [3510] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_CustomEvent_PreviousMovementMode, 1)
+  [3541] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue, CallFunc_NotEqual_ByteByte_ReturnValue)
+  [3579] CallFunc_IsValid_ReturnValue_3 = IsValid(self.PlayerEventDispatcherComponent)
+  [3608] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_IsValid_ReturnValue_3)
+  [3646] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(CallFunc_BooleanAND_ReturnValue_2, self.IsPlayingEmote?)
+  [3684] if !(CallFunc_BooleanAND_ReturnValue_3) pop
+  [3694] goto @967
+  [3699] self.IsPlayingEmote? = K2Node_CustomEvent_IsPlayingEmote_
+  [3718] goto @231
+  [3723] if !(K2Node_CustomEvent_Interrupted_1) pop
+  [3733] StopEmoteAudio()
+  [3747] pop
+  [3748] Stop_Emote_Audio_Multicast(K2Node_CustomEvent_Interrupted)
+  [3771] pop
+  [3772] return nothing
+  [3774] end
+
+=== OnEmoteBlendOut
+  [0] frame.K2Node_CustomEvent_Montage = Montage
+  [18] frame.K2Node_CustomEvent_bInterrupted = bInterrupted
+  [36] ExecuteUbergraph_emote_bpc(2992)
+  [51] return nothing
+  [53] end
+
+=== OnLoaded_00A792C4495B9DB0E50C8D83189B60A1
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_emote_bpc(2968)
+  [33] return nothing
+  [35] end
+
+=== OnMovementModeChanged_Event_0
+  [0] frame.K2Node_CustomEvent_PreviousMovementMode = PreviousMovementMode
+  [18] frame.K2Node_CustomEvent_NewMovementMode = NewMovementMode
+  [36] ExecuteUbergraph_emote_bpc(3479)
+  [51] return nothing
+  [53] end
+
+=== OnSheatheWeaponEnd_Event_0
+  [0] frame.K2Node_CustomEvent_Success = Success
+  [18] ExecuteUbergraph_emote_bpc(1168)
+  [33] return nothing
+  [35] end
+
+=== PlayEmoteAnim
+  [0] frame.K2Node_CustomEvent_Asset = Asset
+  [18] ExecuteUbergraph_emote_bpc(1061)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_emote_bpc(261)
+  [15] return nothing
+  [17] end
+
+=== ServerSetEmoteState
+  [0] frame.K2Node_CustomEvent_IsPlayingEmote_ = IsPlayingEmote?
+  [18] ExecuteUbergraph_emote_bpc(3699)
+  [33] return nothing
+  [35] end
+
+=== StopEmoteAudio
+  [0] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [47] CallFunc_GetAkComponent_ReturnValue = GetAkComponent(CallFunc_GetOwnerMesh_SkeletalMeshComponent, CallFunc_GetAkComponent_ComponentCreated, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [125] CallFunc_PostAkEvent_ReturnValue = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(Stop_Emote_Sounds, 0, Temp_delegate_Variable)
+  [202] return nothing
+  [204] end
+
+=== Stop_Emote_Audio_Multicast
+  [0] frame.K2Node_CustomEvent_Interrupted_1 = Interrupted
+  [18] ExecuteUbergraph_emote_bpc(3723)
+  [33] return nothing
+  [35] end
+
+=== Stop_Emote_Audio_Server
+  [0] frame.K2Node_CustomEvent_Interrupted = Interrupted
+  [18] ExecuteUbergraph_emote_bpc(3748)
+  [33] return nothing
+  [35] end
+
+=== TriggerEmote
+  [0] frame.K2Node_CustomEvent_EmoteIndex = EmoteIndex
+  [18] ExecuteUbergraph_emote_bpc(3207)
+  [33] return nothing
+  [35] end

@@ -1,0 +1,110 @@
+# game_content_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Chosen Encounter Content to Game Content Spec
+  [0] push @1108
+  [5] push @119
+  [10] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EncounterContent.ContentType, 0)
+  [50] if !(K2Node_SwitchEnum_CmpSuccess) goto @135
+  [64] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EncounterContent.ContentType, 1)
+  [104] if !(K2Node_SwitchEnum_CmpSuccess) goto @724
+  [118] pop
+  [119] CreatedSpec = null
+  [130] goto @1108
+  [135] CallFunc_GetGameState_ReturnValue = GetGameState(__WorldContext)
+  [164] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameState_ReturnValue.GetComponentByClass(IslandDirectorComponent)
+  [215] Default__behemoth_function_library_C.GetBehemothMetadata(EncounterContent.ContentName, CallFunc_GetComponentByClass_ReturnValue, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [296] if !(CallFunc_GetBehemothMetadata_FoundMetadata) pop
+  [306] CallFunc_GetGameState_ReturnValue = GetGameState(__WorldContext)
+  [335] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameState_ReturnValue.GetComponentByClass(IslandDirectorComponent)
+  [386] CallFunc_CreateAndRegisterSpecification_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue.CreateAndRegisterSpecification(behemoth_content_spec_C)
+  [437] K2Node_DynamicCast_AsBehemoth_Content_Spec = cast<behemoth_content_spec_C>(CallFunc_CreateAndRegisterSpecification_ReturnValue_1)
+  [473] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBehemoth_Content_Spec)
+  [502] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [512] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(OverrideContentLevel, 0)
+  [546] CallFunc_SelectInt_ReturnValue = SelectInt(OverrideContentLevel, EncounterContent.ScaledChallengeLevel, CallFunc_GreaterEqual_IntInt_ReturnValue)
+  [610] K2Node_DynamicCast_AsBehemoth_Content_Spec.InitializeWithChallengeLevel(EncounterContent.ContentName, CallFunc_SelectInt_ReturnValue, CallFunc_GetBehemothMetadata_Out_Row.Exploration_BehemothStarLevel, TuningPresetRow)
+  [700] CreatedSpec = K2Node_DynamicCast_AsBehemoth_Content_Spec
+  [719] goto @1108
+  [724] CallFunc_GetGameState_ReturnValue = GetGameState(__WorldContext)
+  [753] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameState_ReturnValue.GetComponentByClass(IslandDirectorComponent)
+  [804] CallFunc_CreateAndRegisterSpecification_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.CreateAndRegisterSpecification(modifier_content_spec_C)
+  [855] K2Node_DynamicCast_AsModifier_Content_Spec = cast<modifier_content_spec_C>(CallFunc_CreateAndRegisterSpecification_ReturnValue)
+  [891] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsModifier_Content_Spec)
+  [920] if !(K2Node_DynamicCast_bSuccess) pop
+  [930] K2Node_MakeStruct_DataTableRowHandle.DataTable = hunt_modifiers
+  [958] K2Node_MakeStruct_DataTableRowHandle.RowName = EncounterContent.ContentName
+  [1003] K2Node_DynamicCast_AsModifier_Content_Spec.self.ModifierTableRow = K2Node_MakeStruct_DataTableRowHandle
+  [1052] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsModifier_Content_Spec, 1, 'ModifierTableRow')
+  [1089] CreatedSpec = K2Node_DynamicCast_AsModifier_Content_Spec
+  [1108] return nothing
+  [1110] end
+
+=== ConstructBeamRequest
+  [0] push @781
+  [5] push @317
+  [10] CallFunc_IsValid_ReturnValue = IsValid(BeamRequestTemplate.DataTable)
+  [48] if !(CallFunc_IsValid_ReturnValue) pop
+  [58] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(BeamRequestTemplate.DataTable, BeamRequestTemplate.RowName, CallFunc_GetDataTableRowFromName_OutRow)
+  [145] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [155] CallFunc_GetDataTableRowFromName_OutRow.BeamClass = BeamClass
+  [183] CallFunc_GetDataTableRowFromName_OutRow.OptionalTargetActor = OptionalTargetActor
+  [211] CallFunc_GetDataTableRowFromName_OutRow.DamageRowName = DamageRow
+  [247] K2Node_SetFieldsInStruct_StructOut = CallFunc_GetDataTableRowFromName_OutRow
+  [274] Succeeded = true
+  [285] BeamRequest = K2Node_SetFieldsInStruct_StructOut
+  [312] goto @781
+  [317] Succeeded = false
+  [328] BeamRequest = beam_request{'None', 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), null, 0, null, 0.0, 300.0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 180.0, 1000.0, 0.0, 0.0, 0.0, base_beam_lateral_curve, 'None', 0.0, 'None', 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'beam_request'", 'ObjectPath': '/Game/_shared/blueprints/beam_request.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'BuffsToApplyOnHit_100_BDE45A294DC399D428E3FC900FC85A43', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'ClassProperty', 'Name': 'BuffsToApplyOnHit_100_BDE45A294DC399D428E3FC900FC85A43', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 8, 'PropertyClass': {'ObjectName': "Class'Class'", 'ObjectPath': '/Script/CoreUObject'}, 'MetaClass': {'ObjectName': "Class'ArchonBuff'", 'ObjectPath': '/Script/Archon'}}}},Values=), base_beam_speed_curve, speed_or_duration_info{0, 2.0, 2.0, 0.0}, 'None', 0, Guid{0, 0, 0, 0}, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), null, 0.0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), Guid{0, 0, 0, 0}, 0}
+  [781] return nothing
+  [783] end
+
+=== GeneratedEncounterToMultiBehemothSpec
+  [0] push @1450
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(GeneratedEncounter.EncounterContent)
+  [119] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [157] if !(CallFunc_Less_IntInt_ReturnValue) goto @442
+  [171] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [198] push @844
+  [203] Default__KismetArrayLibrary.Array_Get(GeneratedEncounter.EncounterContent, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [271] Chosen Encounter Content to Game Content Spec(CallFunc_Array_Get_Item, OverrideContentLevel, TuningPresetRow, __WorldContext1, CallFunc_Chosen_Encounter_Content_to_Game_Content_Spec_CreatedSpec)
+  [330] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Chosen_Encounter_Content_to_Game_Content_Spec_CreatedSpec)
+  [359] if !(CallFunc_IsValid_ReturnValue) goto @918
+  [373] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_SpecList, CallFunc_Chosen_Encounter_Content_to_Game_Content_Spec_CreatedSpec)
+  [441] pop
+  [442] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(L_SpecList)
+  [501] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [535] if !(CallFunc_Greater_IntInt_ReturnValue) goto @828
+  [549] CallFunc_GetGameState_ReturnValue = GetGameState(__WorldContext1)
+  [578] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameState_ReturnValue.GetComponentByClass(IslandDirectorComponent)
+  [629] CallFunc_CreateAndRegisterSpecification_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.CreateAndRegisterSpecification(multi_behemoth_content_spec_C)
+  [680] K2Node_DynamicCast_AsMulti_Behemoth_Content_Spec = cast<multi_behemoth_content_spec_C>(CallFunc_CreateAndRegisterSpecification_ReturnValue)
+  [716] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMulti_Behemoth_Content_Spec)
+  [745] if !(K2Node_DynamicCast_bSuccess) pop
+  [755] K2Node_DynamicCast_AsMulti_Behemoth_Content_Spec.self.ChildContentSpecifications = L_SpecList
+  [804] MultiBehemothSpec = K2Node_DynamicCast_AsMulti_Behemoth_Content_Spec
+  [823] goto @1450
+  [828] MultiBehemothSpec = null
+  [839] goto @1450
+  [844] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [886] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [913] goto @51
+  [918] if !(false) goto @925
+  [924] pop
+  [925] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(null)
+  [954] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [1004] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [1046] Default__KismetArrayLibrary.Array_Get(GeneratedEncounter.EncounterContent, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1114] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_Array_Get_Item.ContentName)
+  [1160] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('failed to create spec for encounter content "', CallFunc_Conv_NameToString_ReturnValue)
+  [1244] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, '"')
+  [1284] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Concat_StrStr_ReturnValue_3)
+  [1330] PrintString(null, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [1404] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1424] if !(CallFunc_IsShipping_ReturnValue) goto @1439
+  [1438] pop
+  [1439] StackTrace()
+  [1449] pop
+  [1450] return nothing
+  [1452] end

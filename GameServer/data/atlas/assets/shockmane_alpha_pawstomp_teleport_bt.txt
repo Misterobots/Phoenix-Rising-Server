@@ -1,0 +1,23 @@
+shockmane_alpha_pawstomp_teleport_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if current_target_is_valid_btdeco]
+  [root if comment_btdeco "Shockmane Pawstomp teleport"  (bShowPropertyDetails=false)]
+  [root if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=IsBurrowing, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+  Sequence
+    {service hide_behemoth_bttask  (HideOnStart=false, Interval=0.001, RandomDeviation=0)}
+    1) BehemothAction  (Montage=AnimMontage b_aq_shock_00_loco_lightningteleportpounce_start_fwd_00_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+    [if ForceSuccess]
+    2) Sequence
+      {service hide_behemoth_bttask  (ShowOnDeactivate=false, Interval=1, RandomDeviation=0)}
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_players_random_in_arena", "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+    [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+    [if ForceSuccess]
+    3) Sequence
+      [if call_behemoth_function_btdeco  (FunctionOnActivate=StartStaggerProof, FunctionOnDeactivate=StopStaggerProof)]
+      1) Sequence
+        {service staggerproof_behemoth_bttask  (Interval=0.1, RandomDeviation=0)}
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+        2) teleport_bttask  (FacingTargetKeyName=AttackTarget, BlendOutTime=0)
+      2) Selector
+        1) BehemothAction  (Montage=AnimMontage b_aq_shock_00_loco_lightningteleportpounce_end_fwd_00_mot, StopMontageOnAbort=false)

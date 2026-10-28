@@ -1,0 +1,96 @@
+# local_player_mounted_socket_effect_ns_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetNotifyName
+  [0] ReturnValue = 'locally_mounted_player_socket_vfx'
+  [53] return ReturnValue
+  [63] end
+
+=== Internal_PostAkAudioEvent
+  [0] CallFunc_GetOwner_ReturnValue = SkeletalMeshComponent.GetOwner()
+  [42] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [71] if !(CallFunc_IsValid_ReturnValue_1) goto @253
+  [85] CallFunc_IsValid_ReturnValue = IsValid(Event)
+  [114] if !(CallFunc_IsValid_ReturnValue) goto @253
+  [128] CallFunc_GetOwner_ReturnValue = SkeletalMeshComponent.GetOwner()
+  [170] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Event, CallFunc_GetOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [253] return nothing
+  [255] end
+
+=== Internal_ShouldShowDismountWarning
+  [0] push @1359
+  [5] CallFunc_GetOwner_ReturnValue = Skeletal MeshComponent.GetOwner()
+  [47] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [76] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [86] CallFunc_GetOwner_ReturnValue = Skeletal MeshComponent.GetOwner()
+  [128] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(CallFunc_GetOwner_ReturnValue)
+  [157] LocallyControlledCharacter = CallFunc_GetLocalArchonCharacter_ReturnValue
+  [176] CallFunc_IsValid_ReturnValue = IsValid(LocallyControlledCharacter)
+  [205] if !(CallFunc_IsValid_ReturnValue) pop
+  [215] CallFunc_GetComponentByClass_ReturnValue = LocallyControlledCharacter.GetComponentByClass(ArchonMountingComponent)
+  [266] LocalPlayerMountingComponent = CallFunc_GetComponentByClass_ReturnValue
+  [285] CallFunc_IsValid_ReturnValue_1 = IsValid(LocalPlayerMountingComponent)
+  [314] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [324] CallFunc_GetOwner_ReturnValue = Skeletal MeshComponent.GetOwner()
+  [366] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonMountableComponent)
+  [417] MountableComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [436] CallFunc_IsValid_ReturnValue_3 = IsValid(MountableComponent)
+  [465] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [475] Temp_int_Loop_Counter_Variable = 0
+  [498] Temp_int_Array_Index_Variable = 0
+  [521] array{}
+  [532] MountableComponent.GetMountableSockets(CallFunc_GetMountableSockets_OutMountableSockets)
+  [573] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetMountableSockets_OutMountableSockets)
+  [632] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [670] if !(CallFunc_Less_IntInt_ReturnValue) goto @1269
+  [684] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [711] push @1285
+  [716] array{}
+  [727] MountableComponent.GetMountableSockets(CallFunc_GetMountableSockets_OutMountableSockets)
+  [768] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMountableSockets_OutMountableSockets, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [827] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item.SocketName, self.SocketName)
+  [874] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [884] CallFunc_GetCurrentMountingState_ReturnValue = LocalPlayerMountingComponent.GetCurrentMountingState()
+  [934] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCurrentMountingState_ReturnValue, 2)
+  [965] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_GetCurrentMountingState_ReturnValue, 1)
+  [996] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [1034] array{}
+  [1045] MountableComponent.GetMountableSockets(CallFunc_GetMountableSockets_OutMountableSockets)
+  [1086] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMountableSockets_OutMountableSockets, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1145] CallFunc_IsSocketMountedByActor_ReturnValue = MountableComponent.IsSocketMountedByActor(CallFunc_Array_Get_Item, LocallyControlledCharacter)
+  [1205] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_IsSocketMountedByActor_ReturnValue, CallFunc_BooleanOR_ReturnValue)
+  [1243] if !(CallFunc_BooleanOR_ReturnValue_1) pop
+  [1253] NewParam = true
+  [1264] goto @1359
+  [1269] NewParam = false
+  [1280] goto @1359
+  [1285] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1327] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1354] goto @521
+  [1359] return nothing
+  [1361] end
+
+=== Received_NotifyBegin
+  [0] push @96
+  [5] push @85
+  [10] Internal_ShouldShowDismountWarning(MeshComp, CallFunc_Internal_ShouldShowDismountWarning_NewParam)
+  [42] if !(CallFunc_Internal_ShouldShowDismountWarning_NewParam) pop
+  [52] Internal_PostAkAudioEvent(MeshComp, self.AudioEventOnStart)
+  [84] pop
+  [85] ReturnValue = true
+  [96] return ReturnValue
+  [106] end
+
+=== Received_NotifyEnd
+  [0] push @54
+  [5] push @43
+  [10] Internal_PostAkAudioEvent(MeshComp, self.AudioEventOnEnd)
+  [42] pop
+  [43] ReturnValue = true
+  [54] return ReturnValue
+  [64] end
+
+=== ShouldSpawnParticle
+  [0] Internal_ShouldShowDismountWarning(MeshComp, CallFunc_Internal_ShouldShowDismountWarning_NewParam)
+  [32] ReturnValue = CallFunc_Internal_ShouldShowDismountWarning_NewParam
+  [51] return ReturnValue
+  [61] end

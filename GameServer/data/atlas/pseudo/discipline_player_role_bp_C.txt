@@ -1,0 +1,193 @@
+# discipline_player_role_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AbilityDoDamageEvent
+  [0] self.CanAbilityAbsorb = false
+  [11] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [32] if !(CallFunc_IsServer_ReturnValue) goto @686
+  [46] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [66] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [102] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [131] if !(K2Node_DynamicCast_bSuccess) goto @686
+  [145] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [165] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [215] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [252] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, aoe_simple_playerowned_discipline_C, CallFunc_Conv_VectorToTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue)
+  [302] CallFunc_SelectFloat_ReturnValue = SelectFloat(self.AbilityAbsorbScalar, 1.0, self.AbilityAbsorbedHit)
+  [357] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageScale', CallFunc_SelectFloat_ReturnValue)
+  [398] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [418] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetOwner_ReturnValue)
+  [459] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', 1.0)
+  [500] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [541] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [561] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [611] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [648] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [686] return nothing
+  [688] end
+
+=== ActivateGameplayEvent
+  [0] ActivateGameplayEvent(EventName)
+  [19] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'AbilityDodgeOver')
+  [61] if !(K2Node_SwitchName_CmpSuccess) goto @136
+  [75] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'AbilityDoDamage')
+  [117] if !(K2Node_SwitchName_CmpSuccess) goto @152
+  [131] goto @166
+  [136] self.CanAbilityAbsorb = false
+  [147] goto @166
+  [152] AbilityDoDamageEvent()
+  [166] return nothing
+  [168] end
+
+=== BP_HandleEquipForGameplay
+  [0] ExecuteUbergraph_discipline_player_role_bp(1564)
+  [15] return nothing
+  [17] end
+
+=== BP_HandleUnequip
+  [0] ExecuteUbergraph_discipline_player_role_bp(1372)
+  [15] return nothing
+  [17] end
+
+=== CloseAbilityPerfectDodgeWindow
+  [0] push @182
+  [5] push @170
+  [10] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [30] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [95] if !(K2Node_DynamicCast_bSuccess) pop
+  [105] K2Node_CreateDelegate_OutputDelegate = bind(self.OnAbilityPerfectDodge)
+  [128] K2Node_CreateDelegate_OutputDelegate -= None
+  [169] pop
+  [170] self.CanAbilityAbsorb = false
+  [181] pop
+  [182] return nothing
+  [184] end
+
+=== ExecuteUbergraph_discipline_player_role_bp
+  [0] push @1630
+  [5] goto computed(EntryPoint)
+  [15] push @255
+  [20] CallFunc_GetAllBuffs_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.ArchonBuffableComponent.GetAllBuffs()
+  [92] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllBuffs_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [151] K2Node_DynamicCast_AsDisciplined_Buff = cast<disciplined_buff_C>(CallFunc_Array_Get_Item_1)
+  [187] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDisciplined_Buff)
+  [216] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [226] RemoveBuff(K2Node_DynamicCast_AsArchon_Character, K2Node_DynamicCast_AsDisciplined_Buff)
+  [254] pop
+  [255] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [297] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [324] CallFunc_GetAllBuffs_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.ArchonBuffableComponent.GetAllBuffs()
+  [396] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllBuffs_ReturnValue)
+  [455] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [493] if !(CallFunc_Less_IntInt_ReturnValue) goto @539
+  [507] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [534] goto @15
+  [539] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [559] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [588] CallFunc_GetActiveEffectsWithAllTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.GetActiveEffectsWithAllTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Buffs.DisciplineStacks'})})
+  [693] Temp_int_Loop_Counter_Variable = 0
+  [716] Temp_int_Array_Index_Variable_1 = 0
+  [739] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetActiveEffectsWithAllTags_ReturnValue)
+  [798] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [836] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [846] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [873] push @1003
+  [878] Default__KismetArrayLibrary.Array_Get(CallFunc_GetActiveEffectsWithAllTags_ReturnValue, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [937] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(K2Node_DynamicCast_AsArchon_Character, CallFunc_Array_Get_Item, -1)
+  [1002] pop
+  [1003] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1045] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1072] goto @739
+  [1077] Temp_int_Array_Index_Variable = 0
+  [1100] goto @324
+  [1105] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1125] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [1175] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, impact_discipline_parry_p, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1268] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1288] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_Omnicell_Discipline_Parry_Success, CallFunc_GetOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1371] pop
+  [1372] BP_HandleUnequip()
+  [1382] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1402] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue_1)
+  [1431] if !(CallFunc_IsValid_ReturnValue) pop
+  [1441] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1461] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [1497] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1526] if !(K2Node_DynamicCast_bSuccess) pop
+  [1536] Temp_int_Loop_Counter_Variable_1 = 0
+  [1559] goto @1077
+  [1564] BP_HandleEquipForGameplay()
+  [1574] self.cooldown_manager_bpc.RegisterCooldown(self.CooldownName, self.CooldownTime, false)
+  [1629] pop
+  [1630] return nothing
+  [1632] end
+
+=== Multi_OnParrySuccess_FX
+  [0] ExecuteUbergraph_discipline_player_role_bp(1105)
+  [15] return nothing
+  [17] end
+
+=== OnAbilityPerfectDodge
+  [0] push @1327
+  [5] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [26] if !(CallFunc_IsServer_ReturnValue) goto @796
+  [40] self.cooldown_manager_bpc.IsCooldownReady(self.CooldownName, false, CallFunc_IsCooldownReady_CooldownReady)
+  [95] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsCooldownReady_CooldownReady, self.CanAbilityAbsorb)
+  [133] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [143] self.AbilityAbsorbedHit = true
+  [154] self.cooldown_manager_bpc.ResetCooldown(self.CooldownName, false)
+  [200] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [220] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_3)
+  [249] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ce_discipline_stacks_damage_ge_C, 0.0, GameplayEffectContextHandle{})
+  [331] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', 0.0)
+  [386] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'Duration', 60.0)
+  [441] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [461] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_3)
+  [490] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1)
+  [549] push @1069
+  [554] push @1054
+  [559] CallFunc_GetActiveGameplayEffectStackCount_ReturnValue = GetActiveGameplayEffectStackCount(CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue)
+  [596] CallFunc_GetActiveGameplayEffectStackLimitCount_ReturnValue = GetActiveGameplayEffectStackLimitCount(CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue)
+  [633] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetActiveGameplayEffectStackLimitCount_ReturnValue, CallFunc_GetActiveGameplayEffectStackCount_ReturnValue)
+  [671] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [681] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [701] array{disciplined_buff_C}
+  [721] Default__archon_function_library_C.TryAddBuffs(CallFunc_GetOwner_ReturnValue_1, K2Node_MakeArray_Array, CallFunc_GetOwner_ReturnValue_1, true, self, CallFunc_TryAddBuffs_AppliedBuffs)
+  [795] pop
+  [796] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [816] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [852] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [881] if !(K2Node_DynamicCast_bSuccess) goto @1038
+  [895] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [941] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp.GetAnimInstance()
+  [983] CallFunc_GetAnimInstance_ReturnValue.Montage_JumpToSection('DoDamageSection', h_mr_discipline_fwd_01_mot)
+  [1037] pop
+  [1038] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [1049] goto @941
+  [1054] Multi_OnParrySuccess_FX()
+  [1068] pop
+  [1069] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1089] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue_2)
+  [1125] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [1154] if !(K2Node_DynamicCast_bSuccess_1) goto @1311
+  [1168] K2Node_DynamicCast_AsPlayer_Interface_1.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1)
+  [1214] CallFunc_GetAnimInstance_ReturnValue_1 = CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1.GetAnimInstance()
+  [1256] CallFunc_GetAnimInstance_ReturnValue_1.Montage_JumpToSection('DoDamageSection', h_mr_discipline_fwd_01_mot)
+  [1310] pop
+  [1311] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1 = null
+  [1322] goto @1214
+  [1327] return nothing
+  [1329] end
+
+=== OpenAbilityPerfectDodgeWindow
+  [0] CloseAbilityPerfectDodgeWindow()
+  [14] self.CanAbilityAbsorb = true
+  [25] self.AbilityAbsorbedHit = false
+  [36] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [56] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [92] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [121] if !(K2Node_DynamicCast_bSuccess) goto @199
+  [135] K2Node_CreateDelegate_OutputDelegate = bind(self.OnAbilityPerfectDodge)
+  [158] K2Node_CreateDelegate_OutputDelegate += None
+  [199] return nothing
+  [201] end

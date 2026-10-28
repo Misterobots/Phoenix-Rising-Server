@@ -1,0 +1,83 @@
+# evaluate_action_btservice_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_evaluate_action_btservice
+  [0] push @1623
+  [5] goto computed(EntryPoint)
+  [15] PrintString(self, 'evaluate_action_btservice: Current Action is invalid.', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [135] pop
+  [136] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, EvaluateActionsOnSearchStartFeature, true)
+  [167] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsFeatureEnabled_ReturnValue, self.EvaluateOnlyOnSearchStart)
+  [205] if !(CallFunc_BooleanAND_ReturnValue) goto @220
+  [219] pop
+  [220] self.CurrentAction = null
+  [231] self.TopAction = null
+  [242] self.TopScore = 0.0
+  [269] ClearBlackboardValue(self, self.ChosenActionKey)
+  [289] K2Node_DynamicCast_AsBp_Behemoth = cast<Bp_Behemoth_C>(K2Node_Event_ControlledPawn_1)
+  [325] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Behemoth)
+  [354] if !(K2Node_DynamicCast_bSuccess) pop
+  [364] Temp_int_Loop_Counter_Variable = 0
+  [387] Temp_int_Array_Index_Variable = 0
+  [410] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsBp_Behemoth.self.ActionSet.self.ActionArray)
+  [513] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [551] if !(CallFunc_Less_IntInt_ReturnValue) goto @1015
+  [565] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [592] push @1167
+  [597] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsBp_Behemoth.self.ActionSet.self.ActionArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [700] self.CurrentAction = CallFunc_Array_Get_Item
+  [719] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(K2Node_Event_OwnerController_1)
+  [748] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('ForceAction')
+  [789] CallFunc_GetValueAsObject_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetValueAsObject(CallFunc_MakeLiteralName_ReturnValue)
+  [840] K2Node_DynamicCast_AsBP_Behemoth_Action = cast<BP_BehemothAction_C>(CallFunc_GetValueAsObject_ReturnValue)
+  [876] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Behemoth_Action)
+  [905] if !(K2Node_DynamicCast_bSuccess_2) goto @1241
+  [919] self.TopAction = K2Node_DynamicCast_AsBP_Behemoth_Action
+  [938] K2Node_DynamicCast_AsBP_Behemoth_Action.self.ActionScore = 99999.0
+  [987] self.TopScore = 99999.0
+  [1014] pop
+  [1015] CallFunc_SetBlackboardValueAsFloat_Value_ImplicitCast = cast<CST_DoubleToFloat>(self.TopScore)
+  [1044] SetBlackboardValueAsFloat(self, self.TopScoreKey, CallFunc_SetBlackboardValueAsFloat_Value_ImplicitCast)
+  [1073] CallFunc_IsValid_ReturnValue = IsValid(self.TopAction)
+  [1102] if !(CallFunc_IsValid_ReturnValue) goto @1146
+  [1116] SetBlackboardValueAsObject(self, self.ChosenActionKey, self.TopAction)
+  [1145] pop
+  [1146] ClearBlackboardValue(self, self.ChosenActionKey)
+  [1166] pop
+  [1167] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1209] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1236] goto @410
+  [1241] CallFunc_IsValid_ReturnValue_1 = IsValid(self.CurrentAction)
+  [1270] if !(CallFunc_IsValid_ReturnValue_1) goto @15
+  [1284] self.CurrentAction.Evaluate(false, CallFunc_Evaluate_Score)
+  [1330] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Evaluate_Score, self.TopScore)
+  [1368] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [1378] self.TopScore = CallFunc_Evaluate_Score
+  [1405] self.TopAction = self.CurrentAction
+  [1424] pop
+  [1425] push @1539
+  [1430] K2Node_DynamicCast_AsBp_Behemoth_1 = cast<Bp_Behemoth_C>(K2Node_Event_ControlledPawn)
+  [1466] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Behemoth_1)
+  [1495] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1505] K2Node_DynamicCast_AsBp_Behemoth_1.self.Repositionning = false
+  [1538] pop
+  [1539] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, EvaluateActionsOnSearchStartFeature, true)
+  [1570] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsFeatureEnabled_ReturnValue, self.EvaluateOnlyOnSearchStart)
+  [1608] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1618] goto @220
+  [1623] return nothing
+  [1625] end
+
+=== ReceiveSearchStartAI
+  [0] frame.K2Node_Event_OwnerController = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn = ControlledPawn
+  [36] ExecuteUbergraph_evaluate_action_btservice(1425)
+  [51] return nothing
+  [53] end
+
+=== ReceiveTickAI
+  [0] frame.K2Node_Event_OwnerController_1 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_1 = ControlledPawn
+  [36] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [54] ExecuteUbergraph_evaluate_action_btservice(136)
+  [69] return nothing
+  [71] end

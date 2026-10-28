@@ -1,0 +1,65 @@
+sally_terrogg_bt  blackboard=BlackboardData bullseye_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      1) BehemothAction "DIE!!!"  (Montage=AnimMontage b_sq_sal_00_pers_death_fwd_01_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    6) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothFunctionSuccess": "AnyVentEnabled"}, bShowPropertyDetails=false)]
+      1) Sequence
+        1) bttask_enter_aethercharge_state  (Montage=AnimMontage b_sq_sal_00_state_aetherchargeenter_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage b_sq_sal_00_state_chargeexit_fwd_00_mot)
+      [if behemoth_in_state_btdeco  (State=AtherCharged)]
+      [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+      3) Sequence
+        1) BehemothAction  (Montage=AnimMontage b_sq_sal_00_state_aetherchargeenter_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::AtherCharged", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+      4) bttask_enter_rage_state  (Montage=AnimMontage b_sq_sal_00_state_rageenter_fwd_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      5) bttask_exit_rage_state  (Montage=AnimMontage b_sal_rage_exit_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      6) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+      [if Blackboard  (ReadyToRegrowQuills is Is Set)]
+      7) Sequence
+        1) set_blackboard_key_bttask  (ResultKey=bb.ReadyToRegrowQuills, DataType=Bool)
+        2) BehemothAction  (Montage=AnimMontage b_sq_qul_00_pers_quillregrow_fwd_00_mot)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    [if ArchonIsMounted]
+    [if btdeco_variablecooldown  (Cooldown_Min=8, Cooldown_Max=12)]
+    9) Sequence
+      1) Wait  (WaitTime=1, RandomDeviation=0.25)
+      2) PerformActionClass  (ActionClass=BlueprintGeneratedClass sally_mounted_thrash_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+    10) Selector "Selector_AttackOrNonAttack"
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Combat", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 30.0}, MaxCooldown={"ConstantFloat": 45.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+      1) Sequence
+        1) generic_action_bttask  (ActionType=Growl)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      2) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      3) Selector "Reposition"
+        {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      4) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

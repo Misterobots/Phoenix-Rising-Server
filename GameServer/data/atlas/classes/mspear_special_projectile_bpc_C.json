@@ -1,0 +1,600 @@
+{
+ "name": "mspear_special_projectile_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "mspear_special_base_bpc_C",
+  "weapon_part_base_bpc_C",
+  "ArchonEquipmentPart",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AmmoComponent",
+   "type": "ObjectProperty<ammo_bpc_C>",
+   "bp_type": "ObjectProperty<ammo_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LLastFiredShotAmmoScale",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "p_SpearAim",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LAimAccuracyCurve",
+   "type": "ObjectProperty<CurveFloat>",
+   "bp_type": "ObjectProperty<CurveFloat>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LAimStartTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LAimDuration",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LAimTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "p_SpearBeam",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_CurrentAimAccuracy",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_GameplayStartTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bIsAiming",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bEnableAimingUpdate",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "ActivateWeaponPartGameplay",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "StartTime",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateCurrentAimAccuracy",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "StartTime",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Duration",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Accuracy",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 15,
+   "reads": [
+    "LAimAccuracyCurve"
+   ],
+   "sets": [],
+   "calls": [
+    "CurveFloat.GetFloatValue",
+    "GameplayStatics.GetTimeSeconds",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DeactivateWeaponPartGameplay",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EndTime",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_mspear_special_projectile_bpc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_1",
+     "type": "DelegateProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 118,
+   "reads": [
+    "AmmoComponent",
+    "ArchonCharacter",
+    "ArchonWeapon",
+    "Client3rdPartyWpnWarpikeShot",
+    "LAimDuration",
+    "LAimStartTime",
+    "L_CurrentAimAccuracy",
+    "L_GameplayStartTime",
+    "OnSpentAmmoWithMeterScale",
+    "bEnableAimingUpdate",
+    "bIsAiming",
+    "p_SpearAim"
+   ],
+   "sets": [
+    "AmmoComponent",
+    "LAimDuration",
+    "LAimStartTime",
+    "LLastFiredShotAmmoScale",
+    "L_CurrentAimAccuracy",
+    "L_GameplayStartTime",
+    "bIsAiming",
+    "p_SpearAim"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "ActorComponent.ReceiveTick",
+    "AkGameplayStatics.PostEvent",
+    "ArchonGameplayStatics.SpawnEmitterAttached_WeaponSeparation",
+    "ArchonWeapon.GetItemId",
+    "ArchonWeapon.GetPowerTableData",
+    "ArchonWeapon.GetSubMesh",
+    "CalculateCurrentAimAccuracy",
+    "DeactivateWeaponPartGameplay",
+    "GameplayStatics.GetTimeSeconds",
+    "Get Global Event Dispatcher",
+    "GetCustomAttributeFromWeaponPowerTable",
+    "GetElementalParticleColorVector",
+    "IsLocallyControlled",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Conv_FloatToVector",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.MapRangeClamped",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetSystemLibrary.IsValid",
+    "LookupPowerTableRow",
+    "None",
+    "SetFloatParameter",
+    "SetVectorParameter",
+    "SpawnEffects",
+    "StartAiming",
+    "StopAiming",
+    "TryDeactivateComponent",
+    "UtilityMethods.ArchonLogError",
+    "weapon_part_base_bpc_C.ActivateWeaponPartGameplay",
+    "weapon_part_base_bpc_C.DeactivateWeaponPartGameplay",
+    "weapon_part_base_bpc_C.OnWeaponPartEquipped",
+    "weapon_part_base_bpc_C.OnWeaponPartUnequipped"
+   ],
+   "authority": [
+    "IsLocallyControlled"
+   ],
+   "tables": [],
+   "assets": [
+    "AimOffsetBlendSpace h_mr_ms_super_ao",
+    "AkAudioEvent Play_wep_spear_mortar_aim",
+    "AkAudioEvent Stop_wep_spear_mortar_aim",
+    "AnimSequence h_mr_ms_melee_super_aim_base_01",
+    "BlueprintGeneratedClass ammo_bpc_C",
+    "BlueprintGeneratedClass player_aiming_bpc_C",
+    "ParticleSystem ms_aim_p"
+   ]
+  },
+  {
+   "name": "GetAmmoScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AmmoScale",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "LLastFiredShotAmmoScale"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCurrentAimAccuracy",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Accuracy",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "L_CurrentAimAccuracy"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCustomAttributeFromWeaponPowerTable",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "WeaponPowerTableData",
+     "type": "StructProperty<WeaponPowerTableData>"
+    },
+    {
+     "name": "CustomAttribute",
+     "type": "NameProperty"
+    },
+    {
+     "name": "StartedTime",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Duration",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 32,
+   "reads": [
+    "L_GameplayStartTime"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetTimeSeconds",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSpentAmmoWithScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Spent Ammo Scale",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnWeaponPartEquipped",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnWeaponPartUnequipped",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnEffects",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "mspear_special_projectile_bpc_C.ExecuteUbergraph_mspear_special_projectile_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "CurveFloat mspear_accuracy_curve"
+ ],
+ "package": "/Game/Blueprints/Weapons/_shared/mspear/mspear_special_projectile_bpc",
+ "pseudo_file": "pseudo/mspear_special_projectile_bpc_C.txt",
+ "game_data": {}
+}

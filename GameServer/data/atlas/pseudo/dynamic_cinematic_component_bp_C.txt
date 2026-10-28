@@ -1,0 +1,1910 @@
+# dynamic_cinematic_component_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateCinematicOverlay
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CinematicOverlayWidget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @48
+  [43] goto @401
+  [48] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [74] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, cinematic_overlay_bpw_C, CallFunc_GetPlayerController_ReturnValue)
+  [135] self.CinematicOverlayWidget = CallFunc_Create_ReturnValue
+  [154] self.CinematicOverlayWidget.ConfigureForCinematics(true)
+  [191] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.HideTeamDisplay)
+  [220] self.CinematicOverlayWidget.ShowTeamDisplay(CallFunc_Not_PreBool_ReturnValue)
+  [265] self.CinematicOverlayWidget.SetEnableSkipping(self.IsSkippable)
+  [310] Default__UserWidgetFunctions_C.Get Cinematic Blocker Layer(self, CallFunc_Get_Cinematic_Blocker_Layer_NewParam)
+  [356] self.CinematicOverlayWidget.AddToViewport(CallFunc_Get_Cinematic_Blocker_Layer_NewParam)
+  [401] return nothing
+  [403] end
+
+=== AdjustCamera
+  [0] LMinHeightAboveGround = 20.0
+  [27] FindActorOfInterest(self.Camera, self.ReplacementActors, CallFunc_FindActorOfInterest_BestActor, CallFunc_FindActorOfInterest_BestIndex)
+  [77] MarkPropertyDirtyFromRepIndex(self, 17, 'ReplacementActors')
+  [106] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindActorOfInterest_BestActor)
+  [135] if !(CallFunc_IsValid_ReturnValue) goto @3674
+  [149] Default__archon_function_library_C.NegateFloatPure(LCameraRotationOffset, self, CallFunc_NegateFloatPure_Fout)
+  [204] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.LCameraGroundOffset)
+  [259] CallFunc_GetComponentByClass_ReturnValue = self.Camera.GetComponentByClass(SkeletalMeshComponent)
+  [310] CallFunc_GetSocketTransform_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetSocketTransform('prop_00_jnt', 0)
+  [379] BreakTransform(CallFunc_GetSocketTransform_ReturnValue, CallFunc_BreakTransform_Location_2, CallFunc_BreakTransform_Rotation_2, CallFunc_BreakTransform_Scale_2)
+  [425] CallFunc_GetRightVector_ReturnValue = GetRightVector(CallFunc_BreakTransform_Rotation_2)
+  [462] CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_NegateFloatPure_Fout)
+  [491] CallFunc_RotatorFromAxisAndAngle_ReturnValue = RotatorFromAxisAndAngle(CallFunc_GetRightVector_ReturnValue, CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast)
+  [537] CallFunc_ComposeRotators_ReturnValue = ComposeRotators(CallFunc_BreakTransform_Rotation_2, CallFunc_RotatorFromAxisAndAngle_ReturnValue)
+  [583] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_BreakTransform_Location_2, CallFunc_MakeVector_ReturnValue)
+  [629] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_ComposeRotators_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [700] LInitialCameraTransform = CallFunc_MakeTransform_ReturnValue
+  [727] LActorOfInterest = CallFunc_FindActorOfInterest_BestActor
+  [746] Default__KismetArrayLibrary.Array_Get(self.LGroundFollowOffsets, CallFunc_FindActorOfInterest_BestIndex, CallFunc_Array_Get_Item)
+  [805] LActorOfIntersetOffset = CallFunc_Array_Get_Item
+  [832] BreakTransform(LInitialCameraTransform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [878] CallFunc_MakeVector_ReturnValue_3 = MakeVector(0.0, 0.0, LMinHeightAboveGround)
+  [933] Default__KismetArrayLibrary.Array_Get(self.LGroundFollowOffsets, CallFunc_FindActorOfInterest_BestIndex, CallFunc_Array_Get_Item)
+  [992] BreakVector(CallFunc_Array_Get_Item, CallFunc_BreakVector_X_7, CallFunc_BreakVector_Y_7, CallFunc_BreakVector_Z_7)
+  [1038] CallFunc_MakeVector_ReturnValue_5 = MakeVector(0.0, 0.0, CallFunc_BreakVector_Z_7)
+  [1093] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_MakeVector_ReturnValue_5, CallFunc_BreakTransform_Location)
+  [1139] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue_1, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 6000.0}))
+  [1201] CallFunc_Subtract_VectorVector_ReturnValue_4 = Subtract_VectorVector(CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue_3)
+  [1247] CallFunc_SphereTraceSingle_ReturnValue = SphereTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue_2, CallFunc_Subtract_VectorVector_ReturnValue_4, 30.0, 4, false, Temp_object_Variable, 0, CallFunc_SphereTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1388] BreakTransform(LInitialCameraTransform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1434] BreakVector(CallFunc_BreakTransform_Location, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1480] BreakVector(LActorOfIntersetOffset, CallFunc_BreakVector_X_4, CallFunc_BreakVector_Y_4, CallFunc_BreakVector_Z_4)
+  [1526] CallFunc_SelectFloat_ReturnValue_1 = SelectFloat(0.0, 0.20000000298023224, self.LFirstGroundOffsetUpdate)
+  [1581] CallFunc_GetWorldDeltaSeconds_ReturnValue_1 = GetWorldDeltaSeconds(self)
+  [1610] BreakHitResult(CallFunc_SphereTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1791] BreakVector(CallFunc_BreakHitResult_Location, CallFunc_BreakVector_X_8, CallFunc_BreakVector_Y_8, CallFunc_BreakVector_Z_8)
+  [1837] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z_8, LMinHeightAboveGround)
+  [1883] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_BreakVector_Z)
+  [1929] CallFunc_SelectFloat_ReturnValue_2 = SelectFloat(CallFunc_Subtract_DoubleDouble_ReturnValue_3, CallFunc_BreakVector_Z_4, CallFunc_SphereTraceSingle_ReturnValue)
+  [1984] CallFunc_LowPassFilterFloat_Sample_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_SelectFloat_ReturnValue_2)
+  [2013] CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast = cast<CST_DoubleToFloat>(self.LCameraGroundOffset)
+  [2042] CallFunc_LowPassFilterFloat_TimeConstant_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_SelectFloat_ReturnValue_1)
+  [2071] CallFunc_LowPassFilterFloat_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetWorldDeltaSeconds_ReturnValue_1)
+  [2100] CallFunc_LowPassFilterFloat_ReturnValue = LowPassFilterFloat(CallFunc_LowPassFilterFloat_Sample_ImplicitCast, CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast, CallFunc_LowPassFilterFloat_TimeConstant_ImplicitCast, CallFunc_LowPassFilterFloat_DeltaTime_ImplicitCast, -1.0)
+  [2169] K2Node_VariableSet_LCameraGroundOffset_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LowPassFilterFloat_ReturnValue)
+  [2198] self.LCameraGroundOffset = K2Node_VariableSet_LCameraGroundOffset_ImplicitCast
+  [2225] BreakTransform(LInitialCameraTransform, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [2271] BreakVector(CallFunc_BreakTransform_Location_1, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [2317] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, self.LCameraGroundOffset)
+  [2372] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_MakeVector_ReturnValue_1, CallFunc_BreakTransform_Location_1)
+  [2418] BreakVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [2464] CallFunc_K2_GetActorLocation_ReturnValue = LActorOfInterest.K2_GetActorLocation()
+  [2514] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Add_VectorVector_ReturnValue)
+  [2560] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [2606] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue_1, self, CallFunc_XY_Out)
+  [2661] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_BreakVector_Z_3, CallFunc_BreakVector_Z_2)
+  [2707] CallFunc_VSize_ReturnValue = VSize(CallFunc_XY_Out)
+  [2744] CallFunc_DegAtan2_ReturnValue = DegAtan2(CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_VSize_ReturnValue)
+  [2790] CallFunc_K2_GetActorLocation_ReturnValue_1 = LActorOfInterest.K2_GetActorLocation()
+  [2840] CallFunc_Subtract_VectorVector_ReturnValue_2 = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, LActorOfIntersetOffset)
+  [2886] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue_2, CallFunc_BreakVector_X_5, CallFunc_BreakVector_Y_5, CallFunc_BreakVector_Z_5)
+  [2932] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_BreakVector_Z_5, CallFunc_BreakVector_Z_1)
+  [2978] CallFunc_Subtract_VectorVector_ReturnValue_3 = Subtract_VectorVector(CallFunc_Subtract_VectorVector_ReturnValue_2, CallFunc_BreakTransform_Location_1)
+  [3024] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue_3, self, CallFunc_XY_Out_1)
+  [3079] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_XY_Out_1)
+  [3116] CallFunc_DegAtan2_ReturnValue_1 = DegAtan2(CallFunc_Subtract_DoubleDouble_ReturnValue_1, CallFunc_VSize_ReturnValue_1)
+  [3162] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_DegAtan2_ReturnValue, CallFunc_DegAtan2_ReturnValue_1)
+  [3208] LCameraRotationOffset = CallFunc_Subtract_DoubleDouble_ReturnValue_2
+  [3235] CallFunc_GetComponentByClass_ReturnValue_1 = self.Camera.GetComponentByClass(SkeletalMeshComponent)
+  [3286] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_1.GetAnimInstance()
+  [3328] K2Node_DynamicCast_AsCine_Camera_Animbp = cast<cine_camera_animbp_C>(CallFunc_GetAnimInstance_ReturnValue)
+  [3364] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCine_Camera_Animbp)
+  [3393] if !(K2Node_DynamicCast_bSuccess) goto @3945
+  [3407] K2Node_DynamicCast_AsCine_Camera_Animbp.self.OverrideTransform = true
+  [3440] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(LCameraRotationOffset)
+  [3469] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, CallFunc_MakeRotator_Pitch_ImplicitCast, 0.0)
+  [3516] K2Node_DynamicCast_AsCine_Camera_Animbp.self.WorldRotationOffset = CallFunc_MakeRotator_ReturnValue
+  [3565] CallFunc_MakeVector_ReturnValue_2 = MakeVector(0.0, 0.0, self.LCameraGroundOffset)
+  [3620] K2Node_DynamicCast_AsCine_Camera_Animbp.self.WorldTranslationOffset = CallFunc_MakeVector_ReturnValue_2
+  [3669] goto @3945
+  [3674] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [3703] CallFunc_SelectFloat_ReturnValue = SelectFloat(0.0, 0.20000000298023224, self.LFirstGroundOffsetUpdate)
+  [3758] CallFunc_MakeVector_ReturnValue_4 = MakeVector(0.0, 0.0, self.LCameraGroundOffset)
+  [3813] FollowGround(self.Camera, CallFunc_MakeVector_ReturnValue_4, CallFunc_GetWorldDeltaSeconds_ReturnValue, CallFunc_SelectFloat_ReturnValue, CallFunc_FollowGround_OutGroundFollowOffset)
+  [3872] BreakVector(CallFunc_FollowGround_OutGroundFollowOffset, CallFunc_BreakVector_X_6, CallFunc_BreakVector_Y_6, CallFunc_BreakVector_Z_6)
+  [3918] self.LCameraGroundOffset = CallFunc_BreakVector_Z_6
+  [3945] return nothing
+  [3947] end
+
+=== AllClientsComplete
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(32886)
+  [15] return nothing
+  [17] end
+
+=== AllClientsCompleteMulticast
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(30005)
+  [15] return nothing
+  [17] end
+
+=== AllClientsCompleteOwnerOnly
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(32187)
+  [15] return nothing
+  [17] end
+
+=== AllClientsCompleteServerOnly
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(32192)
+  [15] return nothing
+  [17] end
+
+=== AuthPositionActorsAtEnd
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33433)
+  [15] return nothing
+  [17] end
+
+=== Authority_OnFinalSequenceEnd
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33946)
+  [15] return nothing
+  [17] end
+
+=== BP_GetTransformOrigin
+  [0] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.CinematicStageTransforms, self.LCurrentSequenceIndex)
+  [60] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @459
+  [74] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(self.LCurrentSequenceIndex)
+  [111] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(CallFunc_Conv_IntToString_ReturnValue, ': ')
+  [152] Default__KismetArrayLibrary.Array_Get(self.CinematicStageTransforms, self.LCurrentSequenceIndex, CallFunc_Array_Get_Item)
+  [211] CallFunc_Conv_TransformToString_ReturnValue = Conv_TransformToString(CallFunc_Array_Get_Item)
+  [248] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, CallFunc_Conv_TransformToString_ReturnValue)
+  [294] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [368] Default__KismetArrayLibrary.Array_Get(self.CinematicStageTransforms, self.LCurrentSequenceIndex, CallFunc_Array_Get_Item)
+  [427] ReturnValue = CallFunc_Array_Get_Item
+  [454] goto @589
+  [459] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [562] ReturnValue = CallFunc_MakeTransform_ReturnValue
+  [589] return ReturnValue
+  [599] end
+
+=== BankLoadComplete__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== BindNewReplacementActors
+  [0] frame.K2Node_CustomEvent_NewProxyActors = NewProxyActors
+  [18] frame.K2Node_CustomEvent_NewReplacementActors = NewReplacementActors
+  [36] ExecuteUbergraph_dynamic_cinematic_component_bp(33007)
+  [51] return nothing
+  [53] end
+
+=== BlendCameraOut
+  [0] frame.K2Node_CustomEvent_BlendTime = BlendTime
+  [18] frame.K2Node_CustomEvent_NewViewTarget = NewViewTarget
+  [36] ExecuteUbergraph_dynamic_cinematic_component_bp(33002)
+  [51] return nothing
+  [53] end
+
+=== CacheCameraTransform
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33586)
+  [15] return nothing
+  [17] end
+
+=== CalculateClientViewability
+  [0] push @693
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [91] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [150] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [188] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [226] if !(CallFunc_BooleanAND_ReturnValue) goto @470
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @619
+  [272] CallFunc_GetPlayerController_ReturnValue_1 = GetPlayerController(self, 0)
+  [298] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetPlayerController_ReturnValue_1.K2_GetPawn()
+  [340] Default__KismetArrayLibrary.Array_Get(self.Clients, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [399] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_Array_Get_Item, CallFunc_K2_GetPawn_ReturnValue)
+  [437] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [447] self.bIsClientViewingCinematic = true
+  [458] Temp_bool_True_if_break_was_hit_Variable = true
+  [469] pop
+  [470] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [496] K2Node_DynamicCast_AsArchon_Replay_Controller = cast<ArchonReplayController>(CallFunc_GetPlayerController_ReturnValue)
+  [532] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Replay_Controller)
+  [561] CallFunc_BooleanOR_ReturnValue = BooleanOR(self.bIsClientViewingCinematic, K2Node_DynamicCast_bSuccess)
+  [599] self.bIsClientViewingCinematic = CallFunc_BooleanOR_ReturnValue
+  [618] pop
+  [619] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [661] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [688] goto @62
+  [693] return nothing
+  [695] end
+
+=== ClientStart__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ClientStop__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== DeactivateCinematicOverlay
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CinematicOverlayWidget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @127
+  [43] self.CinematicOverlayWidget.ConfigureForCinematics(false)
+  [80] self.CinematicOverlayWidget.RemoveFromParent()
+  [116] self.CinematicOverlayWidget = null
+  [127] return nothing
+  [129] end
+
+=== DebugPrint
+  [0] if !(self.DebugPrintEnabled) goto @121
+  [14] CallFunc_PrintString_Duration_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [43] PrintString(self, String, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, CallFunc_PrintString_Duration_ImplicitCast, 'None')
+  [121] return nothing
+  [123] end
+
+=== EstimatedClientComplete
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(30000)
+  [15] return nothing
+  [17] end
+
+=== EventBankLoadCompleteCallback
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33931)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_dynamic_cinematic_component_bp
+  [0] push @33951
+  [5] goto computed(EntryPoint)
+  [15] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnLoaded_EB517BEB4B2279E0CE318281E6E6C81A)
+  [38] LoadAssetClass(self, self.ProxyProtagonist, K2Node_CreateDelegate_OutputDelegate_4, LatentActionInfo{-1, -2012019441, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [105] pop
+  [106] PrintString(self, 'Starting load', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [186] self.PreloadParameters = K2Node_CustomEvent_Parameters
+  [213] MarkPropertyDirtyFromRepIndex(self, 22, 'PreloadParameters')
+  [242] OnRep_PreloadParameters()
+  [256] self.LoadingComplete = false
+  [267] self.Sequences = self.PreloadParameters.Sequences
+  [303] self.ProxyActors = self.PreloadParameters.ProxyActorsClassIDs
+  [339] self.ActorsToSpawn = self.PreloadParameters.ActorsToSpawnClassIDs
+  [375] self.ProxyProtagonist = self.PreloadParameters.ProxyProtagonist
+  [411] self.ProxyCineCamera = self.PreloadParameters.ProxyCameraClassID
+  [447] self.CinematicStageTransforms = self.PreloadParameters.StageTransforms
+  [483] Default__KismetArrayLibrary.Array_Clear(self.ProxyActorClasses)
+  [524] Default__KismetArrayLibrary.Array_Clear(self.SpawnedActorClasses)
+  [565] Default__KismetArrayLibrary.Array_Clear(self.SpawnedActors)
+  [606] Default__KismetArrayLibrary.Array_Clear(self.LevelSequencePlayers)
+  [647] self.LPreloadSequenceIndex = 0
+  [670] Temp_int_Loop_Counter_Variable_17 = 0
+  [693] Temp_int_Array_Index_Variable_16 = 0
+  [716] CallFunc_Array_Length_ReturnValue_26 = Default__KismetArrayLibrary.Array_Length(self.PreloadParameters.SequenceActorInstances)
+  [784] CallFunc_Less_IntInt_ReturnValue_25 = Less_IntInt(Temp_int_Loop_Counter_Variable_17, CallFunc_Array_Length_ReturnValue_26)
+  [822] if !(CallFunc_Less_IntInt_ReturnValue_25) goto @1362
+  [836] Temp_int_Array_Index_Variable_16 = Temp_int_Loop_Counter_Variable_17
+  [863] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.SequenceActorInstances, Temp_int_Array_Index_Variable_16, CallFunc_Array_Get_Item_34)
+  [931] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_Array_Get_Item_34)
+  [960] if !(CallFunc_IsValid_ReturnValue_4) goto @1696
+  [974] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.SequenceActorInstances, Temp_int_Array_Index_Variable_16, CallFunc_Array_Get_Item_34)
+  [1042] CallFunc_Conv_ObjectToSoftObjectReference_ReturnValue_1 = Conv_ObjectToSoftObjectReference(CallFunc_Array_Get_Item_34.self.LevelSequenceAsset)
+  [1101] CallFunc_IsValidSoftObjectReference_ReturnValue = IsValidSoftObjectReference(CallFunc_Conv_ObjectToSoftObjectReference_ReturnValue_1)
+  [1130] if !(CallFunc_IsValidSoftObjectReference_ReturnValue) goto @1808
+  [1144] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnLoaded_81E50E2845D45F6A63BC5ABF9253F2F1)
+  [1167] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.SequenceActorInstances, Temp_int_Array_Index_Variable_16, CallFunc_Array_Get_Item_34)
+  [1235] CallFunc_Conv_ObjectToSoftObjectReference_ReturnValue = Conv_ObjectToSoftObjectReference(CallFunc_Array_Get_Item_34.self.LevelSequenceAsset)
+  [1294] LoadAsset(self, CallFunc_Conv_ObjectToSoftObjectReference_ReturnValue, K2Node_CreateDelegate_OutputDelegate_3, LatentActionInfo{-1, 1029844006, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [1361] pop
+  [1362] Temp_int_Loop_Counter_Variable_1 = 0
+  [1385] Temp_int_Array_Index_Variable_8 = 0
+  [1408] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.Sequences)
+  [1467] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1505] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @15
+  [1519] Temp_int_Array_Index_Variable_8 = Temp_int_Loop_Counter_Variable_1
+  [1546] Default__KismetArrayLibrary.Array_Get(self.Sequences, Temp_int_Array_Index_Variable_8, CallFunc_Array_Get_Item)
+  [1605] K2Node_CreateDelegate_OutputDelegate_13 = bind(self.OnLoaded_2B8F0C1D48ADD10A9F747DAC0FE50811)
+  [1628] LoadAsset(self, CallFunc_Array_Get_Item, K2Node_CreateDelegate_OutputDelegate_13, LatentActionInfo{-1, -697540214, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [1695] pop
+  [1696] ArchonLogError('Invalid LevelSequenceActor')
+  [1734] CallFunc_Add_IntInt_ReturnValue_17 = Add_IntInt(Temp_int_Loop_Counter_Variable_17, 1)
+  [1776] Temp_int_Loop_Counter_Variable_17 = CallFunc_Add_IntInt_ReturnValue_17
+  [1803] goto @716
+  [1808] ArchonLogError('Invalid LevelSequenceActor::LevelSequence')
+  [1861] goto @1734
+  [1866] PrintString(self, 'Starting load', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1946] CallFunc_GetCommandLine_ReturnValue = GetCommandLine()
+  [1974] CallFunc_Contains_ReturnValue = Contains(CallFunc_GetCommandLine_ReturnValue, '-nosound', false, false)
+  [2015] CallFunc_Not_PreBool_ReturnValue_4 = Not_PreBool(CallFunc_Contains_ReturnValue)
+  [2044] self.LoadAudioBanks = CallFunc_Not_PreBool_ReturnValue_4
+  [2063] goto @256
+  [2068] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [2097] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue_1, Temp_real_Variable)
+  [2135] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @3178
+  [2149] self.LLevelSequencesValid = true
+  [2160] Temp_bool_True_if_break_was_hit_Variable = false
+  [2171] Temp_int_Loop_Counter_Variable_15 = 0
+  [2194] Temp_int_Array_Index_Variable_14 = 0
+  [2217] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [2246] CallFunc_Array_Length_ReturnValue_30 = Default__KismetArrayLibrary.Array_Length(self.PreloadParameters.SequenceActorInstances)
+  [2314] CallFunc_Less_IntInt_ReturnValue_29 = Less_IntInt(Temp_int_Loop_Counter_Variable_15, CallFunc_Array_Length_ReturnValue_30)
+  [2352] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue_29)
+  [2390] if !(CallFunc_BooleanAND_ReturnValue_3) goto @2622
+  [2404] Temp_int_Array_Index_Variable_14 = Temp_int_Loop_Counter_Variable_15
+  [2431] push @2548
+  [2436] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.SequenceActorInstances, Temp_int_Array_Index_Variable_14, CallFunc_Array_Get_Item_39)
+  [2504] CallFunc_IsValid_ReturnValue_7 = IsValid(CallFunc_Array_Get_Item_39)
+  [2533] if !(CallFunc_IsValid_ReturnValue_7) goto @3231
+  [2547] pop
+  [2548] CallFunc_Add_IntInt_ReturnValue_15 = Add_IntInt(Temp_int_Loop_Counter_Variable_15, 1)
+  [2590] Temp_int_Loop_Counter_Variable_15 = CallFunc_Add_IntInt_ReturnValue_15
+  [2617] goto @2217
+  [2622] if !(self.LLevelSequencesValid) goto @3069
+  [2636] ArchonLogString(self, 'LevelSequenceActor is valid.  Continuing with preload.', true)
+  [2704] if !(self.DebugLoadDelayEnabled) goto @1946
+  [2718] CallFunc_RandomFloat_ReturnValue_1 = RandomFloat()
+  [2746] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_RandomFloat_ReturnValue_1, 10.0)
+  [2792] self.DebugLoadDelay = CallFunc_Multiply_DoubleDouble_ReturnValue_1
+  [2819] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(self.DebugLoadDelay)
+  [2856] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Load delay: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [2907] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [2981] CallFunc_Delay_Duration_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.DebugLoadDelay)
+  [3010] Delay(self, CallFunc_Delay_Duration_ImplicitCast_1, LatentActionInfo{EX_SkipOffsetConst(Value=1866), -1934279586, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [3068] pop
+  [3069] ArchonLogString(self, 'LevelSequenceActor is invalid.  Waiting.', true)
+  [3123] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=2068), 1218094980, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [3177] pop
+  [3178] ArchonLogError('Unable to resolve LevelSequenceActor')
+  [3226] goto @2704
+  [3231] self.LLevelSequencesValid = false
+  [3242] Temp_bool_True_if_break_was_hit_Variable = true
+  [3253] pop
+  [3254] DebugPrint('Waiting for load to complete', 2.0)
+  [3307] if !(self.LoadingComplete) goto @7650
+  [3321] DebugPrint('Starting', 2.0)
+  [3354] self.ServerPlaybackState = 1
+  [3374] MarkPropertyDirtyFromRepIndex(self, 18, 'ServerPlaybackState')
+  [3403] OnRep_ServerPlaybackState()
+  [3417] self.ClientReadyCount = 0
+  [3440] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [3499] self.ClientCount = CallFunc_Array_Length_ReturnValue_3
+  [3526] Temp_int_Loop_Counter_Variable_20 = 0
+  [3549] Temp_int_Array_Index_Variable_21 = 0
+  [3572] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(self.LevelSequencePlayers)
+  [3631] CallFunc_Less_IntInt_ReturnValue_7 = Less_IntInt(Temp_int_Loop_Counter_Variable_20, CallFunc_Array_Length_ReturnValue_4)
+  [3669] if !(CallFunc_Less_IntInt_ReturnValue_7) goto @5429
+  [3683] Temp_int_Array_Index_Variable_21 = Temp_int_Loop_Counter_Variable_20
+  [3710] push @5355
+  [3715] Temp_int_Loop_Counter_Variable_27 = 0
+  [3738] Temp_int_Array_Index_Variable_27 = 0
+  [3761] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(self.ProxyActorClasses)
+  [3820] CallFunc_Less_IntInt_ReturnValue_26 = Less_IntInt(Temp_int_Loop_Counter_Variable_27, CallFunc_Array_Length_ReturnValue_5)
+  [3858] if !(CallFunc_Less_IntInt_ReturnValue_26) goto @4190
+  [3872] Temp_int_Array_Index_Variable_27 = Temp_int_Loop_Counter_Variable_27
+  [3899] push @7705
+  [3904] CallFunc_Array_IsValidIndex_ReturnValue_2 = Default__KismetArrayLibrary.Array_IsValidIndex(self.ReplacementActors, Temp_int_Array_Index_Variable_27)
+  [3964] if !(CallFunc_Array_IsValidIndex_ReturnValue_2) pop
+  [3974] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_21, CallFunc_Array_Get_Item_6)
+  [4033] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_27, CallFunc_Array_Get_Item_28)
+  [4092] Default__KismetArrayLibrary.Array_Get(self.ProxyActorClasses, Temp_int_Array_Index_Variable_27, CallFunc_Array_Get_Item_29)
+  [4151] ReplaceSequenceActor(CallFunc_Array_Get_Item_6, null, CallFunc_Array_Get_Item_29, CallFunc_Array_Get_Item_28)
+  [4189] pop
+  [4190] Temp_int_Loop_Counter_Variable_25 = 0
+  [4213] Temp_int_Array_Index_Variable_24 = 0
+  [4236] CallFunc_Array_Length_ReturnValue_6 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActorClasses)
+  [4295] CallFunc_Less_IntInt_ReturnValue_15 = Less_IntInt(Temp_int_Loop_Counter_Variable_25, CallFunc_Array_Length_ReturnValue_6)
+  [4333] if !(CallFunc_Less_IntInt_ReturnValue_15) goto @4665
+  [4347] Temp_int_Array_Index_Variable_24 = Temp_int_Loop_Counter_Variable_25
+  [4374] push @7779
+  [4379] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.SpawnedActors, Temp_int_Array_Index_Variable_24)
+  [4439] if !(CallFunc_Array_IsValidIndex_ReturnValue) pop
+  [4449] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_21, CallFunc_Array_Get_Item_6)
+  [4508] Default__KismetArrayLibrary.Array_Get(self.SpawnedActorClasses, Temp_int_Array_Index_Variable_24, CallFunc_Array_Get_Item_14)
+  [4567] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_24, CallFunc_Array_Get_Item_15)
+  [4626] ReplaceSequenceActor(CallFunc_Array_Get_Item_6, null, CallFunc_Array_Get_Item_14, CallFunc_Array_Get_Item_15)
+  [4664] pop
+  [4665] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_21, CallFunc_Array_Get_Item_6)
+  [4724] CallFunc_Array_Get_Item_6.self.bCameraControlEnabled = self.bIsClientViewingCinematic
+  [4765] CallFunc_IsValidClass_ReturnValue_4 = IsValidClass(self.ProxyCameraClass)
+  [4794] if !(CallFunc_IsValidClass_ReturnValue_4) goto @4905
+  [4808] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_21, CallFunc_Array_Get_Item_6)
+  [4867] ReplaceSequenceActor(CallFunc_Array_Get_Item_6, null, self.ProxyCameraClass, self.Camera)
+  [4905] Temp_int_Loop_Counter_Variable_3 = 0
+  [4928] Temp_int_Array_Index_Variable = 0
+  [4951] CallFunc_Array_Length_ReturnValue_19 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [5010] CallFunc_Less_IntInt_ReturnValue_17 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_19)
+  [5048] if !(CallFunc_Less_IntInt_ReturnValue_17) goto @7853
+  [5062] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_3
+  [5089] push @8412
+  [5094] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_20)
+  [5153] K2Node_DynamicCast_AsArchon_Character_2 = cast<ArchonCharacter>(CallFunc_Array_Get_Item_20)
+  [5189] K2Node_DynamicCast_bSuccess_11 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_2)
+  [5218] if !(K2Node_DynamicCast_bSuccess_11) pop
+  [5228] K2Node_DynamicCast_AsArchon_Character_2.SetClientAuthoritativeCustomMovement(true, 'Cinematic', false, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}))
+  [5354] pop
+  [5355] CallFunc_Add_IntInt_ReturnValue_21 = Add_IntInt(Temp_int_Loop_Counter_Variable_20, 1)
+  [5397] Temp_int_Loop_Counter_Variable_20 = CallFunc_Add_IntInt_ReturnValue_21
+  [5424] goto @3572
+  [5429] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [5449] CallFunc_HasAuthority_ReturnValue_4 = CallFunc_GetOwner_ReturnValue_5.HasAuthority()
+  [5491] if !(CallFunc_HasAuthority_ReturnValue_4) goto @6516
+  [5505] if !(self.AuthAutoPositionActorsAtEnd) pop
+  [5515] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(self.LevelSequencePlayers)
+  [5574] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, CallFunc_Array_LastIndex_ReturnValue, CallFunc_Array_Get_Item_7)
+  [5633] self.LCurrentLevelSequencePlayer = CallFunc_Array_Get_Item_7
+  [5652] CallFunc_GetLevelSequenceActor_ReturnValue = self.LCurrentLevelSequencePlayer.GetLevelSequenceActor()
+  [5698] CallFunc_Array_LastIndex_ReturnValue_1 = Default__KismetArrayLibrary.Array_LastIndex(self.CinematicStageTransforms)
+  [5757] Default__KismetArrayLibrary.Array_Get(self.CinematicStageTransforms, CallFunc_Array_LastIndex_ReturnValue_1, CallFunc_Array_Get_Item_8)
+  [5816] BreakTransform(CallFunc_Array_Get_Item_8, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [5862] CallFunc_K2_SetActorLocationAndRotation_ReturnValue = CallFunc_GetLevelSequenceActor_ReturnValue.K2_SetActorLocationAndRotation(CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, false, CallFunc_K2_SetActorLocationAndRotation_SweepHitResult, true)
+  [5933] CallFunc_GetEndTime_ReturnValue = self.LCurrentLevelSequencePlayer.GetEndTime()
+  [5983] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_1 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetEndTime_ReturnValue)
+  [6020] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_1)
+  [6049] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1, 0.10000000149011612)
+  [6095] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0)
+  [6141] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.Frame = FrameTime{FrameNumber{0}, 0.0}
+  [6206] K2Node_MakeStruct_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [6235] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.Time = K2Node_MakeStruct_Time_ImplicitCast
+  [6271] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.MarkedFrame = ''
+  [6300] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.PositionType = 1
+  [6329] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.UpdateMethod = 1
+  [6358] K2Node_MakeStruct_MovieSceneSequencePlaybackParams.bHasJumped = false
+  [6378] self.LCurrentLevelSequencePlayer.SetPlaybackPosition(K2Node_MakeStruct_MovieSceneSequencePlaybackParams)
+  [6419] self.LCurrentLevelSequencePlayer.Play()
+  [6451] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.Authority_OnFinalSequenceEnd)
+  [6474] K2Node_CreateDelegate_OutputDelegate_5 += None
+  [6515] pop
+  [6516] Temp_int_Loop_Counter_Variable_22 = 0
+  [6539] Temp_int_Array_Index_Variable_25 = 0
+  [6562] CallFunc_Array_Length_ReturnValue_7 = Default__KismetArrayLibrary.Array_Length(self.LevelSequencePlayers)
+  [6621] CallFunc_Less_IntInt_ReturnValue_9 = Less_IntInt(Temp_int_Loop_Counter_Variable_22, CallFunc_Array_Length_ReturnValue_7)
+  [6659] if !(CallFunc_Less_IntInt_ReturnValue_9) goto @7312
+  [6673] Temp_int_Array_Index_Variable_25 = Temp_int_Loop_Counter_Variable_22
+  [6700] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_25, CallFunc_Array_Get_Item_17)
+  [6759] self.LCurrentLevelSequencePlayer = CallFunc_Array_Get_Item_17
+  [6778] K2Node_CreateDelegate_OutputDelegate_14 = bind(self.PostSequenceUpdate)
+  [6801] K2Node_CreateDelegate_OutputDelegate_14 += None
+  [6842] self.LCurrentSequenceIndex = Temp_int_Array_Index_Variable_25
+  [6869] self.LFirstGroundOffsetUpdate = true
+  [6880] self.LCurrentLevelSequencePlayer.Play()
+  [6912] K2Node_CreateDelegate_OutputDelegate = bind(self.OnSequenceEnd)
+  [6935] K2Node_CreateDelegate_OutputDelegate += None
+  [6976] K2Node_CreateDelegate_OutputDelegate_11 = bind(self.OnCameraCut)
+  [6999] K2Node_CreateDelegate_OutputDelegate_11 += None
+  [7040] CallFunc_GetDuration_ReturnValue = self.LCurrentLevelSequencePlayer.GetDuration()
+  [7090] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetDuration_ReturnValue)
+  [7127] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue)
+  [7156] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, 0.10000000149011612)
+  [7202] K2Node_CreateDelegate_OutputDelegate_10 = bind(self.CacheCameraTransform)
+  [7225] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [7254] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_10, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [7311] pop
+  [7312] CallFunc_GetPlayerController_ReturnValue_3 = GetPlayerController(self, 0)
+  [7338] K2Node_DynamicCast_AsPlayer_Controller_Interface_1 = cast<player_controller_interface_C>(CallFunc_GetPlayerController_ReturnValue_3)
+  [7374] K2Node_DynamicCast_bSuccess_17 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_1)
+  [7403] if !(K2Node_DynamicCast_bSuccess_17) goto @7456
+  [7417] K2Node_DynamicCast_AsPlayer_Controller_Interface_1.SetCinematicState(2)
+  [7456] CallFunc_GetPlayerController_ReturnValue_11 = GetPlayerController(self, 0)
+  [7482] CallFunc_GetHUD_ReturnValue_2 = CallFunc_GetPlayerController_ReturnValue_11.GetHUD()
+  [7524] K2Node_DynamicCast_AsArchon_HUD_2 = cast<ArchonHUD>(CallFunc_GetHUD_ReturnValue_2)
+  [7560] K2Node_DynamicCast_bSuccess_25 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_HUD_2)
+  [7589] if !(K2Node_DynamicCast_bSuccess_25) goto @7635
+  [7603] K2Node_DynamicCast_AsArchon_HUD_2.HideGameplayHUD()
+  [7635] HandleReplayCineComplete()
+  [7649] pop
+  [7650] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=3254), 1914287983, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [7704] pop
+  [7705] CallFunc_Add_IntInt_ReturnValue_30 = Add_IntInt(Temp_int_Loop_Counter_Variable_27, 1)
+  [7747] Temp_int_Loop_Counter_Variable_27 = CallFunc_Add_IntInt_ReturnValue_30
+  [7774] goto @3761
+  [7779] CallFunc_Add_IntInt_ReturnValue_26 = Add_IntInt(Temp_int_Loop_Counter_Variable_25, 1)
+  [7821] Temp_int_Loop_Counter_Variable_25 = CallFunc_Add_IntInt_ReturnValue_26
+  [7848] goto @4236
+  [7853] Temp_int_Loop_Counter_Variable_4 = 0
+  [7876] Temp_int_Array_Index_Variable_2 = 0
+  [7899] CallFunc_Array_Length_ReturnValue_18 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActors)
+  [7958] CallFunc_Less_IntInt_ReturnValue_16 = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue_18)
+  [7996] if !(CallFunc_Less_IntInt_ReturnValue_16) pop
+  [8006] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_4
+  [8033] push @8338
+  [8038] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_21)
+  [8097] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item_21.GetComponentByClass(CharacterMovementComponent)
+  [8148] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [8177] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [8187] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_21)
+  [8246] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item_21.GetComponentByClass(CharacterMovementComponent)
+  [8297] CallFunc_GetComponentByClass_ReturnValue.SetMovementMode(6, 0)
+  [8337] pop
+  [8338] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [8380] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_4
+  [8407] goto @7899
+  [8412] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [8454] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [8481] goto @4951
+  [8486] DebugPrint('Waiting for load to complete', 0.0)
+  [8539] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(self.WaitForClientReady)
+  [8568] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue_2, self.ClientReady)
+  [8606] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.LoadingComplete, CallFunc_BooleanOR_ReturnValue)
+  [8644] if !(CallFunc_BooleanAND_ReturnValue) goto @11139
+  [8658] CalculateClientViewability()
+  [8672] CallFunc_Array_IsValidIndex_ReturnValue_3 = Default__KismetArrayLibrary.Array_IsValidIndex(self.LevelSequencePlayers, 0)
+  [8728] if !(CallFunc_Array_IsValidIndex_ReturnValue_3) goto @10990
+  [8742] DebugPrint('Starting', 2.0)
+  [8775] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [8822] CallFunc_GetPlayerController_ReturnValue_9 = GetPlayerController(self, 0)
+  [8848] K2Node_DynamicCast_AsPlayer_Controller_Interface_3 = cast<player_controller_interface_C>(CallFunc_GetPlayerController_ReturnValue_9)
+  [8884] K2Node_DynamicCast_bSuccess_23 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_3)
+  [8913] if !(K2Node_DynamicCast_bSuccess_23) goto @9158
+  [8927] CallFunc_GetGameTimeInSeconds_ReturnValue_2 = GetGameTimeInSeconds(self)
+  [8956] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, 0, CallFunc_Array_Get_Item_31)
+  [9011] CallFunc_GetSequence_ReturnValue = CallFunc_Array_Get_Item_31.GetSequence()
+  [9053] CallFunc_GetDisplayName_ReturnValue_2 = GetDisplayName(CallFunc_GetSequence_ReturnValue)
+  [9090] ClientPlayerCinematicStarted__DelegateSignature(K2Node_DynamicCast_AsPlayer_Controller_Interface_3, CallFunc_GetDisplayName_ReturnValue_2, CallFunc_GetGameTimeInSeconds_ReturnValue_2)
+  [9158] ClientStart__DelegateSignature()
+  [9177] K2Node_DynamicCast_AsCamera_Actor = cast<camera_actor_C>(self.Camera)
+  [9213] K2Node_DynamicCast_bSuccess_27 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCamera_Actor)
+  [9242] if !(K2Node_DynamicCast_bSuccess_27) goto @9292
+  [9256] K2Node_DynamicCast_AsCamera_Actor.OnCinematicStart()
+  [9292] if !(self.bIsClientViewingCinematic) goto @10712
+  [9306] CallFunc_GetPlayerController_ReturnValue_6 = GetPlayerController(self, 0)
+  [9332] K2Node_DynamicCast_AsPlayer_Controller_Interface_2 = cast<player_controller_interface_C>(CallFunc_GetPlayerController_ReturnValue_6)
+  [9368] K2Node_DynamicCast_bSuccess_20 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_2)
+  [9397] if !(K2Node_DynamicCast_bSuccess_20) goto @9450
+  [9411] K2Node_DynamicCast_AsPlayer_Controller_Interface_2.SetCinematicState(1)
+  [9450] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [9471] K2Node_DynamicCast_AsArchon_Game_State = cast<ArchonGameState>(CallFunc_GetGameState_ReturnValue)
+  [9507] K2Node_DynamicCast_bSuccess_15 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_State)
+  [9536] if !(K2Node_DynamicCast_bSuccess_15) goto @9587
+  [9550] K2Node_DynamicCast_AsArchon_Game_State.SetNameplateVisibility(false)
+  [9587] Temp_int_Loop_Counter_Variable_19 = 0
+  [9610] Temp_int_Array_Index_Variable_17 = 0
+  [9633] CallFunc_Array_Length_ReturnValue_16 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [9692] CallFunc_Less_IntInt_ReturnValue_12 = Less_IntInt(Temp_int_Loop_Counter_Variable_19, CallFunc_Array_Length_ReturnValue_16)
+  [9730] if !(CallFunc_Less_IntInt_ReturnValue_12) goto @10143
+  [9744] Temp_int_Array_Index_Variable_17 = Temp_int_Loop_Counter_Variable_19
+  [9771] push @11194
+  [9776] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_17, CallFunc_Array_Get_Item_16)
+  [9835] K2Node_DynamicCast_AsCine_Actor_Interface_1 = cast<cine_actor_interface_C>(CallFunc_Array_Get_Item_16)
+  [9871] K2Node_DynamicCast_bSuccess_10 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsCine_Actor_Interface_1)
+  [9900] if !(K2Node_DynamicCast_bSuccess_10) goto @9951
+  [9914] K2Node_DynamicCast_AsCine_Actor_Interface_1.OnCinematicStart()
+  [9951] push @11268
+  [9956] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_17, CallFunc_Array_Get_Item_16)
+  [10015] K2Node_DynamicCast_AsPlayer_Interface_2 = cast<player_interface_C>(CallFunc_Array_Get_Item_16)
+  [10051] K2Node_DynamicCast_bSuccess_8 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_2)
+  [10080] if !(K2Node_DynamicCast_bSuccess_8) goto @11440
+  [10094] K2Node_DynamicCast_AsPlayer_Interface_2.SetCinematicState(1, CallFunc_SetCinematicState_CinematicStte)
+  [10142] pop
+  [10143] CallFunc_GetPlayerCharacter_ReturnValue = GetPlayerCharacter(self, 0)
+  [10169] K2Node_DynamicCast_AsPlayer_Interface_5 = cast<player_interface_C>(CallFunc_GetPlayerCharacter_ReturnValue)
+  [10205] K2Node_DynamicCast_bSuccess_30 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_5)
+  [10234] if !(K2Node_DynamicCast_bSuccess_30) goto @10696
+  [10248] K2Node_DynamicCast_AsPlayer_Interface_5.GetFollowCamera(CallFunc_GetFollowCamera_FollowCamera)
+  [10294] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_GetFollowCamera_FollowCamera)
+  [10323] if !(CallFunc_IsValid_ReturnValue_6) goto @10414
+  [10337] CallFunc_K2_GetComponentToWorld_ReturnValue = CallFunc_GetFollowCamera_FollowCamera.K2_GetComponentToWorld()
+  [10387] self.FinalCameraTransform = CallFunc_K2_GetComponentToWorld_ReturnValue
+  [10414] Temp_int_Loop_Counter_Variable_12 = 0
+  [10437] Temp_int_Array_Index_Variable_11 = 0
+  [10460] CallFunc_Array_Length_ReturnValue_25 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActors)
+  [10519] CallFunc_Less_IntInt_ReturnValue_24 = Less_IntInt(Temp_int_Loop_Counter_Variable_12, CallFunc_Array_Length_ReturnValue_25)
+  [10557] if !(CallFunc_Less_IntInt_ReturnValue_24) goto @11461
+  [10571] Temp_int_Array_Index_Variable_11 = Temp_int_Loop_Counter_Variable_12
+  [10598] push @11786
+  [10603] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_11, CallFunc_Array_Get_Item_33)
+  [10662] CallFunc_Array_Get_Item_33.SetActorTickEnabled(true)
+  [10695] pop
+  [10696] CallFunc_GetFollowCamera_FollowCamera = null
+  [10707] goto @10294
+  [10712] CallFunc_IsValid_ReturnValue_1 = IsValid(self.Protagonist)
+  [10741] if !(CallFunc_IsValid_ReturnValue_1) goto @3526
+  [10755] CallFunc_Array_RemoveItem_ReturnValue_1 = Default__KismetArrayLibrary.Array_RemoveItem(self.ProxyActorClasses, self.LProtagonistClass)
+  [10815] Default__KismetArrayLibrary.Array_Insert(self.ProxyActorClasses, self.LProtagonistClass, 0)
+  [10870] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.ReplacementActors, self.Protagonist)
+  [10930] Default__KismetArrayLibrary.Array_Insert(self.ReplacementActors, self.Protagonist, 0)
+  [10985] goto @3526
+  [10990] CallFunc_GetOwner_ReturnValue_7 = GetOwner()
+  [11010] CallFunc_GetDisplayName_ReturnValue_5 = GetDisplayName(CallFunc_GetOwner_ReturnValue_7)
+  [11047] CallFunc_Concat_StrStr_ReturnValue_12 = Concat_StrStr('No cine level sequences for: ', CallFunc_GetDisplayName_ReturnValue_5)
+  [11115] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue_12)
+  [11134] goto @8742
+  [11139] Delay(self, 0.0, LatentActionInfo{EX_SkipOffsetConst(Value=8486), 2090593625, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [11193] pop
+  [11194] CallFunc_Add_IntInt_ReturnValue_20 = Add_IntInt(Temp_int_Loop_Counter_Variable_19, 1)
+  [11236] Temp_int_Loop_Counter_Variable_19 = CallFunc_Add_IntInt_ReturnValue_20
+  [11263] goto @9633
+  [11268] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_17, CallFunc_Array_Get_Item_16)
+  [11327] K2Node_DynamicCast_AsPlayer_Interface_3 = cast<player_interface_C>(CallFunc_Array_Get_Item_16)
+  [11363] K2Node_DynamicCast_bSuccess_9 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_3)
+  [11392] if !(K2Node_DynamicCast_bSuccess_9) pop
+  [11402] K2Node_DynamicCast_AsPlayer_Interface_3.HidePlayerMarker()
+  [11439] pop
+  [11440] CallFunc_SetCinematicState_CinematicStte = 0
+  [11460] pop
+  [11461] CallFunc_GetPlayerController_ReturnValue_4 = GetPlayerController(self, 0)
+  [11487] CallFunc_GetHUD_ReturnValue = CallFunc_GetPlayerController_ReturnValue_4.GetHUD()
+  [11529] K2Node_DynamicCast_AsArchon_HUD = cast<ArchonHUD>(CallFunc_GetHUD_ReturnValue)
+  [11565] K2Node_DynamicCast_bSuccess_18 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_HUD)
+  [11594] if !(K2Node_DynamicCast_bSuccess_18) goto @11640
+  [11608] K2Node_DynamicCast_AsArchon_HUD.HideGameplayHUD()
+  [11640] ActivateCinematicOverlay()
+  [11654] CallFunc_IsValidClass_ReturnValue_3 = IsValidClass(self.ProxyCameraClass)
+  [11683] if !(CallFunc_IsValidClass_ReturnValue_3) goto @10712
+  [11697] CallFunc_GetPlayerController_ReturnValue_4 = GetPlayerController(self, 0)
+  [11723] CallFunc_GetPlayerController_ReturnValue_4.SetViewTargetWithBlend(self.Camera, 0.0, 0, 0.0, true)
+  [11781] goto @10712
+  [11786] CallFunc_Add_IntInt_ReturnValue_12 = Add_IntInt(Temp_int_Loop_Counter_Variable_12, 1)
+  [11828] Temp_int_Loop_Counter_Variable_12 = CallFunc_Add_IntInt_ReturnValue_12
+  [11855] goto @10460
+  [11860] OnRep_ServerPlaybackState()
+  [11874] self.LCurrentLevelSequencePlayer.Stop()
+  [11906] Temp_int_Loop_Counter_Variable_24 = 0
+  [11929] Temp_int_Array_Index_Variable_23 = 0
+  [11952] CallFunc_Array_Length_ReturnValue_12 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActors)
+  [12011] CallFunc_Less_IntInt_ReturnValue_13 = Less_IntInt(Temp_int_Loop_Counter_Variable_24, CallFunc_Array_Length_ReturnValue_12)
+  [12049] if !(CallFunc_Less_IntInt_ReturnValue_13) goto @12265
+  [12063] Temp_int_Array_Index_Variable_23 = Temp_int_Loop_Counter_Variable_24
+  [12090] push @12191
+  [12095] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_23, CallFunc_Array_Get_Item_13)
+  [12154] CallFunc_Array_Get_Item_13.K2_DestroyActor()
+  [12190] pop
+  [12191] CallFunc_Add_IntInt_ReturnValue_25 = Add_IntInt(Temp_int_Loop_Counter_Variable_24, 1)
+  [12233] Temp_int_Loop_Counter_Variable_24 = CallFunc_Add_IntInt_ReturnValue_25
+  [12260] goto @11952
+  [12265] CallFunc_IsValidClass_ReturnValue_5 = IsValidClass(self.ProxyCameraClass)
+  [12294] if !(CallFunc_IsValidClass_ReturnValue_5) goto @12344
+  [12308] self.Camera.K2_DestroyActor()
+  [12344] Temp_int_Loop_Counter_Variable_9 = 0
+  [12367] Temp_int_Array_Index_Variable_5 = 0
+  [12390] CallFunc_Array_Length_ReturnValue_11 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [12449] CallFunc_Less_IntInt_ReturnValue_6 = Less_IntInt(Temp_int_Loop_Counter_Variable_9, CallFunc_Array_Length_ReturnValue_11)
+  [12487] if !(CallFunc_Less_IntInt_ReturnValue_6) goto @13409
+  [12501] Temp_int_Array_Index_Variable_5 = Temp_int_Loop_Counter_Variable_9
+  [12528] push @13335
+  [12533] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [12592] SetActorAndMeshHidden(CallFunc_Array_Get_Item_4, false)
+  [12616] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [12675] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_Array_Get_Item_4)
+  [12711] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [12740] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [12750] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Temp_int_Array_Index_Variable_5, 0)
+  [12784] CallFunc_Array_Length_ReturnValue_27 = Default__KismetArrayLibrary.Array_Length(self.PostCineReplacementActorTransforms)
+  [12843] CallFunc_Less_IntInt_ReturnValue_27 = Less_IntInt(Temp_int_Array_Index_Variable_5, CallFunc_Array_Length_ReturnValue_27)
+  [12881] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue_27)
+  [12919] Temp_bool_Variable = CallFunc_BooleanAND_ReturnValue_2
+  [12938] if !(Temp_bool_Variable) goto @13216
+  [12952] Default__KismetArrayLibrary.Array_Get(self.PostCineReplacementActorTransforms, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_36)
+  [13011] Temp_wildcard_Variable = CallFunc_Array_Get_Item_36
+  [13038] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.GetTransform()
+  [13088] CallFunc_SelectTransform_ReturnValue = SelectTransform(Temp_wildcard_Variable.TransformPostCine, CallFunc_GetTransform_ReturnValue, Temp_wildcard_Variable.TeleportPostCine)
+  [13161] K2Node_DynamicCast_AsArchon_Character_1.SetClientAuthoritativeCustomMovement(false, 'Cinematic', true, CallFunc_SelectTransform_ReturnValue)
+  [13215] pop
+  [13216] Temp_wildcard_Variable = ReplacementActorPostCineTransform{false, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})}
+  [13330] goto @13038
+  [13335] CallFunc_Add_IntInt_ReturnValue_10 = Add_IntInt(Temp_int_Loop_Counter_Variable_9, 1)
+  [13377] Temp_int_Loop_Counter_Variable_9 = CallFunc_Add_IntInt_ReturnValue_10
+  [13404] goto @12390
+  [13409] self.ServerPlaybackState = 0
+  [13429] MarkPropertyDirtyFromRepIndex(self, 18, 'ServerPlaybackState')
+  [13458] OnRep_ServerPlaybackState()
+  [13472] ServerStop__DelegateSignature()
+  [13491] pop
+  [13492] MarkPropertyDirtyFromRepIndex(self, 18, 'ServerPlaybackState')
+  [13521] goto @11860
+  [13526] OnRep_ReplacementActors()
+  [13540] Temp_int_Loop_Counter_Variable_14 = 0
+  [13563] Temp_int_Array_Index_Variable_12 = 0
+  [13586] CallFunc_Array_Length_ReturnValue_28 = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [13645] CallFunc_Less_IntInt_ReturnValue_28 = Less_IntInt(Temp_int_Loop_Counter_Variable_14, CallFunc_Array_Length_ReturnValue_28)
+  [13683] if !(CallFunc_Less_IntInt_ReturnValue_28) goto @14129
+  [13697] Temp_int_Array_Index_Variable_12 = Temp_int_Loop_Counter_Variable_14
+  [13724] push @14055
+  [13729] Default__KismetArrayLibrary.Array_Get(self.Clients, Temp_int_Array_Index_Variable_12, CallFunc_Array_Get_Item_37)
+  [13788] K2Node_DynamicCast_AsPawn_1 = cast<Pawn>(CallFunc_Array_Get_Item_37)
+  [13824] K2Node_DynamicCast_bSuccess_28 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn_1)
+  [13853] if !(K2Node_DynamicCast_bSuccess_28) pop
+  [13863] CallFunc_GetController_ReturnValue_1 = K2Node_DynamicCast_AsPawn_1.GetController()
+  [13905] K2Node_DynamicCast_AsPlayer_Controller_Interface_5 = cast<player_controller_interface_C>(CallFunc_GetController_ReturnValue_1)
+  [13941] K2Node_DynamicCast_bSuccess_29 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_5)
+  [13970] if !(K2Node_DynamicCast_bSuccess_29) pop
+  [13980] CallFunc_SetCinematicInterface_CinematicPlayerInterface_CastInput_1 = cast<CinematicPlayerInterface_C>(self)
+  [14008] K2Node_DynamicCast_AsPlayer_Controller_Interface_5.SetCinematicInterface(CallFunc_SetCinematicInterface_CinematicPlayerInterface_CastInput_1)
+  [14054] pop
+  [14055] CallFunc_Add_IntInt_ReturnValue_14 = Add_IntInt(Temp_int_Loop_Counter_Variable_14, 1)
+  [14097] Temp_int_Loop_Counter_Variable_14 = CallFunc_Add_IntInt_ReturnValue_14
+  [14124] goto @13586
+  [14129] Temp_int_Loop_Counter_Variable_5 = 0
+  [14152] Temp_int_Array_Index_Variable_1 = 0
+  [14175] CallFunc_Array_Length_ReturnValue_13 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [14234] CallFunc_Less_IntInt_ReturnValue_8 = Less_IntInt(Temp_int_Loop_Counter_Variable_5, CallFunc_Array_Length_ReturnValue_13)
+  [14272] if !(CallFunc_Less_IntInt_ReturnValue_8) goto @3307
+  [14286] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_5
+  [14313] push @14644
+  [14318] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_9)
+  [14377] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_Array_Get_Item_9)
+  [14413] K2Node_DynamicCast_bSuccess_6 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [14442] if !(K2Node_DynamicCast_bSuccess_6) pop
+  [14452] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [14494] K2Node_DynamicCast_AsPlayer_Controller_Interface = cast<player_controller_interface_C>(CallFunc_GetController_ReturnValue)
+  [14530] K2Node_DynamicCast_bSuccess_7 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface)
+  [14559] if !(K2Node_DynamicCast_bSuccess_7) pop
+  [14569] CallFunc_SetCinematicInterface_CinematicPlayerInterface_CastInput = cast<CinematicPlayerInterface_C>(self)
+  [14597] K2Node_DynamicCast_AsPlayer_Controller_Interface.SetCinematicInterface(CallFunc_SetCinematicInterface_CinematicPlayerInterface_CastInput)
+  [14643] pop
+  [14644] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_5, 1)
+  [14686] Temp_int_Loop_Counter_Variable_5 = CallFunc_Add_IntInt_ReturnValue_5
+  [14713] goto @14175
+  [14718] MarkPropertyDirtyFromRepIndex(self, 17, 'ReplacementActors')
+  [14747] goto @13526
+  [14752] OnRep_Clients()
+  [14766] self.PostCineReplacementActorTransforms = K2Node_CustomEvent_PostCineReplacementActorTransforms
+  [14793] MarkPropertyDirtyFromRepIndex(self, 23, 'PostCineReplacementActorTransforms')
+  [14822] self.ReplacementActors = K2Node_CustomEvent_ReplacementActors
+  [14849] goto @14718
+  [14854] MarkPropertyDirtyFromRepIndex(self, 19, 'Clients')
+  [14883] goto @14752
+  [14888] MarkPropertyDirtyFromRepIndex(self, 20, 'ForceFadeFromBlack')
+  [14917] CallFunc_GetEndTime_ReturnValue_1 = self.LCurrentLevelSequencePlayer.GetEndTime()
+  [14967] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_4 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetEndTime_ReturnValue_1)
+  [15004] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_4)
+  [15033] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_2, 0.10000000149011612)
+  [15079] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.Frame = FrameTime{FrameNumber{0}, 0.0}
+  [15144] K2Node_MakeStruct_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue_2)
+  [15173] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.Time = K2Node_MakeStruct_Time_ImplicitCast_1
+  [15209] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.MarkedFrame = ''
+  [15238] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.PositionType = 1
+  [15267] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.UpdateMethod = 0
+  [15296] K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1.bHasJumped = false
+  [15316] self.LCurrentLevelSequencePlayer.SetPlaybackPosition(K2Node_MakeStruct_MovieSceneSequencePlaybackParams_1)
+  [15357] CallFunc_GetPlayerController_ReturnValue_1 = GetPlayerController(self, 0)
+  [15383] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Cine_Stop_All_Cine_Sounds, CallFunc_GetPlayerController_ReturnValue_1, 0, Temp_delegate_Variable_1, false)
+  [15466] pop
+  [15467] MarkPropertyDirtyFromRepIndex(self, 18, 'ServerPlaybackState')
+  [15496] OnRep_ServerPlaybackState()
+  [15510] CallFunc_IsValid_ReturnValue_5 = IsValid(self.LCurrentFadeSequencePlayer)
+  [15539] if !(CallFunc_IsValid_ReturnValue_5) goto @16249
+  [15553] CallFunc_GetCurrentTime_ReturnValue_1 = self.LCurrentFadeSequencePlayer.GetCurrentTime()
+  [15603] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_5 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetCurrentTime_ReturnValue_1)
+  [15640] CallFunc_GetDuration_ReturnValue_2 = self.LCurrentFadeSequencePlayer.GetDuration()
+  [15690] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_6 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetDuration_ReturnValue_2)
+  [15727] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_3 = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_6)
+  [15756] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_5)
+  [15785] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_3, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [15831] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_3, 0.0)
+  [15869] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @16249
+  [15883] CallFunc_GetCurrentTime_ReturnValue_1 = self.LCurrentFadeSequencePlayer.GetCurrentTime()
+  [15933] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_5 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetCurrentTime_ReturnValue_1)
+  [15970] CallFunc_GetDuration_ReturnValue_2 = self.LCurrentFadeSequencePlayer.GetDuration()
+  [16020] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_6 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetDuration_ReturnValue_2)
+  [16057] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_3 = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_6)
+  [16086] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_5)
+  [16115] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_3, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [16161] CallFunc_Delay_Duration_ImplicitCast_3 = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [16190] Delay(self, CallFunc_Delay_Duration_ImplicitCast_3, LatentActionInfo{EX_SkipOffsetConst(Value=16249), 61953223, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [16248] pop
+  [16249] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher_1)
+  [16296] CallFunc_GetPlayerController_ReturnValue_10 = GetPlayerController(self, 0)
+  [16322] K2Node_DynamicCast_AsPlayer_Controller_Interface_4 = cast<player_controller_interface_C>(CallFunc_GetPlayerController_ReturnValue_10)
+  [16358] K2Node_DynamicCast_bSuccess_24 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_4)
+  [16387] if !(K2Node_DynamicCast_bSuccess_24) pop
+  [16397] CallFunc_GetGameTimeInSeconds_ReturnValue_3 = GetGameTimeInSeconds(self)
+  [16426] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, 0, CallFunc_Array_Get_Item_32)
+  [16481] CallFunc_GetSequence_ReturnValue_1 = CallFunc_Array_Get_Item_32.GetSequence()
+  [16523] CallFunc_GetDisplayName_ReturnValue_3 = GetDisplayName(CallFunc_GetSequence_ReturnValue_1)
+  [16560] ClientPlayerCinematicEnded__DelegateSignature(K2Node_DynamicCast_AsPlayer_Controller_Interface_4, CallFunc_GetDisplayName_ReturnValue_3, 'Finished', CallFunc_GetGameTimeInSeconds_ReturnValue_3)
+  [16638] pop
+  [16639] self.Camera.K2_DestroyActor()
+  [16675] pop
+  [16676] MarkPropertyDirtyFromRepIndex(self, 20, 'ForceFadeFromBlack')
+  [16705] CallFunc_IsValidClass_ReturnValue_6 = IsValidClass(self.ProxyCameraClass)
+  [16734] if !(CallFunc_IsValidClass_ReturnValue_6) pop
+  [16744] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(K2Node_CustomEvent_BlendTime, 1.0)
+  [16790] CallFunc_Delay_Duration_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_3)
+  [16819] Delay(self, CallFunc_Delay_Duration_ImplicitCast_2, LatentActionInfo{EX_SkipOffsetConst(Value=16639), -101679223, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [16877] pop
+  [16878] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.DebugLoadDelay)
+  [16907] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=106), 1274490875, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [16965] pop
+  [16966] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [16994] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_RandomFloat_ReturnValue, 10.0)
+  [17040] self.DebugLoadDelay = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [17067] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(self.DebugLoadDelay)
+  [17104] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('Load delay: ', CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [17155] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [17229] goto @16878
+  [17234] if !(self.DebugLoadDelayEnabled) goto @186
+  [17248] goto @16966
+  [17253] Temp_int_Loop_Counter_Variable = 0
+  [17276] Temp_int_Array_Index_Variable_19 = 0
+  [17299] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ProxyActors)
+  [17358] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [17396] if !(CallFunc_Less_IntInt_ReturnValue) goto @17587
+  [17410] Temp_int_Array_Index_Variable_19 = Temp_int_Loop_Counter_Variable
+  [17437] Default__KismetArrayLibrary.Array_Get(self.ProxyActors, Temp_int_Array_Index_Variable_19, CallFunc_Array_Get_Item_5)
+  [17496] K2Node_CreateDelegate_OutputDelegate_12 = bind(self.OnLoaded_6016B1104CD3A5F0EAABEF976B3BF735)
+  [17519] LoadAssetClass(self, CallFunc_Array_Get_Item_5, K2Node_CreateDelegate_OutputDelegate_12, LatentActionInfo{-1, 545454397, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [17586] pop
+  [17587] if !(self.LoadAudioBanks) goto @17658
+  [17601] K2Node_CreateDelegate_OutputDelegate_8 = bind(self.EventBankLoadCompleteCallback)
+  [17624] K2Node_CreateDelegate_OutputDelegate_8 += None
+  [17643] LoadBanks()
+  [17657] pop
+  [17658] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [17678] CallFunc_HasAuthority_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [17720] if !(CallFunc_HasAuthority_ReturnValue_2) goto @17785
+  [17734] self.LoadingComplete = true
+  [17745] DebugPrint('Finishing load', 2.0)
+  [17784] pop
+  [17785] Temp_int_Loop_Counter_Variable_2 = 0
+  [17808] Temp_int_Array_Index_Variable_18 = 0
+  [17831] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.ActorsToSpawn)
+  [17890] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [17928] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @17734
+  [17942] Temp_int_Array_Index_Variable_18 = Temp_int_Loop_Counter_Variable_2
+  [17969] Default__KismetArrayLibrary.Array_Get(self.ActorsToSpawn, Temp_int_Array_Index_Variable_18, CallFunc_Array_Get_Item_1)
+  [18028] K2Node_CreateDelegate_OutputDelegate_7 = bind(self.OnLoaded_4F47E7904D6F6E6C2AA1C5864FF6BE0C)
+  [18051] LoadAssetClass(self, CallFunc_Array_Get_Item_1, K2Node_CreateDelegate_OutputDelegate_7, LatentActionInfo{-1, -553758467, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [18118] pop
+  [18119] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [18161] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [18188] goto @17299
+  [18193] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [18235] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [18262] goto @1408
+  [18267] if !(Temp_bool_IsClosed_Variable) goto @18282
+  [18281] pop
+  [18282] Temp_bool_IsClosed_Variable = true
+  [18293] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [18322] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, 20.0)
+  [18368] Temp_real_Variable = CallFunc_Add_DoubleDouble_ReturnValue
+  [18395] goto @2068
+  [18400] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [18442] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [18469] goto @17831
+  [18474] Temp_bool_IsClosed_Variable = true
+  [18485] pop
+  [18486] K2Node_CreateDelegate_OutputDelegate_6 = bind(self.OnLoaded_DF9F826043B6CD0EBED950801301E3A5)
+  [18509] LoadAssetClass(self, self.ProxyCineCamera, K2Node_CreateDelegate_OutputDelegate_6, LatentActionInfo{-1, -1277276160, 'ExecuteUbergraph_dynamic_cinematic_component_bp', self})
+  [18576] pop
+  [18577] push @18267
+  [18582] if !(Temp_bool_Has_Been_Initd_Variable) goto @18597
+  [18596] pop
+  [18597] Temp_bool_Has_Been_Initd_Variable = true
+  [18608] if !(false) pop
+  [18610] goto @18474
+  [18615] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [18635] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [18677] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [18687] self.Clients = K2Node_CustomEvent_ObserverActors
+  [18714] goto @14854
+  [18719] K2Node_ClassDynamicCast_AsActor = cast<Actor>(Temp_class_Variable)
+  [18755] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsActor)
+  [18784] if !(K2Node_ClassDynamicCast_bSuccess) goto @17253
+  [18798] self.ProxyCameraClass = K2Node_ClassDynamicCast_AsActor
+  [18817] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [18837] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetActorLocation()
+  [18887] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -6000.0}))
+  [18949] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [19036] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1 = BeginDeferredActorSpawnFromClass(self, self.ProxyCameraClass, CallFunc_MakeTransform_ReturnValue, 0, null)
+  [19078] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [19098] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetActorLocation()
+  [19148] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -6000.0}))
+  [19210] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [19297] CallFunc_FinishSpawningActor_ReturnValue_1 = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, CallFunc_MakeTransform_ReturnValue)
+  [19335] self.Camera = CallFunc_FinishSpawningActor_ReturnValue_1
+  [19354] goto @17253
+  [19359] CallFunc_IsValidClass_ReturnValue = IsValidClass(Temp_class_Variable)
+  [19388] if !(CallFunc_IsValidClass_ReturnValue) goto @17253
+  [19402] goto @18719
+  [19407] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [19427] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [19469] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [19479] goto @17234
+  [19484] Temp_class_Variable = K2Node_CustomEvent_Loaded_2
+  [19503] goto @19359
+  [19508] Temp_int_Array_Index_Variable_3 = 0
+  [19531] CallFunc_Array_Length_ReturnValue_17 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [19590] CallFunc_Less_IntInt_ReturnValue_14 = Less_IntInt(Temp_int_Loop_Counter_Variable_8, CallFunc_Array_Length_ReturnValue_17)
+  [19628] if !(CallFunc_Less_IntInt_ReturnValue_14) pop
+  [19638] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_8
+  [19665] push @19947
+  [19670] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_18)
+  [19729] Default__KismetArrayLibrary.Array_Get(self.LGroundFollowOffsets, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_19)
+  [19788] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_Array_Get_Item_18.K2_GetActorLocation()
+  [19838] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_Array_Get_Item_19)
+  [19884] CallFunc_K2_SetActorLocation_ReturnValue = CallFunc_Array_Get_Item_18.K2_SetActorLocation(CallFunc_Add_VectorVector_ReturnValue_1, false, CallFunc_K2_SetActorLocation_SweepHitResult, true)
+  [19946] pop
+  [19947] CallFunc_Add_IntInt_ReturnValue_8 = Add_IntInt(Temp_int_Loop_Counter_Variable_8, 1)
+  [19989] Temp_int_Loop_Counter_Variable_8 = CallFunc_Add_IntInt_ReturnValue_8
+  [20016] goto @19531
+  [20021] push @20119
+  [20026] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_23)
+  [20085] CallFunc_Array_Get_Item_23.self.bCameraControlEnabled = false
+  [20118] pop
+  [20119] CallFunc_Add_IntInt_ReturnValue_6 = Add_IntInt(Temp_int_Loop_Counter_Variable_6, 1)
+  [20161] Temp_int_Loop_Counter_Variable_6 = CallFunc_Add_IntInt_ReturnValue_6
+  [20188] CallFunc_Array_Length_ReturnValue_20 = Default__KismetArrayLibrary.Array_Length(self.LevelSequencePlayers)
+  [20247] CallFunc_Less_IntInt_ReturnValue_19 = Less_IntInt(Temp_int_Loop_Counter_Variable_6, CallFunc_Array_Length_ReturnValue_20)
+  [20285] if !(CallFunc_Less_IntInt_ReturnValue_19) goto @20331
+  [20299] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_6
+  [20326] goto @20021
+  [20331] CallFunc_GetPlayerController_ReturnValue_8 = GetPlayerController(self, 0)
+  [20357] CallFunc_SetViewTargetWithBlend_BlendTime_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_BlendTime)
+  [20386] CallFunc_GetPlayerController_ReturnValue_8.SetViewTargetWithBlend(K2Node_CustomEvent_NewViewTarget, CallFunc_SetViewTargetWithBlend_BlendTime_ImplicitCast, 4, 2.0, false)
+  [20448] self.ForceFadeFromBlack = 2
+  [20468] goto @16676
+  [20473] Temp_int_Loop_Counter_Variable_6 = 0
+  [20496] Temp_int_Array_Index_Variable_4 = 0
+  [20519] goto @20188
+  [20524] K2Node_ClassDynamicCast_AsActor_1 = cast<Actor>(Temp_class_Variable_1)
+  [20560] K2Node_ClassDynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsActor_1)
+  [20589] if !(K2Node_ClassDynamicCast_bSuccess_1) goto @18400
+  [20603] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.SpawnedActorClasses, K2Node_ClassDynamicCast_AsActor_1)
+  [20671] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [20691] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetActorLocation()
+  [20741] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -6000.0}))
+  [20803] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [20890] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, K2Node_ClassDynamicCast_AsActor_1, CallFunc_MakeTransform_ReturnValue, 0, null)
+  [20932] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [20952] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetActorLocation()
+  [21002] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -6000.0}))
+  [21064] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [21151] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [21189] CallFunc_FinishSpawningActor_ReturnValue.SetActorTickEnabled(false)
+  [21222] CallFunc_Array_Add_ReturnValue_2 = Default__KismetArrayLibrary.Array_Add(self.SpawnedActors, CallFunc_FinishSpawningActor_ReturnValue)
+  [21290] goto @18400
+  [21295] CallFunc_IsValidClass_ReturnValue_1 = IsValidClass(Temp_class_Variable_1)
+  [21324] if !(CallFunc_IsValidClass_ReturnValue_1) goto @21343
+  [21338] goto @20524
+  [21343] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [21372] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [21422] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ') =')
+  [21464] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'Invalid or missing ActorsToSpawn entry ')
+  [21542] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [21616] StackTrace()
+  [21626] goto @18400
+  [21631] push @22181
+  [21636] Temp_int_Loop_Counter_Variable_18 = 0
+  [21659] Temp_int_Array_Index_Variable_15 = 0
+  [21682] CallFunc_Array_Length_ReturnValue_21 = Default__KismetArrayLibrary.Array_Length(K2Node_CustomEvent_NewProxyActors)
+  [21741] CallFunc_Less_IntInt_ReturnValue_20 = Less_IntInt(Temp_int_Loop_Counter_Variable_18, CallFunc_Array_Length_ReturnValue_21)
+  [21779] if !(CallFunc_Less_IntInt_ReturnValue_20) pop
+  [21789] Temp_int_Array_Index_Variable_15 = Temp_int_Loop_Counter_Variable_18
+  [21816] push @22107
+  [21821] CallFunc_Array_IsValidIndex_ReturnValue_1 = Default__KismetArrayLibrary.Array_IsValidIndex(K2Node_CustomEvent_NewReplacementActors, Temp_int_Array_Index_Variable_15)
+  [21881] if !(CallFunc_Array_IsValidIndex_ReturnValue_1) pop
+  [21891] Default__KismetArrayLibrary.Array_Get(K2Node_CustomEvent_NewReplacementActors, Temp_int_Array_Index_Variable_15, CallFunc_Array_Get_Item_24)
+  [21950] Default__KismetArrayLibrary.Array_Get(K2Node_CustomEvent_NewProxyActors, Temp_int_Array_Index_Variable_15, CallFunc_Array_Get_Item_25)
+  [22009] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_6, CallFunc_Array_Get_Item_26)
+  [22068] ReplaceSequenceActor(CallFunc_Array_Get_Item_26, null, CallFunc_Array_Get_Item_25, CallFunc_Array_Get_Item_24)
+  [22106] pop
+  [22107] CallFunc_Add_IntInt_ReturnValue_19 = Add_IntInt(Temp_int_Loop_Counter_Variable_18, 1)
+  [22149] Temp_int_Loop_Counter_Variable_18 = CallFunc_Add_IntInt_ReturnValue_19
+  [22176] goto @21682
+  [22181] CallFunc_Add_IntInt_ReturnValue_7 = Add_IntInt(Temp_int_Loop_Counter_Variable_7, 1)
+  [22223] Temp_int_Loop_Counter_Variable_7 = CallFunc_Add_IntInt_ReturnValue_7
+  [22250] CallFunc_Array_Length_ReturnValue_22 = Default__KismetArrayLibrary.Array_Length(self.LevelSequencePlayers)
+  [22309] CallFunc_Less_IntInt_ReturnValue_21 = Less_IntInt(Temp_int_Loop_Counter_Variable_7, CallFunc_Array_Length_ReturnValue_22)
+  [22347] if !(CallFunc_Less_IntInt_ReturnValue_21) pop
+  [22357] Temp_int_Array_Index_Variable_6 = Temp_int_Loop_Counter_Variable_7
+  [22384] goto @21631
+  [22389] Temp_int_Loop_Counter_Variable_7 = 0
+  [22412] Temp_int_Array_Index_Variable_6 = 0
+  [22435] goto @22250
+  [22440] Temp_class_Variable_1 = K2Node_CustomEvent_Loaded_3
+  [22459] goto @21295
+  [22464] Temp_int_Loop_Counter_Variable_8 = 0
+  [22487] goto @19508
+  [22492] Temp_int_Loop_Counter_Variable_10 = 0
+  [22515] Temp_int_Array_Index_Variable_7 = 0
+  [22538] CallFunc_Array_Length_ReturnValue_23 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [22597] CallFunc_Less_IntInt_ReturnValue_22 = Less_IntInt(Temp_int_Loop_Counter_Variable_10, CallFunc_Array_Length_ReturnValue_23)
+  [22635] if !(CallFunc_Less_IntInt_ReturnValue_22) goto @22927
+  [22649] Temp_int_Array_Index_Variable_7 = Temp_int_Loop_Counter_Variable_10
+  [22676] push @22853
+  [22681] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_7, CallFunc_Array_Get_Item_27)
+  [22740] K2Node_DynamicCast_AsCine_Actor_Interface_2 = cast<cine_actor_interface_C>(CallFunc_Array_Get_Item_27)
+  [22776] K2Node_DynamicCast_bSuccess_12 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsCine_Actor_Interface_2)
+  [22805] if !(K2Node_DynamicCast_bSuccess_12) pop
+  [22815] K2Node_DynamicCast_AsCine_Actor_Interface_2.ReInitPhysics()
+  [22852] pop
+  [22853] CallFunc_Add_IntInt_ReturnValue_9 = Add_IntInt(Temp_int_Loop_Counter_Variable_10, 1)
+  [22895] Temp_int_Loop_Counter_Variable_10 = CallFunc_Add_IntInt_ReturnValue_9
+  [22922] goto @22538
+  [22927] Temp_int_Loop_Counter_Variable_11 = 0
+  [22950] Temp_int_Array_Index_Variable_10 = 0
+  [22973] CallFunc_Array_Length_ReturnValue_24 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActors)
+  [23032] CallFunc_Less_IntInt_ReturnValue_23 = Less_IntInt(Temp_int_Loop_Counter_Variable_11, CallFunc_Array_Length_ReturnValue_24)
+  [23070] if !(CallFunc_Less_IntInt_ReturnValue_23) pop
+  [23080] Temp_int_Array_Index_Variable_10 = Temp_int_Loop_Counter_Variable_11
+  [23107] push @23284
+  [23112] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_10, CallFunc_Array_Get_Item_30)
+  [23171] K2Node_DynamicCast_AsCine_Actor_Interface_3 = cast<cine_actor_interface_C>(CallFunc_Array_Get_Item_30)
+  [23207] K2Node_DynamicCast_bSuccess_13 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsCine_Actor_Interface_3)
+  [23236] if !(K2Node_DynamicCast_bSuccess_13) pop
+  [23246] K2Node_DynamicCast_AsCine_Actor_Interface_3.ReInitPhysics()
+  [23283] pop
+  [23284] CallFunc_Add_IntInt_ReturnValue_11 = Add_IntInt(Temp_int_Loop_Counter_Variable_11, 1)
+  [23326] Temp_int_Loop_Counter_Variable_11 = CallFunc_Add_IntInt_ReturnValue_11
+  [23353] goto @22973
+  [23358] Temp_int_Array_Index_Variable_9 = 0
+  [23381] CallFunc_Array_Length_ReturnValue_10 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [23440] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_13, CallFunc_Array_Length_ReturnValue_10)
+  [23478] if !(CallFunc_Less_IntInt_ReturnValue_5) goto @24411
+  [23492] Temp_int_Array_Index_Variable_9 = Temp_int_Loop_Counter_Variable_13
+  [23519] push @24337
+  [23524] push @23820
+  [23529] push @23992
+  [23534] push @24164
+  [23539] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_9, CallFunc_Array_Get_Item_3)
+  [23598] SetActorAndMeshHidden(CallFunc_Array_Get_Item_3, false)
+  [23622] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_9, CallFunc_Array_Get_Item_3)
+  [23681] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item_3)
+  [23717] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [23746] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [23756] K2Node_DynamicCast_AsArchon_Character.SetAppearanceFromPlayerState(K2Node_DynamicCast_AsArchon_Character.self.PlayerState)
+  [23819] pop
+  [23820] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_9, CallFunc_Array_Get_Item_3)
+  [23879] K2Node_DynamicCast_AsCine_Actor_Interface = cast<cine_actor_interface_C>(CallFunc_Array_Get_Item_3)
+  [23915] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsCine_Actor_Interface)
+  [23944] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [23954] K2Node_DynamicCast_AsCine_Actor_Interface.OnCinematicEnd()
+  [23991] pop
+  [23992] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_9, CallFunc_Array_Get_Item_3)
+  [24051] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_Array_Get_Item_3)
+  [24087] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [24116] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [24126] K2Node_DynamicCast_AsPlayer_Interface.ShowPlayerMarker()
+  [24163] pop
+  [24164] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_9, CallFunc_Array_Get_Item_3)
+  [24223] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_Array_Get_Item_3)
+  [24259] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [24288] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [24298] K2Node_DynamicCast_AsPlayer_Interface_1.EnableIKinema(true)
+  [24336] pop
+  [24337] CallFunc_Add_IntInt_ReturnValue_13 = Add_IntInt(Temp_int_Loop_Counter_Variable_13, 1)
+  [24379] Temp_int_Loop_Counter_Variable_13 = CallFunc_Add_IntInt_ReturnValue_13
+  [24406] goto @23381
+  [24411] ClientStop__DelegateSignature()
+  [24430] self.ServerPlaybackState = 0
+  [24450] goto @15467
+  [24455] K2Node_ClassDynamicCast_AsActor_2 = cast<Actor>(Temp_class_Variable_2)
+  [24491] K2Node_ClassDynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsActor_2)
+  [24520] if !(K2Node_ClassDynamicCast_bSuccess_2) pop
+  [24530] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.ProxyActorClasses, K2Node_ClassDynamicCast_AsActor_2)
+  [24598] goto @18119
+  [24603] CallFunc_IsValidClass_ReturnValue_2 = IsValidClass(Temp_class_Variable_2)
+  [24632] if !(CallFunc_IsValidClass_ReturnValue_2) goto @24651
+  [24646] goto @24455
+  [24651] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [24680] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue_1)
+  [24730] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, ') =')
+  [24772] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, 'Invalid or missing ProxyActors entry')
+  [24847] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_8, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [24921] StackTrace()
+  [24931] goto @18119
+  [24936] Temp_class_Variable_2 = K2Node_CustomEvent_Loaded_4
+  [24955] goto @24603
+  [24960] Temp_int_Loop_Counter_Variable_13 = 0
+  [24983] goto @23358
+  [24988] if !(false) pop
+  [24990] Temp_bool_IsClosed_Variable_1 = true
+  [25001] pop
+  [25002] push @25038
+  [25007] if !(Temp_bool_Has_Been_Initd_Variable_1) goto @25022
+  [25021] pop
+  [25022] Temp_bool_Has_Been_Initd_Variable_1 = true
+  [25033] goto @24988
+  [25038] if !(Temp_bool_IsClosed_Variable_1) goto @25053
+  [25052] pop
+  [25053] Temp_bool_IsClosed_Variable_1 = true
+  [25064] goto @22464
+  [25069] K2Node_DynamicCast_AsLevel_Sequence = cast<LevelSequence>(Temp_object_Variable)
+  [25105] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsLevel_Sequence)
+  [25134] if !(K2Node_DynamicCast_bSuccess) goto @25848
+  [25148] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings.bAutoPlay = false
+  [25168] CallFunc_CreateLevelSequencePlayer_ReturnValue = CreateLevelSequencePlayer(self, K2Node_DynamicCast_AsLevel_Sequence, K2Node_MakeStruct_MovieSceneSequencePlaybackSettings, CallFunc_CreateLevelSequencePlayer_OutActor)
+  [25216] CallFunc_Array_Add_ReturnValue_4 = Default__KismetArrayLibrary.Array_Add(self.LevelSequencePlayers, CallFunc_CreateLevelSequencePlayer_ReturnValue)
+  [25284] CallFunc_CreateLevelSequencePlayer_OutActor.self.bOverrideInstanceData = true
+  [25317] K2Node_DynamicCast_AsDefault_Level_Sequence_Instance_Data = cast<DefaultLevelSequenceInstanceData>(CallFunc_CreateLevelSequencePlayer_OutActor.self.DefaultInstanceData)
+  [25375] K2Node_DynamicCast_bSuccess_26 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDefault_Level_Sequence_Instance_Data)
+  [25404] if !(K2Node_DynamicCast_bSuccess_26) goto @18193
+  [25418] Default__KismetArrayLibrary.Array_Get(self.CinematicStageTransforms, self.LPreloadSequenceIndex, CallFunc_Array_Get_Item_35)
+  [25477] K2Node_DynamicCast_AsDefault_Level_Sequence_Instance_Data.self.TransformOrigin = CallFunc_Array_Get_Item_35
+  [25526] CallFunc_CreateLevelSequencePlayer_OutActor.UpdatePersistentData()
+  [25558] CallFunc_GetDuration_ReturnValue_1 = CallFunc_CreateLevelSequencePlayer_ReturnValue.GetDuration()
+  [25608] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_3 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetDuration_ReturnValue_1)
+  [25645] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_3)
+  [25674] CallFunc_Add_DoubleDouble_ReturnValue_4 = Add_DoubleDouble(self.LTotalCinematicDuration, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [25720] self.LTotalCinematicDuration = CallFunc_Add_DoubleDouble_ReturnValue_4
+  [25747] CallFunc_Add_IntInt_ReturnValue_29 = Add_IntInt(self.LPreloadSequenceIndex, 1)
+  [25789] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_29
+  [25816] self.LPreloadSequenceIndex = Temp_int_Variable
+  [25843] goto @18193
+  [25848] Default__KismetArrayLibrary.Array_Get(self.Sequences, Temp_int_Array_Index_Variable_8, CallFunc_Array_Get_Item)
+  [25907] CallFunc_ToString_ReturnValue = ToString(CallFunc_Array_Get_Item)
+  [25944] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Invald or missing sequence: ', CallFunc_ToString_ReturnValue)
+  [26011] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue)
+  [26030] goto @18193
+  [26035] Temp_object_Variable = K2Node_CustomEvent_Loaded_5
+  [26054] goto @25069
+  [26059] Temp_int_Array_Index_Variable_13 = 0
+  [26082] CallFunc_Array_Length_ReturnValue_9 = Default__KismetArrayLibrary.Array_Length(self.SpawnedActors)
+  [26141] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_16, CallFunc_Array_Length_ReturnValue_9)
+  [26179] if !(CallFunc_Less_IntInt_ReturnValue_4) goto @26493
+  [26193] Temp_int_Array_Index_Variable_13 = Temp_int_Loop_Counter_Variable_16
+  [26220] push @26419
+  [26225] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_13, CallFunc_Array_Get_Item_2)
+  [26284] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item_2)
+  [26313] if !(CallFunc_IsValid_ReturnValue) pop
+  [26323] Default__KismetArrayLibrary.Array_Get(self.SpawnedActors, Temp_int_Array_Index_Variable_13, CallFunc_Array_Get_Item_2)
+  [26382] CallFunc_Array_Get_Item_2.K2_DestroyActor()
+  [26418] pop
+  [26419] CallFunc_Add_IntInt_ReturnValue_16 = Add_IntInt(Temp_int_Loop_Counter_Variable_16, 1)
+  [26461] Temp_int_Loop_Counter_Variable_16 = CallFunc_Add_IntInt_ReturnValue_16
+  [26488] goto @26082
+  [26493] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(self.bIsClientViewingCinematic, self.LIsDemoReplay)
+  [26531] if !(CallFunc_BooleanOR_ReturnValue_1) goto @27601
+  [26545] if !(self.LShouldFadeFromBlack) goto @27585
+  [26559] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bAutoPlay = false
+  [26579] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.LoopCount = MovieSceneSequenceLoopCount{0}
+  [26625] K2Node_MakeStruct_PlayRate_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.FadePlayRate)
+  [26654] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.PlayRate = K2Node_MakeStruct_PlayRate_ImplicitCast_1
+  [26690] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.StartTime = 0.0
+  [26722] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bRandomStartTime = false
+  [26742] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bRestoreState = false
+  [26762] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bDisableMovementInput = false
+  [26782] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bDisableLookAtInput = false
+  [26802] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bHidePlayer = false
+  [26822] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bHideHud = false
+  [26842] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bDisableCameraCuts = false
+  [26862] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2.bPauseAtEnd = false
+  [26882] CallFunc_CreateLevelSequencePlayer_ReturnValue_2 = CreateLevelSequencePlayer(self, self.FadeFromBlackLevelSequence, K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_2, CallFunc_CreateLevelSequencePlayer_OutActor_2)
+  [26930] self.LCurrentFadeSequencePlayer = CallFunc_CreateLevelSequencePlayer_ReturnValue_2
+  [26949] self.LCurrentFadeSequencePlayer.Play()
+  [26981] Default__AkGameplayStatics.SetState(null, 'Cinematic_State', 'Normal')
+  [27040] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [27066] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Cine_UnMute_World_Sounds, CallFunc_GetPlayerController_ReturnValue, 0, Temp_delegate_Variable_2, false)
+  [27149] CallFunc_GetPlayerController_ReturnValue_7 = GetPlayerController(self, 0)
+  [27175] CallFunc_GetHUD_ReturnValue_1 = CallFunc_GetPlayerController_ReturnValue_7.GetHUD()
+  [27217] K2Node_DynamicCast_AsArchon_HUD_1 = cast<ArchonHUD>(CallFunc_GetHUD_ReturnValue_1)
+  [27253] K2Node_DynamicCast_bSuccess_22 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_HUD_1)
+  [27282] if !(K2Node_DynamicCast_bSuccess_22) goto @27396
+  [27296] K2Node_DynamicCast_AsArchon_HUD_1.ShowGameplayHUD()
+  [27328] K2Node_DynamicCast_AsArchon_HUD_1.ShowPartyMenu(K2Node_DynamicCast_AsArchon_HUD_1.self.bSocialMenuIsUp, true)
+  [27396] CallFunc_GetPlayerController_ReturnValue_7 = GetPlayerController(self, 0)
+  [27422] CallFunc_GetHUD_ReturnValue_1 = CallFunc_GetPlayerController_ReturnValue_7.GetHUD()
+  [27464] K2Node_DynamicCast_AsBPI_HUD = cast<BPI_HUD_C>(CallFunc_GetHUD_ReturnValue_1)
+  [27500] K2Node_DynamicCast_bSuccess_21 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_HUD)
+  [27529] if !(K2Node_DynamicCast_bSuccess_21) goto @24960
+  [27543] K2Node_DynamicCast_AsBPI_HUD.Player HUD Ready()
+  [27580] goto @24960
+  [27585] self.LCurrentFadeSequencePlayer = null
+  [27596] goto @26981
+  [27601] self.LCurrentFadeSequencePlayer = null
+  [27612] goto @24960
+  [27617] Temp_int_Loop_Counter_Variable_16 = 0
+  [27640] goto @26059
+  [27645] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [27665] CallFunc_HasAuthority_ReturnValue_3 = CallFunc_GetOwner_ReturnValue_3.HasAuthority()
+  [27707] if !(CallFunc_HasAuthority_ReturnValue_3) goto @27746
+  [27721] self.ServerPlaybackState = 2
+  [27741] goto @13492
+  [27746] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.ForceFadeFromBlack, 0)
+  [27777] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @28711
+  [27791] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.ForceFadeFromBlack, 1)
+  [27822] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @28492
+  [27836] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.ForceFadeFromBlack, 2)
+  [27867] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @27882
+  [27881] pop
+  [27882] self.LShouldFadeFromBlack = false
+  [27893] DeactivateCinematicOverlay()
+  [27907] DeactivateCinematicOverlay()
+  [27921] CallFunc_GetGameState_ReturnValue_1 = GetGameState(self)
+  [27942] K2Node_DynamicCast_AsArchon_Game_State_1 = cast<ArchonGameState>(CallFunc_GetGameState_ReturnValue_1)
+  [27978] K2Node_DynamicCast_bSuccess_16 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_State_1)
+  [28007] if !(K2Node_DynamicCast_bSuccess_16) goto @28058
+  [28021] K2Node_DynamicCast_AsArchon_Game_State_1.SetNameplateVisibility(true)
+  [28058] push @27617
+  [28063] Temp_int_Loop_Counter_Variable_26 = 0
+  [28086] Temp_int_Array_Index_Variable_26 = 0
+  [28109] CallFunc_Array_Length_ReturnValue_8 = Default__KismetArrayLibrary.Array_Length(self.LevelSequencePlayers)
+  [28168] CallFunc_Less_IntInt_ReturnValue_18 = Less_IntInt(Temp_int_Loop_Counter_Variable_26, CallFunc_Array_Length_ReturnValue_8)
+  [28206] if !(CallFunc_Less_IntInt_ReturnValue_18) pop
+  [28216] Temp_int_Array_Index_Variable_26 = Temp_int_Loop_Counter_Variable_26
+  [28243] push @28418
+  [28248] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_26, CallFunc_Array_Get_Item_22)
+  [28307] CallFunc_Array_Get_Item_22.Stop()
+  [28339] Default__KismetArrayLibrary.Array_Get(self.LevelSequencePlayers, Temp_int_Array_Index_Variable_26, CallFunc_Array_Get_Item_22)
+  [28398] ResetSequenceActors(CallFunc_Array_Get_Item_22)
+  [28417] pop
+  [28418] CallFunc_Add_IntInt_ReturnValue_27 = Add_IntInt(Temp_int_Loop_Counter_Variable_26, 1)
+  [28460] Temp_int_Loop_Counter_Variable_26 = CallFunc_Add_IntInt_ReturnValue_27
+  [28487] goto @28109
+  [28492] CallFunc_K2_SetActorTransform_ReturnValue = self.Camera.K2_SetActorTransform(self.FinalCameraTransform, false, CallFunc_K2_SetActorTransform_SweepHitResult, false)
+  [28554] self.LShouldFadeFromBlack = false
+  [28565] self.LBlendOutTime = self.CameraBlendOutTime
+  [28592] if !(self.bIsClientViewingCinematic) goto @28058
+  [28606] CallFunc_GetPlayerController_ReturnValue_12 = GetPlayerController(self, 0)
+  [28632] CallFunc_K2_GetPawn_ReturnValue_1 = CallFunc_GetPlayerController_ReturnValue_12.K2_GetPawn()
+  [28674] BlendCameraOut(self.LBlendOutTime, CallFunc_K2_GetPawn_ReturnValue_1)
+  [28706] goto @27907
+  [28711] self.LShouldFadeFromBlack = true
+  [28722] self.LBlendOutTime = 0.0
+  [28749] goto @28592
+  [28754] pop
+  [28755] goto @19407
+  [28760] goto @18615
+  [28765] push @28810
+  [28770] if !(Temp_bool_Has_Been_Initd_Variable_3) goto @28785
+  [28784] pop
+  [28785] Temp_bool_Has_Been_Initd_Variable_3 = true
+  [28796] if !(false) pop
+  [28798] Temp_bool_IsClosed_Variable_3 = true
+  [28809] pop
+  [28810] if !(Temp_bool_IsClosed_Variable_3) goto @28825
+  [28824] pop
+  [28825] Temp_bool_IsClosed_Variable_3 = true
+  [28836] CallFunc_GetPlayerController_ReturnValue_2 = GetPlayerController(self, 0)
+  [28862] K2Node_DynamicCast_AsArchon_Replay_Controller = cast<ArchonReplayController>(CallFunc_GetPlayerController_ReturnValue_2)
+  [28898] K2Node_DynamicCast_bSuccess_14 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Replay_Controller)
+  [28927] self.LIsDemoReplay = K2Node_DynamicCast_bSuccess_14
+  [28946] goto @8539
+  [28951] Temp_bool_IsClosed_Variable_3 = false
+  [28962] Temp_bool_Has_Been_Initd_Variable_3 = true
+  [28973] pop
+  [28974] SequenceEnd__DelegateSignature()
+  [28993] K2Node_CreateDelegate_OutputDelegate = bind(self.OnSequenceEnd)
+  [29016] K2Node_CreateDelegate_OutputDelegate -= None
+  [29057] K2Node_CreateDelegate_OutputDelegate_14 = bind(self.PostSequenceUpdate)
+  [29080] K2Node_CreateDelegate_OutputDelegate_14 -= None
+  [29121] K2Node_CreateDelegate_OutputDelegate_11 = bind(self.OnCameraCut)
+  [29144] K2Node_CreateDelegate_OutputDelegate_11 -= None
+  [29185] CallFunc_Add_IntInt_ReturnValue_23 = Add_IntInt(Temp_int_Loop_Counter_Variable_22, 1)
+  [29227] Temp_int_Loop_Counter_Variable_22 = CallFunc_Add_IntInt_ReturnValue_23
+  [29254] goto @6562
+  [29259] if !(false) pop
+  [29261] Temp_bool_IsClosed_Variable_2 = true
+  [29272] pop
+  [29273] DebugPrint('Cinematic timed out on server, forcing clients to complete.', 2.0)
+  [29357] if !(self.EnableTimeout) pop
+  [29367] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(self.ClientReadyCount, self.ClientCount)
+  [29405] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [29415] push @29451
+  [29420] if !(Temp_bool_Has_Been_Initd_Variable_2) goto @29435
+  [29434] pop
+  [29435] Temp_bool_Has_Been_Initd_Variable_2 = true
+  [29446] goto @29259
+  [29451] if !(Temp_bool_IsClosed_Variable_2) goto @29466
+  [29465] pop
+  [29466] Temp_bool_IsClosed_Variable_2 = true
+  [29477] self.ClientReadyCount = self.ClientCount
+  [29504] AllClientsComplete()
+  [29518] pop
+  [29519] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(K2Node_Event_CinematicState, self.ServerPlaybackState)
+  [29557] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [29567] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_Event_CinematicState, 1)
+  [29598] if !(K2Node_SwitchEnum_CmpSuccess) goto @29817
+  [29612] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_Event_CinematicState, 2)
+  [29643] if !(K2Node_SwitchEnum_CmpSuccess) goto @29658
+  [29657] pop
+  [29658] CallFunc_Add_IntInt_ReturnValue_18 = Add_IntInt(self.ClientReadyCount, 1)
+  [29700] Temp_int_Variable_2 = CallFunc_Add_IntInt_ReturnValue_18
+  [29727] self.ClientReadyCount = Temp_int_Variable_2
+  [29754] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(Temp_int_Variable_2, self.ClientCount)
+  [29792] if !(CallFunc_GreaterEqual_IntInt_ReturnValue_1) pop
+  [29802] AllClientsComplete()
+  [29816] pop
+  [29817] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(self.LTotalCinematicDuration, 0.5)
+  [29863] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.EstimatedClientComplete)
+  [29886] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [29915] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2, false, 0.0, 0.0)
+  [29972] self.LEstimatedCompletionTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [29999] pop
+  [30000] goto @29357
+  [30005] goto @27645
+  [30010] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.FailsafeTimer)
+  [30033] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(self.LTotalCinematicDuration, self.FailsafeTimeout)
+  [30079] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [30108] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1, false, 0.0, 0.0)
+  [30165] self.LFailsafeTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [30192] pop
+  [30193] Temp_int_Array_Index_Variable_20 = 0
+  [30216] CallFunc_Array_Length_ReturnValue_15 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [30275] CallFunc_Less_IntInt_ReturnValue_10 = Less_IntInt(Temp_int_Loop_Counter_Variable_21, CallFunc_Array_Length_ReturnValue_15)
+  [30313] if !(CallFunc_Less_IntInt_ReturnValue_10) goto @30010
+  [30327] Temp_int_Array_Index_Variable_20 = Temp_int_Loop_Counter_Variable_21
+  [30354] push @30494
+  [30359] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_20, CallFunc_Array_Get_Item_12)
+  [30418] FollowGround(CallFunc_Array_Get_Item_12, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0, 0.0, CallFunc_FollowGround_OutGroundFollowOffset)
+  [30493] pop
+  [30494] CallFunc_Add_IntInt_ReturnValue_22 = Add_IntInt(Temp_int_Loop_Counter_Variable_21, 1)
+  [30536] Temp_int_Loop_Counter_Variable_21 = CallFunc_Add_IntInt_ReturnValue_22
+  [30563] goto @30216
+  [30568] Temp_int_Loop_Counter_Variable_21 = 0
+  [30591] goto @30193
+  [30596] pop
+  [30597] Temp_int_Array_Index_Variable_22 = 0
+  [30620] CallFunc_Array_Length_ReturnValue_14 = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [30679] CallFunc_Less_IntInt_ReturnValue_11 = Less_IntInt(Temp_int_Loop_Counter_Variable_23, CallFunc_Array_Length_ReturnValue_14)
+  [30717] if !(CallFunc_Less_IntInt_ReturnValue_11) pop
+  [30727] Temp_int_Array_Index_Variable_22 = Temp_int_Loop_Counter_Variable_23
+  [30754] push @31081
+  [30759] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable_22, CallFunc_Array_Get_Item_10)
+  [30818] Default__KismetArrayLibrary.Array_Get(self.LGroundFollowOffsets, Temp_int_Array_Index_Variable_22, CallFunc_Array_Get_Item_11)
+  [30877] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [30906] CallFunc_SelectFloat_ReturnValue = SelectFloat(0.0, 0.10000000149011612, self.LFirstGroundOffsetUpdate)
+  [30961] FollowGround(CallFunc_Array_Get_Item_10, CallFunc_Array_Get_Item_11, CallFunc_GetWorldDeltaSeconds_ReturnValue, CallFunc_SelectFloat_ReturnValue, CallFunc_FollowGround_OutGroundFollowOffset_1)
+  [31020] Default__KismetArrayLibrary.Array_Set(self.LGroundFollowOffsets, Temp_int_Array_Index_Variable_22, CallFunc_FollowGround_OutGroundFollowOffset_1, false)
+  [31080] pop
+  [31081] CallFunc_Add_IntInt_ReturnValue_24 = Add_IntInt(Temp_int_Loop_Counter_Variable_23, 1)
+  [31123] Temp_int_Loop_Counter_Variable_23 = CallFunc_Add_IntInt_ReturnValue_24
+  [31150] goto @30620
+  [31155] Temp_int_Loop_Counter_Variable_23 = 0
+  [31178] goto @30597
+  [31183] CallFunc_GetPlayerController_ReturnValue_5 = GetPlayerController(self, 0)
+  [31209] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetPlayerController_ReturnValue_5.K2_GetPawn()
+  [31251] K2Node_DynamicCast_AsPlayer_Interface_4 = cast<player_interface_C>(CallFunc_K2_GetPawn_ReturnValue)
+  [31287] K2Node_DynamicCast_bSuccess_19 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_4)
+  [31316] if !(K2Node_DynamicCast_bSuccess_19) goto @32035
+  [31330] K2Node_DynamicCast_AsPlayer_Interface_4.GetCinematicState(CallFunc_GetCinematicState_State)
+  [31376] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [31397] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_IsServer_ReturnValue)
+  [31426] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCinematicState_State, 1)
+  [31457] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue, CallFunc_Not_PreBool_ReturnValue_1)
+  [31495] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [31505] push @31530
+  [31510] push @31542
+  [31515] push @31995
+  [31520] push @32020
+  [31525] goto @25002
+  [31530] self.LFirstGroundOffsetUpdate = false
+  [31541] pop
+  [31542] if !(self.ShowSequenceTime) pop
+  [31552] CallFunc_GetCurrentTime_ReturnValue = self.LCurrentLevelSequencePlayer.GetCurrentTime()
+  [31602] CallFunc_GetSequence_ReturnValue_2 = self.LCurrentLevelSequencePlayer.GetSequence()
+  [31644] CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_2 = Conv_QualifiedFrameTimeToSeconds(CallFunc_GetCurrentTime_ReturnValue)
+  [31681] CallFunc_GetDisplayName_ReturnValue_4 = GetDisplayName(CallFunc_GetSequence_ReturnValue_2)
+  [31718] CallFunc_Conv_DoubleToString_InDouble_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_QualifiedFrameTimeToSeconds_ReturnValue_2)
+  [31747] CallFunc_Conv_DoubleToString_ReturnValue_2 = Conv_DoubleToString(CallFunc_Conv_DoubleToString_InDouble_ImplicitCast)
+  [31784] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr('Sequence: ', CallFunc_GetDisplayName_ReturnValue_4)
+  [31833] CallFunc_Concat_StrStr_ReturnValue_10 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_9, ': ')
+  [31874] CallFunc_Concat_StrStr_ReturnValue_11 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_10, CallFunc_Conv_DoubleToString_ReturnValue_2)
+  [31920] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_11, true, false, LinearColor{0.0, 0.66, 1.0, 1.0}, 0.0, 'None')
+  [31994] pop
+  [31995] if !(self.EnableCameraOffsetCorrection) pop
+  [32005] AdjustCamera()
+  [32019] pop
+  [32020] if !(self.EnableActorGroundFollowing) pop
+  [32030] goto @31155
+  [32035] CallFunc_GetCinematicState_State = 0
+  [32055] goto @31376
+  [32060] Temp_class_Variable_3 = K2Node_CustomEvent_Loaded_1
+  [32079] K2Node_ClassDynamicCast_AsActor_3 = cast<Actor>(Temp_class_Variable_3)
+  [32115] K2Node_ClassDynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsActor_3)
+  [32144] if !(K2Node_ClassDynamicCast_bSuccess_3) goto @18486
+  [32158] self.LProtagonistClass = K2Node_ClassDynamicCast_AsActor_3
+  [32177] goto @18486
+  [32182] goto @18577
+  [32187] goto @27746
+  [32192] goto @27721
+  [32197] CallFunc_IsValid_ReturnValue_3 = IsValid(self.LCurrentLevelSequencePlayer)
+  [32226] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [32236] CallFunc_GetPlayerController_ReturnValue_13 = GetPlayerController(self, 0)
+  [32262] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_ui_generic_error, CallFunc_GetPlayerController_ReturnValue_13, 0, Temp_delegate_Variable, false)
+  [32345] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bAutoPlay = false
+  [32365] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.LoopCount = MovieSceneSequenceLoopCount{0}
+  [32411] K2Node_MakeStruct_PlayRate_ImplicitCast = cast<CST_DoubleToFloat>(self.FadePlayRate)
+  [32440] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.PlayRate = K2Node_MakeStruct_PlayRate_ImplicitCast
+  [32476] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.StartTime = 0.0
+  [32508] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bRandomStartTime = false
+  [32528] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bRestoreState = false
+  [32548] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bDisableMovementInput = false
+  [32568] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bDisableLookAtInput = false
+  [32588] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bHidePlayer = false
+  [32608] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bHideHud = false
+  [32628] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bDisableCameraCuts = false
+  [32648] K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1.bPauseAtEnd = true
+  [32668] CallFunc_CreateLevelSequencePlayer_ReturnValue_1 = CreateLevelSequencePlayer(self, self.FadeToBlackLevelSequence, K2Node_MakeStruct_MovieSceneSequencePlaybackSettings_1, CallFunc_CreateLevelSequencePlayer_OutActor_1)
+  [32716] self.LCurrentFadeSequencePlayer = CallFunc_CreateLevelSequencePlayer_ReturnValue_1
+  [32735] K2Node_CreateDelegate_OutputDelegate_9 = bind(self.FadeToBlackComplete)
+  [32758] K2Node_CreateDelegate_OutputDelegate_9 += None
+  [32799] self.LCurrentFadeSequencePlayer.Play()
+  [32831] pop
+  [32832] self.ForceFadeFromBlack = 0
+  [32852] goto @14888
+  [32857] AllClientsCompleteServerOnly()
+  [32871] AllClientsCompleteOwnerOnly()
+  [32885] pop
+  [32886] K2_ClearAndInvalidateTimerHandle(self, self.LFailsafeTimer)
+  [32906] K2_ClearAndInvalidateTimerHandle(self, self.LEstimatedCompletionTimer)
+  [32926] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [32946] if !(CallFunc_GetOwner_ReturnValue_6.self.bOnlyRelevantToOwner) goto @32987
+  [32982] goto @32857
+  [32987] AllClientsCompleteMulticast()
+  [33001] pop
+  [33002] goto @20473
+  [33007] goto @22389
+  [33012] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.Authority_OnFinalSequenceEnd)
+  [33035] K2Node_CreateDelegate_OutputDelegate_5 -= None
+  [33076] goto @30568
+  [33081] goto @22492
+  [33086] Temp_object_Variable_1 = K2Node_CustomEvent_Loaded
+  [33105] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.SequenceActorInstances, Temp_int_Array_Index_Variable_16, CallFunc_Array_Get_Item_34)
+  [33173] CallFunc_GetSequencePlayer_ReturnValue = CallFunc_Array_Get_Item_34.GetSequencePlayer()
+  [33215] CallFunc_Array_Add_ReturnValue_3 = Default__KismetArrayLibrary.Array_Add(self.LevelSequencePlayers, CallFunc_GetSequencePlayer_ReturnValue)
+  [33283] CallFunc_Add_IntInt_ReturnValue_28 = Add_IntInt(self.LPreloadSequenceIndex, 1)
+  [33325] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_28
+  [33352] self.LPreloadSequenceIndex = Temp_int_Variable_1
+  [33379] goto @1734
+  [33384] CallFunc_Not_PreBool_ReturnValue_3 = Not_PreBool(self.ShowSequenceTime)
+  [33413] self.ShowSequenceTime = CallFunc_Not_PreBool_ReturnValue_3
+  [33432] pop
+  [33433] goto @5515
+  [33438] CallFunc_GetComponentByClass_ReturnValue_1 = self.Camera.GetComponentByClass(SkeletalMeshComponent)
+  [33489] CallFunc_GetSocketTransform_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_1.GetSocketTransform('prop_00_jnt', 0)
+  [33558] self.FinalCameraTransform = CallFunc_GetSocketTransform_ReturnValue
+  [33585] pop
+  [33586] goto @33438
+  [33591] goto @32832
+  [33596] CallFunc_Array_Length_ReturnValue_29 = Default__KismetArrayLibrary.Array_Length(self.PreloadParameters.BanksToLoad)
+  [33664] CallFunc_GreaterEqual_IntInt_ReturnValue_2 = GreaterEqual_IntInt(self.BanksToLoadIndex, CallFunc_Array_Length_ReturnValue_29)
+  [33702] if !(CallFunc_GreaterEqual_IntInt_ReturnValue_2) goto @33759
+  [33716] self.BanksToLoadIndex = 0
+  [33739] BankLoadComplete__DelegateSignature()
+  [33758] pop
+  [33759] Default__KismetArrayLibrary.Array_Get(self.PreloadParameters.BanksToLoad, self.BanksToLoadIndex, CallFunc_Array_Get_Item_38)
+  [33827] self.BanksToLoadCurrent = CallFunc_Array_Get_Item_38
+  [33846] CallFunc_Add_IntInt_ReturnValue_31 = Add_IntInt(self.BanksToLoadIndex, 1)
+  [33888] self.BanksToLoadIndex = CallFunc_Add_IntInt_ReturnValue_31
+  [33915] pop
+  [33916] LoadBanks()
+  [33930] pop
+  [33931] EX_ClearMulticastDelegate(DelegateToClear=self.BankLoadComplete)
+  [33941] goto @17658
+  [33946] goto @33012
+  [33951] return nothing
+  [33953] end
+
+=== FadeToBlackComplete
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33591)
+  [15] return nothing
+  [17] end
+
+=== FailsafeTimer
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(29273)
+  [15] return nothing
+  [17] end
+
+=== FindActorOfInterest
+  [0] push @1644
+  [5] LBestDistance = 9999999.0
+  [32] LBestDotAngle = -1.0
+  [59] LDistanceTolerance = 1.0
+  [86] LBestIndex = -1
+  [109] LBestActor = null
+  [120] Temp_int_Loop_Counter_Variable = 0
+  [143] Temp_int_Array_Index_Variable = 0
+  [166] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Actors)
+  [225] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [263] if !(CallFunc_Less_IntInt_ReturnValue) goto @1519
+  [277] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [304] push @1570
+  [309] CallFunc_GetComponentByClass_ReturnValue = Camera.GetComponentByClass(CameraComponent)
+  [360] CallFunc_GetComponentByClass_ReturnValue.GetCameraView(0.0, CallFunc_GetCameraView_DesiredView)
+  [410] Default__KismetArrayLibrary.Array_Get(Actors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [469] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetActorLocation()
+  [519] CallFunc_GetComponentByClass_ReturnValue = Camera.GetComponentByClass(CameraComponent)
+  [570] CallFunc_K2_GetComponentToWorld_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.K2_GetComponentToWorld()
+  [620] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [666] CallFunc_DegCos_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCameraView_DesiredView.FOV)
+  [704] CallFunc_DegCos_ReturnValue = DegCos(CallFunc_DegCos_A_ImplicitCast)
+  [741] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_BreakTransform_Rotation)
+  [778] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakTransform_Location)
+  [824] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [866] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [903] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_Normal_ReturnValue, CallFunc_GetForwardVector_ReturnValue)
+  [949] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Dot_VectorVector_ReturnValue, CallFunc_DegCos_ReturnValue)
+  [987] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_Dot_VectorVector_ReturnValue, LBestDotAngle)
+  [1025] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(LBestDistance, LDistanceTolerance)
+  [1071] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSize_ReturnValue, CallFunc_Add_DoubleDouble_ReturnValue)
+  [1109] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue_1)
+  [1147] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(LBestDistance, LDistanceTolerance)
+  [1193] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [1231] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_VSize_ReturnValue, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [1269] CallFunc_IsValid_ReturnValue = IsValid(LBestActor)
+  [1298] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsValid_ReturnValue)
+  [1327] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue_1)
+  [1365] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_BooleanAND_ReturnValue_1)
+  [1403] if !(CallFunc_BooleanOR_ReturnValue_1) pop
+  [1413] Default__KismetArrayLibrary.Array_Get(Actors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1472] LBestActor = CallFunc_Array_Get_Item
+  [1491] LBestIndex = Temp_int_Array_Index_Variable
+  [1518] pop
+  [1519] BestActor = LBestActor
+  [1538] BestIndex = LBestIndex
+  [1565] goto @1644
+  [1570] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1612] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1639] goto @166
+  [1644] return nothing
+  [1646] end
+
+=== FollowGround
+  [0] LGroundFollowOffset = GroundFollowOffset
+  [27] LActor = Actor
+  [46] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [96] LInitialPosition = CallFunc_K2_GetActorLocation_ReturnValue
+  [123] CallFunc_GetComponentByClass_ReturnValue = Actor.GetComponentByClass(SkeletalMeshComponent)
+  [174] CallFunc_GetBoneIndex_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetBoneIndex(self.GroundFollowBone)
+  [233] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(CallFunc_GetBoneIndex_ReturnValue, -1)
+  [267] if !(CallFunc_NotEqual_IntInt_ReturnValue) goto @1827
+  [281] Default__archon_function_library_C.GetMeshLocation(Actor, self, CallFunc_GetMeshLocation_Location)
+  [336] CallFunc_GetComponentByClass_ReturnValue = Actor.GetComponentByClass(SkeletalMeshComponent)
+  [387] BreakVector(CallFunc_GetMeshLocation_Location, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [433] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, self.GroundFollowBone, 0)
+  [481] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [527] BreakVector(CallFunc_BreakTransform_Location, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [573] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z)
+  [628] LMeshLocation = CallFunc_MakeVector_ReturnValue
+  [655] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(LMeshLocation, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 2000.0}))
+  [717] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(LMeshLocation, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1000.0}))
+  [779] CallFunc_SphereTraceSingle_ReturnValue = SphereTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 30.0, 4, false, Temp_object_Variable, 0, CallFunc_SphereTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [920] if !(CallFunc_SphereTraceSingle_ReturnValue) goto @1914
+  [934] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(LInitialPosition, LMeshLocation)
+  [980] BreakHitResult(CallFunc_SphereTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1161] CallFunc_Add_VectorVector_ReturnValue_3 = Add_VectorVector(CallFunc_BreakHitResult_ImpactPoint, CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [1207] CallFunc_Subtract_VectorVector_ReturnValue_2 = Subtract_VectorVector(CallFunc_Add_VectorVector_ReturnValue_3, LInitialPosition)
+  [1253] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue_2, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [1299] BreakVector(LGroundFollowOffset, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [1345] CallFunc_LowPassFilterFloat_Sample_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector_Z_2)
+  [1374] CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector_Z_3)
+  [1403] CallFunc_LowPassFilterFloat_TimeConstant_ImplicitCast = cast<CST_DoubleToFloat>(Smoothing)
+  [1432] CallFunc_LowPassFilterFloat_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(DeltaSeconds)
+  [1461] CallFunc_LowPassFilterFloat_ReturnValue = LowPassFilterFloat(CallFunc_LowPassFilterFloat_Sample_ImplicitCast, CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast, CallFunc_LowPassFilterFloat_TimeConstant_ImplicitCast, CallFunc_LowPassFilterFloat_DeltaTime_ImplicitCast, -1.0)
+  [1530] CallFunc_MakeVector_Z_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LowPassFilterFloat_ReturnValue)
+  [1559] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_MakeVector_Z_ImplicitCast)
+  [1614] LGroundFollowOffset = CallFunc_MakeVector_ReturnValue_1
+  [1641] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(LGroundFollowOffset, LInitialPosition)
+  [1687] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue_1, self.HACK_ACTOR_OFFSET)
+  [1733] CallFunc_K2_SetActorLocation_ReturnValue = LActor.K2_SetActorLocation(CallFunc_Add_VectorVector_ReturnValue_2, false, CallFunc_K2_SetActorLocation_SweepHitResult, true)
+  [1795] OutGroundFollowOffset = LGroundFollowOffset
+  [1822] goto @1941
+  [1827] Default__archon_function_library_C.GetMeshLocation(Actor, self, CallFunc_GetMeshLocation_Location)
+  [1882] LMeshLocation = CallFunc_GetMeshLocation_Location
+  [1909] goto @655
+  [1914] OutGroundFollowOffset = LGroundFollowOffset
+  [1941] return nothing
+  [1943] end
+
+=== GetClientPlaybackState
+  [0] push @676
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @552
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @577
+  [194] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [220] Default__KismetArrayLibrary.Array_Get(self.Clients, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [279] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_Array_Get_Item, CallFunc_GetPlayerController_ReturnValue)
+  [317] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [327] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [353] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetPlayerController_ReturnValue.K2_GetPawn()
+  [395] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_K2_GetPawn_ReturnValue)
+  [431] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [460] if !(K2Node_DynamicCast_bSuccess) goto @651
+  [474] K2Node_DynamicCast_AsPlayer_Interface.GetCinematicState(CallFunc_GetCinematicState_State)
+  [520] State = CallFunc_GetCinematicState_State
+  [547] goto @676
+  [552] State = 0
+  [572] goto @676
+  [577] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [619] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [646] goto @51
+  [651] CallFunc_GetCinematicState_State = 0
+  [671] goto @520
+  [676] return nothing
+  [678] end
+
+=== GetIntroAnimSequences
+  [0] IntroAnimSequences = EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "Function'dynamic_cinematic_component_bp_C:GetIntroAnimSequences'", 'ObjectPath': '/Game/Cinematics/support_blueprints/dynamic_cinematic_component_bp.28'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'IntroAnimSequences', 'Flags': 'RF_Public', 'ElementSize': 16, 'PropertyFlags': 'Parm | OutParm', 'Inner': {'Type': 'StructProperty', 'Name': 'IntroAnimSequences', 'Flags': 'RF_Public', 'ElementSize': 16, 'Struct': {'ObjectName': "UserDefinedStruct'ActorAnimPair'", 'ObjectPath': '/Game/Cinematics/support_blueprints/ActorAnimPair.0'}}}},Values=)
+  [32] return nothing
+  [34] end
+
+=== HandleReplayCineComplete
+  [0] if !(self.LIsDemoReplay) goto @28
+  [14] AllClientsCompleteOwnerOnly()
+  [28] return nothing
+  [30] end
+
+=== HasComponentFinishedLoading
+  [0] ReturnValue = self.LoadingComplete
+  [19] return ReturnValue
+  [29] end
+
+=== LoadBankCallback
+  [0] frame.K2Node_CustomEvent_Result = Result
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(33916)
+  [33] return nothing
+  [35] end
+
+=== LoadBanks
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33596)
+  [15] return nothing
+  [17] end
+
+=== OnCameraCut
+  [0] frame.K2Node_CustomEvent_CameraComponent = CameraComponent
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(33081)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_2B8F0C1D48ADD10A9F747DAC0FE50811
+  [0] frame.K2Node_CustomEvent_Loaded_5 = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(26035)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_4F47E7904D6F6E6C2AA1C5864FF6BE0C
+  [0] frame.K2Node_CustomEvent_Loaded_3 = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(22440)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_6016B1104CD3A5F0EAABEF976B3BF735
+  [0] frame.K2Node_CustomEvent_Loaded_4 = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(24936)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_81E50E2845D45F6A63BC5ABF9253F2F1
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(33086)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_DF9F826043B6CD0EBED950801301E3A5
+  [0] frame.K2Node_CustomEvent_Loaded_2 = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(19484)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_EB517BEB4B2279E0CE318281E6E6C81A
+  [0] frame.K2Node_CustomEvent_Loaded_1 = Loaded
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(32060)
+  [33] return nothing
+  [35] end
+
+=== OnRep_Clients
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @81
+  [76] goto @271
+  [81] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [140] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [174] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.ServerPlaybackState, 1)
+  [205] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [243] if !(CallFunc_BooleanAND_ReturnValue) goto @271
+  [257] PlayOnClient()
+  [271] return nothing
+  [273] end
+
+=== OnRep_PreloadParameters
+  [0] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [21] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @40
+  [35] goto @54
+  [40] PreloadOnClient()
+  [54] return nothing
+  [56] end
+
+=== OnRep_ReplacementActors
+  [0] push @456
+  [5] Default__KismetArrayLibrary.Array_Clear(self.LGroundFollowOffsets)
+  [46] Temp_int_Loop_Counter_Variable = 0
+  [69] Temp_int_Array_Index_Variable = 0
+  [92] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [151] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [189] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [199] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [226] push @382
+  [231] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [290] AddTickPrerequisiteActor(CallFunc_Array_Get_Item)
+  [313] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.LGroundFollowOffsets, Temp_struct_Variable)
+  [381] pop
+  [382] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [424] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [451] goto @92
+  [456] return nothing
+  [458] end
+
+=== OnRep_ServerPlaybackState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @81
+  [76] goto @271
+  [81] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Clients)
+  [140] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [174] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.ServerPlaybackState, 1)
+  [205] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [243] if !(CallFunc_BooleanAND_ReturnValue) goto @271
+  [257] PlayOnClient()
+  [271] return nothing
+  [273] end
+
+=== OnSequenceEnd
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(28974)
+  [15] return nothing
+  [17] end
+
+=== Play
+  [0] frame.K2Node_CustomEvent_ObserverActors = ObserverActors
+  [18] frame.K2Node_CustomEvent_ReplacementActors = ReplacementActors
+  [36] frame.K2Node_CustomEvent_PostCineReplacementActorTransforms = PostCineReplacementActorTransforms
+  [54] ExecuteUbergraph_dynamic_cinematic_component_bp(28760)
+  [69] return nothing
+  [71] end
+
+=== PlayOnClient
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(28765)
+  [15] return nothing
+  [17] end
+
+=== PostSequenceUpdate
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(31183)
+  [15] return nothing
+  [17] end
+
+=== PreloadOnClient
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(32182)
+  [15] return nothing
+  [17] end
+
+=== PreloadOnServer
+  [0] frame.K2Node_CustomEvent_Parameters = Parameters
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(28755)
+  [33] return nothing
+  [35] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(30596)
+  [33] return nothing
+  [35] end
+
+=== ReplaceActorAnimSequence
+  [0] push @623
+  [5] CallFunc_GetLevelSequenceActorAnimations_ReturnValue = GetLevelSequenceActorAnimations(LevelSequencePlayer, SequenceActor)
+  [51] Temp_int_Loop_Counter_Variable = 0
+  [74] Temp_int_Array_Index_Variable = 0
+  [97] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetLevelSequenceActorAnimations_ReturnValue)
+  [156] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [194] if !(CallFunc_Less_IntInt_ReturnValue) goto @460
+  [208] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [235] push @549
+  [240] Default__KismetArrayLibrary.Array_Get(CallFunc_GetLevelSequenceActorAnimations_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [299] SetLevelSequenceAnimTrackActive(LevelSequencePlayer, SequenceActor, CallFunc_Array_Get_Item, false)
+  [337] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(Temp_int_Array_Index_Variable, 0)
+  [371] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [381] Default__KismetArrayLibrary.Array_Get(CallFunc_GetLevelSequenceActorAnimations_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [440] ActiveAnimSequence = CallFunc_Array_Get_Item
+  [459] pop
+  [460] SetLevelSequenceAnimTrackActive(LevelSequencePlayer, SequenceActor, ActiveAnimSequence, true)
+  [498] ReplaceLevelSequenceAnim(LevelSequencePlayer, SequenceActor, ActiveAnimSequence, NewAnimSequence)
+  [544] goto @623
+  [549] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [591] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [618] goto @97
+  [623] return nothing
+  [625] end
+
+=== Reset
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(28951)
+  [15] return nothing
+  [17] end
+
+=== SequenceEnd__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ServerStart__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ServerStop__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== SetActorAndMeshHidden
+  [0] push @954
+  [5] if !(Hidden) goto @754
+  [19] K2Node_DynamicCast_AsBehemoth_Interface_1 = cast<behemoth_interface_C>(Actor)
+  [55] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface_1)
+  [84] if !(K2Node_DynamicCast_bSuccess_1) goto @136
+  [98] K2Node_DynamicCast_AsBehemoth_Interface_1.HideBehemoth(false)
+  [136] Actor.SetActorHiddenInGame(Hidden)
+  [181] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(Actor)
+  [217] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [246] CallFunc_GetComponentByClass_ReturnValue = Actor.GetComponentByClass(SkeletalMeshComponent)
+  [297] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_DynamicCast_bSuccess_2)
+  [326] CallFunc_GetComponentByClass_ReturnValue.SetHiddenInGame(Hidden, CallFunc_Not_PreBool_ReturnValue)
+  [376] Temp_int_Loop_Counter_Variable = 0
+  [399] Temp_int_Array_Index_Variable = 0
+  [422] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ReplacementActors)
+  [481] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [519] if !(CallFunc_Less_IntInt_ReturnValue) goto @875
+  [533] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [560] push @880
+  [565] Default__KismetArrayLibrary.Array_Get(self.ReplacementActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [624] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item)
+  [660] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [689] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [699] K2Node_DynamicCast_AsArchon_Character.self.HelmetArmour.ReEquipArmour()
+  [753] pop
+  [754] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(Actor)
+  [790] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [819] if !(K2Node_DynamicCast_bSuccess) goto @136
+  [833] K2Node_DynamicCast_AsBehemoth_Interface.ShowBehemoth()
+  [870] goto @136
+  [875] goto @954
+  [880] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [922] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [949] goto @422
+  [954] return nothing
+  [956] end
+
+=== SetCinematicMaterials
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(28754)
+  [15] return nothing
+  [17] end
+
+=== SetClientCinematicState
+  [0] frame.K2Node_Event_CinematicState = CinematicState
+  [18] ExecuteUbergraph_dynamic_cinematic_component_bp(29519)
+  [33] return nothing
+  [35] end
+
+=== ShouldFadeFromBlack
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Camera)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @131
+  [43] CallFunc_IsValid_ReturnValue_1 = IsValid(self.FadeFromBlackLevelSequence)
+  [72] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsValid_ReturnValue_1)
+  [101] if !(CallFunc_Not_PreBool_ReturnValue) goto @147
+  [115] ShouldFade = false
+  [126] goto @1436
+  [131] ShouldFade = false
+  [142] goto @1436
+  [147] CallFunc_K2_GetActorLocation_ReturnValue = TargetActor.K2_GetActorLocation()
+  [197] array{Camera}
+  [217] CallFunc_GetComponentByClass_ReturnValue = Camera.GetComponentByClass(SkeletalMeshComponent)
+  [268] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, 'prop_00_jnt', 0)
+  [320] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [366] CallFunc_SphereTraceSingle_ReturnValue = SphereTraceSingle(self, CallFunc_BreakTransform_Location, CallFunc_K2_GetActorLocation_ReturnValue, 0.0, 0, true, K2Node_MakeArray_Array, 0, CallFunc_SphereTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [507] CallFunc_Square_ReturnValue = Square(DistanceThreshold)
+  [544] CallFunc_DegCos_ReturnValue = DegCos(AngleThreshold)
+  [581] CallFunc_K2_GetActorLocation_ReturnValue = TargetActor.K2_GetActorLocation()
+  [631] CallFunc_Normal_ReturnValue = Normal(CallFunc_K2_GetActorLocation_ReturnValue, 0.0001)
+  [673] CallFunc_GetComponentByClass_ReturnValue = Camera.GetComponentByClass(SkeletalMeshComponent)
+  [724] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, 'prop_00_jnt', 0)
+  [776] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [822] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_BreakTransform_Rotation)
+  [859] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_GetForwardVector_ReturnValue, CallFunc_Normal_ReturnValue)
+  [905] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Dot_VectorVector_ReturnValue, CallFunc_DegCos_ReturnValue)
+  [943] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_BreakTransform_Location, CallFunc_K2_GetActorLocation_ReturnValue)
+  [989] BreakHitResult(CallFunc_SphereTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1170] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [1207] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_BreakHitResult_bBlockingHit)
+  [1236] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSizeSquared_ReturnValue, CallFunc_Square_ReturnValue)
+  [1274] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [1312] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue)
+  [1350] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_BooleanAND_ReturnValue_1)
+  [1379] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Not_PreBool_ReturnValue_2, self.bIsClientViewingCinematic)
+  [1417] ShouldFade = CallFunc_BooleanAND_ReturnValue_2
+  [1436] return nothing
+  [1438] end
+
+=== ShowTeamDisplay
+  [0] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(bShow)
+  [29] self.HideTeamDisplay = CallFunc_Not_PreBool_ReturnValue
+  [48] CallFunc_IsValid_ReturnValue = IsValid(self.CinematicOverlayWidget)
+  [77] if !(CallFunc_IsValid_ReturnValue) goto @136
+  [91] self.CinematicOverlayWidget.ShowTeamDisplay(bShow)
+  [136] return nothing
+  [138] end
+
+=== SkipCinematic
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(32197)
+  [15] return nothing
+  [17] end
+
+=== ToggleShowSequenceTime
+  [0] ExecuteUbergraph_dynamic_cinematic_component_bp(33384)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,372 @@
+# destructible_01_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AudioImpactCausedBy
+  [0] CallFunc_IsValid_ReturnValue = IsValid(SoundComponent)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @407
+  [43] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(InstigatingActor)
+  [79] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [108] if !(K2Node_DynamicCast_bSuccess) goto @187
+  [122] K2Node_DynamicCast_AsPlayer_Interface.GetIsLocalPlayerAudioEnabled(CallFunc_GetIsLocalPlayerAudioEnabled_Out)
+  [168] IsLocalPlayerAudioEnabled = CallFunc_GetIsLocalPlayerAudioEnabled_Out
+  [187] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(IsLocalPlayerAudioEnabled)
+  [224] SoundComponent.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, 'Weapon_Impact_Caused_By')
+  [296] CallFunc_Conv_BoolToString_ReturnValue = Conv_BoolToString(IsLocalPlayerAudioEnabled)
+  [333] SoundComponent.SetSwitch(null, 'Weapon_Impact_Caused_By_Player', CallFunc_Conv_BoolToString_ReturnValue)
+  [407] return nothing
+  [409] end
+
+=== Evaluate
+  [0] ExecuteUbergraph_destructible_01_bp(7783)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_destructible_01_bp
+  [0] push @7793
+  [5] goto computed(EntryPoint)
+  [15] CaptureStaticFarShadows()
+  [25] pop
+  [26] self.Stump.SetCollisionEnabled(3)
+  [64] pop
+  [65] self.Stump.SetVisibility(true, false)
+  [99] self.Stump.SetRelativeScale3D(self.stump_scale)
+  [140] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 360.0)
+  [186] CallFunc_MakeRotator_Yaw_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [215] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast_1)
+  [262] self.Stump.K2_SetRelativeRotation(CallFunc_MakeRotator_ReturnValue_1, false, CallFunc_K2_SetRelativeRotation_SweepHitResult, false)
+  [314] if !(self.bush) goto @26
+  [328] pop
+  [329] CallFunc_K2_GetComponentRotation_ReturnValue = self.Main Part.K2_GetComponentRotation()
+  [379] BreakRotator(CallFunc_K2_GetComponentRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [425] K2Node_VariableSet_z_rotation_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [454] self.z_rotation = K2Node_VariableSet_z_rotation_ImplicitCast
+  [481] self.RotationInitComplete = true
+  [492] pop
+  [493] self.Broken Part.SetCollisionEnabled(2)
+  [531] BreakHitResult(K2Node_CustomEvent_HitResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [712] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_BreakHitResult_Normal, -1.0)
+  [758] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Multiply_VectorFloat_ReturnValue, 500.0)
+  [804] self.Broken Part.AddImpulse(CallFunc_Multiply_VectorFloat_ReturnValue_1, 'None', true)
+  [863] goto @65
+  [868] self.Main Part.SetCollisionEnabled(0)
+  [906] self.InfluenceTester.SetCollisionEnabled(0)
+  [944] push @1407
+  [949] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(null, self.Explosion, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1073] self.Explosion.Activate(false)
+  [1110] GetComponentBounds(self.Main Part, CallFunc_GetComponentBounds_Origin, CallFunc_GetComponentBounds_BoxExtent, CallFunc_GetComponentBounds_SphereRadius)
+  [1156] BreakVector(CallFunc_GetComponentBounds_BoxExtent, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1202] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_BreakVector_Z, 2.0)
+  [1248] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [1303] self.Explosion.K2_SetRelativeLocation(CallFunc_MakeVector_ReturnValue, false, CallFunc_K2_SetRelativeLocation_SweepHitResult, false)
+  [1355] OnExploded__DelegateSignature()
+  [1374] if !(self.dont_spawn_broken_part) goto @1445
+  [1388] if !(self.dont_spawn_stump_part) goto @65
+  [1402] goto @314
+  [1407] self.base_destruction.Activate(false)
+  [1444] pop
+  [1445] self.Broken Part.SetVisibility(true, false)
+  [1479] self.Broken Part.SetSimulatePhysics(true)
+  [1516] goto @493
+  [1521] self.Main Part.SetVisibility(false, false)
+  [1555] goto @868
+  [1560] if !(false) pop
+  [1562] Temp_bool_IsClosed_Variable = true
+  [1573] pop
+  [1574] push @1610
+  [1579] if !(Temp_bool_Has_Been_Initd_Variable) goto @1594
+  [1593] pop
+  [1594] Temp_bool_Has_Been_Initd_Variable = true
+  [1605] goto @1560
+  [1610] if !(Temp_bool_IsClosed_Variable) goto @1625
+  [1624] pop
+  [1625] Temp_bool_IsClosed_Variable = true
+  [1636] goto @329
+  [1641] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1662] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1677
+  [1676] pop
+  [1677] self.DesiredTreeAngle = K2Node_CustomEvent_Angle
+  [1704] self.CurrentTreeAngle = self.DesiredTreeAngle
+  [1731] self.DesiredUpVector = K2Node_CustomEvent_Up
+  [1758] self.z_rotation = K2Node_CustomEvent_ZRotation
+  [1785] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [1814] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.EvaluationRateInSeconds, 50.0)
+  [1860] CallFunc_FInterpTo_ReturnValue = FInterpTo(self.CurrentTreeAngle, self.DesiredTreeAngle, CallFunc_GetWorldDeltaSeconds_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1924] CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FInterpTo_ReturnValue)
+  [1953] CallFunc_RotatorFromAxisAndAngle_ReturnValue = RotatorFromAxisAndAngle(self.DesiredUpVector, CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast)
+  [1999] BreakRotator(CallFunc_RotatorFromAxisAndAngle_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [2045] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [2074] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, self.z_rotation)
+  [2120] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [2149] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [2204] CallFunc_K2_SetActorRotation_ReturnValue = K2_SetActorRotation(CallFunc_MakeRotator_ReturnValue, false)
+  [2234] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [2263] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.EvaluationRateInSeconds, 50.0)
+  [2309] CallFunc_FInterpTo_ReturnValue = FInterpTo(self.CurrentTreeAngle, self.DesiredTreeAngle, CallFunc_GetWorldDeltaSeconds_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2373] self.CurrentTreeAngle = CallFunc_FInterpTo_ReturnValue
+  [2400] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(self.CurrentTreeAngle, self.MinDestructionAngle)
+  [2438] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [2448] CallFunc_MakeHitResult_ReturnValue = MakeHitResult(false, false, 0.0, 0.0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), null, null, null, 'None', 'None', 0, 0, 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [2682] MultiDestruct(CallFunc_MakeHitResult_ReturnValue, null)
+  [2706] pop
+  [2707] if !(false) pop
+  [2709] Temp_bool_IsClosed_Variable_1 = true
+  [2720] pop
+  [2721] push @5061
+  [2726] Default__KismetArrayLibrary.Array_Get(self.Influencers, 0, CallFunc_Array_Get_Item)
+  [2781] GetComponentRadius(CallFunc_Array_Get_Item, CallFunc_GetComponentRadius_Radius, CallFunc_GetComponentRadius_bSuccess)
+  [2822] if !(CallFunc_GetComponentRadius_bSuccess) pop
+  [2832] push @2842
+  [2837] goto @1574
+  [2842] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [2884] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [2930] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [2985] CallFunc_GetActorUpVector_ReturnValue = self.GetActorUpVector()
+  [3027] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_GetActorUpVector_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [3089] CallFunc_DegAcos_ReturnValue = DegAcos(CallFunc_Dot_VectorVector_ReturnValue)
+  [3126] Default__KismetArrayLibrary.Array_Get(self.Influencers, 0, CallFunc_Array_Get_Item)
+  [3181] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [3231] BreakVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [3277] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, 0.0)
+  [3332] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_MakeVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue_2)
+  [3378] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [3415] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_GetComponentRadius_Radius, 2.0)
+  [3461] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_VSize_ReturnValue, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue_1, 45.0, 0.0)
+  [3534] CallFunc_FMax_ReturnValue = FMax(CallFunc_MapRangeClamped_ReturnValue, CallFunc_DegAcos_ReturnValue)
+  [3580] CallFunc_Abs_ReturnValue = Abs(CallFunc_FMax_ReturnValue)
+  [3617] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Abs_ReturnValue, self.DesiredTreeAngle)
+  [3655] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [3665] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [3707] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [3753] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [3808] CallFunc_GetActorUpVector_ReturnValue = self.GetActorUpVector()
+  [3850] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_GetActorUpVector_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [3912] CallFunc_DegAcos_ReturnValue = DegAcos(CallFunc_Dot_VectorVector_ReturnValue)
+  [3949] Default__KismetArrayLibrary.Array_Get(self.Influencers, 0, CallFunc_Array_Get_Item)
+  [4004] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [4054] BreakVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [4100] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, 0.0)
+  [4155] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_MakeVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue_2)
+  [4201] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [4238] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_GetComponentRadius_Radius, 2.0)
+  [4284] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_VSize_ReturnValue, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue_1, 45.0, 0.0)
+  [4357] CallFunc_FMax_ReturnValue = FMax(CallFunc_MapRangeClamped_ReturnValue, CallFunc_DegAcos_ReturnValue)
+  [4403] CallFunc_Abs_ReturnValue = Abs(CallFunc_FMax_ReturnValue)
+  [4440] self.DesiredTreeAngle = CallFunc_Abs_ReturnValue
+  [4467] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [4509] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [4555] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [4610] CallFunc_GetActorUpVector_ReturnValue = self.GetActorUpVector()
+  [4652] Default__KismetArrayLibrary.Array_Get(self.Influencers, 0, CallFunc_Array_Get_Item)
+  [4707] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [4757] BreakVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [4803] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, 0.0)
+  [4858] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_MakeVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue_2)
+  [4904] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [4946] CallFunc_Cross_VectorVector_ReturnValue = Cross_VectorVector(CallFunc_GetActorUpVector_ReturnValue, CallFunc_Normal_ReturnValue)
+  [4992] self.DesiredUpVector = CallFunc_Cross_VectorVector_ReturnValue
+  [5019] RotateClient(self.DesiredTreeAngle, self.DesiredUpVector, self.z_rotation)
+  [5060] pop
+  [5061] if !(self.RotationInitComplete) pop
+  [5071] goto @1785
+  [5076] SetNetDormancy(1)
+  [5088] FlushNetDormancy()
+  [5098] MultiDestruct(K2Node_Event_HitInfo, K2Node_Event_DamageCauser)
+  [5130] pop
+  [5131] push @5167
+  [5136] if !(Temp_bool_Has_Been_Initd_Variable_1) goto @5151
+  [5150] pop
+  [5151] Temp_bool_Has_Been_Initd_Variable_1 = true
+  [5162] goto @2707
+  [5167] if !(Temp_bool_IsClosed_Variable_1) goto @5182
+  [5181] pop
+  [5182] Temp_bool_IsClosed_Variable_1 = true
+  [5193] push @6909
+  [5198] push @6275
+  [5203] push @1521
+  [5208] push @6637
+  [5213] if !(self.Impact Audio?) pop
+  [5223] CallFunc_IsValid_ReturnValue = IsValid(K2Node_CustomEvent_DamageCauserActor)
+  [5252] if !(CallFunc_IsValid_ReturnValue) pop
+  [5262] CallFunc_GetOwner_ReturnValue = K2Node_CustomEvent_DamageCauserActor.GetOwner()
+  [5304] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [5340] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [5369] if !(K2Node_DynamicCast_bSuccess) pop
+  [5379] BreakHitResult(K2Node_CustomEvent_HitResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [5560] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1 = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, self.PlayerImpactSound, CallFunc_BreakHitResult_ImpactPoint, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [5650] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue_1)
+  [5679] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [5689] CallFunc_GetOwner_ReturnValue = K2Node_CustomEvent_DamageCauserActor.GetOwner()
+  [5731] AudioImpactCausedBy(CallFunc_GetOwner_ReturnValue, CallFunc_SpawnAkComponentAtLocation_ReturnValue_1)
+  [5763] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [5805] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 1)
+  [5858] if !(K2Node_SwitchEnum_CmpSuccess) goto @6964
+  [5872] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 2)
+  [5925] if !(K2Node_SwitchEnum_CmpSuccess) goto @7092
+  [5939] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 3)
+  [5992] if !(K2Node_SwitchEnum_CmpSuccess) goto @7153
+  [6006] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 4)
+  [6059] if !(K2Node_SwitchEnum_CmpSuccess) goto @7216
+  [6073] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 5)
+  [6126] if !(K2Node_SwitchEnum_CmpSuccess) goto @7285
+  [6140] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 6)
+  [6193] if !(K2Node_SwitchEnum_CmpSuccess) goto @7348
+  [6207] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentWeapon_ReturnValue.self.WeaponType, 7)
+  [6260] if !(K2Node_SwitchEnum_CmpSuccess) goto @7408
+  [6274] pop
+  [6275] if !(self.DebugImpact) pop
+  [6285] BreakHitResult(K2Node_CustomEvent_HitResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [6466] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_BreakHitResult_Normal, -1.0)
+  [6512] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_Multiply_VectorFloat_ReturnValue, 100.0)
+  [6558] DrawDebugArrow(self, CallFunc_BreakHitResult_ImpactPoint, CallFunc_Multiply_VectorFloat_ReturnValue_2, 5.0, LinearColor{1.0, 0.0, 0.0, 1.0}, 10.0, 5.0)
+  [6636] pop
+  [6637] BreakHitResult(K2Node_CustomEvent_HitResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [6818] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, self.Explode Sound, CallFunc_BreakHitResult_ImpactPoint, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), true, '', true)
+  [6908] pop
+  [6909] Delay(self, 5.0, LatentActionInfo{EX_SkipOffsetConst(Value=15), 905662137, 'ExecuteUbergraph_destructible_01_bp', self})
+  [6963] pop
+  [6964] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Hammer')
+  [7023] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [7091] pop
+  [7092] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Axe')
+  [7148] goto @7023
+  [7153] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Sword')
+  [7211] goto @7023
+  [7216] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Chainblades')
+  [7280] goto @7023
+  [7285] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Spear')
+  [7343] goto @7023
+  [7348] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'DP')
+  [7403] goto @7023
+  [7408] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetSwitch(null, 'Character_Weapon', 'Strikers')
+  [7469] goto @7023
+  [7474] ReceiveBeginPlay()
+  [7484] self.Broken Part.SetCollisionEnabled(0)
+  [7522] self.Stump.SetCollisionEnabled(0)
+  [7560] self.Stump.self.CanCharacterStepUpOn = 1
+  [7602] if !(self.bush) pop
+  [7612] self.Main Part.SetCollisionEnabled(0)
+  [7650] pop
+  [7651] SetNetDormancy(1)
+  [7663] FlushNetDormancy()
+  [7673] pop
+  [7674] pop
+  [7675] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Influencers)
+  [7734] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [7768] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [7778] goto @2721
+  [7783] goto @7675
+  [7788] goto @1641
+  [7793] return nothing
+  [7795] end
+
+=== GetComponentRadius
+  [0] push @447
+  [5] push @409
+  [10] push @212
+  [15] K2Node_DynamicCast_AsSphere_Collision = cast<SphereComponent>(PrimitiveComponent)
+  [51] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsSphere_Collision)
+  [80] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [90] CallFunc_GetScaledSphereRadius_ReturnValue = K2Node_DynamicCast_AsSphere_Collision.GetScaledSphereRadius()
+  [140] K2Node_FunctionResult_Radius_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetScaledSphereRadius_ReturnValue)
+  [169] Radius = K2Node_FunctionResult_Radius_ImplicitCast
+  [196] bSuccess = true
+  [207] goto @447
+  [212] K2Node_DynamicCast_AsCapsule_Collision = cast<CapsuleComponent>(PrimitiveComponent)
+  [248] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCapsule_Collision)
+  [277] if !(K2Node_DynamicCast_bSuccess) pop
+  [287] CallFunc_GetScaledCapsuleRadius_ReturnValue = K2Node_DynamicCast_AsCapsule_Collision.GetScaledCapsuleRadius()
+  [337] K2Node_FunctionResult_Radius_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetScaledCapsuleRadius_ReturnValue)
+  [366] Radius = K2Node_FunctionResult_Radius_ImplicitCast_1
+  [393] bSuccess = true
+  [404] goto @447
+  [409] Radius = 0.0
+  [436] bSuccess = false
+  [447] return nothing
+  [449] end
+
+=== MultiDestruct
+  [0] frame.K2Node_CustomEvent_HitResult = HitResult
+  [18] frame.K2Node_CustomEvent_DamageCauserActor = DamageCauserActor
+  [36] ExecuteUbergraph_destructible_01_bp(5131)
+  [51] return nothing
+  [53] end
+
+=== OnExploded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnInfluencerAdded
+  [0] frame.K2Node_Event_InfluencerComponent_1 = InfluencerComponent
+  [18] frame.K2Node_Event_InfluencerActor_1 = InfluencerActor
+  [36] ExecuteUbergraph_destructible_01_bp(7651)
+  [51] return nothing
+  [53] end
+
+=== OnInfluencerRemoved
+  [0] frame.K2Node_Event_InfluencerComponent = InfluencerComponent
+  [18] frame.K2Node_Event_InfluencerActor = InfluencerActor
+  [36] ExecuteUbergraph_destructible_01_bp(7674)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_destructible_01_bp(7474)
+  [15] return nothing
+  [17] end
+
+=== ReceivePointDamage
+  [0] frame.K2Node_Event_Damage = Damage
+  [18] frame.K2Node_Event_DamageType = DamageType
+  [36] frame.K2Node_Event_HitLocation = HitLocation
+  [54] frame.K2Node_Event_HitNormal = HitNormal
+  [72] frame.K2Node_Event_HitComponent = HitComponent
+  [90] frame.K2Node_Event_BoneName = BoneName
+  [108] frame.K2Node_Event_ShotFromDirection = ShotFromDirection
+  [126] frame.K2Node_Event_InstigatedBy = InstigatedBy
+  [144] frame.K2Node_Event_DamageCauser = DamageCauser
+  [162] frame.K2Node_Event_HitInfo = HitInfo
+  [180] ExecuteUbergraph_destructible_01_bp(5076)
+  [195] return nothing
+  [197] end
+
+=== RotateClient
+  [0] frame.K2Node_CustomEvent_Angle = Angle
+  [18] frame.K2Node_CustomEvent_Up = Up
+  [36] frame.K2Node_CustomEvent_ZRotation = ZRotation
+  [54] ExecuteUbergraph_destructible_01_bp(7788)
+  [69] return nothing
+  [71] end
+
+=== UserConstructionScript
+  [0] push @756
+  [5] base_destruction_offset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 40.0})
+  [48] push @383
+  [53] push @330
+  [58] push @217
+  [63] if !(self.preview_stump_part) pop
+  [73] self.Main Part.SetVisibility(false, false)
+  [107] self.Broken Part.SetVisibility(false, false)
+  [141] self.Stump.SetVisibility(true, false)
+  [175] self.Stump.SetRelativeScale3D(self.stump_scale)
+  [216] pop
+  [217] if !(self.preview_broken_part) pop
+  [227] self.Main Part.SetVisibility(false, false)
+  [261] self.Broken Part.SetVisibility(true, false)
+  [295] self.Stump.SetVisibility(false, false)
+  [329] pop
+  [330] self.base_destruction.K2_AddLocalOffset(base_destruction_offset, false, CallFunc_K2_AddLocalOffset_SweepHitResult, false)
+  [382] pop
+  [383] Temp_int_Loop_Counter_Variable = 0
+  [406] Temp_int_Array_Index_Variable = 0
+  [429] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.NewVar_0)
+  [488] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [526] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [536] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [563] push @682
+  [568] Default__KismetArrayLibrary.Array_Get(self.NewVar_0, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [627] self.Main Part.SetMaterial(Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [681] pop
+  [682] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [724] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [751] goto @429
+  [756] return nothing
+  [758] end

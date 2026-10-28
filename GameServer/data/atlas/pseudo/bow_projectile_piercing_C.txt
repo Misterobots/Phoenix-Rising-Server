@@ -1,0 +1,81 @@
+# bow_projectile_piercing_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthOnProjectileDamageOverlap
+  [0] frame.K2Node_Event_OtherActor = OtherActor
+  [18] frame.K2Node_Event_OtherComponent = OtherComponent
+  [36] frame.K2Node_Event_SweepResult = SweepResult
+  [54] ExecuteUbergraph_bow_projectile_piercing(1594)
+  [69] return nothing
+  [71] end
+
+=== DebugDamageFalloff
+  [0] if !(Enable) goto @439
+  [14] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(Accuracy)
+  [51] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(DamageScale)
+  [88] CallFunc_Conv_DoubleToString_ReturnValue_2 = Conv_DoubleToString(Distance)
+  [125] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Distance: ', CallFunc_Conv_DoubleToString_ReturnValue_2)
+  [174] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ', Scale: ')
+  [222] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [268] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ', Accuracy: ')
+  [319] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Conv_DoubleToString_ReturnValue)
+  [365] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{1.0, 0.171748, 0.0, 1.0}, 2.0, 'None')
+  [439] return nothing
+  [441] end
+
+=== ExecuteUbergraph_bow_projectile_piercing
+  [0] push @1632
+  [5] goto computed(EntryPoint)
+  [15] ReceiveBeginPlay()
+  [25] push @135
+  [30] self.ProjectileMovement.self.Velocity = self.StartingVelocity
+  [79] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [107] self.SpawnLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [134] pop
+  [135] CallFunc_NearlyEqual_FloatFloat_ReturnValue = NearlyEqual_FloatFloat(self.ShotAccuracy, 1.0, 0.009999999776482582)
+  [182] if !(CallFunc_NearlyEqual_FloatFloat_ReturnValue) pop
+  [192] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [212] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [241] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.CritChanceSpec, -1)
+  [301] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [321] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [350] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(bow_crit_change_ge_C, 0.0, GameplayEffectContextHandle{})
+  [432] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', 0.5)
+  [487] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.AddedCritChanceScale)
+  [516] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [575] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [595] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [624] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1)
+  [683] self.CritChanceSpec = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [710] pop
+  [711] BreakHitResult(K2Node_Event_Hit_Info, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [892] CallFunc_Vector_Distance_ReturnValue = Vector_Distance(CallFunc_BreakHitResult_Location, self.SpawnLocation)
+  [938] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_Vector_Distance_ReturnValue, 0.0, self.MaxTravelDistance, 0.0, 1.0)
+  [1011] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_MapRangeClamped_ReturnValue)
+  [1040] CallFunc_GetFloatValue_ReturnValue = self.DamageFalloffCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [1099] CallFunc_MapRangeClamped_ReturnValue_1 = MapRangeClamped(self.ShotAccuracy, 0.0, 1.0, self.MinAccuracyDamageScale, 1.0)
+  [1172] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [1201] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_MapRangeClamped_ReturnValue_1)
+  [1247] self.CustomProjectileDamageScale = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [1274] BreakHitResult(K2Node_Event_Hit_Info, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1455] CallFunc_Vector_Distance_ReturnValue = Vector_Distance(CallFunc_BreakHitResult_Location, self.SpawnLocation)
+  [1501] DebugDamageFalloff(self.EnableDebug, CallFunc_Vector_Distance_ReturnValue, self.CustomProjectileDamageScale, self.ShotAccuracy)
+  [1551] Server - Apply Damage(K2Node_Event_Target_Actor, K2Node_Event_Hit_Info, K2Node_Event_OtherComponent_1)
+  [1588] pop
+  [1589] goto @15
+  [1594] AuthOnProjectileDamageOverlap(K2Node_Event_OtherActor, K2Node_Event_OtherComponent, K2Node_Event_SweepResult)
+  [1631] pop
+  [1632] return nothing
+  [1634] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_bow_projectile_piercing(1589)
+  [15] return nothing
+  [17] end
+
+=== Server - Apply Damage
+  [0] frame.K2Node_Event_Target_Actor = Target Actor
+  [18] frame.K2Node_Event_Hit_Info = Hit Info
+  [36] frame.K2Node_Event_OtherComponent_1 = OtherComponent
+  [54] ExecuteUbergraph_bow_projectile_piercing(711)
+  [69] return nothing
+  [71] end

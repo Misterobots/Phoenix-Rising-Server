@@ -1,0 +1,496 @@
+{
+ "name": "ac_special_behemoth_dot_debuff_C",
+ "kind": "blueprint",
+ "parents": [
+  "dot_base_debuff_C",
+  "base_debuff_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamagePerFiveSeconds",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageTickTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AllMonsterParts",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Mesh",
+   "type": "ObjectProperty<SkeletalMeshComponent>",
+   "bp_type": "ObjectProperty<SkeletalMeshComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageAmp",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthApplyPartDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthDoDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DamageToDeal",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Damage",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [
+    "AllMonsterParts",
+    "DamageAmp",
+    "DamagePerFiveSeconds"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DealPointDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "MonsterPart",
+     "type": "ObjectProperty<MonsterPartComponent>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "Mesh",
+    "MonsterPartActor",
+    "PhATBones"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetInstigatorController",
+    "ArchonGameplayStatics.ApplyArchonElementalPointDamage",
+    "DamageToDeal",
+    "GameplayStatics.MakeHitResult",
+    "GetSocketLocation",
+    "KismetMathLibrary.MakeVector"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DotLoop",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ac_special_behemoth_dot_debuff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_1",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "CallFunc_K2_GetComponentsByClass_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 102,
+   "reads": [
+    "AllMonsterParts",
+    "DamageTickTime",
+    "MaxDuration",
+    "TimeRemaining",
+    "VFX_0"
+   ],
+   "sets": [
+    "AllMonsterParts",
+    "DamageAmp",
+    "MaxDuration",
+    "Mesh",
+    "TimeRemaining"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.FlushNetDormancy",
+    "Actor.GetInstigator",
+    "Actor.K2_GetComponentsByClass",
+    "AkGameplayStatics.PostEvent",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "AuthApplyPartDamage",
+    "DealPointDamage",
+    "GetElementalParticleColorVector",
+    "GetMesh",
+    "HasMatchingGameplayTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Shuffle",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "SetVectorParameter",
+    "base_buff_C.MulticastOnRefreshed",
+    "dot_base_debuff_C.MulticastOnAdded",
+    "dot_base_debuff_C.OnAdded",
+    "dot_base_debuff_C.StartPersistentAudio",
+    "dot_base_debuff_C.StartPersistentVFX",
+    "dot_base_debuff_C.Stop Persistent Audio",
+    "dot_base_debuff_C.StopPersistentVFX"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Generic_Elemental_Fire_Grow_Burst",
+    "AkAudioEvent Play_Wep_Impact_Monster_Stagger_Elemental",
+    "BlueprintGeneratedClass monsterpart_bpc_C"
+   ]
+  },
+  {
+   "name": "ExtendTime",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Extension",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnRefreshed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartPersistentAudio",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartPersistentVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Stop Persistent Audio",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopPersistentVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ac_special_behemoth_dot_debuff_C.ExecuteUbergraph_ac_special_behemoth_dot_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/Weapons/_shared/acasters/ac_special_behemoth_dot_debuff",
+ "pseudo_file": "pseudo/ac_special_behemoth_dot_debuff_C.txt",
+ "game_data": {}
+}

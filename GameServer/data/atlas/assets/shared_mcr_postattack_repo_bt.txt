@@ -1,0 +1,20 @@
+shared_mcr_postattack_repo_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if ForceSuccess]
+  Sequence
+    {service calc_knowntargetavgpos_btservice}
+    [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.KnownPlayersAvgPos)]
+    1) Sequence
+      1) Selector
+        [if DistanceToLocCheck  (Origin=bb.SelfPos, Target=bb.KnownTargetsAvgPos, MinDistance=0, MaxDistance=1200)]
+        1) Selector
+          [if Blackboard  (IsInjured is Is Set)]
+          1) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_pers_backstepinjured_bwd_mot, RecoveryTime=0.6, TriggerCooldownOnSuccess=false)
+          2) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_atk_backstep_mot, RecoveryTime=0.6, TriggerCooldownOnSuccess=false)
+        2) Sequence
+          1) RunEQSQuery "Find target behind me"  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTarget", "QueryConfig": [{"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.AttackTarget)
+          2) Selector
+            [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+            1) BehemothAction "TurnAround L"  (Montage=AnimMontage b_mr_loco_turninplace_180l_mot, RecoveryTime=0.6, TriggerCooldownOnSuccess=false)
+            2) BehemothAction "TurnAround R"  (Montage=AnimMontage b_mr_loco_turninplace_180r_mot, RecoveryTime=0.6, TriggerCooldownOnSuccess=false)

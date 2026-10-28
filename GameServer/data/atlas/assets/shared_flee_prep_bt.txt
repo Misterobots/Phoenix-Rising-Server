@@ -1,0 +1,30 @@
+shared_flee_prep_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco]
+  Sequence "Set up Flee Data"
+    1) Sequence "Clear Blackboard"
+      1) ClearBBVar "Clear Helper"  (BBVar=bb.CurrentHelper)
+      2) ClearBBVar "Clear TargetActor"  (BBVar=bb.TargetActor)
+      3) ClearBBVar "Clear MoveToDestination"  (BBVar=bb.MoveDestination)
+      [if ForceSuccess]
+      4) try_set_behemoth_state_bttask  (State=Combat, StateChangeType=End)
+      [if ForceSuccess]
+      5) try_set_behemoth_state_bttask  (State=Alerted, StateChangeType=End)
+    2) Selector
+      [if not should_despawn_on_flee_btdeco "Not Despawning after Flee"  (bInverseCondition=true)]
+      1) Selector
+        [if agent_in_group_btdeco]
+        1) Selector
+          [if Compare_btdeco  (LeftSideKey=bb.GroupPatrolPoint, CompareOperator===, CompareType=Object, RightSideData={"BlackboardKeyName": "CurrentPatrolPoint"})]
+          [if Compare_btdeco  (LeftSideKey=bb.GroupPatrolPoint, CompareOperator===, CompareType=Object)]
+          1) Sequence
+            1) RunEQSQuery "Find Flee Patrol Point"  (EQSRequest={"QueryTemplate": "EnvQuery find_flee_patrol_point_eqs"}, BlackboardKey=bb.NextPatrolPoint)
+            2) push_coordination_message_bttask  (Message={"TaskType": "coordination_message_type::SetGroupPatrolPoint", "AgentAllocationType": "agent_allocation_type::AllAgents", "AgentRestrictions": "message_restrictions::None", "MessageHandlingStrategy": "message_handling_type::HandledInstantlyByBlueprint", "Priority": 100.0}, PayloadActorBBKey=NextPatrolPoint, bShowPropertyDetails=false)
+            3) push_coordination_message_bttask  (Message={"TaskType": "coordination_message_type::AllyFleeing", "AgentAllocationType": "agent_allocation_type::AllOtherAgents", "MessageHandlingStrategy": "message_handling_type::HandledInstantlyByBlueprint"}, bShowPropertyDetails=false)
+          2) Sequence
+            1) set_blackboard_key_bttask  (ResultKey=bb.NextPatrolPoint, DataType=Object, SourceData={"BlackboardKeyName": "GroupPatrolPoint"}, bShowPropertyDetails=false)
+        2) RunEQSQuery "Find Flee Patrol Point"  (EQSRequest={"QueryTemplate": "EnvQuery find_flee_patrol_point_eqs"}, BlackboardKey=bb.NextPatrolPoint)
+      [if should_despawn_on_flee_btdeco "Despawning after Flee"]
+      2) ClearBBVar "Clear Next Patrol Point"  (BBVar=bb.NextPatrolPoint)
+    3) clear_message_queue_and_claims_bttask

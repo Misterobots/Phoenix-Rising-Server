@@ -1,0 +1,194 @@
+{
+ "name": "shared_patrol_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/shared_patrol_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "BP_PatrolCenterPoint_C",
+  "EQS_NextPointAroundTargetPoint",
+  "bb_base",
+  "eqs_passive_patrol_pt"
+ ],
+ "exports": {
+  "shared_patrol_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_5",
+     "@behemoth_in_state_btdeco_C_0",
+     "@BTDeco_MemberOfClassIsPresent_C_5",
+     "@set_behemoth_loco_mode_btdeco_C_5",
+     "@is_island_gamemode_btdeco_C_0"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_0": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  },
+  "behemoth_in_state_btdeco_C_5": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_TimeLimit_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "No Enemy - Patrol",
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDeco_MemberOfClassIsPresent_C_5": {
+   "type": "BTDeco_MemberOfClassIsPresent_C",
+   "props": {
+    "ClassToTest": "BlueprintGeneratedClass BP_PatrolCenterPoint_C",
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  },
+  "BTDecorator_TimeLimit_0": {
+   "type": "BTDecorator_TimeLimit",
+   "props": {
+    "TimeLimit": 10.0,
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "bAllowPartialPath": false,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint",
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_passive_patrol_pt",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 500.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1750.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "NodeName": "Find Patrol point",
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_Wait_1": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.5,
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "behemoth_generic_action_bttask_C_0": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::LookAround",
+    "TreeAsset": "BehaviorTree shared_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "is_island_gamemode_btdeco_C_0": {
+   "type": "is_island_gamemode_btdeco_C",
+   "props": {
+    "IslandGameMode": "EArchonIslandGameMode::Trials",
+    "bInverseCondition": true,
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_5": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Walk",
+    "TreeAsset": "BehaviorTree shared_patrol_bt"
+   }
+  }
+ }
+}

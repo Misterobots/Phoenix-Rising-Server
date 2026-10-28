@@ -1,0 +1,442 @@
+# persistent_spawner_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthAddPersistentSpawnRequest
+  [0] frame.K2Node_CustomEvent_Request = Request
+  [18] ExecuteUbergraph_persistent_spawner_bpc(1270)
+  [33] return nothing
+  [35] end
+
+=== AuthRemovePersistentSpawnRequest
+  [0] frame.K2Node_CustomEvent_UniqueKey = UniqueKey
+  [18] ExecuteUbergraph_persistent_spawner_bpc(2230)
+  [33] return nothing
+  [35] end
+
+=== DoSpawn
+  [0] push @8154
+  [5] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_6.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] push @197
+  [82] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [102] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue_6)
+  [138] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [167] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [177] LocalInstigator = K2Node_DynamicCast_AsPawn
+  [196] pop
+  [197] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.PersistentSpawnRequests)
+  [256] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_Array_Length_ReturnValue_1, RequestIndex)
+  [294] if !(CallFunc_Less_IntInt_ReturnValue) goto @420
+  [308] PrintString(self, 'Error: Out of range value passed to DoSpawn!', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [419] pop
+  [420] push @593
+  [425] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [484] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item_1.SpawnType, 0)
+  [524] if !(K2Node_SwitchEnum_CmpSuccess) goto @940
+  [538] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item_1.SpawnType, 1)
+  [578] if !(K2Node_SwitchEnum_CmpSuccess) goto @2987
+  [592] pop
+  [593] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [613] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [642] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_8.K2_GetActorLocation()
+  [692] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [751] K2Node_SetFieldsInStruct_INTERNAL_LastSpawnTimeStamp_47_D47478DE49A4DBFFBAB7FAA4ECFDFE8D_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [780] CallFunc_Array_Get_Item_1.INTERNAL_LastSpawnTimeStamp = K2Node_SetFieldsInStruct_INTERNAL_LastSpawnTimeStamp_47_D47478DE49A4DBFFBAB7FAA4ECFDFE8D_ImplicitCast
+  [816] CallFunc_Array_Get_Item_1.INTERNAL_LastSpawnActorLoc = CallFunc_K2_GetActorLocation_ReturnValue_1
+  [852] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item_1
+  [879] Default__KismetArrayLibrary.Array_Set(self.PersistentSpawnRequests, RequestIndex, K2Node_SetFieldsInStruct_StructOut, false)
+  [939] pop
+  [940] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [999] TestForNavMesh = CallFunc_Array_Get_Item_1.ActorSpawnData.TestForNavMesh
+  [1036] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [1095] CallFunc_NotEqual_NameName_ReturnValue_1 = NotEqual_NameName(CallFunc_Array_Get_Item_1.ActorSpawnData.SpawnAtBoneName, 'None')
+  [1155] if !(CallFunc_NotEqual_NameName_ReturnValue_1) goto @2839
+  [1169] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [1189] CallFunc_DoesImplementInterface_ReturnValue_2 = DoesImplementInterface(CallFunc_GetOwner_ReturnValue_5, game_entity_interface_C)
+  [1227] if !(CallFunc_DoesImplementInterface_ReturnValue_2) goto @2839
+  [1241] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [1261] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetOwner_ReturnValue_5)
+  [1297] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [1326] if !(K2Node_DynamicCast_bSuccess_2) goto @2823
+  [1340] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [1386] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [1445] CallFunc_GetSocketLocation_ReturnValue = CallFunc_GetMesh_SkeletalMesh.GetSocketLocation(CallFunc_Array_Get_Item_1.ActorSpawnData.SpawnAtBoneName)
+  [1526] LocalSpawnPos = CallFunc_GetSocketLocation_ReturnValue
+  [1553] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [1573] CallFunc_GetTransform_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.GetTransform()
+  [1623] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [1669] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [1728] CallFunc_GreaterGreater_VectorRotator_ReturnValue = GreaterGreater_VectorRotator(CallFunc_Array_Get_Item_1.ActorSpawnData.SpawnOffset, CallFunc_BreakTransform_Rotation_1)
+  [1792] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(LocalSpawnPos, CallFunc_GreaterGreater_VectorRotator_ReturnValue)
+  [1838] LocalSpawnPos = CallFunc_Add_VectorVector_ReturnValue_1
+  [1865] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1885] CallFunc_DoesImplementInterface_ReturnValue_1 = DoesImplementInterface(CallFunc_GetOwner_ReturnValue_1, bpi_persistent_spawn_owner_C)
+  [1923] if !(CallFunc_DoesImplementInterface_ReturnValue_1) goto @2209
+  [1937] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1957] K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner_1 = cast<bpi_persistent_spawn_owner_C>(CallFunc_GetOwner_ReturnValue_1)
+  [1993] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner_1)
+  [2022] if !(K2Node_DynamicCast_bSuccess_1) goto @5927
+  [2036] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [2095] K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner_1.OverridePersistentSpawnPosition(LocalSpawnPos, CallFunc_Array_Get_Item_1, CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden_1, CallFunc_OverridePersistentSpawnPosition_NewSpawnPos_1)
+  [2168] if !(CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden_1) goto @2209
+  [2182] LocalSpawnPos = CallFunc_OverridePersistentSpawnPosition_NewSpawnPos_1
+  [2209] push @5986
+  [2214] Temp_int_Loop_Counter_Variable = 0
+  [2237] Temp_int_Array_Index_Variable = 0
+  [2260] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [2319] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.ActorSpawnData.PositionModifiers)
+  [2396] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [2434] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [2444] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [2471] push @8020
+  [2476] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2496] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [2516] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_3.K2_GetActorLocation()
+  [2566] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [2625] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.ActorSpawnData.PositionModifiers, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [2702] Default__archon_function_library_C.ModifyProjectileTargetPosition(CallFunc_Array_Get_Item_2, LocalSpawnPos, CallFunc_K2_GetActorLocation_ReturnValue, 1, 0, CallFunc_GetOwner_ReturnValue_2, null, self, CallFunc_ModifyProjectileTargetPosition_AdjustedTargetPos)
+  [2795] LocalSpawnPos = CallFunc_ModifyProjectileTargetPosition_AdjustedTargetPos
+  [2822] pop
+  [2823] CallFunc_GetMesh_SkeletalMesh = null
+  [2834] goto @1386
+  [2839] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [2859] CallFunc_GetTransform_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.GetTransform()
+  [2909] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [2955] LocalSpawnPos = CallFunc_BreakTransform_Location_1
+  [2982] goto @1553
+  [2987] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [3007] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetComponentsByClass(SkeletalMeshComponent)
+  [3066] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_K2_GetComponentsByClass_ReturnValue)
+  [3125] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [3159] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [3218] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(CallFunc_Array_Get_Item_1.ProjectileSpawnData.BoneName, 'None')
+  [3278] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_NotEqual_NameName_ReturnValue)
+  [3316] if !(CallFunc_BooleanAND_ReturnValue) goto @5779
+  [3330] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [3350] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetComponentsByClass(SkeletalMeshComponent)
+  [3409] Default__KismetArrayLibrary.Array_Get(CallFunc_K2_GetComponentsByClass_ReturnValue, 0, CallFunc_Array_Get_Item)
+  [3464] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [3523] CallFunc_GetSocketTransform_ReturnValue = CallFunc_Array_Get_Item.GetSocketTransform(CallFunc_Array_Get_Item_1.ProjectileSpawnData.BoneName, 0)
+  [3606] BreakTransform(CallFunc_GetSocketTransform_ReturnValue, CallFunc_BreakTransform_Location_2, CallFunc_BreakTransform_Rotation_2, CallFunc_BreakTransform_Scale_2)
+  [3652] LocalSpawnPos = CallFunc_BreakTransform_Location_2
+  [3679] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [3738] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(LocalSpawnPos, CallFunc_Array_Get_Item_1.ProjectileSpawnData.OffsetLocation)
+  [3802] LocalSpawnPos = CallFunc_Add_VectorVector_ReturnValue
+  [3829] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3849] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(CallFunc_GetOwner_ReturnValue, bpi_persistent_spawn_owner_C)
+  [3887] if !(CallFunc_DoesImplementInterface_ReturnValue) goto @4173
+  [3901] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3921] K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner = cast<bpi_persistent_spawn_owner_C>(CallFunc_GetOwner_ReturnValue)
+  [3957] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner)
+  [3986] if !(K2Node_DynamicCast_bSuccess) goto @5720
+  [4000] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [4059] K2Node_DynamicCast_AsBpi_Persistent_Spawn_Owner.OverridePersistentSpawnPosition(LocalSpawnPos, CallFunc_Array_Get_Item_1, CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden, CallFunc_OverridePersistentSpawnPosition_NewSpawnPos)
+  [4132] if !(CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden) goto @4173
+  [4146] LocalSpawnPos = CallFunc_OverridePersistentSpawnPosition_NewSpawnPos
+  [4173] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [4232] if !(CallFunc_Array_Get_Item_1.ShareGUID) goto @8094
+  [4255] LocalGUID = Guid{0, 0, 0, 0}
+  [4307] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [4327] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetComponentsByClass(SkeletalMeshComponent)
+  [4386] CallFunc_GetTransform_ReturnValue = CallFunc_GetOwner_ReturnValue_4.GetTransform()
+  [4436] Default__KismetArrayLibrary.Array_Get(CallFunc_K2_GetComponentsByClass_ReturnValue, 0, CallFunc_Array_Get_Item)
+  [4491] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [4537] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [4596] Temp_bool_Variable = CallFunc_Array_Get_Item_1.ProjectileSpawnData.InheritBoneRotation
+  [4633] CallFunc_GetSocketTransform_ReturnValue = CallFunc_Array_Get_Item.GetSocketTransform(CallFunc_Array_Get_Item_1.ProjectileSpawnData.BoneName, 0)
+  [4716] BreakTransform(CallFunc_GetSocketTransform_ReturnValue, CallFunc_BreakTransform_Location_2, CallFunc_BreakTransform_Rotation_2, CallFunc_BreakTransform_Scale_2)
+  [4762] BreakRotator(switch(Temp_bool_Variable){false: CallFunc_BreakTransform_Rotation, true: CallFunc_BreakTransform_Rotation_2, default: K2Node_Select_Default}, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [4852] BreakRotator(CallFunc_Array_Get_Item_1.ProjectileSpawnData.OffsetRotation, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [4916] CallFunc_Add_DoubleDouble_A_ImplicitCast_5 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_2)
+  [4945] CallFunc_Add_DoubleDouble_B_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [4974] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_5, CallFunc_Add_DoubleDouble_B_ImplicitCast_2)
+  [5020] CallFunc_Add_DoubleDouble_A_ImplicitCast_4 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_2)
+  [5049] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [5078] CallFunc_Add_DoubleDouble_ReturnValue_4 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_4, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [5124] CallFunc_Add_DoubleDouble_A_ImplicitCast_3 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_2)
+  [5153] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_1)
+  [5182] CallFunc_Add_DoubleDouble_ReturnValue_5 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_3, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [5228] CallFunc_MakeRotator_Roll_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_5)
+  [5257] CallFunc_MakeRotator_Pitch_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_4)
+  [5286] CallFunc_MakeRotator_Yaw_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_3)
+  [5315] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast_1, CallFunc_MakeRotator_Pitch_ImplicitCast_1, CallFunc_MakeRotator_Yaw_ImplicitCast_1)
+  [5370] BreakRotator(CallFunc_MakeRotator_ReturnValue_1, CallFunc_BreakRotator_Roll_3, CallFunc_BreakRotator_Pitch_3, CallFunc_BreakRotator_Yaw_3)
+  [5416] CallFunc_MakeRotator_ReturnValue_2 = MakeRotator(CallFunc_BreakRotator_Roll_3, CallFunc_BreakRotator_Pitch_3, CallFunc_BreakRotator_Yaw_3)
+  [5471] CallFunc_MakeTransform_ReturnValue_1 = MakeTransform(LocalSpawnPos, CallFunc_MakeRotator_ReturnValue_2, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [5542] SpawnProjectile(CallFunc_Array_Get_Item_1.INTERNAL_ActorPool, CallFunc_Array_Get_Item_1.ProjectileSpawnData.BaseProjectileClass, CallFunc_MakeTransform_ReturnValue_1, LocalInstigator, CallFunc_Array_Get_Item_1.ProjectileSpawnData.DamageKey, CallFunc_Array_Get_Item_1.ShareGUID, LocalGUID, LocalInstigator, CallFunc_SpawnProjectile_Projectile)
+  [5691] OnSpawnedProjectile__DelegateSignature(CallFunc_SpawnProjectile_Projectile)
+  [5719] pop
+  [5720] CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden = false
+  [5731] CallFunc_OverridePersistentSpawnPosition_NewSpawnPos = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [5774] goto @4132
+  [5779] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [5799] CallFunc_GetTransform_ReturnValue = CallFunc_GetOwner_ReturnValue_4.GetTransform()
+  [5849] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [5895] LocalSpawnPos = CallFunc_BreakTransform_Location
+  [5922] goto @3679
+  [5927] CallFunc_OverridePersistentSpawnPosition_PositionWasOverridden_1 = false
+  [5938] CallFunc_OverridePersistentSpawnPosition_NewSpawnPos_1 = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [5981] goto @2168
+  [5986] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [6045] if !(CallFunc_Array_Get_Item_1.ActorSpawnData.SnapToGround) goto @7872
+  [6077] array{}
+  [6088] Default__archon_function_library_C.GetGroundPosAndNormal(LocalSpawnPos, 250.0, K2Node_MakeArray_Array, 0, 10000.0, self, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [6190] LocalSpawnPos = CallFunc_GetGroundPosAndNormal_GroundPos
+  [6217] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [6237] CallFunc_GetTransform_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.GetTransform()
+  [6287] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [6333] LocalRotator = CallFunc_BreakTransform_Rotation_1
+  [6360] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [6419] if !(CallFunc_Array_Get_Item_1.ActorSpawnData.OrientToGround) goto @6928
+  [6451] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_GetGroundPosAndNormal_GroundNormal)
+  [6488] BreakRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [6534] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [6563] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, 0.0)
+  [6609] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [6638] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, -90.0)
+  [6684] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll)
+  [6713] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 0.0)
+  [6759] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [6788] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [6817] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [6846] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [6901] LocalRotator = CallFunc_MakeRotator_ReturnValue
+  [6928] if !(TestForNavMesh) goto @7018
+  [6942] CallFunc_K2_ProjectPointToNavigation_ReturnValue = K2_ProjectPointToNavigation(self, LocalSpawnPos, CallFunc_K2_ProjectPointToNavigation_ProjectedLocation, null, null, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 500.0}))
+  [7008] if !(CallFunc_K2_ProjectPointToNavigation_ReturnValue) pop
+  [7018] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [7038] CallFunc_GetTransform_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.GetTransform()
+  [7088] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [7134] CallFunc_MakeTransform_ReturnValue = MakeTransform(LocalSpawnPos, LocalRotator, CallFunc_BreakTransform_Scale_1)
+  [7189] CallFunc_GetOwner_ReturnValue_7 = GetOwner()
+  [7209] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [7268] SpawnActor(CallFunc_Array_Get_Item_1.INTERNAL_ActorPool, CallFunc_Array_Get_Item_1.ActorSpawnData.ActorClass, CallFunc_MakeTransform_ReturnValue, CallFunc_GetOwner_ReturnValue_7, LocalInstigator, CallFunc_SpawnActor_Spawned_Actor)
+  [7363] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [7422] CallFunc_SpawnActor_Spawned_Actor.SetActorScale3D(CallFunc_Array_Get_Item_1.ActorSpawnData.ActorScale)
+  [7481] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [7540] if !(CallFunc_Array_Get_Item_1.ShareGUID) goto @7812
+  [7563] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, RequestIndex, CallFunc_Array_Get_Item_1)
+  [7622] LocalGUID = CallFunc_Array_Get_Item_1.INTERNAL_SharedGUID
+  [7658] K2Node_DynamicCast_AsPersistent_Spawned_Interface = cast<persistent_spawned_interface_C>(CallFunc_SpawnActor_Spawned_Actor)
+  [7694] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPersistent_Spawned_Interface)
+  [7723] if !(K2Node_DynamicCast_bSuccess_4) goto @7783
+  [7737] K2Node_DynamicCast_AsPersistent_Spawned_Interface.AuthInitializeSpawnedActor(LocalGUID)
+  [7783] OnSpawnedActor__DelegateSignature(CallFunc_SpawnActor_Spawned_Actor)
+  [7811] pop
+  [7812] CallFunc_NewGuid_ReturnValue_1 = NewGuid()
+  [7840] LocalGUID = CallFunc_NewGuid_ReturnValue_1
+  [7867] goto @7658
+  [7872] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [7892] CallFunc_GetTransform_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.GetTransform()
+  [7942] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [7988] LocalRotator = CallFunc_BreakTransform_Rotation_1
+  [8015] goto @6928
+  [8020] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [8062] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [8089] goto @2260
+  [8094] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [8122] LocalGUID = CallFunc_NewGuid_ReturnValue
+  [8149] goto @4307
+  [8154] return nothing
+  [8156] end
+
+=== ExecuteUbergraph_persistent_spawner_bpc
+  [0] push @2544
+  [5] goto computed(EntryPoint)
+  [15] DoSpawn(Temp_int_Array_Index_Variable)
+  [38] pop
+  [39] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [59] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(spawnedactor_manager_bpc_C)
+  [110] self.SpawnedActorManager = CallFunc_GetComponentByClass_ReturnValue
+  [129] pop
+  [130] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [150] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(spawnedactor_manager_bpc_C)
+  [201] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [230] if !(CallFunc_IsValid_ReturnValue) pop
+  [240] goto @39
+  [245] Temp_int_Array_Index_Variable = 0
+  [268] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PersistentSpawnRequests)
+  [327] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [365] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [375] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [402] push @575
+  [407] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [466] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.SpawnBasedOn, 0)
+  [506] if !(K2Node_SwitchEnum_CmpSuccess) goto @649
+  [520] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.SpawnBasedOn, 1)
+  [560] if !(K2Node_SwitchEnum_CmpSuccess) goto @912
+  [574] pop
+  [575] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [617] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [644] goto @268
+  [649] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [708] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.INTERNAL_LastSpawnTimeStamp)
+  [746] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TimeBetweenSpawns)
+  [784] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [830] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [859] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue)
+  [897] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [907] goto @15
+  [912] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [971] CallFunc_MultiplyMultiply_FloatFloat_Base_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.DistanceBetweenSpawns)
+  [1009] CallFunc_MultiplyMultiply_FloatFloat_ReturnValue = MultiplyMultiply_FloatFloat(CallFunc_MultiplyMultiply_FloatFloat_Base_ImplicitCast, 2.0)
+  [1055] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [1075] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.K2_GetActorLocation()
+  [1125] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_Array_Get_Item.INTERNAL_LastSpawnActorLoc, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [1180] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [1217] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_MultiplyMultiply_FloatFloat_ReturnValue, CallFunc_VSizeSquared_ReturnValue)
+  [1255] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [1265] goto @15
+  [1270] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1290] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [1332] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [1342] GetIndexOfUniqueKey(K2Node_CustomEvent_Request.UniqueKey, CallFunc_GetIndexOfUniqueKey_FoundIndex)
+  [1383] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfUniqueKey_FoundIndex, 0)
+  [1417] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(K2Node_CustomEvent_Request.UniqueKey, 'None')
+  [1468] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_EqualEqual_NameName_ReturnValue)
+  [1506] if !(CallFunc_BooleanOR_ReturnValue) goto @1765
+  [1520] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(K2Node_CustomEvent_Request.UniqueKey)
+  [1566] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Warning: Duplicate key ', CallFunc_Conv_NameToString_ReturnValue)
+  [1628] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' in persistent spawner!')
+  [1690] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1764] pop
+  [1765] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [1794] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [1814] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_4.K2_GetActorLocation()
+  [1864] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [1892] K2Node_SetFieldsInStruct_INTERNAL_LastSpawnTimeStamp_47_D47478DE49A4DBFFBAB7FAA4ECFDFE8D_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [1921] K2Node_CustomEvent_Request.INTERNAL_LastSpawnTimeStamp = K2Node_SetFieldsInStruct_INTERNAL_LastSpawnTimeStamp_47_D47478DE49A4DBFFBAB7FAA4ECFDFE8D_ImplicitCast
+  [1957] K2Node_CustomEvent_Request.INTERNAL_LastSpawnActorLoc = CallFunc_K2_GetActorLocation_ReturnValue
+  [1993] K2Node_CustomEvent_Request.INTERNAL_SharedGUID = CallFunc_NewGuid_ReturnValue
+  [2029] K2Node_CustomEvent_Request.INTERNAL_TotalDesiredSpawns = 0
+  [2061] K2Node_SetFieldsInStruct_StructOut = K2Node_CustomEvent_Request
+  [2088] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.PersistentSpawnRequests, K2Node_SetFieldsInStruct_StructOut)
+  [2156] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_SetFieldsInStruct_StructOut.StartImmediately, 1)
+  [2196] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [2206] DoSpawn(CallFunc_Array_Add_ReturnValue)
+  [2229] pop
+  [2230] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2250] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [2292] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [2302] GetIndexOfUniqueKey(K2Node_CustomEvent_UniqueKey, CallFunc_GetIndexOfUniqueKey_FoundIndex_1)
+  [2334] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(CallFunc_GetIndexOfUniqueKey_FoundIndex_1, 0)
+  [2368] if !(CallFunc_GreaterEqual_IntInt_ReturnValue_1) pop
+  [2378] Default__KismetArrayLibrary.Array_Remove(self.PersistentSpawnRequests, CallFunc_GetIndexOfUniqueKey_FoundIndex_1)
+  [2428] pop
+  [2429] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [2449] CallFunc_HasAuthority_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_3.HasAuthority()
+  [2491] if !(CallFunc_HasAuthority_ReturnValue_2) pop
+  [2501] Temp_int_Loop_Counter_Variable = 0
+  [2524] goto @245
+  [2529] ReceiveBeginPlay()
+  [2539] goto @130
+  [2544] return nothing
+  [2546] end
+
+=== GetIndexOfUniqueKey
+  [0] push @522
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [91] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PersistentSpawnRequests)
+  [150] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [188] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [226] if !(CallFunc_BooleanAND_ReturnValue) goto @420
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @448
+  [272] Default__KismetArrayLibrary.Array_Get(self.PersistentSpawnRequests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [331] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item.UniqueKey, Search Key)
+  [378] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [388] FoundIndex = Temp_int_Array_Index_Variable
+  [415] goto @522
+  [420] FoundIndex = -1
+  [443] goto @522
+  [448] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [490] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [517] goto @62
+  [522] return nothing
+  [524] end
+
+=== OnSpawnedActor__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnSpawnedProjectile__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_persistent_spawner_bpc(2529)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_persistent_spawner_bpc(2429)
+  [33] return nothing
+  [35] end
+
+=== SpawnActor
+  [0] push @653
+  [5] CallFunc_IsValid_ReturnValue_1 = IsValid(Actor Pool)
+  [34] if !(CallFunc_IsValid_ReturnValue_1) goto @279
+  [48] K2Node_MakeStruct_PhxActorPoolSpawnParams.SpawnTransform = Spawn Transform
+  [84] K2Node_MakeStruct_PhxActorPoolSpawnParams.Owner = Owner
+  [112] CallFunc_SpawnActorDeferredFromPool_ReturnValue = Actor Pool.SpawnActorDeferredFromPool(K2Node_MakeStruct_PhxActorPoolSpawnParams)
+  [163] push @520
+  [168] CallFunc_SpawnActorDeferredFromPool_ReturnValue.FlushNetDormancy()
+  [200] CallFunc_SpawnActorDeferredFromPool_ReturnValue.self.Instigator = Instigator
+  [241] MarkPropertyDirtyFromRepIndex(CallFunc_SpawnActorDeferredFromPool_ReturnValue, 9, 'Instigator')
+  [278] pop
+  [279] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, Class, Spawn Transform, 1, Owner)
+  [329] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', Instigator)
+  [370] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, Spawn Transform)
+  [408] CallFunc_IsValid_ReturnValue = IsValid(self.SpawnedActorManager)
+  [437] if !(CallFunc_IsValid_ReturnValue) goto @496
+  [451] self.SpawnedActorManager.AuthRegisterSpawnedActor(CallFunc_FinishSpawningActor_ReturnValue)
+  [496] Spawned Actor = CallFunc_FinishSpawningActor_ReturnValue
+  [515] goto @653
+  [520] K2Node_MakeStruct_PhxActorPoolSpawnParams.SpawnTransform = Spawn Transform
+  [556] K2Node_MakeStruct_PhxActorPoolSpawnParams.Owner = Owner
+  [584] Actor Pool.FinishSpawningActorFromPool(CallFunc_SpawnActorDeferredFromPool_ReturnValue, K2Node_MakeStruct_PhxActorPoolSpawnParams)
+  [634] Spawned Actor = CallFunc_SpawnActorDeferredFromPool_ReturnValue
+  [653] return nothing
+  [655] end
+
+=== SpawnProjectile
+  [0] push @1177
+  [5] CallFunc_FindActorPoolForType_ReturnValue = FindActorPoolForType(Instigator, Projectile Class)
+  [43] CallFunc_IsFeatureEnabledWorldContext_ReturnValue = IsFeatureEnabledWorldContext(Instigator, ProjectilePoolingFeature, true)
+  [82] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindActorPoolForType_ReturnValue)
+  [111] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue, CallFunc_IsFeatureEnabledWorldContext_ReturnValue)
+  [149] if !(CallFunc_BooleanAND_ReturnValue) goto @600
+  [163] CallFunc_FindActorPoolForType_ReturnValue = FindActorPoolForType(Instigator, Projectile Class)
+  [201] K2Node_MakeStruct_PhxActorPoolSpawnParams.SpawnTransform = Spawn Transform
+  [237] K2Node_MakeStruct_PhxActorPoolSpawnParams.Owner = Owning Pawn
+  [265] CallFunc_SpawnActorDeferredFromPool_ReturnValue = CallFunc_FindActorPoolForType_ReturnValue.SpawnActorDeferredFromPool(K2Node_MakeStruct_PhxActorPoolSpawnParams)
+  [316] push @931
+  [321] K2Node_DynamicCast_AsProjectile_Base_Bp = cast<projectile_base_bp_C>(CallFunc_SpawnActorDeferredFromPool_ReturnValue)
+  [357] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsProjectile_Base_Bp)
+  [386] if !(K2Node_DynamicCast_bSuccess) pop
+  [396] K2Node_DynamicCast_AsProjectile_Base_Bp.InitializePoolable(EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}), 0, null, Owning Pawn, Damage Key, Shared Damage GUID, Damage GUID, 0.0, 0.0, 0, null, null, 'None', Instigator)
+  [599] pop
+  [600] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, Projectile Class, Spawn Transform, 0, null)
+  [642] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OwningPawn', Owning Pawn)
+  [683] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageKey', Damage Key)
+  [724] SetBoolPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SharedDamageGUID', Shared Damage GUID)
+  [765] Default__KismetSystemLibrary.SetStructurePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageGUID', Damage GUID)
+  [828] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', Instigator)
+  [869] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, Spawn Transform)
+  [907] Projectile = CallFunc_FinishSpawningActor_ReturnValue
+  [926] goto @1177
+  [931] CallFunc_FindActorPoolForType_ReturnValue = FindActorPoolForType(Instigator, Projectile Class)
+  [969] K2Node_MakeStruct_PhxActorPoolSpawnParams.SpawnTransform = Spawn Transform
+  [1005] K2Node_MakeStruct_PhxActorPoolSpawnParams.Owner = Owning Pawn
+  [1033] CallFunc_FindActorPoolForType_ReturnValue.FinishSpawningActorFromPool(CallFunc_SpawnActorDeferredFromPool_ReturnValue, K2Node_MakeStruct_PhxActorPoolSpawnParams)
+  [1083] K2Node_DynamicCast_AsProjectile_Base_Bp_1 = cast<projectile_base_bp_C>(CallFunc_SpawnActorDeferredFromPool_ReturnValue)
+  [1119] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsProjectile_Base_Bp_1)
+  [1148] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1158] Projectile = K2Node_DynamicCast_AsProjectile_Base_Bp_1
+  [1177] return nothing
+  [1179] end

@@ -1,0 +1,834 @@
+# weapon_sheathe_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthOnSheatheStateChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== BeginForceSheatheWeapon
+  [0] if !(self.ForcedSheatheState) goto @30
+  [14] Entered forced state = false
+  [25] goto @321
+  [30] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 0)
+  [61] if !(K2Node_SwitchEnum_CmpSuccess) goto @260
+  [75] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 1)
+  [106] if !(K2Node_SwitchEnum_CmpSuccess) goto @260
+  [120] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 2)
+  [151] if !(K2Node_SwitchEnum_CmpSuccess) goto @276
+  [165] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 3)
+  [196] if !(K2Node_SwitchEnum_CmpSuccess) goto @276
+  [210] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 4)
+  [241] if !(K2Node_SwitchEnum_CmpSuccess) goto @260
+  [255] goto @321
+  [260] Entered forced state = false
+  [271] goto @321
+  [276] SetSheatheWeapon(PlayAnim)
+  [299] self.ForcedSheatheState = true
+  [310] Entered forced state = true
+  [321] return nothing
+  [323] end
+
+=== DebugInfo
+  [0] if !(Enable) goto @477
+  [14] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [34] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [71] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Name: ', CallFunc_GetDisplayName_ReturnValue)
+  [116] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(EWeaponSheatheState, self.SheatheState)
+  [162] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '\r\nSheathe State: ')
+  [218] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [264] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self.AnimInstance)
+  [301] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, '\r\nanim instance: ')
+  [357] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_GetDisplayName_ReturnValue_1)
+  [403] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, false, LinearColor{0.0, 0.66, 1.0, 1.0}, 0.0, 'None')
+  [477] return nothing
+  [479] end
+
+=== EndForceSheatheWeapon
+  [0] if !(self.ForcedSheatheState) goto @64
+  [14] self.ForcedSheatheState = false
+  [25] SetUnSheatheWeapon(PlayAnim)
+  [48] ExitedForceState = true
+  [59] goto @75
+  [64] ExitedForceState = false
+  [75] return nothing
+  [77] end
+
+=== ExecuteUbergraph_weapon_sheathe_bpc
+  [0] push @4624
+  [5] goto computed(EntryPoint)
+  [15] OnRep_SheatheState()
+  [29] AuthOnSheatheStateChanged__DelegateSignature(K2Node_CustomEvent_ClientSheatheState)
+  [57] K2Node_SwitchEnum_CmpSuccess_6 = NotEqual_ByteByte(self.SheatheState, 0)
+  [88] if !(K2Node_SwitchEnum_CmpSuccess_6) goto @238
+  [102] K2Node_SwitchEnum_CmpSuccess_6 = NotEqual_ByteByte(self.SheatheState, 1)
+  [133] if !(K2Node_SwitchEnum_CmpSuccess_6) goto @366
+  [147] K2Node_SwitchEnum_CmpSuccess_6 = NotEqual_ByteByte(self.SheatheState, 2)
+  [178] if !(K2Node_SwitchEnum_CmpSuccess_6) goto @366
+  [192] K2Node_SwitchEnum_CmpSuccess_6 = NotEqual_ByteByte(self.SheatheState, 3)
+  [223] if !(K2Node_SwitchEnum_CmpSuccess_6) goto @238
+  [237] pop
+  [238] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [258] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [287] CallFunc_BP_ApplyGameplayEffectToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectToSelf(weapon_sheathed_ge_C, 0.0, GameplayEffectContextHandle{})
+  [365] pop
+  [366] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [386] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [415] CallFunc_RemoveActiveEffectsWithGrantedTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveEffectsWithGrantedTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'State.WeaponUnSheathed'}, GameplayTag{'State.Attacking'})})
+  [547] pop
+  [548] MarkPropertyDirtyFromRepIndex(self, 2, 'SheatheState')
+  [577] goto @15
+  [582] Private_GetAnimSet(CallFunc_Private_GetAnimSet_AnimSet)
+  [605] self.LSheathingAnim = CallFunc_Private_GetAnimSet_AnimSet.sheathe
+  [633] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [653] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [689] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [718] if !(K2Node_DynamicCast_bSuccess) goto @818
+  [732] K2Node_DynamicCast_AsPlayer_Interface.PlayNetworkedMontage(CallFunc_Private_GetAnimSet_AnimSet.sheathe, 1.0, 1.0, 'None')
+  [818] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnMontageBlendingOut_Event_0)
+  [841] self.AnimInstance.Montage_SetBlendingOutDelegate(K2Node_CreateDelegate_OutputDelegate_1, self.LSheathingAnim)
+  [891] pop
+  [892] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [912] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [948] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [977] if !(K2Node_DynamicCast_bSuccess_1) goto @818
+  [991] K2Node_DynamicCast_AsPlayer_Interface_1.PlayNetworkedMontage(CallFunc_Private_GetAnimSet_AnimSet_1.unsheathe, 1.0, 1.0, 'None')
+  [1077] goto @818
+  [1082] Private_GetAnimSet(CallFunc_Private_GetAnimSet_AnimSet_1)
+  [1105] self.LSheathingAnim = CallFunc_Private_GetAnimSet_AnimSet_1.unsheathe
+  [1133] goto @892
+  [1138] self.SheatheState = K2Node_CustomEvent_ClientSheatheState
+  [1165] goto @548
+  [1170] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnMontageBlendingOut_Event_0)
+  [1193] self.AnimInstance.Montage_RemoveBlendingOutDelegate(K2Node_CreateDelegate_OutputDelegate_1, K2Node_CustomEvent_Montage)
+  [1243] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(self.LSheathingAnim, K2Node_CustomEvent_Montage)
+  [1281] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [1291] if !(K2Node_CustomEvent_bInterrupted) goto @1664
+  [1305] EX_ClearMulticastDelegate(DelegateToClear=self.OnCanAttack)
+  [1315] K2Node_SwitchEnum_CmpSuccess_4 = NotEqual_ByteByte(self.SheatheState, 0)
+  [1346] if !(K2Node_SwitchEnum_CmpSuccess_4) goto @1496
+  [1360] K2Node_SwitchEnum_CmpSuccess_4 = NotEqual_ByteByte(self.SheatheState, 1)
+  [1391] if !(K2Node_SwitchEnum_CmpSuccess_4) goto @1521
+  [1405] K2Node_SwitchEnum_CmpSuccess_4 = NotEqual_ByteByte(self.SheatheState, 2)
+  [1436] if !(K2Node_SwitchEnum_CmpSuccess_4) goto @2043
+  [1450] K2Node_SwitchEnum_CmpSuccess_4 = NotEqual_ByteByte(self.SheatheState, 3)
+  [1481] if !(K2Node_SwitchEnum_CmpSuccess_4) goto @1521
+  [1495] pop
+  [1496] TrySetSheatheState(3, CallFunc_TrySetSheatheState_Success_11)
+  [1521] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_CustomEvent_bInterrupted)
+  [1550] Server_CallOnSheatheWeaponEnd(CallFunc_Not_PreBool_ReturnValue)
+  [1573] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_6)
+  [1596] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_6) pop
+  [1606] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_CustomEvent_bInterrupted)
+  [1635] OnSheatheWeaponAnimEnd__DelegateSignature(CallFunc_Not_PreBool_ReturnValue)
+  [1663] pop
+  [1664] K2Node_SwitchEnum_CmpSuccess_5 = NotEqual_ByteByte(self.SheatheState, 0)
+  [1695] if !(K2Node_SwitchEnum_CmpSuccess_5) goto @2013
+  [1709] K2Node_SwitchEnum_CmpSuccess_5 = NotEqual_ByteByte(self.SheatheState, 1)
+  [1740] if !(K2Node_SwitchEnum_CmpSuccess_5) goto @2013
+  [1754] K2Node_SwitchEnum_CmpSuccess_5 = NotEqual_ByteByte(self.SheatheState, 2)
+  [1785] if !(K2Node_SwitchEnum_CmpSuccess_5) goto @1845
+  [1799] K2Node_SwitchEnum_CmpSuccess_5 = NotEqual_ByteByte(self.SheatheState, 3)
+  [1830] if !(K2Node_SwitchEnum_CmpSuccess_5) goto @1845
+  [1844] pop
+  [1845] TrySetSheatheState(3, CallFunc_TrySetSheatheState_Success_14)
+  [1870] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_CustomEvent_bInterrupted)
+  [1899] Server_CallOnUnSheatheWeaponEnd(CallFunc_Not_PreBool_ReturnValue)
+  [1922] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_5)
+  [1945] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_5) pop
+  [1955] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_CustomEvent_bInterrupted)
+  [1984] OnUnSheatheWeaponAnimEnd__DelegateSignature(CallFunc_Not_PreBool_ReturnValue)
+  [2012] pop
+  [2013] TrySetSheatheState(1, CallFunc_TrySetSheatheState_Success_13)
+  [2038] goto @1521
+  [2043] TrySetSheatheState(1, CallFunc_TrySetSheatheState_Success_12)
+  [2068] goto @1870
+  [2073] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_3)
+  [2096] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_3) goto @2111
+  [2110] pop
+  [2111] OnSheatheWeaponAnimEnd__DelegateSignature(K2Node_CustomEvent_Success_3)
+  [2139] pop
+  [2140] MulticastOnSheatheWeaponAnimEnd(K2Node_CustomEvent_Success_2)
+  [2163] pop
+  [2164] TrySetSheatheState(0, CallFunc_TrySetSheatheState_Success)
+  [2189] pop
+  [2190] TrySetSheatheState(1, CallFunc_TrySetSheatheState_Success_1)
+  [2215] pop
+  [2216] TrySetSheatheState(2, CallFunc_TrySetSheatheState_Success_2)
+  [2241] pop
+  [2242] TrySetSheatheState(3, CallFunc_TrySetSheatheState_Success_3)
+  [2267] pop
+  [2268] TrySetSheatheState(2, CallFunc_TrySetSheatheState_Success_4)
+  [2293] pop
+  [2294] TrySetSheatheState(3, CallFunc_TrySetSheatheState_Success_5)
+  [2319] pop
+  [2320] TrySetSheatheState(1, CallFunc_TrySetSheatheState_Success_6)
+  [2345] pop
+  [2346] Private_GetAnimSet(CallFunc_Private_GetAnimSet_AnimSet_2)
+  [2369] pop
+  [2370] TrySetSheatheState(2, CallFunc_TrySetSheatheState_Success_8)
+  [2395] pop
+  [2396] TrySetSheatheState(0, CallFunc_TrySetSheatheState_Success_7)
+  [2421] pop
+  [2422] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot)
+  [2445] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot) pop
+  [2455] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_CustomEvent_State, 0)
+  [2486] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @582
+  [2500] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_CustomEvent_State, 2)
+  [2531] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @1082
+  [2545] pop
+  [2546] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_1)
+  [2569] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_1) pop
+  [2579] push @2829
+  [2584] push @3089
+  [2589] K2Node_DynamicCast_AsArchon_Anim_Instance = cast<ArchonAnimInstance>(self.AnimInstance)
+  [2625] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Anim_Instance)
+  [2654] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [2664] CallFunc_IsNotifyActive_ReturnValue = K2Node_DynamicCast_AsArchon_Anim_Instance.IsNotifyActive('set_weapon_sheathe_state', CallFunc_IsNotifyActive_OutNotify)
+  [2728] if !(CallFunc_IsNotifyActive_ReturnValue) pop
+  [2738] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 0)
+  [2769] if !(K2Node_SwitchEnum_CmpSuccess) goto @2320
+  [2783] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 2)
+  [2814] if !(K2Node_SwitchEnum_CmpSuccess) goto @2294
+  [2828] pop
+  [2829] K2Node_DynamicCast_AsArchon_Anim_Instance_2 = cast<ArchonAnimInstance>(self.AnimInstance)
+  [2865] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Anim_Instance_2)
+  [2894] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [2904] CallFunc_IsNotifyActive_ReturnValue_2 = K2Node_DynamicCast_AsArchon_Anim_Instance_2.IsNotifyActive('CanAttack', CallFunc_IsNotifyActive_OutNotify_2)
+  [2968] if !(CallFunc_IsNotifyActive_ReturnValue_2) pop
+  [2978] K2Node_SwitchEnum_CmpSuccess_7 = NotEqual_ByteByte(self.SheatheState, 0)
+  [3009] if !(K2Node_SwitchEnum_CmpSuccess_7) goto @3069
+  [3023] K2Node_SwitchEnum_CmpSuccess_7 = NotEqual_ByteByte(self.SheatheState, 3)
+  [3054] if !(K2Node_SwitchEnum_CmpSuccess_7) goto @3069
+  [3068] pop
+  [3069] OnCanAttack__DelegateSignature()
+  [3088] pop
+  [3089] K2Node_DynamicCast_AsArchon_Anim_Instance_1 = cast<ArchonAnimInstance>(self.AnimInstance)
+  [3125] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Anim_Instance_1)
+  [3154] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [3164] CallFunc_IsNotifyActive_ReturnValue_1 = K2Node_DynamicCast_AsArchon_Anim_Instance_1.IsNotifyActive('Unsheathe_Weapon', CallFunc_IsNotifyActive_OutNotify_1)
+  [3228] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(self.Character)
+  [3257] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'Combat.LegendaryAbilityActive'})
+  [3331] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [3360] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsNotifyActive_ReturnValue_1, CallFunc_Not_PreBool_ReturnValue_1)
+  [3398] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [3408] K2Node_SwitchEnum_CmpSuccess_3 = NotEqual_ByteByte(self.SheatheState, 0)
+  [3439] if !(K2Node_SwitchEnum_CmpSuccess_3) goto @2268
+  [3453] K2Node_SwitchEnum_CmpSuccess_3 = NotEqual_ByteByte(self.SheatheState, 3)
+  [3484] if !(K2Node_SwitchEnum_CmpSuccess_3) goto @2268
+  [3498] pop
+  [3499] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_2)
+  [3522] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_2) pop
+  [3532] Private_CanPerformSheathe(CallFunc_Private_CanPerformSheathe_Result)
+  [3555] if !(CallFunc_Private_CanPerformSheathe_Result) pop
+  [3565] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 1)
+  [3596] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @3682
+  [3610] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 3)
+  [3641] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @3656
+  [3655] pop
+  [3656] TrySetSheatheState(0, CallFunc_TrySetSheatheState_Success_10)
+  [3681] pop
+  [3682] TrySetSheatheState(2, CallFunc_TrySetSheatheState_Success_9)
+  [3707] pop
+  [3708] IsLocalPlayerOrBot(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_4)
+  [3731] if !(CallFunc_IsLocalPlayerOrBot_IsLocalPlayerOrBot_4) goto @3746
+  [3745] pop
+  [3746] OnUnSheatheWeaponAnimEnd__DelegateSignature(K2Node_CustomEvent_Success_1)
+  [3774] pop
+  [3775] MulticastOnUnSheatheWeaponAnimEnd(K2Node_CustomEvent_Success)
+  [3798] pop
+  [3799] goto @2422
+  [3804] EX_ClearMulticastDelegate(DelegateToClear=self.OnSheatheWeaponAnimEnd)
+  [3814] EX_ClearMulticastDelegate(DelegateToClear=self.OnCanAttack)
+  [3824] if !(K2Node_CustomEvent_PlayAnim) goto @2190
+  [3838] goto @2164
+  [3843] EX_ClearMulticastDelegate(DelegateToClear=self.OnSheatheWeaponAnimEnd)
+  [3853] EX_ClearMulticastDelegate(DelegateToClear=self.OnCanAttack)
+  [3863] if !(K2Node_CustomEvent_PlayAnim_1) goto @2242
+  [3877] goto @2216
+  [3882] DebugInfo(false)
+  [3897] goto @2546
+  [3902] K2Node_CreateDelegate_OutputDelegate = bind(self.OnAnimInstanceChanged)
+  [3925] K2Node_CreateDelegate_OutputDelegate += None
+  [3988] pop
+  [3989] EX_ClearMulticastDelegate(DelegateToClear=self.OnSheatheWeaponAnimEnd)
+  [3999] EX_ClearMulticastDelegate(DelegateToClear=self.OnCanAttack)
+  [4009] goto @3499
+  [4014] goto @3882
+  [4019] EX_ClearMulticastDelegate(DelegateToClear=self.OnSheatheWeaponAnimEnd)
+  [4029] EX_ClearMulticastDelegate(DelegateToClear=self.OnCanAttack)
+  [4039] if !(K2Node_CustomEvent_Unarmed) goto @4079
+  [4053] TrySetSheatheState(4, CallFunc_TrySetSheatheState_Success_15)
+  [4078] pop
+  [4079] TrySetSheatheState(3, CallFunc_TrySetSheatheState_Success_16)
+  [4104] pop
+  [4105] goto @2346
+  [4110] push @4120
+  [4115] goto @3902
+  [4120] CallFunc_GetController_ReturnValue = self.Character.GetController()
+  [4162] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [4198] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [4227] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [4237] CallFunc_RegisterInputListener_Listener_CastInput = cast<ArchonInputListener>(self)
+  [4265] K2Node_DynamicCast_AsArchon_Player_Controller.RegisterInputListener(CallFunc_RegisterInputListener_Listener_CastInput)
+  [4306] pop
+  [4307] CallFunc_GetController_ReturnValue_1 = self.Character.GetController()
+  [4349] K2Node_DynamicCast_AsArchon_Player_Controller_1 = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue_1)
+  [4385] K2Node_DynamicCast_bSuccess_7 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller_1)
+  [4414] if !(K2Node_DynamicCast_bSuccess_7) pop
+  [4424] CallFunc_UnregisterInputListener_Listener_CastInput = cast<ArchonInputListener>(self)
+  [4452] K2Node_DynamicCast_AsArchon_Player_Controller_1.UnregisterInputListener(CallFunc_UnregisterInputListener_Listener_CastInput)
+  [4493] pop
+  [4494] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [4514] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_2)
+  [4550] K2Node_DynamicCast_bSuccess_6 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [4579] if !(K2Node_DynamicCast_bSuccess_6) pop
+  [4589] self.Character = K2Node_DynamicCast_AsArchon_Character
+  [4608] goto @4110
+  [4613] goto @4494
+  [4618] goto @3989
+  [4623] pop
+  [4624] return nothing
+  [4626] end
+
+=== GetResponseToInput
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, SubWeaponsFeature, true)
+  [31] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @127
+  [45] CallFunc_GetResponseToInput_SubWeapons_ReturnValue = GetResponseToInput_SubWeapons(Input, InputEvent)
+  [95] ReturnValue = CallFunc_GetResponseToInput_SubWeapons_ReturnValue
+  [122] goto @1147
+  [127] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(InputEvent, 0)
+  [158] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @402
+  [172] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 0)
+  [203] if !(K2Node_SwitchEnum_CmpSuccess) goto @427
+  [217] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 1)
+  [248] if !(K2Node_SwitchEnum_CmpSuccess) goto @452
+  [262] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 2)
+  [293] if !(K2Node_SwitchEnum_CmpSuccess) goto @427
+  [307] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 3)
+  [338] if !(K2Node_SwitchEnum_CmpSuccess) goto @975
+  [352] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 4)
+  [383] if !(K2Node_SwitchEnum_CmpSuccess) goto @427
+  [397] goto @1147
+  [402] ReturnValue = 0
+  [422] goto @1147
+  [427] ReturnValue = 0
+  [447] goto @1147
+  [452] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Attack')
+  [494] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [508] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Attack')
+  [550] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [564] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Attack')
+  [606] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [620] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Shoot')
+  [662] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [676] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Shoot')
+  [718] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [732] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Shoot')
+  [774] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [788] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Special Action')
+  [830] if !(K2Node_SwitchName_CmpSuccess) goto @950
+  [844] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'ToggleSheathe')
+  [886] if !(K2Node_SwitchName_CmpSuccess) goto @925
+  [900] ReturnValue = 0
+  [920] goto @1147
+  [925] ReturnValue = 2
+  [945] goto @1147
+  [950] ReturnValue = 1
+  [970] goto @1147
+  [975] Temp_byte_Variable = 0
+  [995] Temp_byte_Variable_1 = 2
+  [1015] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(Input, 'ToggleSheathe')
+  [1057] Temp_bool_Variable = CallFunc_EqualEqual_NameName_ReturnValue
+  [1076] ReturnValue = switch(Temp_bool_Variable){false: Temp_byte_Variable, true: Temp_byte_Variable_1, default: K2Node_Select_Default}
+  [1147] return ReturnValue
+  [1157] end
+
+=== GetResponseToInput_SubWeapons
+  [0] push @870
+  [5] NextValidWeaponSlot = 0
+  [25] push @121
+  [30] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 1)
+  [61] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @146
+  [75] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 3)
+  [106] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @747
+  [120] pop
+  [121] ReturnValue = 0
+  [141] goto @870
+  [146] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(InputEvent, 0)
+  [177] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @192
+  [191] pop
+  [192] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Attack')
+  [234] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [248] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Attack')
+  [290] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [304] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Attack')
+  [346] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [360] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Shoot')
+  [402] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [416] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Shoot')
+  [458] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [472] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Shoot')
+  [514] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [528] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Special Action')
+  [570] if !(K2Node_SwitchName_CmpSuccess) goto @722
+  [584] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'ToggleSheathe')
+  [626] if !(K2Node_SwitchName_CmpSuccess) goto @697
+  [640] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Weapon Swap')
+  [682] if !(K2Node_SwitchName_CmpSuccess) goto @697
+  [696] pop
+  [697] ReturnValue = 2
+  [717] goto @870
+  [722] ReturnValue = 1
+  [742] goto @870
+  [747] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'ToggleSheathe')
+  [789] if !(K2Node_SwitchName_CmpSuccess_1) goto @804
+  [803] pop
+  [804] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(InputEvent, 0)
+  [835] if !(K2Node_SwitchEnum_CmpSuccess) goto @850
+  [849] pop
+  [850] ReturnValue = 2
+  [870] return ReturnValue
+  [880] end
+
+=== GetWeaponSheatheState
+  [0] SheatheState = self.SheatheState
+  [27] return nothing
+  [29] end
+
+=== IsLocalPlayerOrBot
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [85] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [127] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [163] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [192] if !(K2Node_DynamicCast_bSuccess_1) goto @279
+  [206] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [226] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_1)
+  [255] IsLocalPlayerOrBot = CallFunc_IsLocalCharacter_ReturnValue
+  [274] goto @319
+  [279] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [300] IsLocalPlayerOrBot = CallFunc_IsServer_ReturnValue
+  [319] return nothing
+  [321] end
+
+=== IsMontageRelevantToCurrentSheathing
+  [0] Private_GetAnimSet(CallFunc_Private_GetAnimSet_AnimSet)
+  [23] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(self.SheatheState, 1)
+  [54] CallFunc_EqualEqual_ObjectObject_ReturnValue_1 = EqualEqual_ObjectObject(Montage, CallFunc_Private_GetAnimSet_AnimSet.sheathe)
+  [101] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(self.SheatheState, 0)
+  [132] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_3, CallFunc_EqualEqual_ByteByte_ReturnValue_2)
+  [170] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_EqualEqual_ObjectObject_ReturnValue_1, CallFunc_BooleanOR_ReturnValue_1)
+  [208] if !(CallFunc_BooleanAND_ReturnValue_1) goto @249
+  [222] IsRelevant = true
+  [233] IsSheathing = true
+  [244] goto @497
+  [249] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.SheatheState, 3)
+  [280] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.SheatheState, 2)
+  [311] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [349] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_Private_GetAnimSet_AnimSet.unsheathe, Montage)
+  [396] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ObjectObject_ReturnValue, CallFunc_BooleanOR_ReturnValue)
+  [434] if !(CallFunc_BooleanAND_ReturnValue) goto @475
+  [448] IsRelevant = true
+  [459] IsSheathing = false
+  [470] goto @497
+  [475] IsRelevant = false
+  [486] IsSheathing = false
+  [497] return nothing
+  [499] end
+
+=== IsUnequipped
+  [0] push @533
+  [5] CallFunc_GetItemId_ReturnValue = Weapon.GetItemId()
+  [55] Default__progression_function_library_C.GetWeaponGameplayCatalogRowData(CallFunc_GetItemId_ReturnValue, self, CallFunc_GetWeaponGameplayCatalogRowData_CatalogRowData)
+  [110] Temp_int_Loop_Counter_Variable = 0
+  [133] Temp_int_Array_Index_Variable = 0
+  [156] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetWeaponGameplayCatalogRowData_CatalogRowData.Tags)
+  [224] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [262] if !(CallFunc_Less_IntInt_ReturnValue) goto @443
+  [276] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [303] push @459
+  [308] Default__KismetArrayLibrary.Array_Get(CallFunc_GetWeaponGameplayCatalogRowData_CatalogRowData.Tags, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [376] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(CallFunc_Array_Get_Item, 'unequipped')
+  [417] if !(CallFunc_EqualEqual_StriStri_ReturnValue) pop
+  [427] Unequipped = true
+  [438] goto @533
+  [443] Unequipped = false
+  [454] goto @533
+  [459] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [501] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [528] goto @156
+  [533] return nothing
+  [535] end
+
+=== LocalSetSheatheState
+  [0] L_PreviousState = self.SheatheState
+  [27] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(NewState, self.SheatheState)
+  [65] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @232
+  [79] self.SheatheState = NewState
+  [106] MarkPropertyDirtyFromRepIndex(self, 2, 'SheatheState')
+  [135] OnRep_SheatheState()
+  [149] Server_UpdateSheatheStatus(self.SheatheState)
+  [172] OnSheatheStateChanged__DelegateSignature(L_PreviousState, self.SheatheState)
+  [209] OnSheathStateBegin_Event(self.SheatheState)
+  [232] return nothing
+  [234] end
+
+=== MulticastOnSheatheWeaponAnimEnd
+  [0] frame.K2Node_CustomEvent_Success_3 = Success
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(2073)
+  [33] return nothing
+  [35] end
+
+=== MulticastOnUnSheatheWeaponAnimEnd
+  [0] frame.K2Node_CustomEvent_Success_1 = Success
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(3708)
+  [33] return nothing
+  [35] end
+
+=== OnAnimInstanceChanged
+  [0] frame.K2Node_CustomEvent_NewAnimInstance = NewAnimInstance
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(4105)
+  [33] return nothing
+  [35] end
+
+=== OnCanAttack__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnMontageBlendingOut_Event_0
+  [0] frame.K2Node_CustomEvent_Montage = Montage
+  [18] frame.K2Node_CustomEvent_bInterrupted = bInterrupted
+  [36] ExecuteUbergraph_weapon_sheathe_bpc(1170)
+  [51] return nothing
+  [53] end
+
+=== OnRep_SheatheState
+  [0] OnSheathWeaponAnimChange__DelegateSignature(self.SheatheState)
+  [28] return nothing
+  [30] end
+
+=== OnSheathStateBegin_Event
+  [0] frame.K2Node_CustomEvent_State = State
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(3799)
+  [33] return nothing
+  [35] end
+
+=== OnSheathWeaponAnimChange__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnSheatheStateChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnSheatheWeaponAnimEnd__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnUnSheatheWeaponAnimEnd__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== Private_CanPerformSheathe
+  [0] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.Character)
+  [36] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [65] if !(K2Node_DynamicCast_bSuccess_1) goto @666
+  [79] K2Node_DynamicCast_AsPlayer_Interface.IsInCity(CallFunc_IsInCity_IsInCity)
+  [125] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(self.Character)
+  [161] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [190] if !(K2Node_DynamicCast_bSuccess) goto @682
+  [204] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetCurrentActiveWeapon(CallFunc_GetCurrentActiveWeapon_CurrentWeapon)
+  [250] IsUnequipped(CallFunc_GetCurrentActiveWeapon_CurrentWeapon, CallFunc_IsUnequipped_Unequipped)
+  [282] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Character)
+  [311] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Combat.Axe.IsThrown'})
+  [385] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [414] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_IsUnequipped_Unequipped)
+  [443] CallFunc_CanPerformAction_ReturnValue = Default__archon_function_library_C.CanPerformAction(self.Character, self)
+  [499] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_IsInCity_IsInCity)
+  [528] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue_1, CallFunc_Not_PreBool_ReturnValue_2)
+  [566] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_CanPerformAction_ReturnValue)
+  [604] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_Not_PreBool_ReturnValue)
+  [642] Result = CallFunc_BooleanAND_ReturnValue_2
+  [661] goto @698
+  [666] Result = false
+  [677] goto @698
+  [682] CallFunc_GetCurrentActiveWeapon_CurrentWeapon = null
+  [693] goto @250
+  [698] return nothing
+  [700] end
+
+=== Private_GetAnimSet
+  [0] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.Character)
+  [36] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [65] if !(K2Node_DynamicCast_bSuccess_1) goto @514
+  [79] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [125] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp.GetAnimInstance()
+  [167] self.AnimInstance = CallFunc_GetAnimInstance_ReturnValue
+  [186] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(self.Character)
+  [222] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [251] if !(K2Node_DynamicCast_bSuccess_2) goto @530
+  [265] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [311] self.Weapon = CallFunc_GetOwnedWeapon_Weapon
+  [330] K2Node_DynamicCast_AsBPI_Player_Animdata = cast<BPI_player_animdata_C>(self.Weapon)
+  [366] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Player_Animdata)
+  [395] if !(K2Node_DynamicCast_bSuccess) goto @546
+  [409] K2Node_DynamicCast_AsBPI_Player_Animdata.GetActionsAnimset(CallFunc_GetActionsAnimset_ActionsAnimset)
+  [455] self.Animset = CallFunc_GetActionsAnimset_ActionsAnimset
+  [482] AnimSet = self.Animset
+  [509] goto @588
+  [514] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [525] goto @125
+  [530] CallFunc_GetOwnedWeapon_Weapon = null
+  [541] goto @311
+  [546] CallFunc_GetActionsAnimset_ActionsAnimset = actions_animset_str{null, null, null, null, null}
+  [583] goto @455
+  [588] return nothing
+  [590] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_weapon_sheathe_bpc(4613)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(4307)
+  [33] return nothing
+  [35] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(4014)
+  [33] return nothing
+  [35] end
+
+=== ServerSheatheWeapon
+  [0] ExecuteUbergraph_weapon_sheathe_bpc(2396)
+  [15] return nothing
+  [17] end
+
+=== ServerUnSheatheWeapon
+  [0] ExecuteUbergraph_weapon_sheathe_bpc(2370)
+  [15] return nothing
+  [17] end
+
+=== Server_CallOnSheatheWeaponEnd
+  [0] frame.K2Node_CustomEvent_Success_2 = Success
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(2140)
+  [33] return nothing
+  [35] end
+
+=== Server_CallOnUnSheatheWeaponEnd
+  [0] frame.K2Node_CustomEvent_Success = Success
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(3775)
+  [33] return nothing
+  [35] end
+
+=== Server_UpdateSheatheStatus
+  [0] frame.K2Node_CustomEvent_ClientSheatheState = ClientSheatheState
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(1138)
+  [33] return nothing
+  [35] end
+
+=== SetSheatheWeapon
+  [0] frame.K2Node_CustomEvent_PlayAnim = PlayAnim
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(3804)
+  [33] return nothing
+  [35] end
+
+=== SetUnSheatheWeapon
+  [0] frame.K2Node_CustomEvent_PlayAnim_1 = PlayAnim
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(3843)
+  [33] return nothing
+  [35] end
+
+=== SetUnarmed
+  [0] frame.K2Node_CustomEvent_Unarmed = Unarmed
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(4019)
+  [33] return nothing
+  [35] end
+
+=== ShouldConsumeCurrentHeldInput
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end
+
+=== SwitchToNextWeaponSlot
+  [0] CallFunc_IsValid_ReturnValue_2 = IsValid(self.Character)
+  [29] if !(CallFunc_IsValid_ReturnValue_2) goto @1267
+  [43] CallFunc_GetCurrentWeaponSlot_ReturnValue = self.Character.GetCurrentWeaponSlot()
+  [93] CallFunc_GetNextValidWeaponSlot_ReturnValue = self.Character.GetNextValidWeaponSlot(CallFunc_GetCurrentWeaponSlot_ReturnValue)
+  [152] NextValidWeaponSlot = CallFunc_GetNextValidWeaponSlot_ReturnValue
+  [179] CallFunc_GetWeaponBySlot_ReturnValue = self.Character.GetWeaponBySlot(NextValidWeaponSlot)
+  [230] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetWeaponBySlot_ReturnValue)
+  [259] if !(CallFunc_IsValid_ReturnValue_1) goto @1267
+  [273] CallFunc_GetWeaponBySlot_ReturnValue = self.Character.GetWeaponBySlot(NextValidWeaponSlot)
+  [324] K2Node_DynamicCast_AsBP_Base_Archon_Weapon = cast<BP_BaseArchonWeapon_C>(CallFunc_GetWeaponBySlot_ReturnValue)
+  [360] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Base_Archon_Weapon)
+  [389] K2Node_DynamicCast_AsBP_Base_Archon_Weapon.CanWeaponSwap(CallFunc_CanWeaponSwap_CanSwap)
+  [434] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Character)
+  [463] CallFunc_GetCurrentWeaponSlot_ReturnValue = self.Character.GetCurrentWeaponSlot()
+  [513] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Combat.Axe.IsThrown'})
+  [587] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(NextValidWeaponSlot, CallFunc_GetCurrentWeaponSlot_ReturnValue)
+  [625] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [654] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_CanWeaponSwap_CanSwap, CallFunc_NotEqual_ByteByte_ReturnValue)
+  [692] CallFunc_GetWeaponBySlot_ReturnValue_1 = self.Character.GetWeaponBySlot(CallFunc_GetCurrentWeaponSlot_ReturnValue)
+  [743] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [781] K2Node_DynamicCast_AsBP_Base_Archon_Weapon_1 = cast<BP_BaseArchonWeapon_C>(CallFunc_GetWeaponBySlot_ReturnValue_1)
+  [817] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Base_Archon_Weapon_1)
+  [846] K2Node_DynamicCast_AsBP_Base_Archon_Weapon_1.CanWeaponSwap(CallFunc_CanWeaponSwap_CanSwap_1)
+  [891] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_CanWeaponSwap_CanSwap_1)
+  [929] if !(CallFunc_BooleanAND_ReturnValue_2) goto @1267
+  [943] CallFunc_GetComponentByClass_ReturnValue = self.Character.GetComponentByClass(ArchonGlidingComponent)
+  [994] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [1023] if !(CallFunc_IsValid_ReturnValue) goto @1183
+  [1037] CallFunc_GetComponentByClass_ReturnValue = self.Character.GetComponentByClass(ArchonGlidingComponent)
+  [1088] CallFunc_GetCurrentGlidingState_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetCurrentGlidingState()
+  [1138] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCurrentGlidingState_ReturnValue, 0)
+  [1169] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @1267
+  [1183] CallFunc_SwitchToWeaponSlot_ReturnValue = self.Character.SwitchToWeaponSlot(NextValidWeaponSlot, Animated)
+  [1243] SwapPerformed = CallFunc_SwitchToWeaponSlot_ReturnValue
+  [1262] goto @1278
+  [1267] SwapPerformed = false
+  [1278] return nothing
+  [1280] end
+
+=== ToggleSheatheWeapon
+  [0] ExecuteUbergraph_weapon_sheathe_bpc(4618)
+  [15] return nothing
+  [17] end
+
+=== TryHandleInput
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, SubWeaponsFeature, true)
+  [31] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @111
+  [45] CallFunc_TryHandleInput_SubWeapons_ReturnValue = TryHandleInput_SubWeapons(Input, InputEvent)
+  [87] ReturnValue = CallFunc_TryHandleInput_SubWeapons_ReturnValue
+  [106] goto @1011
+  [111] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(InputEvent, 0)
+  [142] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @386
+  [156] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 0)
+  [187] if !(K2Node_SwitchEnum_CmpSuccess) goto @402
+  [201] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 1)
+  [232] if !(K2Node_SwitchEnum_CmpSuccess) goto @418
+  [246] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 2)
+  [277] if !(K2Node_SwitchEnum_CmpSuccess) goto @402
+  [291] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 3)
+  [322] if !(K2Node_SwitchEnum_CmpSuccess) goto @913
+  [336] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SheatheState, 4)
+  [367] if !(K2Node_SwitchEnum_CmpSuccess) goto @402
+  [381] goto @1011
+  [386] ReturnValue = false
+  [397] goto @1011
+  [402] ReturnValue = false
+  [413] goto @1011
+  [418] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Attack')
+  [460] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [474] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Attack')
+  [516] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [530] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Attack')
+  [572] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [586] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Primary Shoot')
+  [628] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [642] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Secondary Shoot')
+  [684] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [698] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Tertiary Shoot')
+  [740] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [754] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'Special Action')
+  [796] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [810] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'ToggleSheathe')
+  [852] if !(K2Node_SwitchName_CmpSuccess) goto @882
+  [866] ReturnValue = false
+  [877] goto @1011
+  [882] SetUnSheatheWeapon(true)
+  [897] ReturnValue = true
+  [908] goto @1011
+  [913] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(Input, 'ToggleSheathe')
+  [955] if !(CallFunc_EqualEqual_NameName_ReturnValue) goto @1000
+  [969] SetSheatheWeapon(true)
+  [984] ReturnValue = true
+  [995] goto @1011
+  [1000] ReturnValue = false
+  [1011] return ReturnValue
+  [1021] end
+
+=== TryHandleInput_SubWeapons
+  [0] push @913
+  [5] NextValidWeaponSlot = 0
+  [25] EquipWeaponAnimated = true
+  [36] push @132
+  [41] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 1)
+  [72] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @148
+  [86] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.SheatheState, 3)
+  [117] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @784
+  [131] pop
+  [132] ReturnValue = false
+  [143] goto @913
+  [148] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(InputEvent, 0)
+  [179] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @194
+  [193] pop
+  [194] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Primary Attack')
+  [236] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [250] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Secondary Attack')
+  [292] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [306] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Tertiary Attack')
+  [348] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [362] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Primary Shoot')
+  [404] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [418] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Secondary Shoot')
+  [460] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [474] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Tertiary Shoot')
+  [516] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [530] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Special Action')
+  [572] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [586] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'ToggleSheathe')
+  [628] if !(K2Node_SwitchName_CmpSuccess_1) goto @753
+  [642] K2Node_SwitchName_CmpSuccess_1 = NotEqual_NameName(Input, 'Weapon Swap')
+  [684] if !(K2Node_SwitchName_CmpSuccess_1) goto @699
+  [698] pop
+  [699] SwitchToNextWeaponSlot(false, CallFunc_SwitchToNextWeaponSlot_SwapPerformed)
+  [723] if !(CallFunc_SwitchToNextWeaponSlot_SwapPerformed) goto @753
+  [737] ReturnValue = true
+  [748] goto @913
+  [753] SetUnSheatheWeapon(true)
+  [768] ReturnValue = true
+  [779] goto @913
+  [784] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(Input, 'ToggleSheathe')
+  [826] if !(K2Node_SwitchName_CmpSuccess) goto @841
+  [840] pop
+  [841] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(InputEvent, 0)
+  [872] if !(K2Node_SwitchEnum_CmpSuccess) goto @887
+  [886] pop
+  [887] SetSheatheWeapon(true)
+  [902] ReturnValue = true
+  [913] return ReturnValue
+  [923] end
+
+=== TrySetSheatheState
+  [0] EX_ClearMulticastDelegate(DelegateToClear=self.OnUnSheatheWeaponAnimEnd)
+  [10] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(SheathState, 4)
+  [41] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.ForcedSheatheState)
+  [70] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(SheathState, 3)
+  [101] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(SheathState, 1)
+  [132] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_2, CallFunc_EqualEqual_ByteByte_ReturnValue_1)
+  [170] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [208] Private_CanPerformSheathe(CallFunc_Private_CanPerformSheathe_Result)
+  [231] CallFunc_BooleanOR_ReturnValue_2 = BooleanOR(CallFunc_BooleanOR_ReturnValue_1, CallFunc_Private_CanPerformSheathe_Result)
+  [269] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_BooleanOR_ReturnValue_2)
+  [307] if !(CallFunc_BooleanAND_ReturnValue) goto @360
+  [321] LocalSetSheatheState(SheathState)
+  [344] Success = true
+  [355] goto @371
+  [360] Success = false
+  [371] return nothing
+  [373] end
+
+=== UpdateSpecialCaseSignificanceManagement
+  [0] frame.K2Node_Event_NewSignificance = NewSignificance
+  [18] ExecuteUbergraph_weapon_sheathe_bpc(4623)
+  [33] return nothing
+  [35] end
+
+=== UsesSpecialCaseSignificanceManagement
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

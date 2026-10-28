@@ -1,0 +1,140 @@
+# w_npc_interact_redeem_quest_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CheckQuestRedeem
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1613)
+  [15] return nothing
+  [17] end
+
+=== CheckQuestRedeemTimeout
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1732)
+  [15] return nothing
+  [17] end
+
+=== CloseMenu
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(945)
+  [15] return nothing
+  [17] end
+
+=== Construct
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1727)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_w_npc_interact_redeem_quest_bpw
+  [0] goto computed(EntryPoint)
+  [10] K2Node_CreateDelegate_OutputDelegate = bind(self.CheckQuestRedeemTimeout)
+  [33] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 2.0, false, 0.0, 0.0)
+  [86] self.QuestRedeemCheckTimeout = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [113] goto @1746
+  [118] self.QuestInfo.PopulateQuestInfo(self.Quest)
+  [163] goto @1746
+  [168] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [192] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, w_npc_interact_choice_bpw_C, CallFunc_GetOwningPlayer_ReturnValue)
+  [253] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'Vendor', self.Vendor)
+  [294] Default__UserWidgetFunctions_C.Get Screen Layer(self, CallFunc_Get_Screen_Layer_ZOrder)
+  [340] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder)
+  [385] RemoveFromParent()
+  [399] goto @1746
+  [404] CallFunc_GetEventsFor_ReturnValue = self.Quest.GetEventsFor(self.NPCIdentity, 2, true)
+  [466] self.RedeemEvents = CallFunc_GetEventsFor_ReturnValue
+  [493] self.ButtonLegend.ShowWaitingSpinner(true)
+  [526] CallFunc_GetOwningPlayer_ReturnValue_2 = GetOwningPlayer()
+  [550] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwningPlayer_ReturnValue_2)
+  [586] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [615] CallFunc_RedeemQuestFor_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.RedeemQuestFor(self.Quest, self.NPCIdentity)
+  [697] if !(CallFunc_RedeemQuestFor_ReturnValue) goto @819
+  [711] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.CheckQuestRedeem)
+  [734] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 0.1, true, 0.0, 0.0)
+  [787] self.QuestRedeemCheckTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [814] goto @10
+  [819] SkipBackToChoice()
+  [833] goto @1746
+  [838] CallFunc_GetOwningPlayer_ReturnValue_1 = GetOwningPlayer()
+  [862] Default__npc_interaction_helpers_C.NPCHas Quest Actions(CallFunc_GetOwningPlayer_ReturnValue_1, self.Vendor, self, CallFunc_NPCHas_Quest_Actions_HasQuestActions)
+  [926] if !(CallFunc_NPCHas_Quest_Actions_HasQuestActions) goto @385
+  [940] goto @168
+  [945] K2_ClearAndInvalidateTimerHandle(self, self.QuestRedeemCheckTimer)
+  [965] K2_ClearAndInvalidateTimerHandle(self, self.QuestRedeemCheckTimeout)
+  [985] CallFunc_GetOwningPlayer_ReturnValue_4 = GetOwningPlayer()
+  [1009] Default__npc_interaction_helpers_C.TryHandleUserAttributeEvent(self.RedeemEvents, CallFunc_GetOwningPlayer_ReturnValue_4, self, CallFunc_TryHandleUserAttributeEvent_Handled)
+  [1073] CallFunc_GetOwningPlayer_ReturnValue_3 = GetOwningPlayer()
+  [1097] Default__npc_interaction_helpers_C.TryHandleWidgetEvent(self.Quest, self.RedeemEvents, CallFunc_GetOwningPlayer_ReturnValue_3, self.Vendor, self, CallFunc_TryHandleWidgetEvent_Handled, CallFunc_TryHandleWidgetEvent_bKeepDialogOpen)
+  [1188] if !(CallFunc_TryHandleWidgetEvent_Handled) goto @838
+  [1202] if !(CallFunc_TryHandleWidgetEvent_bKeepDialogOpen) goto @385
+  [1216] SkipBackToChoice()
+  [1230] goto @1746
+  [1235] self.NPCIdentity = self.Vendor.self.SpeakerSettings.self.AssociatedSpeaker
+  [1298] goto @118
+  [1303] self.RedeemInFlight = true
+  [1314] goto @404
+  [1319] if !(self.RedeemInFlight) goto @1303
+  [1333] goto @1746
+  [1338] goto @168
+  [1343] CallFunc_GetOwningPlayer_ReturnValue_5 = GetOwningPlayer()
+  [1367] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(self, popup_quest_complete_bpw_C, CallFunc_GetOwningPlayer_ReturnValue_5)
+  [1428] SetObjectPropertyByName(CallFunc_Create_ReturnValue_1, 'CompletedQuest', self.Quest)
+  [1469] CallFunc_GetScreenLayer_ReturnValue = GetScreenLayer()
+  [1497] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_GetScreenLayer_ReturnValue, 1)
+  [1539] CallFunc_Create_ReturnValue_1.AddToViewport(CallFunc_Add_IntInt_ReturnValue)
+  [1584] CloseMenu()
+  [1598] goto @1746
+  [1603] goto @1319
+  [1608] goto @1343
+  [1613] CallFunc_GetStatus_ReturnValue = self.Quest.GetStatus()
+  [1663] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetStatus_ReturnValue, 3)
+  [1694] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @1746
+  [1708] ShowQuestComplete()
+  [1722] goto @1746
+  [1727] goto @1235
+  [1732] ShowQuestComplete()
+  [1746] return nothing
+  [1748] end
+
+=== GetDefaultFocusedWidget
+  [0] ReturnValue = self
+  [11] return ReturnValue
+  [21] end
+
+=== OnKeyDown
+  [0] CallFunc_GetInputEventFromKeyEvent_ReturnValue = GetInputEventFromKeyEvent(InKeyEvent)
+  [37] CallFunc_InputEvent_IsRepeat_ReturnValue = InputEvent_IsRepeat(CallFunc_GetInputEventFromKeyEvent_ReturnValue)
+  [66] if !(CallFunc_InputEvent_IsRepeat_ReturnValue) goto @140
+  [80] CallFunc_Handled_ReturnValue = Handled()
+  [108] ReturnValue = CallFunc_Handled_ReturnValue
+  [135] goto @839
+  [140] CallFunc_GetKey_ReturnValue = GetKey(InKeyEvent)
+  [177] CallFunc_EqualEqual_KeyKey_ReturnValue_2 = EqualEqual_KeyKey(CallFunc_GetKey_ReturnValue, Key{'Enter'})
+  [233] CallFunc_EqualEqual_KeyKey_ReturnValue_3 = EqualEqual_KeyKey(CallFunc_GetKey_ReturnValue, Key{'Gamepad_FaceButton_Bottom'})
+  [289] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_EqualEqual_KeyKey_ReturnValue_3, CallFunc_EqualEqual_KeyKey_ReturnValue_2)
+  [327] if !(CallFunc_BooleanOR_ReturnValue_1) goto @524
+  [341] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [367] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_ui_generic_choose_medium, CallFunc_GetPlayerController_ReturnValue, 0, Temp_delegate_Variable, false)
+  [450] RedeemQuest()
+  [464] CallFunc_Handled_ReturnValue_1 = Handled()
+  [492] ReturnValue = CallFunc_Handled_ReturnValue_1
+  [519] goto @839
+  [524] CallFunc_GetKey_ReturnValue = GetKey(InKeyEvent)
+  [561] CallFunc_EqualEqual_KeyKey_ReturnValue = EqualEqual_KeyKey(CallFunc_GetKey_ReturnValue, Key{'Escape'})
+  [617] CallFunc_EqualEqual_KeyKey_ReturnValue_1 = EqualEqual_KeyKey(CallFunc_GetKey_ReturnValue, Key{'Gamepad_FaceButton_Right'})
+  [673] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_KeyKey_ReturnValue_1, CallFunc_EqualEqual_KeyKey_ReturnValue)
+  [711] if !(CallFunc_BooleanOR_ReturnValue) goto @80
+  [725] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [751] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_ui_generic_back_small, CallFunc_GetPlayerController_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [834] goto @80
+  [839] return ReturnValue
+  [849] end
+
+=== RedeemQuest
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1603)
+  [15] return nothing
+  [17] end
+
+=== ShowQuestComplete
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1608)
+  [15] return nothing
+  [17] end
+
+=== SkipBackToChoice
+  [0] ExecuteUbergraph_w_npc_interact_redeem_quest_bpw(1338)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,1673 @@
+{
+ "name": "dp_exotic_bombs_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "dp_base_part_bpc_C",
+  "weapon_part_base_bpc_C",
+  "ArchonEquipmentPart",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 3536,
+ "sdk_header": "dp_exotic_bombs_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "InBombState",
+   "type": "bool",
+   "offset": "0xB80",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_InBombState",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "BoolProperty",
+   "rep_index": 4,
+   "schema_rep_index": 4
+  },
+  {
+   "name": "BombStateVFX_Right",
+   "type": "UParticleSystemComponent*",
+   "offset": "0xB88",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "AmmoComponent",
+   "type": "Uammo_bpc_C*",
+   "offset": "0xB90",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ammo_bpc_C>"
+  },
+  {
+   "name": "StickyBombRefs",
+   "type": "TArray<Adp_exotic_bombs_stickybomb_bp_C*>",
+   "offset": "0xB98",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "ArrayProperty",
+   "rep_index": 5,
+   "schema_rep_index": 5
+  },
+  {
+   "name": "GlobalBombTimer",
+   "type": "FTimerHandle",
+   "offset": "0xBA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "IsDetonating",
+   "type": "bool",
+   "offset": "0xBB0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "BoolProperty",
+   "rep_index": 6,
+   "schema_rep_index": 6
+  },
+  {
+   "name": "DetonateIndividualBombsTimer",
+   "type": "FTimerHandle",
+   "offset": "0xBB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "L_DetonatingBomb",
+   "type": "Adp_exotic_bombs_stickybomb_bp_C*",
+   "offset": "0xBC0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<dp_exotic_bombs_stickybomb_bp_C>"
+  },
+  {
+   "name": "ConsecutiveBombCount",
+   "type": "int32",
+   "offset": "0xBC8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "DamageScalePerConsecutiveBomb",
+   "type": "double",
+   "offset": "0xBD0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "OriginalMaxAmmoCount",
+   "type": "int32",
+   "offset": "0xBD8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "YCooldownToReduceOnX1PDodge",
+   "type": "double",
+   "offset": "0xBE0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "YCooldownToReduceOnCrit",
+   "type": "double",
+   "offset": "0xBE8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "BombModeSpec",
+   "type": "FActiveGameplayEffectHandle",
+   "offset": "0xBF0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>"
+  },
+  {
+   "name": "L_PreDetonateTime",
+   "type": "double",
+   "offset": "0xBF8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "AKBeepEvent",
+   "type": "UObject*",
+   "offset": "0xC00",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  },
+  {
+   "name": "AlreadyHitActors",
+   "type": "TSet<AActor*>",
+   "offset": "0xC08",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "SetProperty"
+  },
+  {
+   "name": "DamageScale",
+   "type": "double",
+   "offset": "0xC58",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "WeaponGenericEventDispatcher",
+   "type": "Ugeneric_eventdispatcher_bpc_C*",
+   "offset": "0xC60",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<generic_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "L_HitUniqueTarget",
+   "type": "bool",
+   "offset": "0xC68",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CachedAimRequest",
+   "type": "Fplayer_aim_request",
+   "offset": "0xC70",
+   "size": 272,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<player_aim_request>"
+  },
+  {
+   "name": "PdodgeShotsTimer",
+   "type": "FTimerHandle",
+   "offset": "0xD80",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "NumPDodgeShots",
+   "type": "int32",
+   "offset": "0xD88",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "PDodgeShotsRemaining",
+   "type": "int32",
+   "offset": "0xD8C",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "L_Target",
+   "type": "FVector",
+   "offset": "0xD90",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "BombStateVFX_Left",
+   "type": "UParticleSystemComponent*",
+   "offset": "0xDA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "BombModeLockoutHandle",
+   "type": "FActiveGameplayEffectHandle",
+   "offset": "0xDB0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>"
+  },
+  {
+   "name": "BombTimerIconEffectHandle",
+   "type": "FActiveGameplayEffectHandle",
+   "offset": "0xDB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>"
+  },
+  {
+   "name": "MaxBombModeAmmo",
+   "type": "int32",
+   "offset": "0xDC0",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "BombAmmoToLoad",
+   "type": "int32",
+   "offset": "0xDC4",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "BombStateVFX_Right",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  },
+  {
+   "name": "BombStateVFX_Left",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyBombModeLockoutEffect",
+   "flags": [
+    "Private",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Private",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 11,
+   "reads": [
+    "ArchonCharacter",
+    "BombModeLockoutHandle"
+   ],
+   "sets": [
+    "BombModeLockoutHandle"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffect"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass dp_y_ability_lockout_ge_C"
+   ]
+  },
+  {
+   "name": "AuthSetBombMode",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewState",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 58,
+   "reads": [
+    "AbilitySystemComponent",
+    "AlreadyHitActors",
+    "AmmoComponent",
+    "ArchonBuffableComponent",
+    "ArchonCharacter",
+    "ArchonWeapon",
+    "BombAmmoToLoad",
+    "BombModeSpec",
+    "InBombState",
+    "MaxAmmoCount",
+    "MaxBombModeAmmo",
+    "OriginalMaxAmmoCount"
+   ],
+   "sets": [
+    "BombAmmoToLoad",
+    "BombModeSpec",
+    "InBombState",
+    "MaxBombModeAmmo",
+    "OriginalMaxAmmoCount"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "AdjustBuffTempStacks",
+    "ArchonAmmoComponent.SetAmmo",
+    "AuthSetAmmoType",
+    "BlueprintSetLibrary.Set_Clear",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffect",
+    "HasMatchingGameplayTag",
+    "KismetMathLibrary.NotEqual_BoolBool",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnBombStateChanged",
+    "OnRep_InBombState",
+    "OverrideEmpoweredBuff",
+    "RemoveActiveGameplayEffect",
+    "RemoveBuffByClass",
+    "SetNewMaxAmmo",
+    "UpdateRateOfFire"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass dp_exotic_bombs_empowered_state_buff_C",
+    "BlueprintGeneratedClass dp_exotic_bombs_empowered_state_infinite_buff_C",
+    "BlueprintGeneratedClass exotic_bombs_in_bomb_mode_ge_C"
+   ]
+  },
+  {
+   "name": "BombMuzzleVFX",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "dp_weapon_hand",
+     "type": "Edp_weapon_hand_enum"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanResetBombTimer",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CanResetBombTimer",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 4,
+   "reads": [
+    "IsDetonating"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientCDReductionFX",
+   "flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "client",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DetonateOneBomb",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DetonationStartFX",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DoPDodgeShot",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_dp_exotic_bombs_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 432,
+   "reads": [
+    "AbilitySystemComponent",
+    "AlreadyHitActors",
+    "AmmoComponent",
+    "ArchonCharacter",
+    "ArchonWeapon",
+    "Barrel1",
+    "Barrel_Secondary1",
+    "BombTimerIconEffectHandle",
+    "ConsecutiveBombCount",
+    "DetonateIndividualBombsTimer",
+    "GenericConditionCheck",
+    "GenericEvent",
+    "GlobalBombTimer",
+    "InBombState",
+    "IsDetonating",
+    "L_DetonatingBomb",
+    "L_HitUniqueTarget",
+    "L_PreDetonateTime",
+    "L_Target",
+    "MonsterPartActor",
+    "NumPDodgeShots",
+    "OnAttached",
+    "OnDestroyed",
+    "OnPostMitigationHitWithWeapon",
+    "OnShootAttackOverridden",
+    "PDodgeShotsRemaining",
+    "PdodgeShotsTimer",
+    "ReceiveHitWhileInvulnerableDelegate",
+    "StickyBombRefs",
+    "WeaponGenericEventDispatcher",
+    "YCooldownToReduceOnCrit",
+    "YCooldownToReduceOnX1PDodge"
+   ],
+   "sets": [
+    "AmmoComponent",
+    "BombTimerIconEffectHandle",
+    "ConsecutiveBombCount",
+    "DetonateIndividualBombsTimer",
+    "InBombState",
+    "IsDetonating",
+    "L_DetonatingBomb",
+    "L_HitUniqueTarget",
+    "L_PreDetonateTime",
+    "L_Target",
+    "PDodgeShotsRemaining",
+    "PdodgeShotsTimer",
+    "WeaponGenericEventDispatcher"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "AddReloadBuff",
+    "ApplyBombModeLockoutEffect",
+    "ArchonAmmoComponent.AdjustAmmo",
+    "ArchonGameplayStatics.GetSocketLocation_WeaponSeparation",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "AuthAttachResult",
+    "AuthDetonateSoon",
+    "AuthDetonateStickyBomb",
+    "AuthSetBombMode",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.NotEqual_TagTag",
+    "BlueprintSetLibrary.Set_Add",
+    "BlueprintSetLibrary.Set_Contains",
+    "BombMuzzleVFX",
+    "ClearEmpoweredBuffOverride",
+    "ClientCDReductionFX",
+    "DetonationStartFX",
+    "DoPDodgeShot",
+    "EndReloadWindow",
+    "FindClosestBehemothToLocation",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffect",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDuration",
+    "GameplayModifierFunctionLibrary.RemoveGameplayEffect",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "GetMonsterpartByBoneName",
+    "HasMatchingGameplayTag",
+    "IsCombatActor",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeRotFromX",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.RotateAngleAxis",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.VSizeSquared",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "KismetSystemLibrary.K2_PauseTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.K2_UnPauseTimerHandle",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "KismetSystemLibrary.SphereOverlapActors",
+    "ManuallyDetonate",
+    "MulticastDetonationStart",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnBombStateChanged",
+    "OnRep_InBombState",
+    "OverrideEmpoweredBuff",
+    "ReduceYCooldown",
+    "Reload",
+    "RemoveBombModeLockoutEffect",
+    "ResetBombTimer",
+    "ServerShootBomb",
+    "SetAimingMode",
+    "SetGenericConditionResult",
+    "StartDetonation",
+    "StartReloadWindow",
+    "weapon_part_base_bpc_C.OnWeaponPartEquipped",
+    "weapon_part_base_bpc_C.OnWeaponPartUnequipped"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ammo_bpc_C",
+    "BlueprintGeneratedClass dp_exotic_bombs_empowered_state_buff_C",
+    "BlueprintGeneratedClass dp_exotic_bombs_stickybomb_bp_C",
+    "BlueprintGeneratedClass dp_exotic_bombs_x1_pdodge_ge_C",
+    "BlueprintGeneratedClass exotic_bombs_timer_ico_ge_C",
+    "BlueprintGeneratedClass generic_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass temp_exotic_bombs_pdodge_proj_C",
+    "BlueprintGeneratedClass weapon_eventdispatcher_bpc_C",
+    "ParticleSystem dp_exotic_muzzle_flash_stickybomb_p"
+   ]
+  },
+  {
+   "name": "GenericConditionCheck_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "FunctionCheckToPerform",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ManuallyDetonate",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastDetonationStart",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "On Perfect X1 Dodge",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Source",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    },
+    {
+     "name": "InvulnerabilityTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBombStateChanged",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 64,
+   "reads": [
+    "ArchonCharacter",
+    "ArchonWeapon",
+    "Barrel1",
+    "Barrel_Secondary1",
+    "BombStateVFX_Left",
+    "BombStateVFX_Right",
+    "GenericEvent",
+    "InBombState",
+    "WeaponGenericEventDispatcher"
+   ],
+   "sets": [
+    "BombStateVFX_Left",
+    "BombStateVFX_Right"
+   ],
+   "calls": [
+    "Actor.GetOwner",
+    "ActorComponent.GetOwner",
+    "AkGameplayStatics.PostEvent",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "ClientClearShootOverride",
+    "ClientRequestShootOverride",
+    "Deactivate",
+    "GameplayStatics.SpawnEmitterAttached",
+    "KismetSystemLibrary.IsValid",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_wep_dp_exotic_stickybomb_persistent",
+    "AkAudioEvent Stop_wep_dp_exotic_stickybomb_persistent",
+    "ParticleSystem dp_twinsuns_stickybomb_empowered_shock_p"
+   ]
+  },
+  {
+   "name": "OnBombTimerExpired",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnGenericEvent",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EventTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitigationHitWithWeapon_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "DamageSummary",
+     "type": "FPostMitigationDamageSummary"
+    },
+    {
+     "name": "DamageTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "Context",
+     "type": "FGameplayEffectContextHandle"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnProjectileAttached",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AttachTarget",
+     "type": "AActor*"
+    },
+    {
+     "name": "AttachComponent",
+     "type": "USceneComponent*"
+    },
+    {
+     "name": "BoneName",
+     "type": "FName"
+    },
+    {
+     "name": "BombActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnProjectileDestroyed",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_InBombState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "OnBombStateChanged"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnShootAttackOverridden",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "OverrideAttackTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "SourceLocation",
+     "type": "FVector"
+    },
+    {
+     "name": "Aim",
+     "type": "FRotator"
+    },
+    {
+     "name": "GunHand_IfApplicable_",
+     "type": "Edp_weapon_hand_enum"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnWeaponPartEquipped",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnWeaponPartUnequipped",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnWeaponSwap",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "On_Perfect_X1_Dodge",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Source",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonHitEventParams"
+    },
+    {
+     "name": "InvulnerabilityTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "RemoveBombModeLockoutEffect",
+   "flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Start_Cooldown",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 14,
+   "reads": [
+    "AbilitySystemComponent",
+    "ArchonCharacter",
+    "ArchonWeapon",
+    "BombModeLockoutHandle"
+   ],
+   "sets": [
+    "BombModeLockoutHandle"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "RemoveActiveGameplayEffect",
+    "StartYCooldown"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass dp_y_ability_exotic_bombs_ab_C"
+   ]
+  },
+  {
+   "name": "ResetBombTimer",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Time",
+     "type": "double"
+    },
+    {
+     "name": "Timer",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "GlobalBombTimer"
+   ],
+   "sets": [
+    "GlobalBombTimer"
+   ],
+   "calls": [
+    "CanResetBombTimer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerShootBomb",
+   "flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Location",
+     "type": "FVector"
+    },
+    {
+     "name": "Rotation",
+     "type": "FRotator"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetAimingMode",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AimingEnabled",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [
+    "ArchonCharacter",
+    "ArchonWeapon"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "EndStrafe",
+    "GetDefaultAimRequest",
+    "MulticastDisableAiming",
+    "MulticastEnableAiming",
+    "StartAiming",
+    "StartStrafe",
+    "StopAiming"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_aiming_bpc_C",
+    "BlueprintGeneratedClass player_state_machine_bpc_C"
+   ]
+  },
+  {
+   "name": "StartDetonation",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_exotic_bombs_bpc_C.ExecuteUbergraph_dp_exotic_bombs_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/Weapons/_shared/dp/exotics/dp_exotic_bombs_bpc",
+ "pseudo_file": "pseudo/dp_exotic_bombs_bpc_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,134 @@
+{
+ "name": "eqs_paper_umbral_orbs_spawn_loc",
+ "package": "Archon/Content/Monsters/_shared/eqs_queries/eqs_paper_umbral_orbs_spawn_loc",
+ "type": "EnvQuery",
+ "refs": [
+  "EQContext_CurrentPatrolCenterPoint_C",
+  "EQContext_Enemy_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MinDistance"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MaxDistance"
+   }
+  },
+  "eqs_paper_umbral_orbs_spawn_loc": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_paper_umbral_orbs_spawn_loc",
+    "Options": [
+     "@EnvQueryOption_1"
+    ]
+   }
+  },
+  "EnvQueryGenerator_Donut_1": {
+   "type": "EnvQueryGenerator_Donut",
+   "props": {
+    "InnerRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "OuterRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "NumberOfRings": {
+     "DefaultValue": 5
+    },
+    "PointsPerRing": {
+     "DefaultValue": 12
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_1": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_Donut_1",
+    "Tests": [
+     "@EnvQueryTest_ArchonNavTrace_2",
+     "@EnvQueryTest_ArchonNavTrace_3",
+     "@EnvQueryTest_Dot_2",
+     "@EnvQueryTest_Distance_0",
+     "@EnvQueryTest_ArchonNavCircleTest_0"
+    ]
+   }
+  },
+  "EnvQueryTest_ArchonNavCircleTest_0": {
+   "type": "EnvQueryTest_ArchonNavCircleTest",
+   "props": {
+    "NavCircleRadius": {
+     "DefaultValue": 500.0
+    },
+    "TestOrder": 4,
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_2": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "Context": "BlueprintGeneratedClass EQContext_CurrentPatrolCenterPoint_C",
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_3": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "Context": "BlueprintGeneratedClass EQContext_Enemy_C",
+    "TestOrder": 1,
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_0": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_CurrentPatrolCenterPoint_C",
+    "TestOrder": 3,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "FloatValueMin": {
+     "DefaultValue": 500.0,
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 6000.0,
+     "DataField": "FloatValue"
+    },
+    "ScoringFactor": {
+     "DefaultValue": -0.5
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Dot_2": {
+   "type": "EnvQueryTest_Dot",
+   "props": {
+    "TestMode": "EEnvTestDot::Dot2D",
+    "TestOrder": 2,
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": -0.5
+    },
+    "FloatValueMax": {
+     "DefaultValue": 1.0
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

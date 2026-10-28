@@ -1,0 +1,19 @@
+shadowcat_ground_dive_setup_bt  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) store_current_location_bttask
+    2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_players_random_in_arena"}, BlackboardKey=bb.TargetActor)
+    3) Selector
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_predict_target", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+      2) Sequence
+        1) set_blackboard_key_bttask "PounceLocation = TempLocation"  (ResultKey=bb.PounceLocation, DataType=Vector, SourceData={"BlackboardKeyName": "TempLocation"}, bShowPropertyDetails=false)
+        2) set_blackboard_key_bttask "TempInt = 0 (Expire if no target found)"  (ResultKey=bb.TempInt, DataType=Int, bShowPropertyDetails=false)
+    4) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=TempLocation)
+    5) spawn_gameplay_bttask  (GameplayData={"ManualTargetting": [{"X": 10.0, "Y": 0.0, "Z": 0.0}], "GameplayType": "eqs_gameplay_type::Actor", "ActorInfo": {"ActorClass": "BlueprintGeneratedClass shadowcat_ground_attack_portal_C", "EQSGameplayData": {"NumToSpawnPerTick": 1}, "AlignWithGround": false}}, WaitForRequestToFinish=false, bShowPropertyDetails=false)
+    6) Wait  (WaitTime=1)
+    7) predict_future_location_bttask  (TargetKey=bb.TargetActor, TimeInFuture=1.3, ResultKeyName=TempLocation)
+    8) Selector
+      1) nav_trace_bttask  (TraceEndBBKey=TargetActor)
+      2) store_current_location_bttask
+    9) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=TempLocation)

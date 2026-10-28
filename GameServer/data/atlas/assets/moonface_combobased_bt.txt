@@ -1,0 +1,172 @@
+moonface_combobased_bt  blackboard=BlackboardData moonface_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service get_player_target_btservice  (Interval=15, bCallTickOnSearchStart=true)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+      1) BehemothAction "DIE!!! Left"  (Montage=AnimMontage moonface_dead_mot)
+      2) BehemothAction "DIE!!!Right"  (Montage=AnimMontage moonface_dead_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_fly_bt)
+    [if Blackboard  (StaggerCount Is Greater Than 0)]
+    3) Sequence "StaggerSystem"
+      1) Selector "stagger"
+        1) Sequence "ShortStagger"
+          [if Blackboard  (Staggered_Type Is Equal To 1)]
+          1) Selector
+            [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+            1) BehemothAction "Stagger Left"  (Montage=AnimMontage moonface_stagger_heavy_l_mot)
+            2) BehemothAction "Stagger Right"  (Montage=AnimMontage moonface_stagger_heavy_r_mot)
+        [if Blackboard  (Staggered_Type Is Equal To 2)]
+        2) Sequence "DazedStagger"
+          1) BehemothAction "DazedStagger"  (Montage=AnimMontage moonface_stagger_dazed_mot)
+        [if Blackboard  (Staggered_Type Is Equal To 3)]
+        3) Selector "FallStagger"
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+          1) BehemothAction "FallStagger Left"  (Montage=AnimMontage moonface_stagger_fall_l_mot)
+          2) BehemothAction "FallStagger Right"  (Montage=AnimMontage moonface_stagger_fall_r_mot)
+        [if Blackboard  (Staggered_Type Is Equal To 6)]
+        4) BehemothAction "FallStagger From Glide"  (Montage=AnimMontage moonface_stagger_fall_from_glide_mot)
+      2) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.Staggered_Type)
+      3) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.StaggerCount)
+      4) ChangeMaxSpeed "ResetMaxSpeed"  (NewSpeed=400)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    4) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_fly_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    [if Blackboard  (ForceIntroAnimation is Is Set)]
+    6) Sequence
+      1) BehemothAction "IntroRoar"  (Montage=AnimMontage moonface_intro_mot)
+      2) ClearBBVar "ClearIntroFlag"  (BBVar=bb.ForceIntroAnimation)
+    [if BTDeco_MemberOfClassIsPresent "PatrolCenterPointPresent"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (AttackTarget is Is Not Set)]
+    7) Sequence "No Enemy - Patrol"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree sub_patrol_bt)
+      2) Selector "Moonface Patrol Attract "
+        [if BTDeco_ArchonCooldown  (CooldownTime=60, StartTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        1) BehemothAction "Patrol Scout"  (Montage=AnimMontage b_mf_loco_personality_scout_mot)
+        [if BTDeco_ArchonCooldown  (CooldownTime=60, StartTime=60, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        2) BehemothAction "Patrol Caw"  (Montage=AnimMontage moonface_patrol_call_mot)
+    8) Selector "StateChange"
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      1) bttask_enter_rage_state  (Montage=AnimMontage moonface_enter_rage)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      2) bttask_exit_rage_state  (Montage=AnimMontage moonface_exit_rage_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      3) bttask_enter_tired_state  (Montage=AnimMontage moonface_enter_tired)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (AttackTarget is Is Set)]
+      1) Selector
+        1) Sequence "BackHand"
+          1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass atk_moonface_backhand_l_C", "BlueprintGeneratedClass atk_moonface_backhand_r_C"], ChosenActionKey=bb.ChosenAttack)
+          2) Selector
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass atk_moonface_backhand_r_C, bShowPropertyDetails=false)]
+            1) PerformActionClass "BackhandR"  (ActionClass=BlueprintGeneratedClass atk_moonface_backhand_r_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass atk_moonface_backhand_l_C, bShowPropertyDetails=false)]
+            2) PerformActionClass "BackhandL"  (ActionClass=BlueprintGeneratedClass atk_moonface_backhand_l_C, bShowPropertyDetails=false)
+        2) Sequence "Combo To Personality"
+          1) Selector "StateGate"
+            [if Blackboard  (InRageState is Is Set)]
+            1) Sequence "Rage Combo"
+              1) PerformActionClass "Vert Horiz Wind Cut"  (ActionClass=BlueprintGeneratedClass atk_moonface_wind_cut_verthoriz_C, bShowPropertyDetails=false)
+              2) PerformActionClass "JumpSlam"  (ActionClass=BlueprintGeneratedClass atk_moonface_jumpslam_onspot_C, bShowPropertyDetails=false)
+            [if ConeCheck  (ConeHalfAngle=75, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget)]
+            2) Selector "Target in Front"
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=1300, MaxDistance=3000)]
+              [if Cooldown  (CooldownTime=25)]
+              1) Sequence "Charge and glide"
+                1) PerformActionClass "Barrel charge"  (ActionClass=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+                2) LoopMontageUntilPastTarget "ChargeUntilPasttarget"  (Montage=AnimMontage moonface_combo_charge_dynamic, RecoveryTime=0, LoopingSection=Charge, InjuredLoopingSection=Charge_Injured, TimeLimit=5, CollisionTest_XLenght=1000, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+                3) Selector "GetTarget"
+                  1) Sequence
+                    1) RunEQSQuery "PickTarget"  (QueryTemplate=EnvQuery EQ_FindPlayerTarget, QueryConfig=[{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTarget", "QueryConfig": [{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.AttackTarget)
+                  2) Sequence "ClearTarget"
+                    1) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.AttackTarget)
+                [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+                [if Blackboard  (AttackTarget is Is Set)]
+                4) Sequence
+                  1) Selector "Spin"
+                    [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                    1) BehemothAction "Spin Left"  (Montage=AnimMontage moonface_combo_spinout_l_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+                    2) BehemothAction "spin right"  (Montage=AnimMontage moonface_combo_spinout_r_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+                  2) LoopMontageUntilPastTarget "GlideUntilPasttarget"  (Montage=AnimMontage moonface_combo_glide_dynamic, RecoveryTime=0, LoopingSection=Glide, InjuredLoopingSection=Glide, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "tired", "SectionName": "RecoveryTired"}, {"State": "interrupted", "SectionName": "prevent_collision"}, {"State": "None", "SectionName": "Recovery"}]}, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}], InterruptedSection=prevent_collision, bShowPropertyDetails=false)
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=1300)]
+              [if Cooldown  (CooldownTime=25)]
+              2) Sequence "Combo 2"
+                1) PerformActionClass "4swipes"  (ActionClass=BlueprintGeneratedClass atk_moonface_4swipes_C, bShowPropertyDetails=false)
+                2) PerformActionClass "Wind Cut"  (ActionClass=BlueprintGeneratedClass atk_moonface_wind_cut_C, bShowPropertyDetails=false)
+                [if ForceSuccess]
+                3) Selector
+                  [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=200, MaxDistance=1300)]
+                  [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+                  1) PerformActionClass "Jump Behind"  (ActionClass=BlueprintGeneratedClass atk_moonface_jump_behind_C, bShowPropertyDetails=false)
+                  2) PerformActionClass "JumpSlam"  (ActionClass=BlueprintGeneratedClass atk_moonface_jumpslam_onspot_C, bShowPropertyDetails=false)
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=3000, MaxDistance=7000)]
+              [if Cooldown  (CooldownTime=25)]
+              3) Sequence "LongRange"
+                1) PerformActionClass "Wind Cut"  (ActionClass=BlueprintGeneratedClass atk_moonface_wind_cut_C, bShowPropertyDetails=false)
+                2) PerformActionClass "Gust"  (ActionClass=BlueprintGeneratedClass atk_moonface_gust_C, bShowPropertyDetails=false)
+                3) PerformActionClass "Wind Cut"  (ActionClass=BlueprintGeneratedClass atk_moonface_wind_cut_C, bShowPropertyDetails=false)
+            [if ConeCheck  (ConeHalfAngle=75, ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+            3) Selector "Target Behind"
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=1000)]
+              [if Cooldown  (CooldownTime=25)]
+              1) Sequence "Combo3"
+                1) PerformActionClass "JumpSlam"  (ActionClass=BlueprintGeneratedClass atk_moonface_jumpslam_onspot_C, bShowPropertyDetails=false)
+                2) PerformActionClass "Gust"  (ActionClass=BlueprintGeneratedClass atk_moonface_gust_C, bShowPropertyDetails=false)
+                [if ForceSuccess]
+                3) Selector
+                  [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=200, MaxDistance=1300)]
+                  [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+                  1) PerformActionClass "Jump Behind"  (ActionClass=BlueprintGeneratedClass atk_moonface_jump_behind_C, bShowPropertyDetails=false)
+                  2) Sequence
+                    1) RunEQSQuery "PickTarget"  (QueryTemplate=EnvQuery EQ_FindPlayerTarget, QueryConfig=[{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTarget", "QueryConfig": [{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": 0.5, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.AttackTarget)
+                    2) BehemothAction "glide antic"  (Montage=AnimMontage glide_chg_antic_mot)
+                    3) LoopMontageUntilPastTarget "GlideUntilPasttarget"  (Montage=AnimMontage moonface_combo_glide_dynamic, RecoveryTime=0, LoopingSection=Glide, InjuredLoopingSection=Glide, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "tired", "SectionName": "RecoveryTired"}, {"State": "interrupted", "SectionName": "prevent_collision"}, {"State": "None", "SectionName": "Recovery"}]}, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}], InterruptedSection=prevent_collision, bShowPropertyDetails=false)
+              [if Cooldown  (CooldownTime=25)]
+              2) Sequence "Combo 4"
+                1) Selector "Spin"
+                  [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                  1) BehemothAction "turn Left"  (Montage=AnimMontage moonface_180turn_l_mot, bShowPropertyDetails=false)
+                  2) BehemothAction "turn right"  (Montage=AnimMontage moonface_180turn_r_mot, bShowPropertyDetails=false)
+                2) BehemothAction "glide antic"  (Montage=AnimMontage glide_chg_antic_mot)
+                3) LoopMontageUntilPastTarget "GlideUntilPasttarget"  (Montage=AnimMontage moonface_combo_glide_dynamic, RecoveryTime=0, LoopingSection=Glide, InjuredLoopingSection=Glide, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "tired", "SectionName": "RecoveryTired"}, {"State": "interrupted", "SectionName": "prevent_collision"}, {"State": "None", "SectionName": "Recovery"}]}, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}], InterruptedSection=prevent_collision, bShowPropertyDetails=false)
+                4) PerformActionClass "Wind Cut"  (ActionClass=BlueprintGeneratedClass atk_moonface_wind_cut_C, bShowPropertyDetails=false)
+          [if ForceSuccess]
+          2) Sequence
+            [if Cooldown  (CooldownTime=25)]
+            1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage moonface_loco_personality_04_mot", "Chance": 0.15}, {"Montage": "AnimMontage moonface_loco_personality_05_mot", "Chance": 0.4}, {"Montage": "AnimMontage moonface_loco_personality_02_mot", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_03_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mf_state_tired_personality_03_mot", "Chance": 0.5}, {"Montage": "AnimMontage moonface_personality_tired", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_05_mot", "Chance": 1.0}])
+        [if Blackboard  (ChosenAttack is Is Not Set)]
+        3) Selector "Reposition"
+          {service evaluate_chosen_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, ClassesToEvaluate=["BlueprintGeneratedClass atk_moonface_4swipes_C", "BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C", "BlueprintGeneratedClass atk_moonface_jumpslam_onspot_C"])}
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper, Interval=0.01, RandomDeviation=0)}
+          [if Blackboard  (CurrentHelper is Is Set)]
+          1) Sequence
+            {service LookAlongPath  (HelperKey=bb.CurrentHelper)}
+            1) MoveToAndFace  (FacingAngleBlackboardKey=bb.CurrentHelper, bAlignWithFacingObject=true, AcceptableRadius=10, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentHelper)
+            2) MatchTargetRotation  (Target=bb.CurrentHelper)
+          [if Blackboard  (CurrentHelper is Is Not Set)]
+          2) Selector "No Helper GOTO AttackTarget"
+            1) Selector
+              [if Blackboard  (CurrentHelper is Is Not Set)]
+              [if not IsAtLocation  (AcceptableRadius=1000, BlackboardKey=bb.AttackTarget, bInverseCondition=true)]
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=1000, MaxDistance=10000, ObservedKeyNames=["SelfPos", "AttackTarget"], FlowAbortMode=Self)]
+              1) Selector
+                1) MoveToAndFace  (FacingAngleBlackboardKey=bb.AttackTarget, AcceptableRadius=1000, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bAllowStrafe=true, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+              2) Selector
+                [if ConeCheck  (ConeHalfAngle=95, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.AttackTarget)]
+                [if BTDeco_CollisionSweep  (ActionDisplacement={"X": 1.0, "Y": 500.0, "Z": 0.0})]
+                1) BehemothAction "SidestepR"  (Montage=AnimMontage b_mf_atk_strafe_right_mot)
+                [if BTDeco_CollisionSweep  (ActionDisplacement={"X": 1.0, "Y": -500.0, "Z": 0.0})]
+                2) BehemothAction "SidestepL"  (Montage=AnimMontage b_mf_atk_strafe_left_mot)
+              [if Blackboard  (AttackTarget is Is Set)]
+              3) Sequence "JumpBehindInNoAttacks"
+                1) TestCollisionForSpecificAction "TestCollisionForJump"  (ActionClassToTest=BlueprintGeneratedClass atk_moonface_jump_behind_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+                2) PerformActionClass "Jump Behind"  (ActionClass=BlueprintGeneratedClass atk_moonface_jump_behind_C, bShowPropertyDetails=false)
+              4) Sequence
+                1) RunEQSQuery  (QueryTemplate=EnvQuery EQ_FindRepositionLocation, EQSRequest={"QueryTemplate": "EnvQuery EQ_FindRepositionLocation"}, BlackboardKey=bb.MoveDestination)
+                2) MoveToAndFace  (FacingAngleBlackboardKey=bb.AttackTarget, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+                3) RotateTowardsTarget  (Target=bb.AttackTarget)

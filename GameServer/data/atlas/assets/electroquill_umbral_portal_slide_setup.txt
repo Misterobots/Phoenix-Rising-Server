@@ -1,0 +1,13 @@
+electroquill_umbral_portal_slide_setup  blackboard=BlackboardData electroquill_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    {service hide_behemoth_bttask  (ShowOnDeactivate=false)}
+    1) Wait  (WaitTime=0.2)
+    2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_live_player_prioritize_clumped_up", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 15000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+    3) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_rage_portal", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+    4) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=TargetActor)
+    5) store_current_location_bttask  (ResultLocationKey=PatternLocation, RelativeOffset={"X": 300.0, "Y": 0.0, "Z": 0.0})
+    6) predict_future_location_bttask  (TargetKey=bb.TargetActor, TimeInFuture=1, ResultKeyName=PatternAimLocation)
+    7) Wait  (WaitTime=1)
+    8) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=PatternAimLocation)

@@ -1,0 +1,297 @@
+{
+ "name": "action_lookuptable_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 272,
+ "sdk_header": "action_lookuptable_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "GenericActionTableClasses",
+   "type": "TArray<UClass*>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "GenericActionLookupTable",
+   "type": "Ugeneric_action_lookup_table_C*",
+   "offset": "0xB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<generic_action_lookup_table_C>"
+  },
+  {
+   "name": "GenericActionOverrides",
+   "type": "TMap<Ebehemoth_generic_action_type, Fmontage_list>",
+   "offset": "0xC0",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MapProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AddActionOverride",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActionTypeToOverride",
+     "type": "Ebehemoth_generic_action_type"
+    },
+    {
+     "name": "Montages",
+     "type": "TArray<UAnimMontage*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [
+    "GenericActionOverrides"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintMapLibrary.Map_Add"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_action_lookuptable_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 9,
+   "reads": [
+    "GenericActionLookupTable",
+    "GenericActionTableClasses"
+   ],
+   "sets": [
+    "GenericActionLookupTable"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "GameplayStatics.SpawnObject",
+    "GenerateDataFromClassList"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass generic_action_lookup_table_C"
+   ]
+  },
+  {
+   "name": "FindMontageInGenericActionSet",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GenericActionType",
+     "type": "Ebehemoth_generic_action_type"
+    },
+    {
+     "name": "Montage",
+     "type": "UAnimMontage*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [
+    "GenericActionLookupTable",
+    "GenericActionOverrides"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintMapLibrary.Map_Find",
+    "GetGenericActionData",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.RandomIntegerInRange",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "action_lookuptable_bpc_C.ExecuteUbergraph_action_lookuptable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Regenerate Data",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "action_lookuptable_bpc_C.ExecuteUbergraph_action_lookuptable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Regenerate_Data",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "RemoveActionOverride",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "OverridenActionToRemove",
+     "type": "Ebehemoth_generic_action_type"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "GenericActionOverrides"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintMapLibrary.Map_Remove"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/action_lookuptable_bpc",
+ "pseudo_file": "pseudo/action_lookuptable_bpc_C.txt",
+ "game_data": {}
+}

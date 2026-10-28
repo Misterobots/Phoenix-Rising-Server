@@ -1,0 +1,180 @@
+{
+ "name": "habanero_blazeimpact_bt",
+ "package": "Archon/Content/Monsters/mb/owl/habanero/normal/ai/habanero_blazeimpact_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_habanero_normal_atk_blazeimpact_fwd_slam_mot",
+  "b_habanero_state_bwd_roll_mot",
+  "b_habanero_state_bwd_roll_to_idle_mot",
+  "b_habanero_state_fwd_roll_mot",
+  "moonface_bb"
+ ],
+ "exports": {
+  "habanero_blazeimpact_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_0",
+    "BlackboardAsset": "BlackboardData moonface_bb",
+    "RootDecorators": [
+     "@BTDecorator_Blackboard_0"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ConeCheck_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_LoopMontageUntilPastTarget_C_20",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_LoopMontageUntilPastTarget_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Forward Roll",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "TargetActor is Is Set",
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt"
+   }
+  },
+  "BTDecorator_ConeCheck_0": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeHalfAngle": 90.0,
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.FrontPoint",
+    "Observed": "bb.AttackTarget",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_habanero_state_bwd_roll_to_idle_mot",
+    "TriggerCooldownOnSuccess": false,
+    "StopMontageOnAbort": false,
+    "NodeName": "Roll - > Idle",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_BehemothAction_C_3": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_habanero_normal_atk_blazeimpact_fwd_slam_mot",
+    "TriggerCooldownOnSuccess": false,
+    "StopMontageOnAbort": false,
+    "NodeName": "Roll Slam",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_LoopMontageUntilPastTarget_C_0": {
+   "type": "BTTask_LoopMontageUntilPastTarget_C",
+   "props": {
+    "Montage": "AnimMontage b_habanero_state_fwd_roll_mot",
+    "RecoveryTime": 0.0,
+    "LoopingSection": "Rolling",
+    "TimeLimit": 5.0,
+    "CollisionTest_XLenght": 600.0,
+    "OffsetLocationsToNavTest": [
+     {
+      "X": 0.0,
+      "Y": 200.0,
+      "Z": 0.0
+     }
+    ],
+    "DistanceToTargetToEndEarly": 2500.0,
+    "TriggerCooldownOnSuccess": false,
+    "DelayAfterPassingTarget": 0.10000000149011612,
+    "TargetBlackboardName": "TargetActor",
+    "bShowPropertyDetails": false,
+    "NodeName": "ChargeUntilPasttarget",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_LoopMontageUntilPastTarget_C_20": {
+   "type": "BTTask_LoopMontageUntilPastTarget_C",
+   "props": {
+    "Montage": "AnimMontage b_habanero_state_bwd_roll_mot",
+    "RecoveryTime": 0.0,
+    "LoopingSection": "Rolling",
+    "TimeLimit": 5.0,
+    "CollisionTest_XLenght": 600.0,
+    "OffsetLocationsToNavTest": [
+     {
+      "X": 0.0,
+      "Y": -200.0,
+      "Z": 0.0
+     }
+    ],
+    "DistanceToTargetToEndEarly": 1200.0,
+    "TriggerCooldownOnSuccess": false,
+    "DelayAfterPassingTarget": 5.0,
+    "TargetBlackboardName": "TargetActor",
+    "bShowPropertyDetails": false,
+    "NodeName": "ChargeUntilPasttarget",
+    "TreeAsset": "BehaviorTree habanero_blazeimpact_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  }
+ }
+}

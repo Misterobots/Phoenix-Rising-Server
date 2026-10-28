@@ -1,0 +1,80 @@
+# darkness_gatherable_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Can Actor Collect Gatherable
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] Can Actor Collect Gatherable(Actor, CallFunc_Can_Actor_Collect_Gatherable_Can_Collect)
+  [48] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(Actor, CallFunc_GetOwner_ReturnValue)
+  [86] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Can_Actor_Collect_Gatherable_Can_Collect, CallFunc_EqualEqual_ObjectObject_ReturnValue)
+  [124] Can Collect = CallFunc_BooleanAND_ReturnValue
+  [143] return nothing
+  [145] end
+
+=== Event_StartSeeking
+  [0] ExecuteUbergraph_darkness_gatherable_bp(453)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_darkness_gatherable_bp
+  [0] goto computed(EntryPoint)
+  [10] CollectionVFX()
+  [24] goto @1294
+  [29] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [49] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [85] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [114] if !(K2Node_DynamicCast_bSuccess) goto @1294
+  [128] K2Node_DynamicCast_AsDarkness_Player_Role_Bp = cast<darkness_player_role_bp_C>(K2Node_DynamicCast_AsArchon_Character.self.PlayerRole)
+  [186] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDarkness_Player_Role_Bp)
+  [215] if !(K2Node_DynamicCast_bSuccess_1) goto @1294
+  [229] K2Node_DynamicCast_AsDarkness_Player_Role_Bp.AddHealthRegenStack()
+  [265] goto @10
+  [270] ReceiveBeginPlay()
+  [280] SetActorTickEnabled(true)
+  [291] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_OrbSeekSpeed', CallFunc_GetDataTableRowFromName_OutRow)
+  [364] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @1294
+  [378] K2Node_VariableSet_SeekingSpeed_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow.RawFloat)
+  [416] self.SeekingSpeed = K2Node_VariableSet_SeekingSpeed_ImplicitCast
+  [443] goto @1294
+  [448] goto @270
+  [453] self.StartSeeking = true
+  [464] goto @280
+  [469] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [489] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_Event_PlayerPickingUp, CallFunc_GetOwner_ReturnValue)
+  [527] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @1294
+  [541] goto @29
+  [546] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [575] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, self.SeekingCurDuration)
+  [621] self.SeekingCurDuration = CallFunc_Add_DoubleDouble_ReturnValue
+  [648] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [668] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_1.K2_GetActorLocation()
+  [718] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [780] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.K2_GetActorLocation()
+  [822] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [851] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, 0.10000000149011612)
+  [897] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [943] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue_1, 0.0001)
+  [985] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(self.SeekingCurDuration)
+  [1014] CallFunc_GetFloatValue_ReturnValue = self.SeekingCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [1073] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [1102] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [1148] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Normal_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1194] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [1240] CallFunc_K2_SetActorLocation_ReturnValue = self.K2_SetActorLocation(CallFunc_Add_VectorVector_ReturnValue, false, CallFunc_K2_SetActorLocation_SweepHitResult, false)
+  [1294] return nothing
+  [1296] end
+
+=== OnPickupPayload
+  [0] frame.K2Node_Event_PlayerPickingUp = PlayerPickingUp
+  [18] ExecuteUbergraph_darkness_gatherable_bp(469)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_darkness_gatherable_bp(448)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_darkness_gatherable_bp(546)
+  [33] return nothing
+  [35] end

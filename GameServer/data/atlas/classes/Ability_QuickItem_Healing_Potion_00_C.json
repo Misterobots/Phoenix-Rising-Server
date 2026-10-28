@@ -1,0 +1,254 @@
+{
+ "name": "Ability_QuickItem_Healing_Potion_00_C",
+ "kind": "blueprint",
+ "parents": [
+  "ability_quick_item_play_montage_base_C",
+  "Ability_QuickItem_Base_C",
+  "ArchonQuickItem",
+  "GameplayAbility",
+  "Object"
+ ],
+ "size": 1208,
+ "sdk_header": "Ability_QuickItem_Healing_Potion_00_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Heal Amount",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HoTBonus",
+   "type": "double",
+   "offset": "0x4A0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "HoTTime",
+   "type": "double",
+   "offset": "0x4A8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "HealOverTimeBuff",
+   "type": "Aheal_over_time_buff_C*",
+   "offset": "0x4B0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<heal_over_time_buff_C>"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "ApplyEffect",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 32,
+   "reads": [
+    "Heal Amount",
+    "HoTBonus",
+    "HoTTime"
+   ],
+   "sets": [
+    "HealOverTimeBuff",
+    "HealthRestoredPerSecond",
+    "MaxDuration"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray",
+    "GameplayAbility.GetActorInfo",
+    "HasAnyMatchingGameplayTags",
+    "HealTarget",
+    "K2_CommitAbility",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "StartBuff",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass heal_over_time_buff_C"
+   ]
+  },
+  {
+   "name": "CustomCanActivateAbility",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActorInfoOwnerActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "ActorInfoAvatarActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "ActorInfoPlayerController",
+     "type": "APlayerController*"
+    },
+    {
+     "name": "ActorInfoAbilitySystemComponent",
+     "type": "UAbilitySystemComponent*"
+    },
+    {
+     "name": "ActorInfoAnimInstance",
+     "type": "UAnimInstance*"
+    },
+    {
+     "name": "ActorInfoMovementComponent",
+     "type": "UMovementComponent*"
+    },
+    {
+     "name": "CanUse",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "KismetMathLibrary.Less_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_Ability_QuickItem_Healing_Potion_00",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ApplyEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnActivateAbilityImpl",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_00_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_00"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/InventoryItems/Abilities/Ability_QuickItem_Healing_Potion_00",
+ "pseudo_file": "pseudo/Ability_QuickItem_Healing_Potion_00_C.txt",
+ "game_data": {}
+}

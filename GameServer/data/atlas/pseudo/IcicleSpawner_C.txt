@@ -1,0 +1,120 @@
+# IcicleSpawner_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthSpawnIcicle
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @413
+  [35] GetRandomSpawnLocation(CallFunc_GetRandomSpawnLocation_Location)
+  [58] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetRandomSpawnLocation_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [145] K2Node_MakeStruct_PhxActorPoolSpawnParams.SpawnTransform = CallFunc_MakeTransform_ReturnValue
+  [181] K2Node_MakeStruct_PhxActorPoolSpawnParams.Owner = self
+  [201] CallFunc_SpawnActorFromPool_ReturnValue = self.IciclePool.SpawnActorFromPool(K2Node_MakeStruct_PhxActorPoolSpawnParams)
+  [252] K2Node_DynamicCast_AsIcicle_Projectile = cast<IcicleProjectile_C>(CallFunc_SpawnActorFromPool_ReturnValue)
+  [288] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsIcicle_Projectile)
+  [317] if !(K2Node_DynamicCast_bSuccess) goto @413
+  [331] K2Node_DynamicCast_AsIcicle_Projectile.self.SpawnMountingVent = SpawnMountingVent
+  [372] K2Node_DynamicCast_AsIcicle_Projectile.self.AOEActorPool = self.AOEActorPool
+  [413] return nothing
+  [415] end
+
+=== AuthSpawnIcicleGroup
+  [0] push @527
+  [5] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [26] if !(CallFunc_IsServer_ReturnValue) pop
+  [36] CallFunc_RandomIntegerInRange_ReturnValue_1 = RandomIntegerInRange(self.MinIciclesToSpawn, self.MaxIciclesToSpawn)
+  [82] NumToSpawn = CallFunc_RandomIntegerInRange_ReturnValue_1
+  [109] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.MountVentIndex, 1)
+  [151] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, CallFunc_Subtract_IntInt_ReturnValue)
+  [193] self.MountVentIndex = CallFunc_RandomIntegerInRange_ReturnValue
+  [220] Temp_int_Variable = 0
+  [243] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(NumToSpawn, 1)
+  [285] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [323] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [333] push @453
+  [338] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 0.5)
+  [384] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.DelayedIcicles, CallFunc_RandomFloatInRange_ReturnValue)
+  [452] pop
+  [453] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [495] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [522] goto @243
+  [527] return nothing
+  [529] end
+
+=== ExecuteUbergraph_IcicleSpawner
+  [0] push @1138
+  [5] goto computed(EntryPoint)
+  [15] push @309
+  [20] Default__KismetArrayLibrary.Array_Get(self.DelayedIcicles, Temp_int_Variable, CallFunc_Array_Get_Item_1)
+  [79] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Array_Get_Item_1, 0.0)
+  [117] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [127] Default__KismetArrayLibrary.Array_Remove(self.DelayedIcicles, Temp_int_Variable)
+  [177] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.DelayedIcicles)
+  [236] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_Array_Length_ReturnValue_1, self.MountVentIndex)
+  [274] AuthSpawnIcicle(CallFunc_EqualEqual_IntInt_ReturnValue)
+  [297] Temp_bool_Variable = true
+  [308] pop
+  [309] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_Variable)
+  [338] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [348] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [390] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [417] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_Variable)
+  [446] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DelayedIcicles)
+  [505] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [547] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue)
+  [585] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_LessEqual_IntInt_ReturnValue)
+  [623] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [633] goto @15
+  [638] Temp_bool_Variable = false
+  [649] Temp_int_Variable = 0
+  [672] goto @417
+  [677] Temp_int_Variable_1 = 0
+  [700] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DelayedIcicles)
+  [759] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [801] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(Temp_int_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [839] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) goto @638
+  [853] push @1053
+  [858] Default__KismetArrayLibrary.Array_Get(self.DelayedIcicles, Temp_int_Variable_1, CallFunc_Array_Get_Item)
+  [917] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [946] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Array_Get_Item, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [992] Default__KismetArrayLibrary.Array_Set(self.DelayedIcicles, Temp_int_Variable_1, CallFunc_Subtract_DoubleDouble_ReturnValue, false)
+  [1052] pop
+  [1053] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Variable_1, 1)
+  [1095] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1122] goto @700
+  [1127] ReceiveBeginPlay()
+  [1137] pop
+  [1138] return nothing
+  [1140] end
+
+=== GetRandomSpawnLocation
+  [0] CallFunc_GetPI_ReturnValue = GetPI()
+  [28] CallFunc_RandomFloat_ReturnValue_1 = RandomFloat()
+  [56] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(CallFunc_RandomFloat_ReturnValue_1, 2.0)
+  [102] CallFunc_Multiply_DoubleDouble_ReturnValue_4 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_3, CallFunc_GetPI_ReturnValue)
+  [148] a = CallFunc_Multiply_DoubleDouble_ReturnValue_4
+  [175] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [203] CallFunc_Sqrt_ReturnValue = Sqrt(CallFunc_RandomFloat_ReturnValue)
+  [240] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(self.Radius, CallFunc_Sqrt_ReturnValue)
+  [286] r = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [313] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [341] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [387] CallFunc_Sin_ReturnValue = Sin(a)
+  [424] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(r, CallFunc_Sin_ReturnValue)
+  [470] CallFunc_Cos_ReturnValue = Cos(a)
+  [507] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Y, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [553] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(r, CallFunc_Cos_ReturnValue)
+  [599] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, CallFunc_BreakVector_X)
+  [645] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_BreakVector_Z)
+  [700] Location = CallFunc_MakeVector_ReturnValue
+  [727] return nothing
+  [729] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_IcicleSpawner(1127)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_IcicleSpawner(677)
+  [33] return nothing
+  [35] end

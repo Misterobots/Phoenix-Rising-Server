@@ -1,0 +1,286 @@
+{
+ "name": "ce_water_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Duration",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IsWaterProtected",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CustomModifyDamageEventData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "HasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ModifiedDamageEventData",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "ShouldOverrideDamageTags",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_water_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 51,
+   "reads": [
+    "Duration",
+    "IsWaterProtected",
+    "OnPerfectDodgeDelegate"
+   ],
+   "sets": [
+    "IsWaterProtected",
+    "MaxDuration"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "Actor.ReceiveBeginPlay",
+    "ApplySpecWithDurationAndMagnitude",
+    "ArchonBuff.GetBuffOwner",
+    "AuthRemoveGameplayEffectByClass",
+    "GetArchonBuffableComponent",
+    "GetCellEffectMagnitude",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "Multi_FX",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "NiagaraFunctionLibrary.SpawnSystemAttached",
+    "PostEventTemp",
+    "RemoveBuffByClass",
+    "SkinnedMeshComponent.GetSocketBoneName",
+    "StartBuff",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Gameplay_Super_Armour_Activate",
+    "BlueprintGeneratedClass ce_water_ge_C",
+    "BlueprintGeneratedClass super_armour_buff_C",
+    "NiagaraSystem Perk_Sturdy_broken_ns"
+   ]
+  },
+  {
+   "name": "Multi_FX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_water_buff_C.ExecuteUbergraph_ce_water_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageReceived",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_water_buff_C.ExecuteUbergraph_ce_water_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PerfectDodged",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_water_buff_C.ExecuteUbergraph_ce_water_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_water_buff_C.ExecuteUbergraph_ce_water_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_water_buff",
+ "pseudo_file": "pseudo/ce_water_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,176 @@
+# player_camera_state_machine_root_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== BlendOutNotifyCamera
+  [0] if !(self.bNotifyModifiersActive) goto @247
+  [14] self.bNotifyModifiersBlendingOut = true
+  [25] CallFunc_FMax_ReturnValue = FMax(BlendOutTime, 0.009999999776482582)
+  [71] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(1.0, CallFunc_FMax_ReturnValue)
+  [117] K2Node_SetFieldsInStruct_FieldOfViewInterpolationSpeed_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [146] self.NotifyCameraStateProperties.FieldOfViewInterpolationSpeed = K2Node_SetFieldsInStruct_FieldOfViewInterpolationSpeed_ImplicitCast
+  [182] K2Node_SetFieldsInStruct_TranslationInterpolationSpeed_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [211] self.NotifyCameraStateProperties.TranslationInterpolationSpeed = K2Node_SetFieldsInStruct_TranslationInterpolationSpeed_ImplicitCast
+  [247] return nothing
+  [249] end
+
+=== EndNotifyCamera
+  [0] self.bNotifyModifiersActive = false
+  [11] self.bNotifyModifiersBlendingOut = false
+  [22] return nothing
+  [24] end
+
+=== ExecuteUbergraph_player_camera_state_machine_root
+  [0] goto computed(EntryPoint)
+  [10] self.PlayerAimingBpc = null
+  [21] goto @247
+  [26] InitializeCameraState()
+  [36] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [56] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue.GetComponentByClass(PhxCameraAlignmentComponent)
+  [107] self.CameraAlignmentComponent = CallFunc_GetComponentByClass_ReturnValue
+  [126] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [146] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwningActor_ReturnValue_1.GetComponentByClass(player_aiming_bpc_C)
+  [197] self.PlayerAimingBpc = CallFunc_GetComponentByClass_ReturnValue_1
+  [216] goto @247
+  [221] UninitializeCameraState()
+  [231] self.CameraAlignmentComponent = null
+  [242] goto @10
+  [247] return nothing
+  [249] end
+
+=== GetUserSpringArmDistanceScale
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, FOVDistanceAimOptionsFeature, true)
+  [31] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [51] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.PlayerAimingBpc.self.PlayerAimingState, 1)
+  [104] CallFunc_GetDefaultCameraDistanceScale_ReturnValue = CallFunc_GetArchonGameUserSettings_ReturnValue.GetDefaultCameraDistanceScale()
+  [154] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsFeatureEnabled_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [192] CallFunc_SelectFloat_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDefaultCameraDistanceScale_ReturnValue)
+  [221] CallFunc_SelectFloat_ReturnValue = SelectFloat(1.0, CallFunc_SelectFloat_B_ImplicitCast, CallFunc_BooleanAND_ReturnValue)
+  [276] ReturnValue = CallFunc_SelectFloat_ReturnValue
+  [303] return ReturnValue
+  [313] end
+
+=== InitializeCameraState
+  [0] ExecuteUbergraph_player_camera_state_machine_root(26)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEvaluateEntryConditions
+  [0] push @251
+  [5] push @224
+  [10] push @117
+  [15] push @55
+  [20] CallFunc_ReceiveEvaluateEntryConditions_ReturnValue = ReceiveEvaluateEntryConditions()
+  [40] if !(CallFunc_ReceiveEvaluateEntryConditions_ReturnValue) goto @240
+  [54] pop
+  [55] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, CameraStateMachineNativizationFeature, true)
+  [86] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @101
+  [100] pop
+  [101] ReturnValue = false
+  [112] goto @251
+  [117] CallFunc_IsValid_ReturnValue = IsValid(self.CameraAlignmentComponent)
+  [146] if !(CallFunc_IsValid_ReturnValue) pop
+  [156] CallFunc_HasActiveAlignment_ReturnValue = self.CameraAlignmentComponent.HasActiveAlignment()
+  [198] if !(CallFunc_HasActiveAlignment_ReturnValue) pop
+  [208] ReturnValue = false
+  [219] goto @251
+  [224] ReturnValue = true
+  [235] goto @251
+  [240] ReturnValue = false
+  [251] return ReturnValue
+  [261] end
+
+=== ReceiveGetDesiredFieldOfView
+  [0] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [20] CallFunc_GetDefaultGameFOV_ReturnValue = CallFunc_GetArchonGameUserSettings_ReturnValue.GetDefaultGameFOV()
+  [70] FieldOfView = CallFunc_GetDefaultGameFOV_ReturnValue
+  [97] ReturnValue = 1
+  [117] return ReturnValue
+  [127] end
+
+=== ReceivePostEvaluate_ModifyDesiredCameraProperties
+  [0] push @2422
+  [5] push @2422
+  [10] push @2283
+  [15] push @1315
+  [20] push @843
+  [25] CallFunc_GetOwningComponent_ReturnValue = GetOwningComponent()
+  [45] CameraStateMachineComponent = CallFunc_GetOwningComponent_ReturnValue
+  [64] CallFunc_IsValid_ReturnValue = IsValid(CameraStateMachineComponent)
+  [93] if !(CallFunc_IsValid_ReturnValue) pop
+  [103] CallFunc_GetCameraComponent_ReturnValue = CameraStateMachineComponent.GetCameraComponent()
+  [145] CameraComponent = CallFunc_GetCameraComponent_ReturnValue
+  [164] CallFunc_IsValid_ReturnValue_1 = IsValid(CameraComponent)
+  [193] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [203] CameraComponent.GetCameraView(0.0, CallFunc_GetCameraView_DesiredView)
+  [253] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.CameraPitchMax, self.CameraPitchMin)
+  [299] GetAxes(CallFunc_GetCameraView_DesiredView.Rotation, CallFunc_GetAxes_X, CallFunc_GetAxes_Y, CallFunc_GetAxes_Z)
+  [354] GetYawPitchFromVector(CallFunc_GetAxes_X, CallFunc_GetYawPitchFromVector_Yaw, CallFunc_GetYawPitchFromVector_Pitch)
+  [391] CallFunc_FClamp_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetYawPitchFromVector_Pitch)
+  [420] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_FClamp_Value_ImplicitCast, self.CameraPitchMin, self.CameraPitchMax)
+  [475] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_FClamp_ReturnValue, self.CameraPitchMin)
+  [521] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_1, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [567] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [596] CallFunc_GetFloatValue_ReturnValue = self.CameraOffsetPitchCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [655] CallFunc_Lerp_B_ImplicitCast = cast<CST_FloatToDouble>(DesiredCameraStateProperties.SpringArmLength)
+  [693] CallFunc_Lerp_Alpha_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [722] CallFunc_Lerp_ReturnValue = Lerp(self.CameraPitchDistanceMin, CallFunc_Lerp_B_ImplicitCast, CallFunc_Lerp_Alpha_ImplicitCast)
+  [777] K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Lerp_ReturnValue)
+  [806] DesiredCameraStateProperties.SpringArmLength = K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast_2
+  [842] pop
+  [843] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [863] CallFunc_MapRangeClamped_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetArchonGameUserSettings_ReturnValue.self.CameraDistanceScale)
+  [914] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_MapRangeClamped_Value_ImplicitCast, 0.0, 1.0, 1.0, 1.100000023841858)
+  [987] CallFunc_MakeVector_ReturnValue = MakeVector(1.0, 1.0, CallFunc_MapRangeClamped_ReturnValue)
+  [1042] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(DesiredCameraStateProperties.SpringArmWorldSpaceOffset, CallFunc_MakeVector_ReturnValue)
+  [1097] CallFunc_GetUserSpringArmDistanceScale_ReturnValue = GetUserSpringArmDistanceScale()
+  [1129] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(DesiredCameraStateProperties.SpringArmLength)
+  [1167] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_GetUserSpringArmDistanceScale_ReturnValue)
+  [1213] K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1242] DesiredCameraStateProperties.SpringArmLength = K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast_1
+  [1278] DesiredCameraStateProperties.SpringArmWorldSpaceOffset = CallFunc_Multiply_VectorVector_ReturnValue
+  [1314] pop
+  [1315] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.bNotifyModifiersBlendingOut)
+  [1344] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bNotifyModifiersActive, CallFunc_Not_PreBool_ReturnValue)
+  [1382] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1392] CallFunc_SelectFloat_A_ImplicitCast_1 = cast<CST_FloatToDouble>(DesiredCameraStateProperties.SpringArmLength)
+  [1430] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast_1, 0.0, self.bNotifyAdditiveSpringArmLength)
+  [1485] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(DesiredCameraStateProperties.SpringArmWorldSpaceOffset, self.NotifyCameraStateProperties.SpringArmWorldSpaceOffset)
+  [1549] CallFunc_SelectVector_ReturnValue = SelectVector(DesiredCameraStateProperties.SpringArmSocketOffset, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), self.bNotifyAdditiveSpringArmSocketOffset)
+  [1629] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(self.NotifyCameraStateProperties.SpringArmLength)
+  [1667] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [1713] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_SelectVector_ReturnValue, self.NotifyCameraStateProperties.SpringArmSocketOffset)
+  [1768] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(DesiredCameraStateProperties.FieldOfView)
+  [1806] CallFunc_SelectFloat_ReturnValue_1 = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, self.bNotifyAdditiveFieldOfView)
+  [1861] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.NotifyCameraStateProperties.FieldOfView)
+  [1899] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue_1, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1945] K2Node_SetFieldsInStruct_FieldOfView_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [1974] DesiredCameraStateProperties.FieldOfView = K2Node_SetFieldsInStruct_FieldOfView_ImplicitCast
+  [2010] DesiredCameraStateProperties.FieldOfViewInterpolationSpeed = self.NotifyCameraStateProperties.FieldOfViewInterpolationSpeed
+  [2055] K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [2084] DesiredCameraStateProperties.SpringArmLength = K2Node_SetFieldsInStruct_SpringArmLength_ImplicitCast
+  [2120] DesiredCameraStateProperties.SpringArmSocketOffset = CallFunc_Add_VectorVector_ReturnValue_1
+  [2156] DesiredCameraStateProperties.SpringArmWorldSpaceOffset = CallFunc_Add_VectorVector_ReturnValue
+  [2192] DesiredCameraStateProperties.SpringArmCameraLagSpeed = self.NotifyCameraStateProperties.SpringArmCameraLagSpeed
+  [2237] DesiredCameraStateProperties.TranslationInterpolationSpeed = self.NotifyCameraStateProperties.TranslationInterpolationSpeed
+  [2282] pop
+  [2283] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(self.bNotifyModifiersActive, self.bNotifyModifiersBlendingOut)
+  [2321] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [2331] DesiredCameraStateProperties.FieldOfViewInterpolationSpeed = self.NotifyCameraStateProperties.FieldOfViewInterpolationSpeed
+  [2376] DesiredCameraStateProperties.TranslationInterpolationSpeed = self.NotifyCameraStateProperties.TranslationInterpolationSpeed
+  [2421] pop
+  [2422] return nothing
+  [2424] end
+
+=== StartNotifyCamera
+  [0] self.NotifyCameraStateProperties = DesiredCameraProperties
+  [27] self.bNotifyAdditiveSpringArmLength = bAdditiveSpringArmLength
+  [46] self.bNotifyAdditiveSpringArmSocketOffset = bAdditiveSpringArmSocketOffset
+  [65] self.bNotifyAdditiveFieldOfView = bAdditiveFieldOfView
+  [84] self.bNotifyModifiersActive = true
+  [95] self.bNotifyModifiersBlendingOut = false
+  [106] return nothing
+  [108] end
+
+=== UninitializeCameraState
+  [0] ExecuteUbergraph_player_camera_state_machine_root(221)
+  [15] return nothing
+  [17] end

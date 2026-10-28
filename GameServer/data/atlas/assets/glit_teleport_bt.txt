@@ -1,0 +1,15 @@
+glit_teleport_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Glitter Teleport"]
+  Sequence
+    1) apply_abilities_bttask  (EqsQuery=EnvQuery eqs_find_all_players, AbilitiesToGrant=["BlueprintGeneratedClass camera_lock_block_ab_C"])
+    2) Sequence
+      {service hide_behemoth_bttask  (Interval=0.01, RandomDeviation=0)}
+      {service staggerproof_behemoth_bttask}
+      1) Wait  (WaitTime=1, RandomDeviation=0.5)
+      2) Selector
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_teleport_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 700.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+      3) teleport_bttask "Teleport"  (FacingTargetKeyName=AttackTarget)
+      4) Wait  (WaitTime=1)

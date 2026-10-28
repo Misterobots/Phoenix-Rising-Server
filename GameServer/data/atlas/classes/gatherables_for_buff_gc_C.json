@@ -1,0 +1,743 @@
+{
+ "name": "gatherables_for_buff_gc_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseGameContent",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherableClass",
+   "type": "SoftClassProperty<Class>",
+   "bp_type": "SoftClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherableSpawnNodes",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherableClassLoaded",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SpawnedGatherables",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TotalCollectedGatherables",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_TotalCollectedGatherables",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 12
+  },
+  {
+   "name": "GatherTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatheredPerPlayer",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "QuestHUD",
+   "type": "ObjectProperty<HUDGameContentStoryMissionWidget>",
+   "bp_type": "ObjectProperty<HUDGameContentStoryMissionWidget>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PercentNodesToSpawn",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinBuffPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxBuffPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "Client_PlayVO",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DIalogRowId",
+     "type": "NameProperty"
+    },
+    {
+     "name": "ArchonCharacter",
+     "type": "ObjectProperty<ArchonCharacter>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_gatherables_for_buff_gc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetTransform_ReturnValue",
+     "type": "StructProperty<Transform>"
+    },
+    {
+     "name": "Temp_int_Variable",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 309,
+   "reads": [
+    "AbilitySystemComponent",
+    "AuthOnGameStarted",
+    "CollectedGatherable",
+    "GameHasStarted",
+    "GatherTimeLimit",
+    "GatherableClass",
+    "GatherableClassLoaded",
+    "GatherableSpawnNodes",
+    "GatheredPerPlayer",
+    "HUDWidget",
+    "MaxBuffPercent",
+    "MinBuffPercent",
+    "OnDroppedOff",
+    "PercentNodesToSpawn",
+    "PlayerPawn",
+    "PlayerState",
+    "QuestHUD",
+    "SpawnedGatherables",
+    "TotalCollectedGatherables"
+   ],
+   "sets": [
+    "GatherTimer",
+    "GatherableClassLoaded",
+    "GatherableSpawnNodes",
+    "QuestHUD",
+    "TotalCollectedGatherables"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToTarget",
+    "Actor.GetComponentByClass",
+    "Actor.GetTransform",
+    "ArchonDialogManagerComponent.ClientQueueNextDialogByName",
+    "ArchonGameplayStatics.GetArchonGlobalUI",
+    "ArchonGameplayStatics.GetArchonLocalPlayerController",
+    "ArchonGameplayStatics.GetNetIdFromPlayerState",
+    "ArchonGameplayStatics.GetPlayerStateFromNetId",
+    "ArchonGlobalUI.DisplayToastMessage",
+    "ArchonHUDWidget.AddFullScreenWidget",
+    "ArchonPlayerController.GetTutorialComponent",
+    "BlueprintMapLibrary.Map_Add",
+    "BlueprintMapLibrary.Map_Find",
+    "Client_PlayVO",
+    "FinishCleanup",
+    "FinishContent",
+    "FinishLoadingContent",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GetPlayerCharacters",
+    "HUDGameContentStoryMissionWidget.OnGatherPhaseFinished",
+    "HUDGameContentStoryMissionWidget.OnGatherPhaseStarted",
+    "HUDGameContentStoryMissionWidget.SetCarrying",
+    "IsLocallyControlled",
+    "K2_DestroyActor",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Shuffle",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Conv_IntToInt64",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FTrunc",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MapRangeClamped",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetMathLibrary.Round",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.LoadAssetClass",
+    "KismetSystemLibrary.PrintString",
+    "KismetTextLibrary.Conv_StringToText",
+    "KismetTextLibrary.Format",
+    "MakeEffectContext",
+    "MakeOutgoingSpec",
+    "MulticastDropped",
+    "MulticastFinishGatherPhase",
+    "MulticastGathered",
+    "MulticastStartGatherPhase",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnPlayersArrived",
+    "OnRep_TotalCollectedGatherables",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnFinished",
+    "PhxBaseGameContent.GetContentSpecification",
+    "PhxBaseGameContent.HandleBeginContent",
+    "PhxBaseGameContent.HandleCleanupContent",
+    "PhxBaseGameContent.HandleLoadingContent",
+    "PlayerController.GetHUD",
+    "PlayerState.GetPlayerName",
+    "TutorialComponent.ShowTutorialByID",
+    "UtilityMethods.Equal_UniqueNetIdRepl"
+   ],
+   "authority": [
+    "IsLocallyControlled",
+    "IsServer"
+   ],
+   "tables": [
+    "DataTable story_mission_dialog_table"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass 11A_storymission01_critdamage_ge_C",
+    "BlueprintGeneratedClass 11A_storymission01_gather_dropoff_bp_C",
+    "BlueprintGeneratedClass dialog_manager_bpc_C",
+    "BlueprintGeneratedClass exploration_game_mode_bpc_C",
+    "BlueprintGeneratedClass gamestate_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass gatherable_spawn_node_story_mission_01_C",
+    "WidgetBlueprintGeneratedClass game_content_storymission_hud_bpw_C"
+   ]
+  },
+  {
+   "name": "HandleBeginContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleCleanupContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleLoadingContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastDropped",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerNetID",
+     "type": "StructProperty<UniqueNetIdRepl>"
+    },
+    {
+     "name": "DroppedCount",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastFinishGatherPhase",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Buff",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastGathered",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerNetID",
+     "type": "StructProperty<UniqueNetIdRepl>"
+    },
+    {
+     "name": "GatheredCount",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastStartGatherPhase",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PhaseDuration",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnCollectedGatherable",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ArchonCharacter",
+     "type": "ObjectProperty<ArchonCharacter>"
+    },
+    {
+     "name": "NumGathers",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDroppedOffGatherables",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ArchonCharacter",
+     "type": "ObjectProperty<ArchonCharacter>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnGatherTimeLimitReached",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_1B9EEE5F4A43DE94EFC318AD0454FEA4",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "ClassProperty<Class>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPlayersArrived",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_TotalCollectedGatherables",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "QuestHUD",
+    "TotalCollectedGatherables"
+   ],
+   "sets": [],
+   "calls": [
+    "HUDGameContentStoryMissionWidget.SetPartyTotalCollected",
+    "KismetSystemLibrary.IsServer"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "debugStringToClient",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewParam",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherables_for_buff_gc_C.ExecuteUbergraph_gatherables_for_buff_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable story_mission_dialog_table"
+ ],
+ "package": "/Game/gamemodes/_game_content/story_missions/gatherables_for_buff_gc",
+ "pseudo_file": "pseudo/gatherables_for_buff_gc_C.txt",
+ "game_data": {}
+}

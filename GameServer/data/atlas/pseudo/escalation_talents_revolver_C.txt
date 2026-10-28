@@ -1,0 +1,112 @@
+# escalation_talents_revolver_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ChooseandFireElement
+  [0] ExecuteUbergraph_escalation_talents_revolver(2174)
+  [15] return nothing
+  [17] end
+
+=== DamagedBehemoth
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_escalation_talents_revolver(1115)
+  [87] return nothing
+  [89] end
+
+=== ExecuteUbergraph_escalation_talents_revolver
+  [0] goto computed(EntryPoint)
+  [10] FlushNetDormancy()
+  [20] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, 5)
+  [58] self.ElementChoice = CallFunc_RandomIntegerInRange_ReturnValue
+  [85] MarkPropertyDirtyFromRepIndex(self, 18, 'ElementChoice')
+  [114] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [134] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_2.K2_GetActorRotation()
+  [184] Default__archon_function_library_C.GetMeshLocation(CallFunc_GetBuffOwner_ReturnValue_2, self, CallFunc_GetMeshLocation_Location)
+  [239] Default__targeting_function_library_C.FindSpotInFrontOfLocation(CallFunc_GetMeshLocation_Location, CallFunc_K2_GetActorRotation_ReturnValue, 0.0, 150.0, 0.0, self, CallFunc_FindSpotInFrontOfLocation_SpotFound, CallFunc_FindSpotInFrontOfLocation_NewLocation, CallFunc_FindSpotInFrontOfLocation_NewRotation)
+  [348] FlushNetDormancy()
+  [358] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_FindSpotInFrontOfLocation_NewLocation)
+  [395] self.AoELocation = CallFunc_Conv_VectorToTransform_ReturnValue
+  [422] MarkPropertyDirtyFromRepIndex(self, 17, 'AoELocation')
+  [451] ChooseandFireElement()
+  [465] goto @2462
+  [470] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [491] if !(CallFunc_IsServer_ReturnValue) goto @2462
+  [505] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.BaseDamageWithMultipliersApplied)
+  [543] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.Multiplier)
+  [589] self.DamageToAdd = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [616] self.Damaged Actor = K2Node_CustomEvent_DamagedActor
+  [635] Temp_struct_Variable = GameplayTag{'Combat.Weapon.WeaponImpact'}
+  [680] array{}
+  [691] BreakGameplayTagContainer(K2Node_CustomEvent_DamageTags, CallFunc_BreakGameplayTagContainer_GameplayTags)
+  [719] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(CallFunc_BreakGameplayTagContainer_GameplayTags, Temp_struct_Variable)
+  [779] if !(CallFunc_Array_Contains_ReturnValue) goto @2462
+  [793] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.HitCount, 1)
+  [835] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [862] self.HitCount = Temp_int_Variable
+  [889] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.HitCount, 6)
+  [923] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @2462
+  [937] self.HitCount = 0
+  [960] goto @10
+  [965] ReceiveBeginPlay()
+  [975] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [995] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1046] K2Node_CreateDelegate_OutputDelegate = bind(self.DamagedBehemoth)
+  [1069] K2Node_CreateDelegate_OutputDelegate += None
+  [1110] goto @2462
+  [1115] goto @470
+  [1120] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1140] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1176] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [1205] if !(K2Node_DynamicCast_bSuccess) goto @2462
+  [1219] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, aoe_simple_playerowned_C, self.AoELocation, 0, K2Node_DynamicCast_AsPawn)
+  [1269] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OverrideDamageRow', self.Override Damage Row)
+  [1310] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', 200.0)
+  [1351] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', K2Node_DynamicCast_AsPawn)
+  [1392] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', self.DamageToAdd)
+  [1433] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'ContextSource', K2Node_DynamicCast_AsPawn)
+  [1474] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [1515] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, self.AoELocation)
+  [1553] BreakTransform(self.AoELocation, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1599] BreakVector(CallFunc_BreakTransform_Location, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1645] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z, 150.0)
+  [1691] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_Add_DoubleDouble_ReturnValue)
+  [1746] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.Emitter Template, CallFunc_MakeVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1839] goto @2462
+  [1844] self.Override Damage Row = 'Escalation.Revolver.Blaze'
+  [1875] self.Emitter Template = explosion_blaze_sm_p
+  [1894] goto @1120
+  [1899] self.Override Damage Row = 'Escalation.Revolver.Frost'
+  [1930] self.Emitter Template = frost_grenade_primary_explosion_p
+  [1949] goto @1120
+  [1954] self.Override Damage Row = 'Escalation.Revolver.Terra'
+  [1985] self.Emitter Template = explosion_terra_sm_p
+  [2004] goto @1120
+  [2009] self.Override Damage Row = 'Escalation.Revolver.Shock'
+  [2040] self.Emitter Template = impact_shock_p
+  [2059] goto @1120
+  [2064] self.Override Damage Row = 'Escalation.Revolver.Radiant'
+  [2095] self.Emitter Template = radiant_object_explode_sm_p
+  [2114] goto @1120
+  [2119] self.Override Damage Row = 'Escalation.Revolver.Umbral'
+  [2150] self.Emitter Template = amp_s10a_planar_travel_umbral_burst_small_p
+  [2169] goto @1120
+  [2174] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 0)
+  [2208] if !(K2Node_SwitchInteger_CmpSuccess) goto @1844
+  [2222] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 1)
+  [2256] if !(K2Node_SwitchInteger_CmpSuccess) goto @1899
+  [2270] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 2)
+  [2304] if !(K2Node_SwitchInteger_CmpSuccess) goto @1954
+  [2318] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 3)
+  [2352] if !(K2Node_SwitchInteger_CmpSuccess) goto @2009
+  [2366] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 4)
+  [2400] if !(K2Node_SwitchInteger_CmpSuccess) goto @2064
+  [2414] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.ElementChoice, 5)
+  [2448] if !(K2Node_SwitchInteger_CmpSuccess) goto @2119
+  [2462] return nothing
+  [2464] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_escalation_talents_revolver(965)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,272 @@
+# player_glider_camera_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Activate Lookat
+  [0] self.LookAtHeading = Lookat
+  [27] CallFunc_FClamp_ReturnValue_1 = FClamp(BlendTime, 0.0, 1.0)
+  [82] self.LookatBlendTime = CallFunc_FClamp_ReturnValue_1
+  [109] CallFunc_FClamp_ReturnValue = FClamp(HeadingBumpFactor, 0.0, 1.0)
+  [164] self.GlidingHeadingChangeFactor = CallFunc_FClamp_ReturnValue
+  [191] self.LookAtActive = true
+  [202] self.CurrLookatBlendTime = 0.0
+  [229] return nothing
+  [231] end
+
+=== DeactivateLookat
+  [0] self.LookatBlendTime = BlendTime
+  [27] self.LookAtActive = false
+  [38] CallFunc_FMin_ReturnValue = FMin(self.CurrLookatBlendTime, self.LookatBlendTime)
+  [84] self.CurrLookatBlendTime = CallFunc_FMin_ReturnValue
+  [111] return nothing
+  [113] end
+
+=== ExecuteUbergraph_player_glider_camera_bpc
+  [0] push @6716
+  [5] goto computed(EntryPoint)
+  [15] push @1194
+  [20] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [40] if !(CallFunc_GetArchonGameUserSettings_ReturnValue.self.bMouseInvertXAxis) goto @588
+  [76] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [118] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [169] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [245] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [282] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_BreakVector2D_X, -1.0)
+  [328] Temp_real_Variable_1 = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [355] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [397] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [448] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [524] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [561] CallFunc_BreakVector2D_X = Temp_real_Variable_1
+  [588] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [630] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [681] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [757] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [794] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [814] CallFunc_ClampControllerInput_AxisInput_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector2D_X)
+  [843] CallFunc_ClampControllerInput_ReturnValue = ClampControllerInput(true, false, CallFunc_ClampControllerInput_AxisInput_ImplicitCast, 0.5, -3.0, 3.0, CallFunc_GetArchonGameUserSettings_ReturnValue.self.MouseXAxisSensitivity, CallFunc_GetArchonGameUserSettings_ReturnValue.self.CameraMinSensitivity, CallFunc_GetArchonGameUserSettings_ReturnValue.self.CameraMaxSensitivity, K2Node_Event_DeltaSeconds)
+  [999] CallFunc_FInterpTo_Constant_Target_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_ClampControllerInput_ReturnValue)
+  [1028] CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_2 = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [1057] CallFunc_FInterpTo_Constant_ReturnValue = FInterpTo_Constant(self.FilteredInputYaw, CallFunc_FInterpTo_Constant_Target_ImplicitCast, CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_2, self.GliderCameraControlYawSpeed)
+  [1121] self.FilteredInputYaw = CallFunc_FInterpTo_Constant_ReturnValue
+  [1148] K2Node_DynamicCast_AsArchon_Character.AddControllerYawInput(CallFunc_ClampControllerInput_ReturnValue)
+  [1193] pop
+  [1194] CallFunc_GetArchonGameUserSettings_ReturnValue_1 = GetArchonGameUserSettings()
+  [1214] if !(CallFunc_GetArchonGameUserSettings_ReturnValue_1.self.bMouseInvertYAxis) goto @1762
+  [1250] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [1292] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [1343] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [1419] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [1456] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_BreakVector2D_Y, -1.0)
+  [1502] Temp_real_Variable = CallFunc_Multiply_DoubleDouble_ReturnValue_1
+  [1529] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [1571] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [1622] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [1698] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [1735] CallFunc_BreakVector2D_Y = Temp_real_Variable
+  [1762] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [1804] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [1855] CallFunc_GetInputValue_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('Turn', 'LookUp')
+  [1931] BreakVector2D(CallFunc_GetInputValue_ReturnValue, CallFunc_BreakVector2D_X, CallFunc_BreakVector2D_Y)
+  [1968] CallFunc_GetArchonGameUserSettings_ReturnValue_1 = GetArchonGameUserSettings()
+  [1988] CallFunc_ClampControllerInput_AxisInput_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_BreakVector2D_Y)
+  [2017] CallFunc_ClampControllerInput_ReturnValue_1 = ClampControllerInput(true, false, CallFunc_ClampControllerInput_AxisInput_ImplicitCast_1, 0.5, -3.0, 3.0, CallFunc_GetArchonGameUserSettings_ReturnValue_1.self.MouseYAxisSensitivity, CallFunc_GetArchonGameUserSettings_ReturnValue_1.self.CameraMinSensitivity, CallFunc_GetArchonGameUserSettings_ReturnValue_1.self.CameraMaxSensitivity, K2Node_Event_DeltaSeconds)
+  [2173] CallFunc_FInterpTo_Constant_Target_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_ClampControllerInput_ReturnValue_1)
+  [2202] CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_3 = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [2231] CallFunc_FInterpTo_Constant_ReturnValue_3 = FInterpTo_Constant(self.FilteredInputPitch, CallFunc_FInterpTo_Constant_Target_ImplicitCast_1, CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_3, self.GliderCameraControlPitchSpeed)
+  [2295] self.FilteredInputPitch = CallFunc_FInterpTo_Constant_ReturnValue_3
+  [2322] K2Node_DynamicCast_AsArchon_Character.AddControllerPitchInput(CallFunc_ClampControllerInput_ReturnValue_1)
+  [2367] pop
+  [2368] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [2389] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @2404
+  [2403] pop
+  [2404] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2424] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(player_glide_bpc_C)
+  [2475] self.PlayerGlidingComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [2494] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PlayerGlidingComponent)
+  [2523] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2533] InitializeVariables()
+  [2547] K2Node_CreateDelegate_OutputDelegate = bind(self.OnGlidingStateChanged)
+  [2570] K2Node_CreateDelegate_OutputDelegate += None
+  [2611] pop
+  [2612] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_CurrentGlidingState, 0)
+  [2643] if !(K2Node_SwitchEnum_CmpSuccess) goto @2856
+  [2657] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_CurrentGlidingState, 1)
+  [2688] if !(K2Node_SwitchEnum_CmpSuccess) goto @2748
+  [2702] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_CurrentGlidingState, 2)
+  [2733] if !(K2Node_SwitchEnum_CmpSuccess) goto @2856
+  [2747] pop
+  [2748] SetComponentTickEnabled(true)
+  [2763] self.FilteredInputPitch = 0.0
+  [2790] self.FilteredInputYaw = 0.0
+  [2817] self.LookAtActive = false
+  [2828] self.LookatBlendTime = 0.0
+  [2855] pop
+  [2856] SetComponentTickEnabled(false)
+  [2871] pop
+  [2872] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2892] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [2928] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [2957] if !(K2Node_DynamicCast_bSuccess) pop
+  [2967] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [3009] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetController_ReturnValue)
+  [3038] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3048] CallFunc_Is_Using_Gamepad_ReturnValue = Default__UserWidgetFunctions_C.Is Using Gamepad(self)
+  [3095] if !(CallFunc_Is_Using_Gamepad_ReturnValue) goto @5018
+  [3109] push @3767
+  [3114] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [3156] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [3207] CallFunc_GetInputValue_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('TurnRate', 'LookUpRate')
+  [3283] BreakVector2D(CallFunc_GetInputValue_ReturnValue_1, CallFunc_BreakVector2D_X_1, CallFunc_BreakVector2D_Y_1)
+  [3320] CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_1 = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [3349] CallFunc_FInterpTo_Constant_ReturnValue_1 = FInterpTo_Constant(self.FilteredInputYaw, CallFunc_BreakVector2D_X_1, CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast_1, self.GliderCameraControlYawSpeed)
+  [3413] self.FilteredInputYaw = CallFunc_FInterpTo_Constant_ReturnValue_1
+  [3440] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [3482] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetController_ReturnValue.GetComponentByClass(ArchonGlidingInputComponent)
+  [3533] CallFunc_GetInputValue_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue.GetInputValue('TurnRate', 'LookUpRate')
+  [3609] BreakVector2D(CallFunc_GetInputValue_ReturnValue_1, CallFunc_BreakVector2D_X_1, CallFunc_BreakVector2D_Y_1)
+  [3646] CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [3675] CallFunc_FInterpTo_Constant_ReturnValue_2 = FInterpTo_Constant(self.FilteredInputPitch, CallFunc_BreakVector2D_Y_1, CallFunc_FInterpTo_Constant_DeltaTime_ImplicitCast, self.GliderCameraControlPitchSpeed)
+  [3739] self.FilteredInputPitch = CallFunc_FInterpTo_Constant_ReturnValue_2
+  [3766] pop
+  [3767] CallFunc_K2_GetActorRotation_ReturnValue = K2Node_DynamicCast_AsArchon_Character.K2_GetActorRotation()
+  [3817] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [3859] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [3905] CallFunc_GetControlRotation_ReturnValue = CallFunc_GetController_ReturnValue.GetControlRotation()
+  [3959] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [3988] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, 90.0)
+  [4034] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 30.0)
+  [4080] CallFunc_SignOfFloat_ReturnValue = SignOfFloat(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [4117] CallFunc_Abs_ReturnValue = Abs(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [4154] CallFunc_Multiply_DoubleDouble_ReturnValue_4 = Multiply_DoubleDouble(self.FilteredInputYaw, self.GliderYawAngle)
+  [4200] CallFunc_Multiply_DoubleDouble_ReturnValue_5 = Multiply_DoubleDouble(self.FilteredInputPitch, self.GliderPitchAngle)
+  [4246] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [4275] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_4, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [4321] CallFunc_Multiply_DoubleDouble_ReturnValue_6 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_5, -1.0)
+  [4367] CallFunc_SignOfFloat_ReturnValue_1 = SignOfFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_6)
+  [4404] CallFunc_NotEqual_DoubleDouble_ReturnValue = NotEqual_DoubleDouble(CallFunc_SignOfFloat_ReturnValue_1, CallFunc_SignOfFloat_ReturnValue)
+  [4442] CallFunc_NearlyEqual_FloatFloat_ReturnValue = NearlyEqual_FloatFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_6, 0.0, 0.0010000000474974513)
+  [4489] CallFunc_Abs_ReturnValue_1 = Abs(CallFunc_Multiply_DoubleDouble_ReturnValue_6)
+  [4526] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_NearlyEqual_FloatFloat_ReturnValue)
+  [4555] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Abs_ReturnValue_1, CallFunc_Abs_ReturnValue)
+  [4593] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_NotEqual_DoubleDouble_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [4631] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [4669] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_6, CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_BooleanOR_ReturnValue)
+  [4724] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, self.GilderCameraPitchOffset)
+  [4770] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [4799] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [4828] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [4879] CallFunc_RInterpTo_Constant_InterpSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.GliderCameraRotationRate)
+  [4908] CallFunc_RInterpTo_Constant_ReturnValue = RInterpTo_Constant(CallFunc_GetControlRotation_ReturnValue, CallFunc_MakeRotator_ReturnValue, K2Node_Event_DeltaSeconds, CallFunc_RInterpTo_Constant_InterpSpeed_ImplicitCast)
+  [4972] CallFunc_GetController_ReturnValue.SetControlRotation(CallFunc_RInterpTo_Constant_ReturnValue)
+  [5017] pop
+  [5018] CallFunc_IsPlatformSwitch_ReturnValue = IsPlatformSwitch()
+  [5038] if !(CallFunc_IsPlatformSwitch_ReturnValue) goto @15
+  [5052] pop
+  [5053] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [5095] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetController_ReturnValue)
+  [5124] if !(CallFunc_IsValid_ReturnValue) pop
+  [5134] CallFunc_UpdateLookatAlpha_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [5163] UpdateLookatAlpha(CallFunc_UpdateLookatAlpha_DeltaTime_ImplicitCast, CallFunc_UpdateLookatAlpha_Alpha)
+  [5195] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [5237] CallFunc_GetControlRotation_ReturnValue_1 = CallFunc_GetController_ReturnValue.GetControlRotation()
+  [5291] BreakRotator(self.LookAtHeading, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [5337] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [5388] CallFunc_RLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_UpdateLookatAlpha_Alpha)
+  [5417] CallFunc_RLerp_ReturnValue = RLerp(CallFunc_GetControlRotation_ReturnValue_1, CallFunc_MakeRotator_ReturnValue_1, CallFunc_RLerp_Alpha_ImplicitCast, true)
+  [5473] CallFunc_GetController_ReturnValue.SetControlRotation(CallFunc_RLerp_ReturnValue)
+  [5518] CallFunc_Multiply_DoubleDouble_ReturnValue_7 = Multiply_DoubleDouble(self.GlidingHeadingChangeFactor, CallFunc_UpdateLookatAlpha_Alpha)
+  [5564] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_7, 0.0)
+  [5602] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [5612] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [5654] CallFunc_GetControlRotation_ReturnValue_1 = CallFunc_GetController_ReturnValue.GetControlRotation()
+  [5708] BreakRotator(self.LookAtHeading, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [5754] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [5805] CallFunc_RLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_UpdateLookatAlpha_Alpha)
+  [5834] CallFunc_RLerp_ReturnValue = RLerp(CallFunc_GetControlRotation_ReturnValue_1, CallFunc_MakeRotator_ReturnValue_1, CallFunc_RLerp_Alpha_ImplicitCast, true)
+  [5890] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [5910] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_3.GetComponentByClass(ArchonGlidingComponent)
+  [5961] CallFunc_Multiply_DoubleDouble_ReturnValue_7 = Multiply_DoubleDouble(self.GlidingHeadingChangeFactor, CallFunc_UpdateLookatAlpha_Alpha)
+  [6007] CallFunc_GetCurrentGlidingRotation_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue_2.GetCurrentGlidingRotation()
+  [6057] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_RLerp_ReturnValue, CallFunc_GetCurrentGlidingRotation_ReturnValue_1)
+  [6103] CallFunc_Multiply_RotatorFloat_B_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_7)
+  [6132] CallFunc_Multiply_RotatorFloat_ReturnValue = Multiply_RotatorFloat(CallFunc_NormalizedDeltaRotator_ReturnValue, CallFunc_Multiply_RotatorFloat_B_ImplicitCast)
+  [6178] CallFunc_GetComponentByClass_ReturnValue_2.AddGlidingRotation(CallFunc_Multiply_RotatorFloat_ReturnValue)
+  [6219] pop
+  [6220] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [6240] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [6276] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [6305] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [6315] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(K2Node_DynamicCast_AsArchon_Character_1)
+  [6351] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [6380] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [6390] CallFunc_GetCurrentGlidingRotation_ReturnValue = K2Node_DynamicCast_AsBP_Player_Character.self.player_glide_bpc.GetCurrentGlidingRotation()
+  [6462] BreakRotator(CallFunc_GetCurrentGlidingRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [6508] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [6537] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, -0.5)
+  [6583] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.CacheCameraDefaultFOV, CallFunc_Multiply_DoubleDouble_ReturnValue_3)
+  [6629] self.CameraDefaultFOV = CallFunc_Add_DoubleDouble_ReturnValue
+  [6656] pop
+  [6657] push @6220
+  [6662] push @5053
+  [6667] goto @2872
+  [6672] ReceiveBeginPlay()
+  [6682] goto @2368
+  [6687] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [6706] goto @6657
+  [6711] goto @6672
+  [6716] return nothing
+  [6718] end
+
+=== GetCameraVariables
+  [0] Distance = self.CameraDefaultDistance
+  [27] TargetOffset = self.CameraDefaultTargetOffset
+  [54] FOV = self.CameraDefaultFOV
+  [81] Offset = self.CameraDefaultOffset
+  [108] TimeConstant = self.CameraDefaultTimeConstant
+  [135] LagSpeed = self.CameraDefaultLagSpeed
+  [162] return nothing
+  [164] end
+
+=== InitializeVariables
+  [0] self.CacheCameraDefaultFOV = self.CameraDefaultFOV
+  [27] return nothing
+  [29] end
+
+=== OnGlidingStateChanged
+  [0] frame.K2Node_CustomEvent_CurrentGlidingState = CurrentGlidingState
+  [18] frame.K2Node_CustomEvent_PreviousGlidingState = PreviousGlidingState
+  [36] ExecuteUbergraph_player_glider_camera_bpc(2612)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_player_glider_camera_bpc(6711)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_player_glider_camera_bpc(6687)
+  [33] return nothing
+  [35] end
+
+=== UpdateLookatAlpha
+  [0] if !(self.LookAtActive) goto @244
+  [14] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.CurrLookatBlendTime, self.LookatBlendTime)
+  [52] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @506
+  [66] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.CurrLookatBlendTime, DeltaTime)
+  [112] self.CurrLookatBlendTime = CallFunc_Add_DoubleDouble_ReturnValue
+  [139] CallFunc_MapRangeClamped_ReturnValue_1 = MapRangeClamped(self.CurrLookatBlendTime, 0.0, self.LookatBlendTime, 0.0, 1.0)
+  [212] Alpha = CallFunc_MapRangeClamped_ReturnValue_1
+  [239] goto @533
+  [244] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.CurrLookatBlendTime, 0.0)
+  [282] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @474
+  [296] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.CurrLookatBlendTime, DeltaTime)
+  [342] self.CurrLookatBlendTime = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [369] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(self.CurrLookatBlendTime, 0.0, self.LookatBlendTime, 0.0, 1.0)
+  [442] Alpha = CallFunc_MapRangeClamped_ReturnValue
+  [469] goto @533
+  [474] Alpha = 0.0
+  [501] goto @533
+  [506] Alpha = 1.0
+  [533] return nothing
+  [535] end

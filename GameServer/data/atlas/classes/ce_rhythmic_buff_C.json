@@ -1,0 +1,371 @@
+{
+ "name": "ce_rhythmic_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_conditional_benefit_buff_C",
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NumHitsRequired",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimeBetweenAttacks",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentNumHits",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DecayTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "StackCounterGE",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ResetCounterOnTakeDamage",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ExcludeHitsWithTags",
+   "type": "StructProperty<GameplayTagContainer>",
+   "bp_type": "StructProperty<GameplayTagContainer>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bHasAppliedSingleFrameHit",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_ce_rhythmic_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 86,
+   "reads": [
+    "CreatedBuffs",
+    "CurrentNumHits",
+    "ExcludeHitsWithTags",
+    "NumHitsRequired",
+    "OnPostWeaponHitComplete",
+    "ResetCounterOnTakeDamage",
+    "StackCounterGE",
+    "TimeBetweenAttacks",
+    "bHasAppliedSingleFrameHit"
+   ],
+   "sets": [
+    "CurrentNumHits",
+    "DecayTimer",
+    "NumHitsRequired",
+    "StackCounterGE",
+    "bHasAppliedSingleFrameHit"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "Actor.GetComponentByClass",
+    "Actor.ReceiveTick",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.OnDamageReceived",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "CanProcOnDamageEffects",
+    "GameplayModifierFunctionLibrary.RemoveBuff",
+    "GetCellEffectMagnitude",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.FTrunc",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MakeOutgoingSpec",
+    "RemoveActiveGameplayEffect",
+    "Try Activate Effect",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass rhythmic_hit_stacks_ico_ge_C"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageReceived",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostWeaponHitComplete_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageAndInstigatorTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "FinalDamageAmount",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetCount",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_rhythmic_buff_C.ExecuteUbergraph_ce_rhythmic_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Content/Rhythmic/ce_rhythmic_buff",
+ "pseudo_file": "pseudo/ce_rhythmic_buff_C.txt",
+ "game_data": {}
+}

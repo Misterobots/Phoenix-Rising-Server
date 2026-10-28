@@ -1,0 +1,188 @@
+shadowcat_nemesis_bt  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.TargetActor, Target_key=bb.TargetActor)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true, Interval=0.25)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_enter_arena_portal_bt)
+    3) RunBehavior "Shared Stagger Behavior"  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    [if Blackboard  (ForceAction is Is Set)]
+    [if behemoth_in_state_btdeco "Not ready to enter final form"  (State=ReadyToEnterFinalForm, StateRequirement=ExcludedByState)]
+    5) Sequence
+      [if ForceSuccess]
+      1) try_set_behemoth_state_bttask  (State=ReadyToEnterFinalForm)
+    [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard "Flee State?"  (InFleeState is Is Set)]
+    [if not check_nemesis_decorator "Not Nemesis?"  (bInverseCondition=true)]
+    6) Sequence
+      {service hide_behemoth_bttask  (HideOnStart=false)}
+      1) BehemothAction  (Montage=AnimMontage shadowcat_flee_mot)
+      [if set_state_btdeco  (State=CustomState, ModifyStateOnActivate=false)]
+      2) Selector
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_portal_entry_setup", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+        2) Sequence
+          1) BehemothAction  (Montage=AnimMontage b_shadowcat_fall_into_portal_mot)
+          2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+          3) teleport_bttask  (DestinationKeyName=PounceLocation)
+          4) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_exit_portal_if_not_visible)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_prep_bt)
+      [if set_state_btdeco  (State=ActivelyFleeing)]
+      4) Sequence
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_enter)
+        2) Selector
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_despawn_bt)
+          2) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery next_patrolpoint_eqs"}, BlackboardKey=bb.PounceLocation)
+      [if set_state_btdeco  (State=behemoth_states_enum::Successfully Fled)]
+      5) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_exit)
+      6) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"}, BlackboardKey=bb.MoveDestination)
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      7) RunBehavior  (BehaviorAsset=BehaviorTree sub_flee_arrive)
+    7) RunBehavior "Deaggro"  (BehaviorAsset=BehaviorTree lerawr_deaggro_bt)
+    8) Selector "StateChange"
+      1) Sequence
+        [if Blackboard "Ready For Rage"  (ReadyForRageState is Is Set)]
+        [if set_state_btdeco  (State=CustomState, ModifyStateOnActivate=false)]
+        1) Selector
+          {service hide_behemoth_bttask  (HideOnStart=false)}
+          1) Sequence
+            {service behemoth_specific_function_bts  (LeaveFunction=CleanupInfinityCharge)}
+            {service debug_print_bts  (KeyToDisplay=TempInt, Type=Int, Enabled=false)}
+            1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=35)
+            2) bttask_enter_rage_state  (Montage=AnimMontage shadowcat_infinitycharge_enter_mot)
+            3) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+            4) teleport_bttask  (DestinationKeyName=PounceLocation)
+            5) call_specific_behemoth_function_bttask "SetupInfinityCharge"  (SpecificFunction=SetupInfinityCharge, bShowPropertyDetails=false)
+            6) BehemothAction  (Montage=AnimMontage shadowcat_infinitycharge_loop_mot)
+            7) call_specific_behemoth_function_bttask "CleanupInfinityCharge"  (SpecificFunction=CleanupInfinityCharge, bShowPropertyDetails=false)
+            8) Sequence
+              {service hide_behemoth_bttask  (ShowOnDeactivate=false)}
+              1) store_num_monsterparts_in_bbvar  (OnlyThesePartTypes=["behemoth_part_type::Broken", "behemoth_part_type::Scarred"])
+              2) blackboard_math_bttask "TempInt /= 2"  (LeftSideKey=bb.TempInt, Type=Float, Operator=/, RightSideData={"ConstantFloat": 2.0}, ResultKeyName=TempInt, bShowPropertyDetails=false)
+              3) blackboard_math_bttask "TempInt += 3"  (LeftSideKey=bb.TempInt, Type=Int, RightSideData={"ConstantInt": 3}, ResultKeyName=TempInt, bShowPropertyDetails=false)
+              4) Sequence
+                1) set_blackboard_key_bttask "TempBool = False"  (ResultKey=bb.TempBool, DataType=Bool, bShowPropertyDetails=false)
+                [if ConditionalLoop  (TempBool is Is Not Set)]
+                2) Sequence
+                  {service debug_arrow_btservice  (ArrowEndKey=TargetActor)}
+                  1) blackboard_math_bttask "TempInt--"  (LeftSideKey=bb.TempInt, Type=Int, Operator=-, RightSideData={"ConstantInt": 1}, ResultKeyName=TempInt, bShowPropertyDetails=false)
+                  2) Selector
+                    1) Sequence
+                      1) Wait  (WaitTime=0.2)
+                      2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_live_player_prioritize_clumped_up", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 15000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+                      3) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_rage_portal", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+                      4) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=TargetActor)
+                      5) store_current_location_bttask  (ResultLocationKey=PatternLocation, RelativeOffset={"X": 300.0, "Y": 0.0, "Z": 0.0})
+                      6) set_random_blackboard_bttask  (MinValue=0.5, BlackboardValue=bb.NextTelegraphTime)
+                      7) predict_future_location_bttask  (TargetKey=bb.TargetActor, TimeInFuture=-1, TimeInFutureKey=NextTelegraphTime, ResultKeyName=PatternAimLocation)
+                      8) spawn_gameplay_bttask  (GameplayData={"ManualTargetting": [{"X": 300.0, "Y": 0.0, "Z": 0.0}], "GameplayType": "eqs_gameplay_type::Actor", "ActorInfo": {"ActorClass": "BlueprintGeneratedClass shadowcat_portal_patternaim_2s_C", "EQSGameplayData": {"NumToSpawnPerTick": 1}, "AlignWithGround": false}}, bShowPropertyDetails=false)
+                      9) call_specific_behemoth_function_bttask "TelegraphLatestPortal"  (SpecificFunction=TelegraphLatestPortal, bShowPropertyDetails=false)
+                      10) WaitBlackboardTime  (BlackboardKey=bb.NextTelegraphTime)
+                      11) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=PatternAimLocation)
+                    2) Sequence
+                      1) set_blackboard_key_bttask "TempBool = true"  (ResultKey=bb.TempBool, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+                      2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_exit_portal_if_not_visible)
+                  [if Blackboard  (TempBool is Is Not Set)]
+                  3) Selector
+                    1) Sequence
+                      [if Compare_btdeco "TempInt <= 0"  (LeftSideKey=bb.TempInt, CompareOperator=<=, CompareType=Int, bShowPropertyDetails=false)]
+                      1) set_blackboard_key_bttask "TempBool = True"  (ResultKey=bb.TempBool, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+                      2) BehemothAction  (Montage=AnimMontage shadowcat_infinitycharge_attackexit_mot)
+                    2) BehemothAction "Normal Speed Spin Attack"  (Montage=AnimMontage shadowcat_infinitycharge_attackexit_repeating)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_exit_portal_if_not_visible)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage b_leRawr_state_aether_exit_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_leRawr_state_rage_exit_mot)
+      [if Blackboard "Ready To Enter Aether Charge"  (ReadyToEnterAetherCharge is Is Set)]
+      [if behemoth_in_state_btdeco "Is In Combat"  (State=Combat)]
+      4) Sequence
+        1) RunBehavior "Try Aether Charge"  (BehaviorAsset=BehaviorTree shadowcat_try_enter_aether)
+        2) RunBehavior "Portal Attack"  (BehaviorAsset=BehaviorTree shadowcat_portal_attack)
+    9) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_enter_combat_pounce_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if behemoth_in_state_btdeco "In Combat"  (State=Combat)]
+    10) Selector
+      [if behemoth_in_state_btdeco "Ready to Enter Final Form"  (State=ReadyToEnterFinalForm)]
+      [if behemoth_in_state_btdeco "Aether Charged"  (State=AtherCharged)]
+      [if not multi_behemoth_active_btdeco "Only One Behemoth"  (bInverseCondition=true)]
+      1) Selector
+        [if set_state_btdeco "Is in Final Form?"  (State=FinalForm)]
+        1) Sequence
+          [if ForceSuccess]
+          1) Sequence
+            [if ForceSuccess]
+            1) try_set_behemoth_state_bttask  (State=ReadyToEnterFinalForm, StateChangeType=End)
+            [if Blackboard  (CurrentSpecialAttack Is Equal To None)]
+            [if Blackboard  (NumSpecialAttacksRemaining Is Less Than Or Equal To 0)]
+            2) Sequence
+              1) call_specific_behemoth_function_bttask "Set CurrentSpecialAttack"  (SpecificFunction=SetCurrentSpecialAttack, bShowPropertyDetails=false)
+              2) set_random_blackboard_bttask  (VariableType=Int, MinValue=2, MaxValue=4, BlackboardValue=bb.NumSpecialAttacksRemaining)
+          [if ForceSuccess]
+          2) Selector
+            [if Blackboard "In the Thunderdome?"  (CurrentSpecialAttack Is Equal To PortalThunderDome)]
+            [if set_state_btdeco  (State=CustomState, ModifyStateOnActivate=false)]
+            1) Selector
+              {service hide_behemoth_bttask  (HideOnStart=false)}
+              1) Sequence
+                [if set_blackboard_while_active_btdeco "Set ExecutingPattern While Active"  (BlackboardResultKeyName=ExecutingPattern, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+                1) Sequence
+                  {service behemoth_specific_function_bts  (LeaveFunction=CleanupThunderdome)}
+                  {service debug_arrow_btservice  (ArrowStartKey=PlayerThunderdomeSpawnCenter, ArrowEndKey=PatternAimLocation)}
+                  1) try_stop_executing_pattern_bttask
+                  [if ForceSuccess]
+                  2) Sequence
+                    [if btdeco_percentchance  (PercentChance=0.5)]
+                    1) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_backup_if_close_bt)
+                  3) BehemothAction  (Montage=AnimMontage b_shadowcat_fall_into_portal_mot)
+                  4) Sequence
+                    {service set_music_override_bts  (MusicOverrideName=Special)}
+                    1) call_specific_behemoth_function_bttask  (SpecificFunction=SetupPortalThunderdome, bShowPropertyDetails=false)
+                    2) teleport_bttask  (DestinationKeyName=PatternLocation)
+                    3) Wait  (WaitTime=2)
+                    4) Selector
+                      [if Blackboard  (ForceAction is Is Set)]
+                      1) set_blackboard_key_bttask "CurrentAction = ForceAction"  (ResultKey=bb.CurrentAction, DataType=Object, SourceData={"BlackboardKeyName": "ForceAction"}, bShowPropertyDetails=false)
+                      2) set_action_bbvar_from_behemoth "Pick a random available pattern"  (ResultBBKey=CurrentAction, PickAnyAvailableActionWithTags=["BehemothAction.PatternAction"], ExcludeActionsWithAnyTags=["BehemothAction.Pattern.Unique"], MinBaseValue=0, bShowPropertyDetails=false)
+                    5) set_blackboard_key_bttask "LastPatternAction = CurrentAction"  (ResultKey=bb.LastPatternAction, DataType=Object, SourceData={"BlackboardKeyName": "CurrentAction"}, bShowPropertyDetails=false)
+                    6) execute_pattern_bttask  (ActionBlackboardKey=CurrentAction, PatternExecutionType=PlayOnlySelectedIndex)
+                    7) Wait  (WaitTime=4)
+                    8) execute_pattern_bttask  (PatternStartIndex=1, ActionBlackboardKey=CurrentAction)
+                    [if ForceSuccess]
+                    9) Sequence
+                      [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+                      1) Sequence
+                        1) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_enter)
+                    10) Wait  (WaitTime=1)
+                    11) Selector
+                      [if Blackboard  (ForceAction is Is Set)]
+                      1) set_blackboard_key_bttask "CurrentAction = ForceAction"  (ResultKey=bb.CurrentAction, DataType=Object, SourceData={"BlackboardKeyName": "ForceAction"}, bShowPropertyDetails=false)
+                      2) set_action_bbvar_from_behemoth "Pick a random available pattern, not LastPatternAction"  (ResultBBKey=CurrentAction, PickAnyAvailableActionWithTags=["BehemothAction.PatternAction"], ExcludeActionsWithAnyTags=["BehemothAction.Pattern.Unique"], ExcludeActionBBKey=LastPatternAction, bShowPropertyDetails=false)
+                    12) execute_pattern_bttask  (ActionBlackboardKey=CurrentAction, PatternExecutionType=PlayOnlySelectedIndex)
+                    13) Wait  (WaitTime=2.5)
+                    14) execute_pattern_bttask  (PatternStartIndex=1, ActionBlackboardKey=CurrentAction)
+                [if ForceSuccess]
+                2) Sequence
+                  1) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_exit_portal_if_not_visible)
+              2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_exit_portal_if_not_visible)
+          3) blackboard_math_bttask "NumSpecialAttacksRemaining--"  (LeftSideKey=bb.NumSpecialAttacksRemaining, Type=Int, Operator=-, RightSideData={"ConstantInt": 1}, ResultKeyName=NumSpecialAttacksRemaining, bShowPropertyDetails=false)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      2) Sequence
+        1) set_blackboard_key_bttask "CurrentAction = ChosenAttack"  (ResultKey=bb.CurrentAction, DataType=Object, SourceData={"BlackboardKeyName": "ChosenAttack"}, bShowPropertyDetails=false)
+        2) Selector "StateGate"
+          [if BTDeco_CheckChosenAction "GroundDive"  (ActionClass=BlueprintGeneratedClass shadowcat_ground_dive_atk_C, bShowPropertyDetails=false)]
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_ground_dive)
+          [if BTDeco_CheckChosenAction "PortalPounce"  (ActionClass=BlueprintGeneratedClass shadowcat_portal_pounce_atk_C, bShowPropertyDetails=false)]
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_attack)
+          3) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    11) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    12) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior "Patrol"  (BehaviorAsset=BehaviorTree shared_patrol_bt)

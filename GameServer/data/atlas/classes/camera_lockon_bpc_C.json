@@ -1,0 +1,504 @@
+{
+ "name": "camera_lockon_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "CameraLockOnComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 264,
+ "sdk_header": "camera_lockon_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "LockOnVerticalThreshold",
+   "type": "double",
+   "offset": "0xD8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "LockOnVerticalAdjustmentRatio",
+   "type": "double",
+   "offset": "0xE0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "PrevLockOnYawRotation",
+   "type": "FRotator",
+   "offset": "0xE8",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Rotator>"
+  },
+  {
+   "name": "IgnoreYawDistSq",
+   "type": "double",
+   "offset": "0x100",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "CanLockOnToTarget",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "bool",
+   "params": [
+    {
+     "name": "SelectedTarget_CanLockOnToTarget",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 18,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ActorComponent.GetOwner",
+    "HasMatchingGameplayTag",
+    "IsTargetFleeing",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetLockOnPosition",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SelectedTarget_GetLockOnPosition",
+     "type": "AActor*"
+    },
+    {
+     "name": "SelectedSocket_GetLockOnPosition",
+     "type": "FName"
+    },
+    {
+     "name": "IsValid_GetLockOnPosition",
+     "type": "bool"
+    },
+    {
+     "name": "LockOnPosition_GetLockOnPosition",
+     "type": "FVector"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 24,
+   "reads": [
+    "LockOnVerticalAdjustmentRatio",
+    "LockOnVerticalThreshold"
+   ],
+   "sets": [],
+   "calls": [
+    "CameraLockOnComponent.AdjustLockOnHeight",
+    "GameplayStatics.GetPlayerCameraManager",
+    "GetCameraLocation",
+    "GetMesh",
+    "GetSocketLocation",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetLockOnRotation",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TargetPosition_GetLockOnRotation",
+     "type": "FVector"
+    },
+    {
+     "name": "ReferencePosition_GetLockOnRotation",
+     "type": "FVector"
+    },
+    {
+     "name": "LockOnPitchRotation_GetLockOnRotation",
+     "type": "FRotator"
+    },
+    {
+     "name": "LockOnYawRotation_GetLockOnRotation",
+     "type": "FRotator"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 38,
+   "reads": [
+    "HasHeightAdjustment",
+    "IgnoreYawDistSq",
+    "LockOnPitch",
+    "PrevLockOnYawRotation"
+   ],
+   "sets": [
+    "PrevLockOnYawRotation"
+   ],
+   "calls": [
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.FindLookAtRotation",
+    "KismetMathLibrary.GetYawPitchFromVector",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.Vector_Distance2DSquared",
+    "XY"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetTargetCameraRotation",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsValid_GetTargetCameraRotation",
+     "type": "bool"
+    },
+    {
+     "name": "LockOnPitchRotation_GetTargetCameraRotation",
+     "type": "FRotator"
+    },
+    {
+     "name": "LockOnYawRotation_GetTargetCameraRotation",
+     "type": "FRotator"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 18,
+   "reads": [
+    "LockOnSocket",
+    "LockOnTarget"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "CanLockOnToTarget",
+    "GetLockOnPosition",
+    "GetLockOnRotation",
+    "IsLockOnTargetValid",
+    "KismetMathLibrary.BooleanAND"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsLockOnEnabled",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsEnabled",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 6,
+   "reads": [
+    "bCameraLockOn"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.GetArchonGameUserSettings",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "KismetMathLibrary.BooleanAND"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsLockOnTargetValid",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "bool",
+   "params": [
+    {
+     "name": "SelectedTarget_IsLockOnTargetValid",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 15,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GetIsDead",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsTargetFleeing",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsFleeing",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 18,
+   "reads": [
+    "LockOnTarget",
+    "bHidden"
+   ],
+   "sets": [],
+   "calls": [
+    "GetFleeValues",
+    "KismetMathLibrary.BooleanAND",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshLockOnSocketList",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "bool",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 28,
+   "reads": [
+    "LockOnSocketList",
+    "LockOnTarget"
+   ],
+   "sets": [
+    "LockOnSocket",
+    "LockOnSocketList"
+   ],
+   "calls": [
+    "GetLockOnSockets",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SelectLockOnSocket",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AxisValue_SelectLockOnSocket",
+     "type": "float"
+    },
+    {
+     "name": "SocketName_SelectLockOnSocket",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 17,
+   "reads": [
+    "LockOnSocket",
+    "LockOnSocketList",
+    "LockOnTarget"
+   ],
+   "sets": [
+    "LockOnSocket"
+   ],
+   "calls": [
+    "CameraLockOnComponent.GetNextLockOnSocket",
+    "GetMesh",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Player/blueprints/Components/camera_lockon_bpc",
+ "pseudo_file": "pseudo/camera_lockon_bpc_C.txt",
+ "game_data": {}
+}

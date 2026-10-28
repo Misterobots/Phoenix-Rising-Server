@@ -1,0 +1,229 @@
+salt_heroic_bt  blackboard=BlackboardData bullseye_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true, Interval=0.25)}
+    {service calc_knowntargetavgpos_btservice  (Interval=1)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      1) BehemothAction "DIE!!!"  (Montage=AnimMontage b_sq_slt_00_state_death_fwd_00_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    [if behemoth_in_state_btdeco  (State=Rage)]
+    [if behemoth_in_state_btdeco  (State=ReadyToExitRage)]
+    3) Sequence
+      1) set_blackboard_key_bttask  (ResultKey=bb.RockForm, DataType=Bool, bShowPropertyDetails=false)
+      2) bttask_exit_rage_state  (Montage=AnimMontage salt_b_sq_gen_00_rageexit_fwd_00_mot)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    [if behemoth_in_state_btdeco  (State=Overloaded)]
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    5) Sequence
+      [if ForceSuccess]
+      1) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    6) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+      [if Blackboard  (InFleeState is Is Set)]
+      [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+      2) Sequence
+        [if ForceSuccess]
+        1) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+      3) Selector "StateChange"
+        1) Selector "StateChange"
+          [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+          [if behemoth_in_state_btdeco  (State=Combat)]
+          1) Sequence
+            1) bttask_enter_aethercharge_state  (Montage=AnimMontage heroic_b_sq_slt_00_state_charge_enter_fwd_00_mot, BlendTime=0)
+            2) BehemothAction  (Montage=AnimMontage b_sq_slt_00_state_chargecycle_fwd_00_mot)
+          [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+          2) bttask_exit_aethercharge_state  (Montage=AnimMontage salt_b_sq_gen_00_aether_charge_exit_fwd_00_mot)
+          [if behemoth_in_state_btdeco  (State=ReadyToEnterRage)]
+          [if behemoth_in_state_btdeco  (State=Combat)]
+          3) Sequence
+            1) bttask_enter_rage_state  (Montage=AnimMontage heroic_b_sq_slt_00_state_rage_enter_fwd_00_mot, WhenInterrupted=CancelStateButStayReadyToTransition)
+            2) BehemothAction  (Montage=AnimMontage b_sq_slt_00_state_ragecycle_fwd_00_mot)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      5) Selector
+        [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+        [if current_target_is_valid_btdeco]
+        [if enter_combat_check_btdeco "In EnterCombatRange, or ForceEnterCombat"  (Origin=bb.SelfPos, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, ObservedKeyNames=["SelfPos", "AttackTarget"], bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+        1) Sequence
+          1) bttask_set_boolean  (Key=bb.TempBool)
+          [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Not Set)]
+          [if ForceSuccess]
+          2) Selector
+            1) bttask_set_boolean  (Key=bb.TempBool, Value=true)
+          3) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+          [if ForceSuccess]
+          4) Sequence
+            [if behemoth_in_state_btdeco  (State=Flying)]
+            1) generic_action_bttask  (ActionType=PreEnterCombat)
+          [if ForceSuccess]
+          5) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+          6) generic_action_bttask  (ActionType=EnterCombat, DisableCurving=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+        3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Combat", "ArchetypeCondition": "require_or_exclude::Exclude", "RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "ArchetypeCondition": "require_or_exclude::Exclude", "RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if btdeco_variablecooldown  (Cooldown_Min=115, Cooldown_Max=145, StartTime=260)]
+      6) Sequence
+        1) generic_action_bttask  (ActionType=Growl)
+    7) Selector "Selector_AttackOrNonAttack"
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        [if btdeco_variablecooldown  (Cooldown_Min=40, Cooldown_Max=40, StartTime=60)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+        1) Selector
+          [if btdeco_percentchance  (PercentChance=0.8)]
+          1) Sequence
+            [if comment_btdeco "Teleports the behmoth to the edge of the arena"]
+            1) Sequence
+              1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_loco_fastteleportenter_fwd_00_mot)
+              2) Sequence
+                {service hide_behemoth_bttask  (Interval=0.01, RandomDeviation=0)}
+                {service staggerproof_behemoth_bttask}
+                1) Wait  (WaitTime=1)
+                2) Selector
+                  1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_salt_combat_teleport_edge", "QueryConfig": [{"ParamName": "None", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+                  2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+                3) teleport_bttask "Teleport"  (FacingTargetKeyName=KnownTargetsAvgPos, BlendOutTime=0)
+            2) Sequence
+              1) Selector
+                1) Sequence
+                  [if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.KnownTargetsAvgPos, MinDistance={"ConstantFloat": 2000.0}, MaxDistance={"ConstantFloat": 100000000.0}, bShowPropertyDetails=false)]
+                  [if compare_health_btdeco  (CompareType=<=)]
+                  [if btdeco_variablecooldown  (Cooldown_Min=90, Cooldown_Max=120)]
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  1) Sequence
+                    1) BehemothAction  (Montage=AnimMontage b_sq_slt_00_loco_teleportexit_cowcatcher_mot, ActionClassToCooldown=BlueprintGeneratedClass salt_beam_cowcatcher_atk_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+                    [if TimeLimit  (TimeLimit=8)]
+                    2) Sequence
+                      [if Loop  (NumLoops=100)]
+                      1) Sequence
+                        [if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.KnownTargetsAvgPos, MinDistance={"ConstantFloat": 500.0}, MaxDistance={"ConstantFloat": 9999999.0}, bShowPropertyDetails=false)]
+                        1) Sequence
+                          [if ForceSuccess]
+                          1) Sequence
+                            [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+                            [if TimeLimit  (TimeLimit=1)]
+                            1) MoveTo  (AcceptableRadius=750, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.KnownTargetsAvgPos)
+                2) Selector
+                  [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::AtherCharged"}, bShowPropertyDetails=false)]
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  1) Sequence
+                    1) BehemothAction  (Montage=AnimMontage heroic_b_sq_slt_00_loco_teleportexit_line_above__mot, ActionClassToCooldown=BlueprintGeneratedClass salt_pattern_line_above_chase_atk_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+                    2) Wait  (WaitTime=1, RandomDeviation=0.5)
+                  [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::AtherCharged", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+                  [if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.KnownTargetsAvgPos, MinDistance={"ConstantFloat": 2000.0}, MaxDistance={"ConstantFloat": 100000000.0}, bShowPropertyDetails=false)]
+                  [if btdeco_percentchance  (PercentChance=0.8)]
+                  2) Sequence
+                    1) BehemothAction  (Montage=AnimMontage heroic_b_sq_slt_00_loco_teleportexit_line_in_front_mot, ActionClassToCooldown=BlueprintGeneratedClass salt_pattern_line_front_chase_atk_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+                    2) Wait  (WaitTime=1, RandomDeviation=0.5)
+                  3) Sequence
+                    1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_loco_teleportexit_fwd_00_mot)
+                    2) Selector
+                      [if btdeco_percentchance  (PercentChance=0.5)]
+                      1) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_atk_C, bShowPropertyDetails=false)
+                      2) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_counterclockwise_atk_C, bShowPropertyDetails=false)
+                    3) Selector
+                      [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass salt_headbeam_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                      1) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_headbeam_atk_C, bShowPropertyDetails=false)
+                      2) Wait  (WaitTime=1, RandomDeviation=0.5)
+          2) Sequence
+            [if comment_btdeco "Teleports the behmoth on top of a player"]
+            1) Sequence
+              1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_loco_fastteleportenter_fwd_00_mot)
+              2) Sequence
+                {service hide_behemoth_bttask  (Interval=0.01, RandomDeviation=0)}
+                {service staggerproof_behemoth_bttask}
+                1) Wait  (WaitTime=1, RandomDeviation=0.5)
+                2) Selector
+                  1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_salt_find_live_players_random_in_arena"}, BlackboardKey=bb.MoveDestination)
+                  2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+                3) teleport_bttask "Teleport"  (FacingTargetKeyName=KnownTargetsAvgPos, BlendOutTime=0)
+            2) Sequence
+              1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_loco_teleportexit_fwd_00_mot)
+              2) Selector
+                [if btdeco_percentchance  (PercentChance=0.5)]
+                1) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_atk_C, bShowPropertyDetails=false)
+                2) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_counterclockwise_atk_C, bShowPropertyDetails=false)
+        [if Blackboard  (TopScore Is Greater Than 0.000000)]
+        2) Sequence
+          1) set_blackboard_key_bttask "CurrentAttack = ChosenAttack"  (ResultKey=bb.CurrentAttack, DataType=Object, SourceData={"BlackboardKeyName": "ChosenAttack"}, bShowPropertyDetails=false)
+          2) Selector
+            [if check_action_tags_btdeco "If CurrentAttack has "PatternAction" Tag"  (ChosenAttackKeyName=CurrentAttack, RequireTags=["BehemothAction.PatternAction"], bShowPropertyDetails=false)]
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+            1) Sequence
+              [if ForceSuccess]
+              1) Sequence
+                {service reset_action_cooldown_on_finish_btservice  (ActionBBKey=CurrentAttack)}
+                1) call_specific_behemoth_function_bttask  (bShowPropertyDetails=false)
+                2) reset_action_cooldown_bttask  (ActionBBKey=CurrentAttack)
+                3) PerformActionClass  (ActionBlackboardKeyName=CurrentAttack)
+                4) Wait  (WaitTime=1, RandomDeviation=0.5)
+                [if ForceSuccess]
+                5) Sequence
+                  [if Blackboard  (ForceAction is Is Set)]
+                  1) Wait  (WaitTime=20)
+                  [if Blackboard  (ForceAction is Is Not Set)]
+                  2) Selector
+            2) Sequence
+              1) Selector
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass salt_small_galaxy_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                1) Selector
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  1) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_small_galaxy_atk_C, ActionBlackboardKeyName=CurrentAttack, bShowPropertyDetails=false)
+                  2) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_small_galaxy_counterclockwise_atk_C, ActionBlackboardKeyName=CurrentAttack, bShowPropertyDetails=false)
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                2) Selector
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  1) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_atk_C, ActionBlackboardKeyName=CurrentAttack, bShowPropertyDetails=false)
+                  2) PerformActionClass  (ActionClass=BlueprintGeneratedClass salt_big_galaxy_counterclockwise_atk_C, ActionBlackboardKeyName=CurrentAttack, bShowPropertyDetails=false)
+              2) Wait  (WaitTime=1, RandomDeviation=0.5)
+            3) PerformActionClass  (ActionBlackboardKeyName=CurrentAttack)
+        [if btdeco_variablecooldown  (Cooldown_Min=5, Cooldown_Max=10)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage"}, bShowPropertyDetails=false)]
+        [if Blackboard  (TopScore Is Less Than Or Equal To 0.000000)]
+        3) Selector
+          1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_pers_patrol_fwd_00_mot)
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+      2) Selector "Reposition"
+        {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.25, bCallTickOnSearchStart=true)}
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartNamesToCheck": ["Horn"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+      [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=Alerted)]
+      [if current_target_is_valid_btdeco]
+      [if Cooldown  (CooldownTime=10)]
+      3) BehemothAction  (Montage=AnimMontage b_sq_slt_00_atk_headbeam_fwd_00_mot, ActionClassToCooldown=BlueprintGeneratedClass salt_headbeam_atk_C, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+      4) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+        [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+        [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+        [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+        [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+        3) Sequence "No Enemy - Patrol"
+          1) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+          2) Wait  (WaitTime=1)
+      [if btdeco_variablecooldown  (Cooldown_Min=60, Cooldown_Max=180, StartTime=180)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+      5) Selector
+        [if compare_health_btdeco  (CompareType=>=, PercentValue(Decimal)=0.5)]
+        1) Selector
+          [if ConeCheck  (ConeHalfAngle=-90, ConeOrigin=bb.TargetActor, Observed=bb.TargetActor)]
+          1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_pers_damageprogressionlvl1_left_00_mot)
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.TargetActor, Observed=bb.TargetActor)]
+          2) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_pers_damageprogressionlvl1_right_00_mot)
+        [if compare_health_btdeco  (CompareType=>=, PercentValue(Decimal)=0.25)]
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_pers_damageprogressionlvl2_fwd_00_mot)
+        [if compare_health_btdeco  (CompareType=<, PercentValue(Decimal)=0.24)]
+        3) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_pers_damageprogressionlvl3_fwd_00_mot)

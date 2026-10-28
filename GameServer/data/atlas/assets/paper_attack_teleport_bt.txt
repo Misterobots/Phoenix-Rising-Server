@@ -1,0 +1,20 @@
+paper_attack_teleport_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Paper teleport leap attack"  (bShowPropertyDetails=false)]
+  [root if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=IsBurrowing, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+  Sequence
+    1) generic_action_bttask "Burrow"  (ActionType=Burrow, RequireThatActionExists=true)
+    2) apply_abilities_bttask  (EqsQuery=EnvQuery eqs_find_all_players, AbilitiesToGrant=["BlueprintGeneratedClass camera_lock_block_ab_C"])
+    [if ForceSuccess]
+    3) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery location_near_player_eqs", "QueryConfig": [{"ParamName": "None", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MoveDestination"}, {"ParamName": "None", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.MoveDestination"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+    [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+    4) Sequence
+      1) Sequence
+        {service hide_behemoth_bttask  (Interval=0.001, RandomDeviation=0)}
+        {service staggerproof_behemoth_bttask}
+        1) Wait  (WaitTime=3.75, RandomDeviation=1.25)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_teleport_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+        3) teleport_bttask  (FacingTargetKeyName=AttackTarget)
+    5) BehemothAction  (Montage=AnimMontage b_aq_pap_00_atk_leapattackfromunderground_fwd_00_mot, StopMontageOnAbort=false)

@@ -1,0 +1,936 @@
+{
+ "name": "traversal_vent_01_splined_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "traversal_vent_01_bp_C",
+  "Actor",
+  "Object"
+ ],
+ "size": 1080,
+ "sdk_header": "traversal_vent_01_splined_bp_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Spline",
+   "type": "USplineComponent*",
+   "offset": "0x348",
+   "size": 8,
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<SplineComponent>"
+  },
+  {
+   "name": "OnSpline",
+   "type": "bool",
+   "offset": "0x350",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "SplineStart",
+   "type": "FVector",
+   "offset": "0x358",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "SplineEnd",
+   "type": "FVector",
+   "offset": "0x370",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "SplineDistance",
+   "type": "double",
+   "offset": "0x388",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "TotalSplineTime",
+   "type": "double",
+   "offset": "0x390",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "TimeTicked",
+   "type": "double",
+   "offset": "0x398",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "DoEndBoost",
+   "type": "bool",
+   "offset": "0x3A0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CharacterData",
+   "type": "TArray<Ftraversal_vent_splined_playerdata>",
+   "offset": "0x3A8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "SplineDirection2D",
+   "type": "FVector",
+   "offset": "0x3B8",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "SplineActorRotation",
+   "type": "FRotator",
+   "offset": "0x3D0",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Rotator>"
+  },
+  {
+   "name": "Interact Sound",
+   "type": "ObjectProperty<Object>",
+   "bp_type": "ObjectProperty<Object>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CharacterVO",
+   "type": "UObject*",
+   "offset": "0x3F0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  },
+  {
+   "name": "AlignmentPoint",
+   "type": "FPhxRelativeAlignmentPointDescription",
+   "offset": "0x3F8",
+   "size": 56,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PhxRelativeAlignmentPointDescription>"
+  },
+  {
+   "name": "EndIfLandedAfterSplineDistance",
+   "type": "double",
+   "offset": "0x430",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "Spline",
+   "class": "USplineComponent",
+   "source": "property"
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Spline",
+   "class": "SplineComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthSetVentActive",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewActive",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_traversal_vent_01_splined_bp",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 133,
+   "reads": [
+    "Character",
+    "CharacterData",
+    "CharacterVO",
+    "FlightTime",
+    "Force",
+    "Interact Sound",
+    "OnJumpFromJumpVent",
+    "OnPlayerUsed",
+    "SplineActorRotation",
+    "VentActive",
+    "p_vent_activate",
+    "p_vent_idle",
+    "traversal_vent_01"
+   ],
+   "sets": [
+    "Character",
+    "FlightTime",
+    "Force",
+    "TimeTicked"
+   ],
+   "calls": [
+    "Activate",
+    "Actor.GetComponentByClass",
+    "Actor.K2_SetActorRotation",
+    "AkGameplayStatics.PostEvent",
+    "ArchonTelemetryBPLibrary.RecordJumpPadUsed",
+    "CanVentTraversal",
+    "GetFlightTime",
+    "GetHorizontalForce",
+    "GetVerticalForce",
+    "IsCharacterOnSpline",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "None",
+    "OnSplineEnd",
+    "OnSplineStart",
+    "Pawn.GetController",
+    "PhxCharacterBase.GetGameplayPropertyOverrideComponent",
+    "PhxGameplayPropertyOverrideComponent.AddMovementIgnoreClientErrorCorrectionOverride",
+    "PhxGameplayPropertyOverrideComponent.RemoveMovementIgnoreClientErrorCorrectionOverride",
+    "ResetMaxFallTimer",
+    "SaveSplinePositions",
+    "SceneComponent.SetVisibility",
+    "SetJumping",
+    "StartSound",
+    "TickSplinedCharacterData",
+    "traversal_vent_01_bp_C.AuthSetVentActive",
+    "traversal_vent_01_bp_C.ReceiveGameplayStart"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_env_lp_traversal_vent_ramsgate",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "GetAlignmentOffset",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "InCharacter",
+     "type": "AArchonCharacter*"
+    },
+    {
+     "name": "OffsetTranslation",
+     "type": "FVector"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 21,
+   "reads": [
+    "AlignmentPoint",
+    "Mesh"
+   ],
+   "sets": [],
+   "calls": [
+    "GetSocketTransform",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BreakTransform",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.NegateVector",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetHorizontalForce",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Time",
+     "type": "double"
+    },
+    {
+     "name": "xForce",
+     "type": "double"
+    },
+    {
+     "name": "yForce",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "EditMarker",
+    "SplineEnd"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.GetDirectionUnitVector",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.Sqrt",
+    "KismetMathLibrary.Square",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "SceneComponent.K2_GetComponentLocation"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetVerticalForce",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Character_0",
+     "type": "AArchonCharacterBase*"
+    },
+    {
+     "name": "VectorVertical",
+     "type": "FVector"
+    },
+    {
+     "name": "VerticalHeight",
+     "type": "double"
+    },
+    {
+     "name": "Gravity",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "CharacterMovement",
+    "SplineEnd",
+    "SplineStart"
+   ],
+   "sets": [],
+   "calls": [
+    "GetGravityZ",
+    "KismetMathLibrary.Abs",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Conv_FloatToDouble",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetMathLibrary.Sqrt",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsCharacterOnSpline",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Character_0",
+     "type": "AArchonCharacter*"
+    },
+    {
+     "name": "Is_On_Spline",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 21,
+   "reads": [
+    "CharacterData"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSplineEnd",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSplineStart",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveActorBeginOverlap",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "OtherActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveGameplayStart",
+   "flags": [
+    "BlueprintCosmetic",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCosmetic",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SaveSplinePositions",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "Spline",
+    "SplineEnd",
+    "SplineStart"
+   ],
+   "sets": [
+    "SplineActorRotation",
+    "SplineDirection2D",
+    "SplineDistance",
+    "SplineEnd",
+    "SplineStart"
+   ],
+   "calls": [
+    "KismetMathLibrary.Conv_VectorToRotator",
+    "KismetMathLibrary.Cross_VectorVector",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Normal",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "SplineComponent.GetLocationAtDistanceAlongSpline",
+    "SplineComponent.GetSplineLength"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShouldStopFollowingSpline",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "bool",
+   "params": [
+    {
+     "name": "CharacterData_0",
+     "type": "Ftraversal_vent_splined_playerdata"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 21,
+   "reads": [
+    "CharacterMovement",
+    "EndIfLandedAfterSplineDistance",
+    "TotalSplineTime"
+   ],
+   "sets": [],
+   "calls": [
+    "CharacterMovementComponent.IsWalking",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartSound",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "traversal_vent_01_splined_bp_C.ExecuteUbergraph_traversal_vent_01_splined_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TickSplinedCharacterData",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CharacterData_0",
+     "type": "Ftraversal_vent_splined_playerdata"
+    },
+    {
+     "name": "DeltaSeconds",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 34,
+   "reads": [
+    "DoEndBoost",
+    "Force",
+    "Spline",
+    "SplineActorRotation",
+    "TotalSplineTime"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_SetActorLocation",
+    "Actor.K2_SetActorRotation",
+    "GetAlignmentOffset",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "LaunchCharacter",
+    "ShouldStopFollowingSpline",
+    "SplineComponent.GetLocationAtDistanceAlongSpline",
+    "SplineComponent.GetSplineLength"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/World/traversal/traversal_vent_01_splined_bp",
+ "pseudo_file": "pseudo/traversal_vent_01_splined_bp_C.txt",
+ "game_data": {}
+}

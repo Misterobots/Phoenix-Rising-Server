@@ -1,0 +1,838 @@
+{
+ "name": "behemoth_gc_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxChildOwningGameContent",
+  "PhxGameContentCombination",
+  "PhxBaseCompositeGameContent",
+  "PhxBaseGameContent",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SpawnedBehemoth",
+   "type": "ObjectProperty<ArchonBehemoth>",
+   "bp_type": "ObjectProperty<ArchonBehemoth>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LoadedBehemothClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_PreChange",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothHealthScale",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnSpawnedBehemoth",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_TuningVars",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "FinishedNormally",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_Level",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothDespawning",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothContentSpec",
+   "type": "ObjectProperty<behemoth_content_spec_C>",
+   "bp_type": "ObjectProperty<behemoth_content_spec_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_TuningPresetArray",
+   "type": "StructProperty<tuning_data_array>",
+   "bp_type": "StructProperty<tuning_data_array>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothIcon",
+   "type": "SoftObjectProperty<Texture2D>",
+   "bp_type": "SoftObjectProperty<Texture2D>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothDisplayName",
+   "type": "TextProperty",
+   "bp_type": "TextProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bFromIslandMetaEvent",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 14
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "BroadcastFailureToParticipants",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Participants",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CheckIsFromIslandMetaEvent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_behemoth_gc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetParticipants_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetDataTableRowNames_OutRowNames",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_CustomEvent_Participants",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetContentParticipants_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 312,
+   "reads": [
+    "BehemothContentSpec",
+    "BehemothDespawning",
+    "BehemothHealthScale",
+    "BehemothLevel",
+    "BehemothName",
+    "BehemothPowerAndResist",
+    "BehemothStarRating",
+    "ContentLocationActor",
+    "FinishedNormally",
+    "GameContentTags",
+    "GenericEvent",
+    "HowToSetBehemothPower",
+    "InnerRadius",
+    "L_Level",
+    "L_PreChange",
+    "L_TuningPresetArray",
+    "L_TuningVars",
+    "LoadedBehemothClass",
+    "OnBehemothDeath",
+    "OnParticipantsChanged",
+    "OnSpawnedBehemoth",
+    "SpawnedBehemoth",
+    "TuningPresetsRow",
+    "bFromIslandMetaEvent"
+   ],
+   "sets": [
+    "BehemothContentSpec",
+    "BehemothDespawning",
+    "BehemothDisplayName",
+    "BehemothIcon",
+    "BehemothMetadataName",
+    "FinishedNormally",
+    "L_Level",
+    "L_PreChange",
+    "L_TuningPresetArray",
+    "LoadedBehemothClass",
+    "ModifierTableRow",
+    "SpawnedBehemoth",
+    "bFromIslandMetaEvent"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "AddSelectedBehemoth",
+    "ArchonAggroComponent.AuthSetTether",
+    "ArchonBehemoth.GetMaxHealth",
+    "ArchonGameplayStatics.IsShipping",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.NotEqual_TagTag",
+    "BroadcastFailureToParticipants",
+    "CheckIsFromIslandMetaEvent",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "DataTableFunctionLibrary.GetDataTableRowNames",
+    "FinishCleanup",
+    "FinishContent",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GetBehemothMetadata",
+    "GetChallengeLevelRowForPower",
+    "GetContentParticipants",
+    "GetTuningPresetFromThreatLevelRow",
+    "IslandDirectorComponent.CreateAndRegisterSpecification",
+    "IslandDirectorStatics.GetMutableRootContent",
+    "K2_DestroyActor",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Append",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Round",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetStringLibrary.Conv_StringToInt",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.IsValidClass",
+    "KismetSystemLibrary.LoadAssetClass",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "PhxBaseCompositeGameContent.Authority_StartContent",
+    "PhxBaseGameContent.AuthRegisterGameplayActor",
+    "PhxBaseGameContent.AuthUnregisterGameplayActor",
+    "PhxBaseGameContent.GetContentSpecification",
+    "PhxBaseGameContent.GetParentContent",
+    "PhxBaseGameplayTask.HasAuthority",
+    "PhxChildOwningGameContent.SelfFinishedCleanup",
+    "PhxChildOwningGameContent.SelfFinishedContent",
+    "PhxChildOwningGameContent.SelfFinishedLoading",
+    "PhxGameContentParticipationComponent.GetParticipants",
+    "RemoveSelectedBehemoth",
+    "RetroactivelyAdjustMaxHealthForPlayerCount",
+    "SpawnBehemothAtChallengeLevelAtPatrolPoint"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsServer"
+   ],
+   "tables": [
+    "DataTable exploration_enemy_level_table",
+    "DataTable exploration_enemy_star_tuning_table"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass bp_gamemode_behemoth_spawner_component_C",
+    "BlueprintGeneratedClass generic_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass island_content_location_bpc_C",
+    "BlueprintGeneratedClass modifier_content_spec_C"
+   ]
+  },
+  {
+   "name": "GenericEvent_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EventTag",
+     "type": "StructProperty<GameplayTag>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetContentDescription",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutContentDescription",
+     "type": "StructProperty<GameContentDescription>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [
+    "BehemothLevel",
+    "BehemothName"
+   ],
+   "sets": [],
+   "calls": [
+    "PhxBaseGameContent.GetContentSpecification"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetContentParticipants_BP",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetParticipants_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [
+    "SpawnedBehemoth"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "KismetSystemLibrary.IsValid",
+    "PhxGameContentParticipationComponent.GetParticipants"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetDebugString",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 15,
+   "reads": [
+    "BehemothLevel",
+    "BehemothName"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.GetDisplayName",
+    "PhxBaseGameContent.GetContentSpecification"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetProgressData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutProgressData",
+     "type": "StructProperty<GameContentProgressData>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 27,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "InitProgressData",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "PhxBaseGameContent.GetGameContentState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetTopLevelContentInfo",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ContentDescription",
+     "type": "StructProperty<game_content_description>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [
+    "BehemothContentSpec",
+    "BehemothName"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetTextLibrary.Conv_NameToText"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleBeginContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleCleanupContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleLoadingContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "InitProgressData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutProgressData",
+     "type": "StructProperty<GameContentProgressData>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothDeath_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_053A1F8B4A0BD201BC449685118461EE",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "ClassProperty<Class>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnParticipantsChanged_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSpawnedBehemoth__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "BehemothGameContent",
+     "type": "ObjectProperty<behemoth_gc_C>"
+    },
+    {
+     "name": "SpawnedBehemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_gc_C.ExecuteUbergraph_behemoth_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable exploration_enemy_level_table",
+  "DataTable exploration_enemy_star_tuning_table"
+ ],
+ "package": "/Game/gamemodes/_game_content/behemoth/behemoth_gc",
+ "pseudo_file": "pseudo/behemoth_gc_C.txt",
+ "game_data": {}
+}

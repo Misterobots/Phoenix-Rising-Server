@@ -1,0 +1,12 @@
+terramane_pawstomp_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+    [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.PounceLocation, MinDistance=800, MaxDistance=99999, ObservedKeyNames=["SelfActor", "PounceLocation"])]
+    2) SimpleParallel
+      1) wait_for_distance_bttask  (TargetKey=bb.PounceLocation, MinDistanceData={"ConstantFloat": 1500.0}, MaxDistanceData={"ConstantFloat": 6000.0}, BlackboardKeyNameToCheck=CanTransitToNextAnim, RequiredBlackboardKeyType=Bool, BlackboardCompareData={"ConstantBool": true}, bShowPropertyDetails=false)
+      2) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.PounceLocation)
+    3) BehemothAction "run to landturn"  (Montage=AnimMontage b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot)
+    4) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=LandAndTurn)
+    5) BehemothAction  (Montage=AnimMontage b_aq_terramane_atk_pawstomp_fwd_mot)

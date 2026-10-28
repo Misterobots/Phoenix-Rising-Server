@@ -1,0 +1,579 @@
+{
+ "name": "frostfall_team_flag_neutral_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "gatherable_item_base_bp_C",
+  "mesh_swap_interaction_bp_C",
+  "ArchonMeshSwapInteractionActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeamEmitter",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Timeline_0_Dissovle_C8C3223444786681CBA59586AD8C46D3",
+   "type": "FloatProperty",
+   "bp_type": "FloatProperty",
+   "flags": [],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Timeline_0__Direction_C8C3223444786681CBA59586AD8C46D3",
+   "type": "ByteProperty<ETimelineDirection>",
+   "bp_type": "ByteProperty<ETimelineDirection>",
+   "flags": [],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Timeline_0",
+   "type": "ObjectProperty<TimelineComponent>",
+   "bp_type": "ObjectProperty<TimelineComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Team",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxTeamMembers",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurTeamMembers",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnTeamMemberAdded",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnTeamMemberRemoved",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "TeamEmitter",
+   "class": "ParticleSystemComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CanUserStartInteraction ",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "User",
+     "type": "ObjectProperty<ArchonInteractionUserComponent>"
+    },
+    {
+     "name": "CanUse",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_GetActiveEffectsWithAllTags_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 19,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.GetActiveEffectsWithAllTags",
+    "ActorComponent.GetOwner",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetMathLibrary.Not_PreBool",
+    "mesh_swap_interaction_bp_C.CanUserStartInteraction "
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DecrementCurTeamMembers",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [
+    "CurTeamMembers",
+    "MaxTeamMembers",
+    "OnTeamMemberRemoved",
+    "Team"
+   ],
+   "sets": [
+    "CurTeamMembers"
+   ],
+   "calls": [
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "MultiSetDisabled",
+    "MultiSetEnabled",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_frostfall_team_flag_neutral_bp",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetTransform_ReturnValue",
+     "type": "StructProperty<Transform>"
+    },
+    {
+     "name": "Temp_object_Variable",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 135,
+   "reads": [
+    "AbilitySystemComponent",
+    "CurTeamMembers",
+    "DefaultSceneRoot",
+    "MaxTeamMembers",
+    "OnTeamMemberAdded",
+    "PersistentVFX",
+    "StaticMesh",
+    "Team",
+    "TeamEmitter",
+    "Template",
+    "Timeline_0",
+    "Timeline_0_Dissovle_C8C3223444786681CBA59586AD8C46D3"
+   ],
+   "sets": [
+    "CurTeamMembers"
+   ],
+   "calls": [
+    "Activate",
+    "Actor.GetTransform",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "ApplySpec",
+    "ArchonAbilitySystemComponent.GiveAbility",
+    "ArchonAbilitySystemComponent.HasAbilityWithTag",
+    "BlueprintGameplayTagLibrary.MakeLiteralGameplayTagContainer",
+    "Deactivate",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.BreakHitResult",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "K2_DestroyActor",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakTransform",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.MakeRotFromX",
+    "KismetMathLibrary.MakeRotFromZX",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.NotEqual_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.LineTraceSingle",
+    "MeshComponent.SetScalarParameterValueOnMaterials",
+    "MultiSetDisabled",
+    "None",
+    "SceneComponent.GetForwardVector",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.K2_SetWorldLocation",
+    "SceneComponent.K2_SetWorldRotation",
+    "SetInteractionAvailability",
+    "TimelineComponent.PlayFromStart",
+    "gatherable_item_base_bp_C.OnUserCompletedInteraction",
+    "gatherable_item_base_bp_C.ReceiveBeginPlay"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_Grenade_Snowball_C",
+    "BlueprintGeneratedClass frostfall_snowballfight_team_a_ge_C",
+    "BlueprintGeneratedClass frostfall_snowballfight_team_b_ge_C",
+    "BlueprintGeneratedClass frostfall_snowballfight_team_neutral_ge_C",
+    "BlueprintGeneratedClass frostfall_teamA_marker_bp_C",
+    "BlueprintGeneratedClass frostfall_teamB_marker_bp_C",
+    "BlueprintGeneratedClass frostfall_teamneutral_marker_bp_C"
+   ]
+  },
+  {
+   "name": "IncrementCurTeamMembers",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [
+    "CurTeamMembers",
+    "MaxTeamMembers"
+   ],
+   "sets": [
+    "CurTeamMembers"
+   ],
+   "calls": [
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "MultiSetDisabled",
+    "MultiSetEnabled"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiSetDisabled",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiSetEnabled",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTeamMemberAdded__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Team",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CurTeamMembers",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Actor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTeamMemberRemoved__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Team",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CurTeamMembers",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnUserCompletedInteraction",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "User",
+     "type": "ObjectProperty<ArchonInteractionUserComponent>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveGatherable",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Timeline_0__DeactivateParticle__EventFunc",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Timeline_0__FinishedFunc",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Timeline_0__UpdateFunc",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "frostfall_team_flag_neutral_bp_C.ExecuteUbergraph_frostfall_team_flag_neutral_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/InteractiveObjects/PublicEvents/frostfall_team_flag_neutral_bp",
+ "pseudo_file": "pseudo/frostfall_team_flag_neutral_bp_C.txt",
+ "game_data": {}
+}

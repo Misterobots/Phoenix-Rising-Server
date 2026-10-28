@@ -1,0 +1,343 @@
+{
+ "name": "electroquill_projectile_C",
+ "kind": "blueprint",
+ "parents": [
+  "lobbed_projectile_base_bp_C",
+  "projectile_base_bp_C",
+  "ArchonProjectileBase",
+  "AbilityActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageVolume",
+   "type": "ObjectProperty<CapsuleComponent>",
+   "bp_type": "ObjectProperty<CapsuleComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Quill",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "FenceQuillSpawned",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillSpawned",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "QuillMaterial",
+   "type": "ObjectProperty<MaterialInstanceDynamic>",
+   "bp_type": "ObjectProperty<MaterialInstanceDynamic>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DebugMapVersion",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Quill",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "DamageVolume",
+   "class": "CapsuleComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthSweepHitEvent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_projectile_C.ExecuteUbergraph_electroquill_projectile"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BndEvt__DamageVolume_K2Node_ComponentBoundEvent_2_ComponentBeginOverlapSignature__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OverlappedComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "OtherActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "OtherComp",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "OtherBodyIndex",
+     "type": "IntProperty"
+    },
+    {
+     "name": "bFromSweep",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "SweepResult",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_projectile_C.ExecuteUbergraph_electroquill_projectile"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_electroquill_projectile",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_ComponentBoundEvent_SweepResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 30,
+   "reads": [
+    "DamageVolume",
+    "DebugMapVersion",
+    "Quill",
+    "QuillMaterial"
+   ],
+   "sets": [
+    "QuillMaterial"
+   ],
+   "calls": [
+    "Actor.GetOwner",
+    "Actor.ReceiveBeginPlay",
+    "AuthOnProjectileDamageOverlap",
+    "AuthSweepHit",
+    "CreateDynamicMaterialInstance",
+    "GetDynamicMaterialCollection",
+    "GetMaterial",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetStringLibrary.Contains",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "MaterialInstanceDynamic.K2_GetScalarParameterValue",
+    "MaterialInstanceDynamic.SetScalarParameterValue"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "FenceQuillSpawned__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ShockRod",
+     "type": "ObjectProperty<shock_rod_actor_C>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_projectile_C.ExecuteUbergraph_electroquill_projectile"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TeslaQuillSpawned__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TeslaQuill",
+     "type": "ObjectProperty<electroquill_tesla_projectile_C>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UserConstructionScript",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [
+    "DamageVolume"
+   ],
+   "sets": [
+    "CollidingBody_Native"
+   ],
+   "calls": [
+    "projectile_base_bp_C.UserConstructionScript"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/sq/electroquill/Blueprints/electroquill_projectile",
+ "pseudo_file": "pseudo/electroquill_projectile_C.txt",
+ "game_data": {}
+}

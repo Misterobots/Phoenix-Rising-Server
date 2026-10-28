@@ -1,0 +1,14 @@
+dp_exotic_bombs_detonate_temp_mot  length=1.6667s  blend_out=null
+  section Default          at 0s  next=loop
+  section loop             at 0.4s  next=end
+  section end              at 1.2667s  next=None
+  slot Upper Body: AnimSequence h_mr_dp_base_aim_y1_fwd_01  [0-1.6667]s  rate=1
+  slot Fullbody_Loco: AnimSequence h_mr_dp_melee_reload_empowered_fwd_01  [0-1.6667]s  rate=1
+  notifies (start s, duration s, class, settings):
+          0  0.8247  generic_event_ns_C  EventOnBegin={"TagName": "Combat.Special.ExoticBombRepeaters.PreventAutoDetonate"}, EventOnEnd={"TagName": "Combat.Special.ExoticBombRepeaters.AllowAutoDetonate"}
+          0  1.0163  set_max_desired_loco_state_bpns_C  DesiredState=Walk
+      0.034       0  AnimNotify_AkEvent_C  Event=AkAudioEvent Play_wep_dp_exotic_stickybomb_detonate  [not on dedicated server]
+     0.2652       0  DecisionStop
+        0.4  0.8667  reload_window_bpns_C  ForceEmpowered(IfApplicable)=true, Show "To Behemoth" VFX If Empowered(IfApplicable)=false
+     0.7758  0.3737  CancelWindowNotify  ModifierKey=Roll
+     0.8832       0  generic_event_n_C  Event={"TagName": "Combat.Special.ExoticBombRepeaters.DetonateBombs"}

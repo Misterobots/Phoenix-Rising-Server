@@ -1,0 +1,199 @@
+# eb_special_spin_part_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateWeaponPartGameplay
+  [0] frame.K2Node_Event_StartTime = StartTime
+  [18] ExecuteUbergraph_eb_special_spin_part_bpc(449)
+  [33] return nothing
+  [35] end
+
+=== CalculateMeterIncreasePerSpinDamage
+  [0] push @917
+  [5] MeterIncrease = 1.0
+  [32] WeaponChargeMultiplier = 0.0
+  [59] MontagePlayRate = 1.0
+  [86] push @890
+  [91] push @379
+  [96] CallFunc_IsValid_ReturnValue = IsValid(self.ArchonCharacter.self.CombatComponent)
+  [147] if !(CallFunc_IsValid_ReturnValue) pop
+  [157] K2Node_VariableSet_MontagePlayRate_ImplicitCast = cast<CST_FloatToDouble>(self.ArchonCharacter.self.CombatComponent.self.FinalMontagePlayRate)
+  [230] MontagePlayRate = K2Node_VariableSet_MontagePlayRate_ImplicitCast
+  [257] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(MontagePlayRate, 1.0)
+  [295] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [305] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(MeterIncrease, MontagePlayRate)
+  [351] MeterIncrease = CallFunc_Divide_DoubleDouble_ReturnValue
+  [378] pop
+  [379] CallFunc_GetCurrentWeapon_ReturnValue = self.ArchonCharacter.GetCurrentWeapon()
+  [421] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetCurrentWeapon_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:WeaponChargeMultiplier'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [549] K2Node_VariableSet_WeaponChargeMultiplier_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [578] WeaponChargeMultiplier = K2Node_VariableSet_WeaponChargeMultiplier_ImplicitCast
+  [605] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(WeaponChargeMultiplier, 1.0)
+  [651] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [697] CallFunc_MapRangeUnclamped_ReturnValue = MapRangeUnclamped(CallFunc_FMax_ReturnValue, 0.0, 1.0, 0.0, 0.15000000596046448)
+  [770] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(MeterIncrease, CallFunc_MapRangeUnclamped_ReturnValue)
+  [816] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(MeterIncrease, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [862] MeterIncrease = CallFunc_Add_DoubleDouble_ReturnValue
+  [889] pop
+  [890] ReturnValue = MeterIncrease
+  [917] return ReturnValue
+  [927] end
+
+=== EndEarly
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1103)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_eb_special_spin_part_bpc
+  [0] goto computed(EntryPoint)
+  [10] OnSpecialActivated()
+  [24] IsSpecialActive(CallFunc_IsSpecialActive_Active)
+  [47] if !(CallFunc_IsSpecialActive_Active) goto @66
+  [61] goto @2135
+  [66] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [86] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [128] if !(CallFunc_HasAuthority_ReturnValue) goto @2135
+  [142] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [171] CallFunc_MakeEffectContext_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeEffectContext()
+  [225] CallFunc_BP_ApplyGameplayEffectToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectToSelf(special_active_ge_C, 0.0, CallFunc_MakeEffectContext_ReturnValue)
+  [298] self.SpecialActiveSpec = CallFunc_BP_ApplyGameplayEffectToSelf_ReturnValue
+  [325] RefreshTalentState()
+  [339] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.MeterDecayRate, self.TalentMeterDecayReduction)
+  [385] self.MeterComponent.StartMeterDecay(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [430] StartSwordchargeGeneration()
+  [444] goto @2135
+  [449] ActivateWeaponPartGameplay(K2Node_Event_StartTime)
+  [468] self.LocalSpecialIsActive = true
+  [479] goto @10
+  [484] self.LocalSpecialIsActive = false
+  [495] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [524] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.RemoveActiveGameplayEffect(self.SpecialActiveSpec, -1)
+  [584] K2_ClearAndInvalidateTimerHandle(self, self.SwordchargeTimer)
+  [604] goto @2135
+  [609] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [630] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @649
+  [644] goto @2135
+  [649] RotateCharacter()
+  [663] goto @2135
+  [668] BreakGameplayCueParameters(K2Node_CustomEvent_Parameters, CallFunc_BreakGameplayCueParameters_NormalizedMagnitude, CallFunc_BreakGameplayCueParameters_RawMagnitude, CallFunc_BreakGameplayCueParameters_EffectContext, CallFunc_BreakGameplayCueParameters_MatchedTagName, CallFunc_BreakGameplayCueParameters_OriginalTag, CallFunc_BreakGameplayCueParameters_AggregatedSourceTags, CallFunc_BreakGameplayCueParameters_AggregatedTargetTags, CallFunc_BreakGameplayCueParameters_Location, CallFunc_BreakGameplayCueParameters_Normal, CallFunc_BreakGameplayCueParameters_Instigator, CallFunc_BreakGameplayCueParameters_EffectCauser, CallFunc_BreakGameplayCueParameters_SourceObject, CallFunc_BreakGameplayCueParameters_PhysicalMaterial, CallFunc_BreakGameplayCueParameters_GameplayEffectLevel, CallFunc_BreakGameplayCueParameters_AbilityLevel, CallFunc_BreakGameplayCueParameters_TargetAttachComponent, CallFunc_BreakGameplayCueParameters_bReplicateLocationWhenUsingMinimalRepProxy)
+  [840] CallFunc_HasTag_ReturnValue = HasTag(CallFunc_BreakGameplayCueParameters_AggregatedSourceTags, GameplayTag{'Combat.Sword.SpinAttack'}, false)
+  [897] if !(CallFunc_HasTag_ReturnValue) goto @2135
+  [911] goto @2135
+  [916] K2Node_CreateDelegate_OutputDelegate = bind(self.OnComboEnd)
+  [939] K2Node_CreateDelegate_OutputDelegate += None
+  [980] self.ArchonWeapon.SetHUDWidgetClass(EX_SoftObjectConst(Value='/Game/UI/HUD/WeaponSpecific/eblade/weapon_eb_bpw.weapon_eb_bpw_C'))
+  [1079] goto @2135
+  [1084] EndEarly()
+  [1098] goto @2135
+  [1103] self.LocalSpecialIsActive = false
+  [1114] IsSpecialActive(CallFunc_IsSpecialActive_Active_1)
+  [1137] if !(CallFunc_IsSpecialActive_Active_1) goto @2135
+  [1151] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [1180] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue_2.RemoveActiveGameplayEffect(self.SpecialActiveSpec, -1)
+  [1240] self.MeterComponent.StopMeterDecay()
+  [1276] K2_ClearAndInvalidateTimerHandle(self, self.SwordchargeTimer)
+  [1296] goto @2135
+  [1301] IsSpecialActive(CallFunc_IsSpecialActive_Active_2)
+  [1324] if !(CallFunc_IsSpecialActive_Active_2) goto @2135
+  [1338] goto @609
+  [1343] goto @1301
+  [1348] self.EnableMontageOverrides = true
+  [1359] OnWeaponPartEquipped()
+  [1369] CallFunc_GetAbilitySystemComponent_ReturnValue_3 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [1398] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_3.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [1472] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) goto @1513
+  [1486] self.TalentMeterDecayReduction = 2.0
+  [1513] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.MeterEmpty)
+  [1536] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1577] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnDamageGiven_Spin)
+  [1600] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [1641] goto @916
+  [1646] goto @1348
+  [1651] OnWeaponPartUnequipped()
+  [1661] if !(self.LocalSpecialIsActive) goto @2135
+  [1675] self.ArchonCharacter.AbortCurrentCombo()
+  [1707] goto @2135
+  [1712] K2Node_DynamicCast_AsBP_EB_Weapon = cast<BP_EB_Weapon_C>(self.ArchonWeapon)
+  [1748] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_EB_Weapon)
+  [1777] if !(K2Node_DynamicCast_bSuccess) goto @2135
+  [1791] K2Node_DynamicCast_AsBP_EB_Weapon.AddPercentPipFill(0.05000000074505806)
+  [1836] goto @2135
+  [1841] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.GenerateSwordCharge)
+  [1864] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_3, 0.2, true, 0.0, 0.0)
+  [1917] self.SwordchargeTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1944] goto @2135
+  [1949] CallFunc_GetAbilitySystemComponent_ReturnValue_3 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [1978] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_3.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [2052] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) goto @2098
+  [2066] self.TalentMeterDecayReduction = 2.0
+  [2093] goto @2135
+  [2098] self.TalentMeterDecayReduction = 0.0
+  [2125] goto @2135
+  [2130] goto @1949
+  [2135] return nothing
+  [2137] end
+
+=== GenerateSwordCharge
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1712)
+  [15] return nothing
+  [17] end
+
+=== MeterEmpty
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(484)
+  [15] return nothing
+  [17] end
+
+=== OnComboEnd
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1084)
+  [15] return nothing
+  [17] end
+
+=== OnDamageGiven_Spin
+  [0] frame.K2Node_CustomEvent_Parameters = Parameters
+  [18] frame.K2Node_CustomEvent_EventType = EventType
+  [36] ExecuteUbergraph_eb_special_spin_part_bpc(668)
+  [51] return nothing
+  [53] end
+
+=== OnGameplayEffectUpdated
+  [0] frame.K2Node_Event_SpecApplied = SpecApplied
+  [18] frame.K2Node_Event_ActiveHandle = ActiveHandle
+  [36] ExecuteUbergraph_eb_special_spin_part_bpc(1949)
+  [51] return nothing
+  [53] end
+
+=== OnSpecialActivated
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1343)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1646)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1651)
+  [15] return nothing
+  [17] end
+
+=== RefreshTalentState
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(2130)
+  [15] return nothing
+  [17] end
+
+=== RotateCharacter
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetOwner_ReturnValue_1 = CallFunc_GetOwner_ReturnValue.GetOwner()
+  [62] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [98] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [127] if !(K2Node_DynamicCast_bSuccess) goto @347
+  [141] CallFunc_NotEqual_VectorVector_ReturnValue = NotEqual_VectorVector(K2Node_DynamicCast_AsArchon_Character.self.DesiredDodgeDirection, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0001)
+  [222] if !(CallFunc_NotEqual_VectorVector_ReturnValue) goto @347
+  [236] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(K2Node_DynamicCast_AsArchon_Character.self.DesiredDodgeDirection)
+  [295] CallFunc_K2_SetActorRotation_ReturnValue = K2Node_DynamicCast_AsArchon_Character.K2_SetActorRotation(CallFunc_MakeRotFromX_ReturnValue, false)
+  [347] return nothing
+  [349] end
+
+=== StartSwordchargeGeneration
+  [0] ExecuteUbergraph_eb_special_spin_part_bpc(1841)
+  [15] return nothing
+  [17] end

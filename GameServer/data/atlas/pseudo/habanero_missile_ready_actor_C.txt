@@ -1,0 +1,109 @@
+# habanero_missile_ready_actor_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Cleanup
+  [0] frame.K2Node_CustomEvent_Projectile = Projectile
+  [18] ExecuteUbergraph_habanero_missile_ready_actor(132)
+  [33] return nothing
+  [35] end
+
+=== DoAFlip
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(1108)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_habanero_missile_ready_actor
+  [0] goto computed(EntryPoint)
+  [10] K2Node_VariableSet_XRot_ImplicitCast = cast<CST_FloatToDouble>(self.HopAndFlip_Spin_5A7DEFEF49907C082B06EFB7F99987B3)
+  [39] self.XRot = K2Node_VariableSet_XRot_ImplicitCast
+  [66] goto @2037
+  [71] K2Node_VariableSet_ZLevel_ImplicitCast = cast<CST_FloatToDouble>(self.HopAndFlip_Height_5A7DEFEF49907C082B06EFB7F99987B3)
+  [100] self.ZLevel = K2Node_VariableSet_ZLevel_ImplicitCast
+  [127] goto @10
+  [132] K2_DestroyActor()
+  [146] goto @2037
+  [151] CallFunc_K2_GetActorLocation_ReturnValue_2 = self.K2_GetActorLocation()
+  [193] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_wep_habanero_UE_missile_launch, CallFunc_K2_GetActorLocation_ReturnValue_2, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [287] self.StaticMesh.SetVisibility(false, false)
+  [321] self.ParticleSystem.K2_DestroyComponent(self)
+  [354] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [375] if !(CallFunc_IsServer_ReturnValue) goto @2037
+  [389] K2Node_CreateDelegate_OutputDelegate = bind(self.Cleanup)
+  [412] K2Node_CreateDelegate_OutputDelegate += None
+  [453] SFX_On_Projectile_Explode()
+  [467] goto @2037
+  [472] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(-0.20000000298023224, 0.20000000298023224)
+  [518] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_RandomFloatInRange_ReturnValue)
+  [573] self.Orbit_rotationVector = CallFunc_MakeVector_ReturnValue_1
+  [600] CallFunc_RandomFloatInRange_ReturnValue_1 = RandomFloatInRange(60.0, 50.0)
+  [646] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_RandomFloatInRange_ReturnValue_1, 0.0, 0.0)
+  [701] self.Orbit_distance = CallFunc_MakeVector_ReturnValue_2
+  [728] CallFunc_RandomFloatInRange_ReturnValue_2 = RandomFloatInRange(75.0, 85.0)
+  [774] self.ZOffset = CallFunc_RandomFloatInRange_ReturnValue_2
+  [801] goto @2037
+  [806] goto @71
+  [811] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, 0.0)
+  [866] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(self.Orbit_currentAngle)
+  [895] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(self.Orbit_distance, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, self.Orbit_rotationVector)
+  [950] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, self.Orbit_pivot)
+  [996] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [1042] self.DefaultSceneRoot.K2_SetWorldLocationAndRotation(CallFunc_Add_VectorVector_ReturnValue, CallFunc_FindLookAtRotation_ReturnValue, false, CallFunc_K2_SetWorldLocationAndRotation_SweepHitResult, false)
+  [1103] goto @2037
+  [1108] goto @2037
+  [1113] goto @472
+  [1118] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1138] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [1188] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1234] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z, self.ZOffset)
+  [1280] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, self.ZLevel)
+  [1326] CallFunc_MakeVector_ReturnValue_3 = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [1381] self.Orbit_pivot = CallFunc_MakeVector_ReturnValue_3
+  [1408] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [1437] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.Orbit_speed)
+  [1483] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(self.Orbit_currentAngle, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1529] self.Orbit_currentAngle = CallFunc_Add_DoubleDouble_ReturnValue_2
+  [1556] CallFunc_IsValid_ReturnValue = IsValid(self.LookAtTarget)
+  [1585] if !(CallFunc_IsValid_ReturnValue) goto @811
+  [1599] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(self.Orbit_currentAngle)
+  [1628] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(self.Orbit_distance, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, self.Orbit_rotationVector)
+  [1683] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, self.Orbit_pivot)
+  [1729] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.LookAtTarget.K2_GetActorLocation()
+  [1779] CallFunc_FindLookAtRotation_ReturnValue_1 = FindLookAtRotation(CallFunc_Add_VectorVector_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [1825] self.DefaultSceneRoot.K2_SetWorldLocationAndRotation(CallFunc_Add_VectorVector_ReturnValue, CallFunc_FindLookAtRotation_ReturnValue_1, false, CallFunc_K2_SetWorldLocationAndRotation_SweepHitResult_1, false)
+  [1886] goto @2037
+  [1891] CallFunc_K2_GetActorLocation_ReturnValue_3 = self.K2_GetActorLocation()
+  [1933] CallFunc_PostEventAtLocation_ReturnValue_1 = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Fire_Explosion_Small, CallFunc_K2_GetActorLocation_ReturnValue_3, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [2027] goto @2037
+  [2032] goto @1118
+  [2037] return nothing
+  [2039] end
+
+=== HopAndFlip__FinishedFunc
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(2037)
+  [15] return nothing
+  [17] end
+
+=== HopAndFlip__UpdateFunc
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(806)
+  [15] return nothing
+  [17] end
+
+=== Launch
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(151)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(1113)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_habanero_missile_ready_actor(2032)
+  [33] return nothing
+  [35] end
+
+=== SFX_On_Projectile_Explode
+  [0] ExecuteUbergraph_habanero_missile_ready_actor(1891)
+  [15] return nothing
+  [17] end

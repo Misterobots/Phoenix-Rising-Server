@@ -1,0 +1,341 @@
+{
+ "name": "IcicleSpawner_C",
+ "kind": "blueprint",
+ "parents": [
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AOEActorPool",
+   "type": "ObjectProperty<PhxActorPool>",
+   "bp_type": "ObjectProperty<PhxActorPool>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IciclePool",
+   "type": "ObjectProperty<PhxActorPool>",
+   "bp_type": "ObjectProperty<PhxActorPool>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "type": "ObjectProperty<SceneComponent>",
+   "bp_type": "ObjectProperty<SceneComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Radius",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DelayedIcicles",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinIciclesToSpawn",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxIciclesToSpawn",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MountVentIndex",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "IciclePool",
+   "class": "PhxActorPool",
+   "source": "SCS"
+  },
+  {
+   "name": "AOEActorPool",
+   "class": "PhxActorPool",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthSpawnIcicle",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "SpawnMountingVent",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 14,
+   "reads": [
+    "AOEActorPool",
+    "IciclePool"
+   ],
+   "sets": [
+    "AOEActorPool",
+    "SpawnMountingVent"
+   ],
+   "calls": [
+    "GetRandomSpawnLocation",
+    "KismetMathLibrary.MakeTransform",
+    "KismetSystemLibrary.IsServer",
+    "PhxActorPool.SpawnActorFromPool"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSpawnIcicleGroup",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 21,
+   "reads": [
+    "DelayedIcicles",
+    "MaxIciclesToSpawn",
+    "MinIciclesToSpawn",
+    "MountVentIndex"
+   ],
+   "sets": [
+    "MountVentIndex"
+   ],
+   "calls": [
+    "KismetArrayLibrary.Array_Add",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.RandomIntegerInRange",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsServer"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_IcicleSpawner",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 44,
+   "reads": [
+    "DelayedIcicles",
+    "MountVentIndex"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.ReceiveBeginPlay",
+    "AuthSpawnIcicle",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetRandomSpawnLocation",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Location",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 21,
+   "reads": [
+    "Radius"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Cos",
+    "KismetMathLibrary.GetPI",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.RandomFloat",
+    "KismetMathLibrary.Sin",
+    "KismetMathLibrary.Sqrt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "IcicleSpawner_C.ExecuteUbergraph_IcicleSpawner"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "IcicleSpawner_C.ExecuteUbergraph_IcicleSpawner"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/lq/mint/projectiles/IcicleSpawner",
+ "pseudo_file": "pseudo/IcicleSpawner_C.txt",
+ "game_data": {}
+}

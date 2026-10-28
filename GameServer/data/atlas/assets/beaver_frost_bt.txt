@@ -1,0 +1,96 @@
+beaver_frost_bt  blackboard=BlackboardData beaver_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=3)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChanges"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      1) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_mcr_exit_aethercharge_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage b_mcr_exit_aethercharge_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_away_point", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+          2) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination)
+          3) BehemothAction  (Montage=AnimMontage b_beaver_rushto180_fwd_01_mot)
+          [if ForceSuccess]
+          4) RunBehavior  (BehaviorAsset=BehaviorTree beaver_frost_bellydrift_bt)
+        2) bttask_exit_rage_state  (Montage=AnimMontage b_mcr_pers_exitrage_mot)
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      4) bttask_enter_aethercharge_state  (Montage=AnimMontage b_tp_beaver_fr_state_aetherenter_fwd_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      5) Sequence
+        1) bttask_enter_rage_state  (Montage=AnimMontage beaver_rage_enter_mot)
+        [if ForceSuccess]
+        2) Selector
+          1) Sequence
+            1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+            2) Selector
+              [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass beaver_frost_icetoss_atk_C, bShowPropertyDetails=false)]
+              [if Blackboard  (AetherCharged is Is Set)]
+              [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=3000, MaxDistance=8000)]
+              1) PerformActionClass "Ice Toss"  (ActionClass=BlueprintGeneratedClass beaver_frost_icetoss_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+              [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=1200, MaxDistance=3000)]
+              2) PerformActionClass "Belly Drift"  (ActionClass=BlueprintGeneratedClass beaver_frost_bellydrift_atk_C, bShowPropertyDetails=false)
+              3) PerformActionClass "Ice Spike"  (ActionClass=BlueprintGeneratedClass beaver_frost_icespike_atk_C, bShowPropertyDetails=false)
+          2) PerformActionClass "Ice Spike"  (ActionClass=BlueprintGeneratedClass beaver_frost_icespike_atk_C, bShowPropertyDetails=false)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      6) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+    [if Blackboard  (AetherCharged is Is Set)]
+    8) Selector
+      [if action_available_btdeco "Is Ice Toss Available?"  (Attack Class=BlueprintGeneratedClass beaver_frost_icetoss_atk_C, bShowPropertyDetails=false)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_away_point", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+        2) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination, BlendOutTime=0.5)
+        3) BehemothAction  (Montage=AnimMontage b_beaver_rushto180_fwd_01_mot)
+        4) PerformActionClass "Ice Toss"  (ActionClass=BlueprintGeneratedClass beaver_frost_icetoss_atk_C, bShowPropertyDetails=false)
+      [if action_available_btdeco "Is Ice Spike Available?"  (Attack Class=BlueprintGeneratedClass beaver_frost_icespike_atk_C, bShowPropertyDetails=false)]
+      2) PerformActionClass "Ice Spike"  (ActionClass=BlueprintGeneratedClass beaver_frost_icespike_atk_C, bShowPropertyDetails=false)
+    [if Blackboard  (InRageState is Is Set)]
+    9) Selector
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass beaver_frost_bellydrift_atk_C, bShowPropertyDetails=false)]
+      1) Sequence
+        [if ForceSuccess]
+        1) RunBehavior  (BehaviorAsset=BehaviorTree beaver_frost_bellydrift_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree beaver_frost_rage_tailtantrum)
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass beaver_frost_somersault_atk_C, bShowPropertyDetails=false)]
+      2) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          1) PerformActionClass "Somersault"  (ActionClass=BlueprintGeneratedClass beaver_frost_somersault_atk_C, bShowPropertyDetails=false)
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          2) PerformActionClass "Ice Spike"  (ActionClass=BlueprintGeneratedClass beaver_frost_icespike_atk_C, bShowPropertyDetails=false)
+        [if ForceSuccess]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree beaver_frost_rage_tailtantrum)
+    10) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      5) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    11) Selector "Selector_AttackOrNonAttack"
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        [if btdeco_variablecooldown  (Cooldown_Min=20, Cooldown_Max=15)]
+        1) generic_action_bttask  (ActionType=Growl)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      2) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

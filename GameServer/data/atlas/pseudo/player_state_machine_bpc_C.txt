@@ -1,0 +1,1290 @@
+# player_state_machine_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateAttackState
+  [0] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [21] if !(CallFunc_IsInCity_ReturnValue) goto @40
+  [35] goto @116
+  [40] CallFunc_GetIsAttacking_ReturnValue = self.ArchonCharacter.GetIsAttacking()
+  [82] if !(CallFunc_GetIsAttacking_ReturnValue) goto @116
+  [96] self.DefaultPlayerState = 10
+  [116] return nothing
+  [118] end
+
+=== CalculateBannerPlantState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @184
+  [99] K2Node_DynamicCast_AsPlayer_Interface.IsPlantingBanner(CallFunc_IsPlantingBanner_Return)
+  [145] if !(CallFunc_IsPlantingBanner_Return) goto @200
+  [159] self.DefaultPlayerState = 12
+  [179] goto @200
+  [184] CallFunc_IsPlantingBanner_Return = false
+  [195] goto @145
+  [200] return nothing
+  [202] end
+
+=== CalculateBleedOutState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @184
+  [99] K2Node_DynamicCast_AsPlayer_Interface.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [145] if !(CallFunc_GetBleedOutState_BleedOutState) goto @200
+  [159] self.DefaultPlayerState = 13
+  [179] goto @200
+  [184] CallFunc_GetBleedOutState_BleedOutState = false
+  [195] goto @145
+  [200] return nothing
+  [202] end
+
+=== CalculateDodgeState
+  [0] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [21] if !(CallFunc_IsInCity_ReturnValue) goto @40
+  [35] goto @116
+  [40] CallFunc_GetIsDodging_ReturnValue = self.ArchonCharacter.GetIsDodging()
+  [82] if !(CallFunc_GetIsDodging_ReturnValue) goto @116
+  [96] self.DefaultPlayerState = 7
+  [116] return nothing
+  [118] end
+
+=== CalculateEdgeRecoveryState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @184
+  [99] K2Node_DynamicCast_AsPlayer_Interface.IsInEdgeRecovery(CallFunc_IsInEdgeRecovery_Return)
+  [145] if !(CallFunc_IsInEdgeRecovery_Return) goto @200
+  [159] self.DefaultPlayerState = 15
+  [179] goto @200
+  [184] CallFunc_IsInEdgeRecovery_Return = false
+  [195] goto @145
+  [200] return nothing
+  [202] end
+
+=== CalculateEmoteState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @184
+  [99] K2Node_DynamicCast_AsPlayer_Interface.IsEmoting(CallFunc_IsEmoting_Return)
+  [145] if !(CallFunc_IsEmoting_Return) goto @200
+  [159] self.DefaultPlayerState = 11
+  [179] goto @200
+  [184] CallFunc_IsEmoting_Return = false
+  [195] goto @145
+  [200] return nothing
+  [202] end
+
+=== CalculateInteractingState
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @396
+  [99] K2Node_DynamicCast_AsPlayer_Interface.IsInteracting(CallFunc_IsInteracting_Interacting)
+  [145] if !(CallFunc_IsInteracting_Interacting) goto @432
+  [159] CallFunc_GetAnimInstance_ReturnValue = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [223] K2Node_DynamicCast_AsArchon_Anim_Instance = cast<ArchonAnimInstance>(CallFunc_GetAnimInstance_ReturnValue)
+  [259] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Anim_Instance)
+  [288] if !(K2Node_DynamicCast_bSuccess_1) goto @432
+  [302] CallFunc_IsPlayingMontageOnSlot_ReturnValue = K2Node_DynamicCast_AsArchon_Anim_Instance.IsPlayingMontageOnSlot('DefaultSlot')
+  [357] if !(CallFunc_IsPlayingMontageOnSlot_ReturnValue) goto @412
+  [371] self.DefaultPlayerState = 14
+  [391] goto @432
+  [396] CallFunc_IsInteracting_Interacting = false
+  [407] goto @145
+  [412] self.LayeredPlayerState = 4
+  [432] return nothing
+  [434] end
+
+=== CalculateJumpState
+  [0] push @637
+  [5] if !(self.LIsLanding) goto @94
+  [19] self.DefaultPlayerState = 6
+  [39] self.JumpApexHeight = 0.0
+  [66] self.JumpHeightAtGround = 0.0
+  [93] pop
+  [94] CallFunc_IsFalling_ReturnValue = self.ArchonCharacter.self.CharMovement.IsFalling()
+  [162] if !(CallFunc_IsFalling_ReturnValue) pop
+  [172] push @324
+  [177] CallFunc_EqualEqual_VectorVector_ReturnValue = EqualEqual_VectorVector(self.LocationLastFrame, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0001)
+  [236] if !(CallFunc_EqualEqual_VectorVector_ReturnValue) pop
+  [246] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [296] self.LocationLastFrame = CallFunc_K2_GetActorLocation_ReturnValue
+  [323] pop
+  [324] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [374] self.LocationLastFrame = CallFunc_K2_GetActorLocation_ReturnValue
+  [401] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [451] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, self.LocationLastFrame)
+  [497] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [543] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_BreakVector_Z, 0.0)
+  [581] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @616
+  [595] self.DefaultPlayerState = 5
+  [615] pop
+  [616] self.DefaultPlayerState = 4
+  [636] pop
+  [637] return nothing
+  [639] end
+
+=== CalculateLocomotionState
+  [0] push @1365
+  [5] LCurrentLocomotionState = 0
+  [25] push @1321
+  [30] push @1154
+  [35] push @565
+  [40] CallFunc_CalculateCurrentLocomotionStateNative_ReturnValue = CalculateCurrentLocomotionStateNative(self.MovementComponentNative.self.Velocity)
+  [99] LCurrentLocomotionState = CallFunc_CalculateCurrentLocomotionStateNative_ReturnValue
+  [126] Temp_byte_Variable = 2
+  [146] Temp_byte_Variable_1 = 1
+  [166] Temp_byte_Variable_2 = 0
+  [186] Temp_byte_Variable_3 = 3
+  [206] Temp_byte_Variable_4 = 0
+  [226] Temp_byte_Variable_5 = LCurrentLocomotionState
+  [253] LDefaultPlayerState = switch(Temp_byte_Variable_5){0: Temp_byte_Variable_2, 1: Temp_byte_Variable_1, 2: Temp_byte_Variable, 3: Temp_byte_Variable_3, 4: Temp_byte_Variable_4, default: K2Node_Select_Default}
+  [371] CallFunc_NotEqual_ByteByte_ReturnValue_1 = NotEqual_ByteByte(LCurrentLocomotionState, self.CurrentLocomotionState)
+  [409] if !(CallFunc_NotEqual_ByteByte_ReturnValue_1) pop
+  [419] self.PreviousCurrentLocomotionState = self.CurrentLocomotionState
+  [446] self.CurrentLocomotionState = LCurrentLocomotionState
+  [473] OnCurrentLocomotionStateChanged__DelegateSignature(self.CurrentLocomotionState, self.PreviousCurrentLocomotionState)
+  [532] Server_UpdateCurrentLocoState(self.CurrentLocomotionState, self.PreviousCurrentLocomotionState)
+  [564] pop
+  [565] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [601] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [630] if !(K2Node_DynamicCast_bSuccess_1) goto @1138
+  [644] K2Node_DynamicCast_AsPlayer_Interface_1.GetIsValidSprintAttempt(CallFunc_GetIsValidSprintAttempt_Valid)
+  [690] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [726] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [755] if !(K2Node_DynamicCast_bSuccess) goto @1349
+  [769] K2Node_DynamicCast_AsPlayer_Interface.GetIsInSlowChargeState(CallFunc_GetIsInSlowChargeState_Is_slow_charging_)
+  [815] CallFunc_CalculateDesiredLocomotionStateNative_ReturnValue = CalculateDesiredLocomotionStateNative(CallFunc_GetIsValidSprintAttempt_Valid, CallFunc_GetIsInSlowChargeState_Is_slow_charging_)
+  [861] LDesiredLocomotionState = CallFunc_CalculateDesiredLocomotionStateNative_ReturnValue
+  [888] SetMaxDesiredLocoStateNative(CallFunc_SetMaxDesiredLocoStateNative_DesiredLocoState)
+  [907] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(CallFunc_SetMaxDesiredLocoStateNative_DesiredLocoState)
+  [944] CallFunc_Conv_ByteToInt_ReturnValue_1 = Conv_ByteToInt(LDesiredLocomotionState)
+  [981] CallFunc_Min_ReturnValue = Min(CallFunc_Conv_ByteToInt_ReturnValue_1, CallFunc_Conv_ByteToInt_ReturnValue)
+  [1027] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(CallFunc_Min_ReturnValue)
+  [1064] CallFunc_GetValidValue_ReturnValue = GetValidValue(EArchonLocomotionState, CallFunc_Conv_IntToByte_ReturnValue)
+  [1110] self.DesiredLocomotionStateNative = CallFunc_GetValidValue_ReturnValue
+  [1137] pop
+  [1138] CallFunc_GetIsValidSprintAttempt_Valid = false
+  [1149] goto @690
+  [1154] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.PreviousDesiredLocoState, self.DesiredLocomotionStateNative)
+  [1192] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [1202] self.PreviousDesiredLocoState = self.DesiredLocomotionStateNative
+  [1229] OnDesiredLocomotionStateChanged__DelegateSignature(self.DesiredLocomotionStateNative, self.PreviousDesiredLocoState)
+  [1288] Server_UpdateDesiredLocoState(self.DesiredLocomotionStateNative, self.PreviousDesiredLocoState)
+  [1320] pop
+  [1321] self.DefaultPlayerState = LDefaultPlayerState
+  [1348] pop
+  [1349] CallFunc_GetIsInSlowChargeState_Is_slow_charging_ = false
+  [1360] goto @815
+  [1365] return nothing
+  [1367] end
+
+=== CalculateStaggerState
+  [0] CallFunc_HasMatchingGameplayTag_ReturnValue = self.AbilitySystem.HasMatchingGameplayTag(GameplayTag{'Abilities.Stagger'})
+  [74] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = self.AbilitySystem.HasMatchingGameplayTag(GameplayTag{'State.Frozen'})
+  [148] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_HasMatchingGameplayTag_ReturnValue, CallFunc_HasMatchingGameplayTag_ReturnValue_1)
+  [186] if !(CallFunc_BooleanOR_ReturnValue) goto @220
+  [200] self.DefaultPlayerState = 8
+  [220] return nothing
+  [222] end
+
+=== CalculateTraversalState
+  [0] CallFunc_IsTraversing_ReturnValue = self.ArchonCharacter.IsTraversing()
+  [42] if !(CallFunc_IsTraversing_ReturnValue) goto @76
+  [56] self.DefaultPlayerState = 9
+  [76] return nothing
+  [78] end
+
+=== DebugDrawStrafePivots
+  [0] push @1811
+  [5] l_radius = 150.0
+  [32] l_color = LinearColor{1.0, 1.0, 0.0, 1.0}
+  [84] l_radius = Radius
+  [111] CallFunc_IsPlayInEditor_ReturnValue = IsPlayInEditor(self)
+  [132] CallFunc_BooleanAND_ReturnValue = BooleanAND(Enable, CallFunc_IsPlayInEditor_ReturnValue)
+  [170] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [180] Temp_struct_Variable = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [232] Temp_struct_Variable_1 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [284] Temp_struct_Variable_2 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [336] Temp_struct_Variable_3 = LinearColor{1.0, 0.0, 0.0, 1.0}
+  [388] Temp_struct_Variable_4 = LinearColor{1.0, 0.0, 0.0, 1.0}
+  [440] Temp_struct_Variable_5 = LinearColor{1.0, 1.0, 0.0, 1.0}
+  [492] Temp_struct_Variable_6 = LinearColor{1.0, 1.0, 0.0, 1.0}
+  [544] Temp_byte_Variable = self.StrafeIdlePivot
+  [571] l_color = switch(Temp_byte_Variable){0: Temp_struct_Variable_6, 1: Temp_struct_Variable_5, 2: Temp_struct_Variable_4, 3: Temp_struct_Variable_3, 4: Temp_struct_Variable_2, 5: Temp_struct_Variable_1, 6: Temp_struct_Variable, default: K2Node_Select_Default}
+  [719] push @976
+  [724] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [774] CallFunc_GetActorRightVector_ReturnValue = self.ArchonCharacter.GetActorRightVector()
+  [824] CallFunc_GetActorForwardVector_ReturnValue = self.ArchonCharacter.GetActorForwardVector()
+  [874] CallFunc_DrawDebugCircle_Radius_ImplicitCast = cast<CST_DoubleToFloat>(l_radius)
+  [903] DrawDebugCircle(self, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_DrawDebugCircle_Radius_ImplicitCast, 360, l_color, 0.0, 2.0, CallFunc_GetActorForwardVector_ReturnValue, CallFunc_GetActorRightVector_ReturnValue, true)
+  [975] pop
+  [976] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [1026] CallFunc_GetControlRotation_ReturnValue = self.ArchonCharacter.GetControlRotation()
+  [1076] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [1122] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [1169] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue)
+  [1206] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, l_radius)
+  [1252] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1298] DrawDebugArrow(self, CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_Add_VectorVector_ReturnValue, 500.0, LinearColor{1.0, 1.0, 0.0, 1.0}, 0.0, 2.0)
+  [1376] CallFunc_GetTopDownAimRotation_ReturnValue = GetTopDownAimRotation()
+  [1408] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_GetTopDownAimRotation_ReturnValue)
+  [1445] CallFunc_GetControlRotation_ReturnValue = self.ArchonCharacter.GetControlRotation()
+  [1495] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [1541] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [1588] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue)
+  [1625] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, l_radius)
+  [1671] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 15.0}))
+  [1733] DrawDebugString(self, CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue, self.ArchonCharacter, LinearColor{1.0, 1.0, 0.0, 1.0}, 0.0)
+  [1810] pop
+  [1811] return nothing
+  [1813] end
+
+=== DebugPlayerStates
+  [0] if !(Debug) goto @921
+  [14] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [34] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [70] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [99] if !(K2Node_DynamicCast_bSuccess) goto @921
+  [113] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_1 = GetEnumeratorUserFriendlyName(EMovementMode, K2Node_DynamicCast_AsArchon_Character.self.CharacterMovement.self.MovementMode)
+  [203] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Movement Mode: ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_1)
+  [257] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, false, LinearColor{1.0, 0.25, 0.0, 1.0}, 0.0, 'None')
+  [331] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(EArchonLocomotionState, self.DesiredLocomotionStateNative)
+  [377] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Desired Loco State: ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [436] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, Debug, false, LinearColor{1.0, 0.25, 0.0, 1.0}, 0.0, 'None')
+  [518] GetPlayerStates(CallFunc_GetPlayerStates_PlayerStates)
+  [541] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_2 = GetEnumeratorUserFriendlyName(EPlayerStatesLayered, CallFunc_GetPlayerStates_PlayerStates.Layered)
+  [596] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('Upperbody: ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_2)
+  [646] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, false, LinearColor{1.0, 0.25, 0.0, 1.0}, 0.0, 'None')
+  [720] GetPlayerStates(CallFunc_GetPlayerStates_PlayerStates)
+  [743] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3 = GetEnumeratorUserFriendlyName(EPlayerStatesDefault, CallFunc_GetPlayerStates_PlayerStates.Default)
+  [798] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('Fullbody: ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3)
+  [847] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_3, true, true, LinearColor{1.0, 0.25, 0.0, 1.0}, 0.0, 'None')
+  [921] return nothing
+  [923] end
+
+=== EndStrafe
+  [0] ExecuteUbergraph_player_state_machine_bpc(8369)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_player_state_machine_bpc
+  [0] push @9396
+  [5] goto computed(EntryPoint)
+  [15] self.LIsLanding = false
+  [26] pop
+  [27] MarkPropertyDirtyFromRepIndex(self, 5, 'DebugStateMachine')
+  [56] pop
+  [57] OnRep_StrafeTransitionState()
+  [71] pop
+  [72] MarkPropertyDirtyFromRepIndex(self, 3, 'StrafeTransitionState')
+  [101] goto @57
+  [106] OnRep_StrafeTransitionState()
+  [120] Server_UpdateStrafeTransitionState(self.StrafeTransitionState)
+  [143] pop
+  [144] MarkPropertyDirtyFromRepIndex(self, 3, 'StrafeTransitionState')
+  [173] goto @106
+  [178] MarkPropertyDirtyFromRepIndex(self, 2, 'bDesiredStrafing')
+  [207] push @232
+  [212] push @244
+  [217] if !(Temp_bool_Has_Been_Initd_Variable_1) goto @300
+  [231] pop
+  [232] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = true
+  [243] pop
+  [244] if !(Temp_bool_IsClosed_Variable) goto @259
+  [258] pop
+  [259] Temp_bool_IsClosed_Variable = true
+  [270] if !(true) goto @288
+  [276] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = false
+  [287] pop
+  [288] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = true
+  [299] pop
+  [300] Temp_bool_Has_Been_Initd_Variable_1 = true
+  [311] if !(false) pop
+  [313] Temp_bool_IsClosed_Variable = true
+  [324] pop
+  [325] MarkPropertyDirtyFromRepIndex(self, 2, 'bDesiredStrafing')
+  [354] K2Node_DynamicCast_AsPlayer_Interface_2 = cast<player_interface_C>(self.ArchonCharacter)
+  [390] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_2)
+  [419] if !(K2Node_DynamicCast_bSuccess_3) goto @479
+  [433] K2Node_DynamicCast_AsPlayer_Interface_2.SetStrafeSpeedMod(1.0)
+  [479] push @489
+  [484] goto @212
+  [489] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = false
+  [500] pop
+  [501] CalculateLocomotionState()
+  [515] CalculateJumpState()
+  [529] CalculateTraversalState()
+  [543] OnDefaultStateChanged()
+  [557] pop
+  [558] self.DebugStateMachine = K2Node_CustomEvent_Debug
+  [577] goto @27
+  [582] self.LPreviousLayeredState = self.LayeredPlayerState
+  [609] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.LayeredPlayerState, 0)
+  [640] if !(K2Node_SwitchEnum_CmpSuccess) goto @779
+  [654] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.LayeredPlayerState, 3)
+  [685] if !(K2Node_SwitchEnum_CmpSuccess) goto @794
+  [699] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.LayeredPlayerState, 4)
+  [730] if !(K2Node_SwitchEnum_CmpSuccess) goto @745
+  [744] pop
+  [745] self.LayeredPlayerState = 0
+  [765] CalculateInteractingState()
+  [779] OnLayeredStateChanged()
+  [793] pop
+  [794] push @875
+  [799] push @819
+  [804] if !(Temp_bool_Has_Been_Initd_Variable) goto @955
+  [818] pop
+  [819] if !(Temp_bool_IsClosed_Variable_1) goto @834
+  [833] pop
+  [834] Temp_bool_IsClosed_Variable_1 = true
+  [845] if !(true) goto @863
+  [851] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable_1 = false
+  [862] pop
+  [863] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable_1 = true
+  [874] pop
+  [875] if !(Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable_1) pop
+  [885] self.LayeredPlayerState = 0
+  [905] OnLayeredStateChanged()
+  [919] CalculateLocomotionState()
+  [933] push @943
+  [938] goto @799
+  [943] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable_1 = false
+  [954] pop
+  [955] Temp_bool_Has_Been_Initd_Variable = true
+  [966] if !(false) pop
+  [968] Temp_bool_IsClosed_Variable_1 = true
+  [979] pop
+  [980] push @582
+  [985] push @1011
+  [990] push @1910
+  [995] push @1989
+  [1000] UpdatePlayerGameplayState()
+  [1010] pop
+  [1011] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 0)
+  [1042] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1793
+  [1056] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 1)
+  [1087] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1793
+  [1101] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 2)
+  [1132] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1793
+  [1146] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 3)
+  [1177] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1793
+  [1191] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 4)
+  [1222] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1732
+  [1236] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 5)
+  [1267] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1732
+  [1281] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 6)
+  [1312] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @501
+  [1326] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 7)
+  [1357] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2017
+  [1371] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 8)
+  [1402] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2050
+  [1416] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 9)
+  [1447] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2083
+  [1461] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 10)
+  [1492] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2130
+  [1506] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 11)
+  [1537] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2177
+  [1551] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 12)
+  [1582] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2224
+  [1596] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 13)
+  [1627] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2271
+  [1641] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 14)
+  [1672] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2304
+  [1686] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.DefaultPlayerState, 15)
+  [1717] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2351
+  [1731] pop
+  [1732] CalculateLocomotionState()
+  [1746] CalculateJumpState()
+  [1760] CalculateTraversalState()
+  [1774] CalculateEdgeRecoveryState()
+  [1788] goto @543
+  [1793] CalculateLocomotionState()
+  [1807] CalculateJumpState()
+  [1821] CalculateDodgeState()
+  [1835] CalculateTraversalState()
+  [1849] CalculateAttackState()
+  [1863] CalculateEmoteState()
+  [1877] CalculateBannerPlantState()
+  [1891] CalculateInteractingState()
+  [1905] goto @543
+  [1910] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [1931] if !(CallFunc_IsInCity_ReturnValue) goto @1946
+  [1945] pop
+  [1946] CalculateStaggerState()
+  [1960] CalculateBleedOutState()
+  [1974] CalculateEdgeRecoveryState()
+  [1988] pop
+  [1989] self.PreviousDefaultPlayerState = self.DefaultPlayerState
+  [2016] pop
+  [2017] CalculateLocomotionState()
+  [2031] CalculateDodgeState()
+  [2045] goto @543
+  [2050] CalculateLocomotionState()
+  [2064] CalculateStaggerState()
+  [2078] goto @543
+  [2083] CalculateLocomotionState()
+  [2097] CalculateJumpState()
+  [2111] CalculateTraversalState()
+  [2125] goto @543
+  [2130] CalculateLocomotionState()
+  [2144] CalculateDodgeState()
+  [2158] CalculateAttackState()
+  [2172] goto @543
+  [2177] CalculateLocomotionState()
+  [2191] CalculateDodgeState()
+  [2205] CalculateEmoteState()
+  [2219] goto @543
+  [2224] CalculateLocomotionState()
+  [2238] CalculateDodgeState()
+  [2252] CalculateBannerPlantState()
+  [2266] goto @543
+  [2271] CalculateLocomotionState()
+  [2285] CalculateBleedOutState()
+  [2299] goto @543
+  [2304] CalculateLocomotionState()
+  [2318] CalculateDodgeState()
+  [2332] CalculateInteractingState()
+  [2346] goto @543
+  [2351] CalculateLocomotionState()
+  [2365] CalculateDodgeState()
+  [2379] CalculateEdgeRecoveryState()
+  [2393] goto @543
+  [2398] push @2408
+  [2403] goto @799
+  [2408] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable_1 = true
+  [2419] pop
+  [2420] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [2466] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [2476] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [2497] if !(CallFunc_GetArchonGameState_ReturnValue.self.IsInPreMatchAirship) goto @980
+  [2533] self.DefaultPlayerState = 0
+  [2553] OnDefaultStateChanged()
+  [2567] pop
+  [2568] Multi_UpdateDesiredLocoState(K2Node_CustomEvent_DesiredLocoState, K2Node_CustomEvent_PreviousState_1)
+  [2600] pop
+  [2601] Delay(self, 0.25, LatentActionInfo{EX_SkipOffsetConst(Value=15), 1448323241, 'ExecuteUbergraph_player_state_machine_bpc', self})
+  [2655] pop
+  [2656] SetLocomotionTunables()
+  [2670] UpdateFollowCamera(K2Node_CustomEvent_NewPlayerState, K2Node_CustomEvent_PreviousPlayerState)
+  [2702] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_CustomEvent_NewPlayerState, 6)
+  [2733] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @2601
+  [2747] pop
+  [2748] goto @2656
+  [2753] CallFunc_GetActorFeetLocation_ReturnValue = GetActorFeetLocation(self.ArchonCharacter.self.CharMovement)
+  [2812] BreakVector(CallFunc_GetActorFeetLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [2858] self.JumpApexHeight = CallFunc_BreakVector_Z
+  [2885] pop
+  [2886] if !(Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable) pop
+  [2896] Temp_real_Variable = 0.0
+  [2923] Temp_real_Variable_1 = 0.8999999761581421
+  [2950] Temp_real_Variable_2 = 0.6666669845581055
+  [2977] Temp_real_Variable_3 = 0.5
+  [3004] CallFunc_GetBaseAimRotation_ReturnValue = self.ArchonCharacter.GetBaseAimRotation()
+  [3058] CallFunc_GetVelocity_ReturnValue = self.ArchonCharacter.GetVelocity()
+  [3112] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_GetVelocity_ReturnValue)
+  [3149] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_GetVelocity_ReturnValue)
+  [3186] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSize_ReturnValue_1, 0.0010000000474974513)
+  [3224] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_GetBaseAimRotation_ReturnValue)
+  [3270] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue
+  [3289] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [3335] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [3364] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -60.0)
+  [3446] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 130.0)
+  [3528] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -130.0)
+  [3610] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 60.0)
+  [3692] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_2, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [3730] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue_1)
+  [3768] Temp_bool_Variable_2 = CallFunc_BooleanOR_ReturnValue
+  [3787] Temp_bool_Variable_1 = CallFunc_BooleanOR_ReturnValue_1
+  [3806] K2Node_VariableSet_StrafeSpeedModNative_ImplicitCast_1 = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_1){false: Temp_real_Variable_1, true: switch(Temp_bool_Variable_2){false: Temp_real_Variable_2, true: Temp_real_Variable_3, default: K2Node_Select_Default_3}, default: K2Node_Select_Default_4})
+  [3923] self.StrafeSpeedModNative = K2Node_VariableSet_StrafeSpeedModNative_ImplicitCast_1
+  [3950] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [3986] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [4015] if !(K2Node_DynamicCast_bSuccess_1) goto @5073
+  [4029] Temp_real_Variable = 0.0
+  [4056] Temp_real_Variable_1 = 0.8999999761581421
+  [4083] Temp_real_Variable_2 = 0.6666669845581055
+  [4110] Temp_real_Variable_3 = 0.5
+  [4137] CallFunc_GetBaseAimRotation_ReturnValue = self.ArchonCharacter.GetBaseAimRotation()
+  [4191] CallFunc_GetVelocity_ReturnValue = self.ArchonCharacter.GetVelocity()
+  [4245] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_GetVelocity_ReturnValue)
+  [4282] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_GetVelocity_ReturnValue)
+  [4319] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSize_ReturnValue_1, 0.0010000000474974513)
+  [4357] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_GetBaseAimRotation_ReturnValue)
+  [4403] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue
+  [4422] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [4468] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [4497] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -60.0)
+  [4579] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 130.0)
+  [4661] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -130.0)
+  [4743] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 60.0)
+  [4825] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_2, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [4863] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue_1)
+  [4901] Temp_bool_Variable_2 = CallFunc_BooleanOR_ReturnValue
+  [4920] Temp_bool_Variable_1 = CallFunc_BooleanOR_ReturnValue_1
+  [4939] K2Node_DynamicCast_AsPlayer_Interface.SetStrafeSpeedMod(switch(Temp_bool_Variable_1){false: Temp_real_Variable_1, true: switch(Temp_bool_Variable_2){false: Temp_real_Variable_2, true: Temp_real_Variable_3, default: K2Node_Select_Default_3}, default: K2Node_Select_Default_4})
+  [5073] Temp_real_Variable = 0.0
+  [5100] Temp_real_Variable_1 = 0.8999999761581421
+  [5127] Temp_real_Variable_2 = 0.6666669845581055
+  [5154] Temp_real_Variable_3 = 0.5
+  [5181] CallFunc_GetBaseAimRotation_ReturnValue = self.ArchonCharacter.GetBaseAimRotation()
+  [5235] CallFunc_GetVelocity_ReturnValue = self.ArchonCharacter.GetVelocity()
+  [5289] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_GetVelocity_ReturnValue)
+  [5326] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_GetVelocity_ReturnValue)
+  [5363] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSize_ReturnValue_1, 0.0010000000474974513)
+  [5401] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_GetBaseAimRotation_ReturnValue)
+  [5447] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue
+  [5466] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [5512] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [5541] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -60.0)
+  [5623] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 130.0)
+  [5705] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, -130.0)
+  [5787] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default_2}, 60.0)
+  [5869] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_2, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [5907] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue_1)
+  [5945] Temp_bool_Variable_2 = CallFunc_BooleanOR_ReturnValue
+  [5964] Temp_bool_Variable_1 = CallFunc_BooleanOR_ReturnValue_1
+  [5983] Server_UpdateSpeed(switch(Temp_bool_Variable_1){false: Temp_real_Variable_1, true: switch(Temp_bool_Variable_2){false: Temp_real_Variable_2, true: Temp_real_Variable_3, default: K2Node_Select_Default_3}, default: K2Node_Select_Default_4})
+  [6094] pop
+  [6095] self.LPreviousMovementMode = K2Node_CustomEvent_PreviousMovementMode
+  [6122] self.LNewMovementMode = K2Node_CustomEvent_NewMovementMode
+  [6149] UpdateJumpVariables()
+  [6163] pop
+  [6164] Multi_UpdateDefaultPlayerState(K2Node_CustomEvent_DefaultPlayerState_1, K2Node_CustomEvent_PreviousDefaultPlayerState_1)
+  [6196] pop
+  [6197] CallFunc_IsLocallyControlled_ReturnValue_1 = self.ArchonCharacter.IsLocallyControlled()
+  [6243] if !(CallFunc_IsLocallyControlled_ReturnValue_1) goto @6258
+  [6257] pop
+  [6258] self.PreviousDefaultPlayerState = K2Node_CustomEvent_PreviousDefaultPlayerState
+  [6285] self.DefaultPlayerState = K2Node_CustomEvent_DefaultPlayerState
+  [6312] OnPlayerStateDefaultChanged__DelegateSignature(self.DefaultPlayerState, self.PreviousDefaultPlayerState)
+  [6371] pop
+  [6372] CallFunc_IsLocallyControlled_ReturnValue_2 = self.ArchonCharacter.IsLocallyControlled()
+  [6418] if !(CallFunc_IsLocallyControlled_ReturnValue_2) goto @6433
+  [6432] pop
+  [6433] self.PreviousDesiredLocoState = K2Node_CustomEvent_PreviousState
+  [6460] self.DesiredLocomotionStateNative = K2Node_CustomEvent_DesiredLocomotionState
+  [6487] OnDesiredLocomotionStateChanged__DelegateSignature(self.DesiredLocomotionStateNative, self.PreviousDesiredLocoState)
+  [6546] pop
+  [6547] Multi_UpdateCurrentLocoState(K2Node_CustomEvent_CurrentLocomotionState_1, K2Node_CustomEvent_PreviousCurrentLocomotionState_1)
+  [6579] pop
+  [6580] CallFunc_IsLocallyControlled_ReturnValue_3 = self.ArchonCharacter.IsLocallyControlled()
+  [6626] if !(CallFunc_IsLocallyControlled_ReturnValue_3) goto @6641
+  [6640] pop
+  [6641] self.CurrentLocomotionState = K2Node_CustomEvent_CurrentLocomotionState
+  [6668] self.PreviousCurrentLocomotionState = K2Node_CustomEvent_PreviousCurrentLocomotionState
+  [6695] OnCurrentLocomotionStateChanged__DelegateSignature(self.CurrentLocomotionState, self.PreviousCurrentLocomotionState)
+  [6754] pop
+  [6755] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [6775] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [6811] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [6840] if !(K2Node_DynamicCast_bSuccess) pop
+  [6850] self.ArchonCharacter = K2Node_DynamicCast_AsArchon_Character
+  [6869] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [6898] self.AbilitySystem = CallFunc_GetAbilitySystemComponent_ReturnValue
+  [6917] self.MovementComponentNative = self.ArchonCharacter.self.CharMovement
+  [6958] GetDefaultMovementSettings()
+  [6972] CalculateLocomotionState()
+  [6986] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [7006] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [7057] self.PlayerDispatcher = CallFunc_GetComponentByClass_ReturnValue_2
+  [7076] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [7096] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(weapon_sheathe_bpc_C)
+  [7147] self.SheatheComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [7166] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [7186] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(ArchonSpringArmComponent)
+  [7237] self.CameraBoom = CallFunc_GetComponentByClass_ReturnValue
+  [7256] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnMovementModeChanged)
+  [7279] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [7320] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(5)
+  [7353] Default__KismetArrayLibrary.Array_Resize(self.DesiredLocoRefCount_Native, CallFunc_MakeLiteralInt_ReturnValue)
+  [7403] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPlayerStateDefaultChanged)
+  [7426] K2Node_CreateDelegate_OutputDelegate += None
+  [7467] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.SetJumpApexHeight)
+  [7490] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [7531] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnChainbladesSpinChanged)
+  [7554] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [7595] CallFunc_IsServer_ReturnValue_1 = IsServer(self)
+  [7616] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_IsServer_ReturnValue_1)
+  [7645] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(self.ArchonCharacter)
+  [7674] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_IsLocalCharacter_ReturnValue_1)
+  [7703] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue_2, CallFunc_Not_PreBool_ReturnValue_1)
+  [7741] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [7751] SetComponentTickEnabled(false)
+  [7766] pop
+  [7767] DebugPlayerStates(self.DebugStateMachine)
+  [7790] UpdateStateMachine()
+  [7804] SetMaxMovementSpeed()
+  [7818] Temp_real_Variable_4 = 0.0
+  [7845] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.MAX_ACCELERATION, 2.0)
+  [7891] Temp_byte_Variable = self.DesiredLocomotionStateNative
+  [7918] K2Node_VariableSet_MaxAcceleration_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_byte_Variable){0: CallFunc_Divide_DoubleDouble_ReturnValue, 1: CallFunc_Divide_DoubleDouble_ReturnValue, 2: self.MAX_ACCELERATION, 3: self.MAX_ACCELERATION_SPRINT, 4: Temp_real_Variable_4, default: K2Node_Select_Default})
+  [8038] self.MovementComponentNative.self.MaxAcceleration = K2Node_VariableSet_MaxAcceleration_ImplicitCast
+  [8087] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [8107] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_1)
+  [8136] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [8157] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsServer_ReturnValue)
+  [8186] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsLocalCharacter_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [8224] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [8234] push @8254
+  [8239] push @8279
+  [8244] push @2886
+  [8249] goto @212
+  [8254] DebugDrawStrafePivots(false, 100.0)
+  [8278] pop
+  [8279] Update Strafe Transition States(CallFunc_Update_Strafe_Transition_States_State, CallFunc_Update_Strafe_Transition_States_StateChanged)
+  [8311] if !(CallFunc_Update_Strafe_Transition_States_StateChanged) pop
+  [8321] self.StrafeTransitionState = CallFunc_Update_Strafe_Transition_States_State
+  [8348] goto @144
+  [8353] self.bDesiredStrafing = true
+  [8364] goto @178
+  [8369] self.bDesiredStrafing = false
+  [8380] goto @325
+  [8385] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [8421] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [8450] if !(K2Node_DynamicCast_bSuccess_2) goto @8510
+  [8464] K2Node_DynamicCast_AsPlayer_Interface_1.SetStrafeSpeedMod(K2Node_CustomEvent_Speed)
+  [8510] K2Node_VariableSet_StrafeSpeedModNative_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_Speed)
+  [8539] self.StrafeSpeedModNative = K2Node_VariableSet_StrafeSpeedModNative_ImplicitCast
+  [8566] pop
+  [8567] self.StrafeTransitionState = K2Node_CustomEvent_StrafeTransitionState
+  [8594] goto @72
+  [8599] if !(K2Node_CustomEvent_Enable) goto @8812
+  [8613] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(K2Node_CustomEvent_MaxDesiredLocoState)
+  [8650] Default__KismetArrayLibrary.Array_Get(self.DesiredLocoRefCount_Native, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Array_Get_Item)
+  [8709] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Array_Get_Item, 1)
+  [8751] Default__KismetArrayLibrary.Array_Set(self.DesiredLocoRefCount_Native, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Add_IntInt_ReturnValue, false)
+  [8811] pop
+  [8812] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(K2Node_CustomEvent_MaxDesiredLocoState)
+  [8849] Default__KismetArrayLibrary.Array_Get(self.DesiredLocoRefCount_Native, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Array_Get_Item_1)
+  [8908] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Get_Item_1, 1)
+  [8950] Default__KismetArrayLibrary.Array_Set(self.DesiredLocoRefCount_Native, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Subtract_IntInt_ReturnValue, false)
+  [9010] pop
+  [9011] self.InputScaleNative = 0.0
+  [9034] pop
+  [9035] if !(K2Node_Event_InputDisabled) goto @9054
+  [9049] goto @9011
+  [9054] CallFunc_MakeVector_X_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_MoveForward)
+  [9083] CallFunc_MakeVector_Y_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_MoveRight)
+  [9112] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_MakeVector_X_ImplicitCast, CallFunc_MakeVector_Y_ImplicitCast, 0.0)
+  [9167] CallFunc_VSize_ReturnValue = VSize(CallFunc_MakeVector_ReturnValue)
+  [9204] K2Node_VariableSet_InputScaleNative_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_VSize_ReturnValue)
+  [9233] self.InputScaleNative = K2Node_VariableSet_InputScaleNative_ImplicitCast
+  [9260] pop
+  [9261] Temp_bool_Variable_3 = K2Node_CustomEvent_IsSpinning
+  [9280] self.ArchonCharacter.self.CharacterMovement.self.RotationRate = switch(Temp_bool_Variable_3){false: self.Default_Rotation, true: self.Slow_Rotation, default: K2Node_Select_Default_1}
+  [9395] pop
+  [9396] return nothing
+  [9398] end
+
+=== GetDefaultMovementSettings
+  [0] K2Node_VariableSet_DEFAULT_MAX_ACCELERATION_ImplicitCast = cast<CST_FloatToDouble>(self.MovementComponentNative.self.MaxAcceleration)
+  [51] self.DEFAULT_MAX_ACCELERATION = K2Node_VariableSet_DEFAULT_MAX_ACCELERATION_ImplicitCast
+  [78] K2Node_VariableSet_DEFAULT_BRAKING_DECELERATION_WALKING_ImplicitCast = cast<CST_FloatToDouble>(self.MovementComponentNative.self.BrakingDecelerationWalking)
+  [129] self.DEFAULT_BRAKING_DECELERATION_WALKING = K2Node_VariableSet_DEFAULT_BRAKING_DECELERATION_WALKING_ImplicitCast
+  [156] BreakRotator(self.MovementComponentNative.self.RotationRate, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [224] K2Node_VariableSet_DEFAULT_TURN_RATE_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [253] self.DEFAULT_TURN_RATE = K2Node_VariableSet_DEFAULT_TURN_RATE_ImplicitCast
+  [280] return nothing
+  [282] end
+
+=== GetDesiredLocomotionState
+  [0] DesiredLocomotionState = self.DesiredLocomotionStateNative
+  [27] return nothing
+  [29] end
+
+=== GetIndexFromAngle
+  [0] push @598
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Array)
+  [121] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [150] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [188] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [226] if !(CallFunc_BooleanAND_ReturnValue) goto @395
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @427
+  [272] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [331] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(InputPin, CallFunc_Array_Get_Item)
+  [369] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @501
+  [383] Temp_bool_True_if_break_was_hit_Variable = true
+  [394] pop
+  [395] Array Index = l_index
+  [422] goto @598
+  [427] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [469] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [496] goto @62
+  [501] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(l_index, 1)
+  [543] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [570] l_index = Temp_int_Variable
+  [597] pop
+  [598] return nothing
+  [600] end
+
+=== GetPlayerStates
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.SheatheComponent)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @259
+  [43] self.SheatheComponent.GetWeaponSheatheState(CallFunc_GetWeaponSheatheState_SheatheState)
+  [88] K2Node_MakeStruct_player_states_struct.GameplayState = self.PlayerGameplayState
+  [124] K2Node_MakeStruct_player_states_struct.Default = self.DefaultPlayerState
+  [160] K2Node_MakeStruct_player_states_struct.Layered = self.LayeredPlayerState
+  [196] K2Node_MakeStruct_player_states_struct.Sheathe = CallFunc_GetWeaponSheatheState_SheatheState
+  [232] PlayerStates = K2Node_MakeStruct_player_states_struct
+  [259] return nothing
+  [261] end
+
+=== GetStrafeTransitionState
+  [0] StrafeTransitionState = self.StrafeTransitionState
+  [27] return nothing
+  [29] end
+
+=== GetTopDownAimRotation
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.ArchonCharacter)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @567
+  [43] CallFunc_GetControlRotation_ReturnValue = self.ArchonCharacter.GetControlRotation()
+  [93] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [139] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [186] CallFunc_GetActorRightVector_ReturnValue = self.ArchonCharacter.GetActorRightVector()
+  [236] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue)
+  [273] CallFunc_GetActorForwardVector_ReturnValue = self.ArchonCharacter.GetActorForwardVector()
+  [323] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_GetForwardVector_ReturnValue, CallFunc_GetActorRightVector_ReturnValue)
+  [369] CallFunc_Dot_VectorVector_ReturnValue_1 = Dot_VectorVector(CallFunc_GetActorForwardVector_ReturnValue, CallFunc_GetForwardVector_ReturnValue)
+  [415] CallFunc_SignOfFloat_ReturnValue = SignOfFloat(CallFunc_Dot_VectorVector_ReturnValue)
+  [452] CallFunc_DegAcos_ReturnValue = DegAcos(CallFunc_Dot_VectorVector_ReturnValue_1)
+  [489] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_DegAcos_ReturnValue, CallFunc_SignOfFloat_ReturnValue)
+  [535] ReturnValue = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [562] goto @594
+  [567] ReturnValue = 0.0
+  [594] return ReturnValue
+  [604] end
+
+=== IsFollowCameraEnabled
+  [0] Return = self.EnableFollowCamera
+  [19] return nothing
+  [21] end
+
+=== IsStrafingNative
+  [0] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.StrafeTransitionState, 3)
+  [31] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.StrafeTransitionState, 1)
+  [62] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(self.StrafeTransitionState, 2)
+  [93] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_2)
+  [131] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_1)
+  [169] IsStrafing = CallFunc_BooleanOR_ReturnValue_1
+  [188] return nothing
+  [190] end
+
+=== JumpLandEnd
+  [0] ExecuteUbergraph_player_state_machine_bpc(2398)
+  [15] return nothing
+  [17] end
+
+=== Multi_UpdateCurrentLocoState
+  [0] frame.K2Node_CustomEvent_CurrentLocomotionState = CurrentLocomotionState
+  [18] frame.K2Node_CustomEvent_PreviousCurrentLocomotionState = PreviousCurrentLocomotionState
+  [36] ExecuteUbergraph_player_state_machine_bpc(6580)
+  [51] return nothing
+  [53] end
+
+=== Multi_UpdateDefaultPlayerState
+  [0] frame.K2Node_CustomEvent_DefaultPlayerState = DefaultPlayerState
+  [18] frame.K2Node_CustomEvent_PreviousDefaultPlayerState = PreviousDefaultPlayerState
+  [36] ExecuteUbergraph_player_state_machine_bpc(6197)
+  [51] return nothing
+  [53] end
+
+=== Multi_UpdateDesiredLocoState
+  [0] frame.K2Node_CustomEvent_DesiredLocomotionState = DesiredLocomotionState
+  [18] frame.K2Node_CustomEvent_PreviousState = PreviousState
+  [36] ExecuteUbergraph_player_state_machine_bpc(6372)
+  [51] return nothing
+  [53] end
+
+=== OnChainbladesSpinChanged
+  [0] frame.K2Node_CustomEvent_IsSpinning = IsSpinning
+  [18] ExecuteUbergraph_player_state_machine_bpc(9261)
+  [33] return nothing
+  [35] end
+
+=== OnDefaultStateChanged
+  [0] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.PreviousDefaultPlayerState, self.DefaultPlayerState)
+  [38] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @143
+  [52] OnPlayerStateDefaultChanged__DelegateSignature(self.DefaultPlayerState, self.PreviousDefaultPlayerState)
+  [111] Server_UpdateDefaultPlayerState(self.DefaultPlayerState, self.PreviousDefaultPlayerState)
+  [143] return nothing
+  [145] end
+
+=== OnLayeredStateChanged
+  [0] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.LPreviousLayeredState, self.LayeredPlayerState)
+  [38] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @111
+  [52] OnPlayerStateLayeredChanged__DelegateSignature(self.LayeredPlayerState, self.LPreviousLayeredState)
+  [111] return nothing
+  [113] end
+
+=== OnMovementModeChanged
+  [0] frame.K2Node_CustomEvent_PreviousMovementMode = PreviousMovementMode
+  [18] frame.K2Node_CustomEvent_NewMovementMode = NewMovementMode
+  [36] ExecuteUbergraph_player_state_machine_bpc(6095)
+  [51] return nothing
+  [53] end
+
+=== OnPlayerStateDefaultChanged
+  [0] frame.K2Node_CustomEvent_NewPlayerState = NewPlayerState
+  [18] frame.K2Node_CustomEvent_PreviousPlayerState = PreviousPlayerState
+  [36] ExecuteUbergraph_player_state_machine_bpc(2748)
+  [51] return nothing
+  [53] end
+
+=== OnRep_StrafeTransitionState
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 0)
+  [31] if !(K2Node_SwitchEnum_CmpSuccess) goto @275
+  [45] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 1)
+  [76] if !(K2Node_SwitchEnum_CmpSuccess) goto @314
+  [90] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 2)
+  [121] if !(K2Node_SwitchEnum_CmpSuccess) goto @275
+  [135] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 3)
+  [166] if !(K2Node_SwitchEnum_CmpSuccess) goto @314
+  [180] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 4)
+  [211] if !(K2Node_SwitchEnum_CmpSuccess) goto @275
+  [225] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeTransitionState, 5)
+  [256] if !(K2Node_SwitchEnum_CmpSuccess) goto @275
+  [270] goto @334
+  [275] SetStrafingMode(false)
+  [290] StrafeStateChange__DelegateSignature()
+  [309] goto @334
+  [314] SetStrafingMode(true)
+  [329] goto @290
+  [334] return nothing
+  [336] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_player_state_machine_bpc(6755)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_player_state_machine_bpc(7767)
+  [33] return nothing
+  [35] end
+
+=== Server_UpdateCurrentLocoState
+  [0] frame.K2Node_CustomEvent_CurrentLocomotionState_1 = CurrentLocomotionState
+  [18] frame.K2Node_CustomEvent_PreviousCurrentLocomotionState_1 = PreviousCurrentLocomotionState
+  [36] ExecuteUbergraph_player_state_machine_bpc(6547)
+  [51] return nothing
+  [53] end
+
+=== Server_UpdateDefaultPlayerState
+  [0] frame.K2Node_CustomEvent_DefaultPlayerState_1 = DefaultPlayerState
+  [18] frame.K2Node_CustomEvent_PreviousDefaultPlayerState_1 = PreviousDefaultPlayerState
+  [36] ExecuteUbergraph_player_state_machine_bpc(6164)
+  [51] return nothing
+  [53] end
+
+=== Server_UpdateDesiredLocoState
+  [0] frame.K2Node_CustomEvent_DesiredLocoState = DesiredLocoState
+  [18] frame.K2Node_CustomEvent_PreviousState_1 = PreviousState
+  [36] ExecuteUbergraph_player_state_machine_bpc(2568)
+  [51] return nothing
+  [53] end
+
+=== Server_UpdateSpeed
+  [0] frame.K2Node_CustomEvent_Speed = Speed
+  [18] ExecuteUbergraph_player_state_machine_bpc(8385)
+  [33] return nothing
+  [35] end
+
+=== Server_UpdateStrafeTransitionState
+  [0] frame.K2Node_CustomEvent_StrafeTransitionState = StrafeTransitionState
+  [18] ExecuteUbergraph_player_state_machine_bpc(8567)
+  [33] return nothing
+  [35] end
+
+=== SetDefaultPlayerState
+  [0] self.DefaultPlayerState = DefaultPlayerState
+  [27] return nothing
+  [29] end
+
+=== SetDesiredLocomotionState
+  [0] self.DesiredLocomotionStateNative = DesiredLocomotionState
+  [27] return nothing
+  [29] end
+
+=== SetInputScale
+  [0] frame.K2Node_Event_MoveForward = MoveForward
+  [18] frame.K2Node_Event_MoveRight = MoveRight
+  [36] frame.K2Node_Event_InputDisabled = InputDisabled
+  [54] ExecuteUbergraph_player_state_machine_bpc(9035)
+  [69] return nothing
+  [71] end
+
+=== SetJumpApexHeight
+  [0] ExecuteUbergraph_player_state_machine_bpc(2753)
+  [15] return nothing
+  [17] end
+
+=== SetLocomotionTunables
+  [0] K2Node_VariableSet_BrakingDecelerationWalking_ImplicitCast = cast<CST_DoubleToFloat>(self.BRAKING_DECELERATION_WALKING)
+  [29] self.MovementComponentNative.self.BrakingDecelerationWalking = K2Node_VariableSet_BrakingDecelerationWalking_ImplicitCast
+  [78] self.MovementComponentNative.self.RotationRate = self.ROTATION_RATE
+  [127] self.CameraBoom.self.bEnableCameraRotationLag = false
+  [160] return nothing
+  [162] end
+
+=== SetMaxDesiredLocoState
+  [0] push @623
+  [5] LocoState = 4
+  [25] Temp_bool_True_if_break_was_hit_Variable = false
+  [36] Temp_int_Loop_Counter_Variable = 0
+  [59] Temp_int_Array_Index_Variable = 0
+  [82] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [111] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DesiredLocoRefCount_Native)
+  [170] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [208] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [246] if !(CallFunc_BooleanAND_ReturnValue) goto @517
+  [260] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [287] push @549
+  [292] Default__KismetArrayLibrary.Array_Get(self.DesiredLocoRefCount_Native, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [351] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Get_Item, 0)
+  [385] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [395] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Array_Index_Variable)
+  [432] CallFunc_GetValidValue_ReturnValue = GetValidValue(EArchonLocomotionState, CallFunc_Conv_IntToByte_ReturnValue)
+  [478] LocoState = CallFunc_GetValidValue_ReturnValue
+  [505] Temp_bool_True_if_break_was_hit_Variable = true
+  [516] pop
+  [517] DesiredLocoState = LocoState
+  [544] goto @623
+  [549] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [591] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [618] goto @82
+  [623] return nothing
+  [625] end
+
+=== SetMaxDesiredLocomotionState
+  [0] frame.K2Node_CustomEvent_Enable = Enable
+  [18] frame.K2Node_CustomEvent_MaxDesiredLocoState = MaxDesiredLocoState
+  [36] ExecuteUbergraph_player_state_machine_bpc(8599)
+  [51] return nothing
+  [53] end
+
+=== SetMaxMovementSpeed
+  [0] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [36] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [65] if !(K2Node_DynamicCast_bSuccess_1) goto @680
+  [79] K2Node_DynamicCast_AsPlayer_Interface_1.GetIsInSlowChargeState(CallFunc_GetIsInSlowChargeState_Is_slow_charging_)
+  [125] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [161] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [190] if !(K2Node_DynamicCast_bSuccess) goto @696
+  [204] K2Node_DynamicCast_AsPlayer_Interface.GetIsChainbladesSpin(CallFunc_GetIsChainbladesSpin_IsChainbladesSpin)
+  [250] CallFunc_GetCurrentWeapon_ReturnValue = self.ArchonCharacter.GetCurrentWeapon()
+  [292] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [328] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [357] if !(K2Node_DynamicCast_bSuccess_2) goto @712
+  [371] K2Node_DynamicCast_AsWeapon_Bpi.GetSlowChargeBaseSpeed(CallFunc_GetSlowChargeBaseSpeed_SlowChargeBaseSpeed)
+  [417] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [446] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonMovementAttributeSet:BaseMovementSpeed'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [571] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GetIsInSlowChargeState_Is_slow_charging_, CallFunc_GetIsChainbladesSpin_IsChainbladesSpin)
+  [609] CallFunc_SetExplicitMovementSpeeds_SlowChargeBaseSpeed_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetSlowChargeBaseSpeed_SlowChargeBaseSpeed)
+  [638] SetExplicitMovementSpeeds(CallFunc_BooleanOR_ReturnValue, CallFunc_SetExplicitMovementSpeeds_SlowChargeBaseSpeed_ImplicitCast, CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [675] goto @744
+  [680] CallFunc_GetIsInSlowChargeState_Is_slow_charging_ = false
+  [691] goto @125
+  [696] CallFunc_GetIsChainbladesSpin_IsChainbladesSpin = false
+  [707] goto @250
+  [712] CallFunc_GetSlowChargeBaseSpeed_SlowChargeBaseSpeed = 0.0
+  [739] goto @417
+  [744] return nothing
+  [746] end
+
+=== SetStrafingMode
+  [0] push @861
+  [5] push @277
+  [10] self.MovementComponentNative.self.bUseControllerDesiredRotation = Enable
+  [51] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Enable)
+  [80] self.MovementComponentNative.self.bOrientRotationToMovement = CallFunc_Not_PreBool_ReturnValue
+  [121] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Enable)
+  [150] if !(CallFunc_Not_PreBool_ReturnValue) goto @748
+  [164] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [200] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [229] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [239] K2Node_DynamicCast_AsPlayer_Interface_1.EnableLocoTransitions()
+  [276] pop
+  [277] Temp_bool_Variable = Enable
+  [296] K2Node_VariableSet_MaxAcceleration_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: self.DEFAULT_MAX_ACCELERATION, true: self.STRAFE_MAX_ACCELERATION, default: K2Node_Select_Default_2})
+  [369] self.MovementComponentNative.self.MaxAcceleration = K2Node_VariableSet_MaxAcceleration_ImplicitCast
+  [418] Temp_bool_Variable_1 = Enable
+  [437] K2Node_VariableSet_BrakingDecelerationWalking_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_1){false: self.DEFAULT_BRAKING_DECELERATION_WALKING, true: self.STRAFE_BRAKING_DECELERATION_WALKING, default: K2Node_Select_Default_1})
+  [510] self.MovementComponentNative.self.BrakingDecelerationWalking = K2Node_VariableSet_BrakingDecelerationWalking_ImplicitCast
+  [559] Temp_bool_Variable_2 = Enable
+  [578] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_2){false: self.DEFAULT_TURN_RATE, true: self.STRAFE_TURN_RATE, default: K2Node_Select_Default})
+  [651] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [698] self.MovementComponentNative.self.RotationRate = CallFunc_MakeRotator_ReturnValue
+  [747] pop
+  [748] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [784] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [813] if !(K2Node_DynamicCast_bSuccess) pop
+  [823] K2Node_DynamicCast_AsPlayer_Interface.DisableLocoTransitions()
+  [860] pop
+  [861] return nothing
+  [863] end
+
+=== StartStrafe
+  [0] ExecuteUbergraph_player_state_machine_bpc(8353)
+  [15] return nothing
+  [17] end
+
+=== StrafeStateChange__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ToggleDebug
+  [0] frame.K2Node_CustomEvent_Debug = Debug
+  [18] ExecuteUbergraph_player_state_machine_bpc(558)
+  [33] return nothing
+  [35] end
+
+=== Update Strafe Transition States
+  [0] push @4796
+  [5] l_pivot_90l_0 = EX_SoftObjectConst(Value='/Game/Character/Player/Anims/DP/h_mr_dp_loco_idle_turn_90l_mot.h_mr_dp_loco_idle_turn_90l_mot')
+  [119] l_pivot_90r_0 = EX_SoftObjectConst(Value='/Game/Character/Player/Anims/DP/h_mr_dp_loco_idle_turn_90r_mot.h_mr_dp_loco_idle_turn_90r_mot')
+  [233] l_active_montage_0 = EX_SoftObjectConst(Value='/Game/Character/Player/Anims/Base/Montage/MOT_h_mr_bs_loco_idle_turn_90r.MOT_h_mr_bs_loco_idle_turn_90r')
+  [357] push @633
+  [362] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 0)
+  [393] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @722
+  [407] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 1)
+  [438] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @778
+  [452] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 2)
+  [483] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @1259
+  [497] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 3)
+  [528] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @2399
+  [542] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 4)
+  [573] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @2553
+  [587] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.StrafeTransitionState, 5)
+  [618] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @3120
+  [632] pop
+  [633] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(l_transition, self.StrafeTransitionState)
+  [671] State = l_transition
+  [698] StateChanged = CallFunc_NotEqual_ByteByte_ReturnValue
+  [717] goto @4796
+  [722] if !(self.bDesiredStrafing) goto @757
+  [736] l_transition = 1
+  [756] pop
+  [757] l_transition = 0
+  [777] pop
+  [778] CallFunc_GetControlRotation_ReturnValue = self.ArchonCharacter.self.Instigator.GetControlRotation()
+  [850] CallFunc_GetActorForwardVector_ReturnValue_1 = self.ArchonCharacter.GetActorForwardVector()
+  [900] CallFunc_Conv_VectorToRotator_ReturnValue_2 = Conv_VectorToRotator(CallFunc_GetActorForwardVector_ReturnValue_1)
+  [937] CallFunc_NormalizedDeltaRotator_ReturnValue_1 = NormalizedDeltaRotator(CallFunc_Conv_VectorToRotator_ReturnValue_2, CallFunc_GetControlRotation_ReturnValue)
+  [983] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue_1, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [1029] CallFunc_NearlyEqual_FloatFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [1058] CallFunc_NearlyEqual_FloatFloat_ReturnValue = NearlyEqual_FloatFloat(CallFunc_NearlyEqual_FloatFloat_A_ImplicitCast, 0.0, 1.0)
+  [1105] if !(CallFunc_NearlyEqual_FloatFloat_ReturnValue) goto @1238
+  [1119] GetPlayerStates(CallFunc_GetPlayerStates_PlayerStates)
+  [1142] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetPlayerStates_PlayerStates.Default, 0)
+  [1182] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @1217
+  [1196] l_transition = 2
+  [1216] pop
+  [1217] l_transition = 3
+  [1237] pop
+  [1238] l_transition = 1
+  [1258] pop
+  [1259] if !(self.bDesiredStrafing) goto @2378
+  [1273] GetPlayerStates(CallFunc_GetPlayerStates_PlayerStates)
+  [1296] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetPlayerStates_PlayerStates.Default, 0)
+  [1336] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @2308
+  [1350] l_transition = 2
+  [1370] CallFunc_GetAnimInstance_ReturnValue = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [1434] K2Node_DynamicCast_AsArchon_Anim_Instance = cast<ArchonAnimInstance>(CallFunc_GetAnimInstance_ReturnValue)
+  [1470] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Anim_Instance)
+  [1499] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [1509] CallFunc_IsPlayingMontageOnSlot_ReturnValue = K2Node_DynamicCast_AsArchon_Anim_Instance.IsPlayingMontageOnSlot('DefaultSlot')
+  [1564] if !(CallFunc_IsPlayingMontageOnSlot_ReturnValue) goto @1579
+  [1578] pop
+  [1579] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 0)
+  [1610] if !(K2Node_SwitchEnum_CmpSuccess) goto @2258
+  [1624] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 1)
+  [1655] if !(K2Node_SwitchEnum_CmpSuccess) goto @1895
+  [1669] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 2)
+  [1700] if !(K2Node_SwitchEnum_CmpSuccess) goto @3596
+  [1714] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 3)
+  [1745] if !(K2Node_SwitchEnum_CmpSuccess) goto @4177
+  [1759] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 4)
+  [1790] if !(K2Node_SwitchEnum_CmpSuccess) goto @2258
+  [1804] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 5)
+  [1835] if !(K2Node_SwitchEnum_CmpSuccess) goto @2258
+  [1849] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.StrafeIdlePivot, 6)
+  [1880] if !(K2Node_SwitchEnum_CmpSuccess) goto @2258
+  [1894] pop
+  [1895] Temp_byte_Variable_2 = 1
+  [1915] Temp_byte_Variable_3 = 3
+  [1935] Temp_byte_Variable_4 = 1
+  [1955] Temp_byte_Variable_5 = 2
+  [1975] CallFunc_GetTopDownAimRotation_ReturnValue_2 = GetTopDownAimRotation()
+  [2007] array{-45.0, 75.0, 180.0}
+  [2045] GetIndexFromAngle(CallFunc_GetTopDownAimRotation_ReturnValue_2, K2Node_MakeArray_Array_2, CallFunc_GetIndexFromAngle_Array_Index_2)
+  [2086] Temp_int_Variable = CallFunc_GetIndexFromAngle_Array_Index_2
+  [2113] self.StrafeIdlePivot = switch(Temp_int_Variable){0: Temp_byte_Variable_5, 1: Temp_byte_Variable_4, 2: Temp_byte_Variable_3, 3: Temp_byte_Variable_2, default: K2Node_Select_Default_2}
+  [2228] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [2257] pop
+  [2258] self.StrafeIdlePivot = 1
+  [2278] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [2307] pop
+  [2308] l_transition = 3
+  [2328] self.StrafeIdlePivot = 1
+  [2348] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [2377] pop
+  [2378] l_transition = 4
+  [2398] pop
+  [2399] if !(self.bDesiredStrafing) goto @2532
+  [2413] GetPlayerStates(CallFunc_GetPlayerStates_PlayerStates)
+  [2436] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetPlayerStates_PlayerStates.Default, 0)
+  [2476] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @2511
+  [2490] l_transition = 2
+  [2510] pop
+  [2511] l_transition = 3
+  [2531] pop
+  [2532] l_transition = 4
+  [2552] pop
+  [2553] Temp_real_Variable = 0.0
+  [2580] CallFunc_GetActorForwardVector_ReturnValue = self.ArchonCharacter.GetActorForwardVector()
+  [2630] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_GetActorForwardVector_ReturnValue)
+  [2667] CallFunc_GetVelocity_ReturnValue = self.ArchonCharacter.GetVelocity()
+  [2721] CallFunc_VSize_ReturnValue = VSize(CallFunc_GetVelocity_ReturnValue)
+  [2758] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSize_ReturnValue, 0.0010000000474974513)
+  [2796] CallFunc_Conv_VectorToRotator_ReturnValue_1 = Conv_VectorToRotator(CallFunc_GetVelocity_ReturnValue)
+  [2833] CallFunc_NormalizedDeltaRotator_ReturnValue = NormalizedDeltaRotator(CallFunc_Conv_VectorToRotator_ReturnValue_1, CallFunc_Conv_VectorToRotator_ReturnValue)
+  [2879] BreakRotator(CallFunc_NormalizedDeltaRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [2925] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue
+  [2944] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [2973] CallFunc_NearlyEqual_FloatFloat_ReturnValue_1 = NearlyEqual_FloatFloat(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: Temp_real_Variable, default: K2Node_Select_Default}, 0.0, 1.0)
+  [3064] if !(CallFunc_NearlyEqual_FloatFloat_ReturnValue_1) goto @3099
+  [3078] l_transition = 0
+  [3098] pop
+  [3099] l_transition = 4
+  [3119] pop
+  [3120] CallFunc_LoadAsset_Blocking_ReturnValue = LoadAsset_Blocking(l_active_montage_0)
+  [3149] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(CallFunc_LoadAsset_Blocking_ReturnValue)
+  [3185] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [3214] if !(K2Node_DynamicCast_bSuccess) pop
+  [3224] CallFunc_GetAnimInstance_ReturnValue_1 = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [3288] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAnimInstance_ReturnValue_1)
+  [3317] if !(CallFunc_IsValid_ReturnValue) pop
+  [3327] CallFunc_GetAnimInstance_ReturnValue_1 = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [3391] CallFunc_Montage_IsActive_ReturnValue = CallFunc_GetAnimInstance_ReturnValue_1.Montage_IsActive(K2Node_DynamicCast_AsAnim_Montage)
+  [3442] if !(CallFunc_Montage_IsActive_ReturnValue) goto @3526
+  [3456] l_transition = 5
+  [3476] self.StrafeIdlePivot = 1
+  [3496] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [3525] pop
+  [3526] l_transition = 2
+  [3546] self.StrafeIdlePivot = 1
+  [3566] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [3595] pop
+  [3596] Temp_byte_Variable = 1
+  [3616] Temp_byte_Variable_1 = 2
+  [3636] CallFunc_GetTopDownAimRotation_ReturnValue_1 = GetTopDownAimRotation()
+  [3668] array{-45.0, 15.0}
+  [3697] GetIndexFromAngle(CallFunc_GetTopDownAimRotation_ReturnValue_1, K2Node_MakeArray_Array_1, CallFunc_GetIndexFromAngle_Array_Index_1)
+  [3738] Temp_int_Variable_1 = CallFunc_GetIndexFromAngle_Array_Index_1
+  [3765] self.StrafeIdlePivot = switch(Temp_int_Variable_1){0: Temp_byte_Variable_1, 1: Temp_byte_Variable, default: K2Node_Select_Default_1}
+  [3844] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [3873] l_transition = 5
+  [3893] CallFunc_LoadAsset_Blocking_ReturnValue_2 = LoadAsset_Blocking(l_pivot_90l_0)
+  [3922] l_active_montage_0 = l_pivot_90l_0
+  [3949] K2Node_DynamicCast_AsAnim_Montage_2 = cast<AnimMontage>(CallFunc_LoadAsset_Blocking_ReturnValue_2)
+  [3985] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage_2)
+  [4014] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [4024] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [4060] K2Node_DynamicCast_bSuccess_5 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [4089] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [4099] K2Node_DynamicCast_AsPlayer_Interface_1.PlayNetworkedMontage(K2Node_DynamicCast_AsAnim_Montage_2, 1.0, 1.0, 'None')
+  [4176] pop
+  [4177] Temp_byte_Variable_6 = 1
+  [4197] CallFunc_GetTopDownAimRotation_ReturnValue = GetTopDownAimRotation()
+  [4229] array{75.0, 180.0}
+  [4258] GetIndexFromAngle(CallFunc_GetTopDownAimRotation_ReturnValue, K2Node_MakeArray_Array, CallFunc_GetIndexFromAngle_Array_Index)
+  [4299] Temp_byte_Variable_7 = 3
+  [4319] Temp_byte_Variable_8 = 3
+  [4339] Temp_int_Variable_2 = CallFunc_GetIndexFromAngle_Array_Index
+  [4366] self.StrafeIdlePivot = switch(Temp_int_Variable_2){0: Temp_byte_Variable_6, 1: Temp_byte_Variable_7, 2: Temp_byte_Variable_8, default: K2Node_Select_Default_3}
+  [4463] MarkPropertyDirtyFromRepIndex(self, 4, 'StrafeIdlePivot')
+  [4492] l_transition = 5
+  [4512] CallFunc_LoadAsset_Blocking_ReturnValue_1 = LoadAsset_Blocking(l_pivot_90r_0)
+  [4541] l_active_montage_0 = l_pivot_90r_0
+  [4568] K2Node_DynamicCast_AsAnim_Montage_1 = cast<AnimMontage>(CallFunc_LoadAsset_Blocking_ReturnValue_1)
+  [4604] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage_1)
+  [4633] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [4643] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [4679] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [4708] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [4718] K2Node_DynamicCast_AsPlayer_Interface.PlayNetworkedMontage(K2Node_DynamicCast_AsAnim_Montage_1, 1.0, 1.0, 'None')
+  [4795] pop
+  [4796] return nothing
+  [4798] end
+
+=== UpdateFollowCamera
+  [0] push @715
+  [5] IsStrafingNative(CallFunc_IsStrafingNative_IsStrafing)
+  [28] if !(CallFunc_IsStrafingNative_IsStrafing) goto @54
+  [42] self.EnableFollowCamera = false
+  [53] pop
+  [54] push @375
+  [59] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 0)
+  [90] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [104] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 1)
+  [135] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [149] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 2)
+  [180] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [194] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 3)
+  [225] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [239] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 4)
+  [270] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [284] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 5)
+  [315] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [329] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PreviousPlayerState, 6)
+  [360] if !(K2Node_SwitchEnum_CmpSuccess) goto @703
+  [374] pop
+  [375] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 0)
+  [406] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [420] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 1)
+  [451] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [465] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 2)
+  [496] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [510] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 3)
+  [541] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [555] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 4)
+  [586] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [600] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 5)
+  [631] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [645] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(NewPlayerState, 6)
+  [676] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @691
+  [690] pop
+  [691] self.EnableFollowCamera = true
+  [702] pop
+  [703] self.EnableFollowCamera = false
+  [714] pop
+  [715] return nothing
+  [717] end
+
+=== UpdateJumpVariables
+  [0] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.LNewMovementMode, 1)
+  [31] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.LPreviousMovementMode, 3)
+  [62] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [100] self.LIsLanding = CallFunc_BooleanAND_ReturnValue
+  [119] if !(self.LIsLanding) goto @329
+  [133] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [183] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [229] self.JumpHeightAtGround = CallFunc_BreakVector_Z
+  [256] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.JumpApexHeight, self.JumpHeightAtGround)
+  [302] self.JumpFallDistance = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [329] return nothing
+  [331] end
+
+=== UpdateStateMachine
+  [0] ExecuteUbergraph_player_state_machine_bpc(2420)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,74 @@
+# player_island_combat_camera_state_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ReceiveEvaluateEntryConditions
+  [0] CallFunc_ReceiveEvaluateEntryConditions_ReturnValue = ReceiveEvaluateEntryConditions()
+  [20] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [40] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwningActor_ReturnValue)
+  [76] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [105] if !(K2Node_DynamicCast_bSuccess) goto @256
+  [119] K2Node_DynamicCast_AsPlayer_Interface.GetIsSheathed(CallFunc_GetIsSheathed_Weapon_Sheathed)
+  [165] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_GetIsSheathed_Weapon_Sheathed)
+  [194] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_ReceiveEvaluateEntryConditions_ReturnValue)
+  [232] ReturnValue = CallFunc_BooleanAND_ReturnValue
+  [251] goto @272
+  [256] CallFunc_GetIsSheathed_Weapon_Sheathed = false
+  [267] goto @165
+  [272] return ReturnValue
+  [282] end
+
+=== ReceiveGetDesiredSpringArmLength
+  [0] push @1881
+  [5] AdditiveSpringArmLength = 0.0
+  [32] push @1711
+  [37] push @789
+  [42] push @234
+  [47] CallFunc_GetOwningComponent_ReturnValue = GetOwningComponent()
+  [67] CameraStateMachineComponent = CallFunc_GetOwningComponent_ReturnValue
+  [86] CallFunc_IsValid_ReturnValue = IsValid(CameraStateMachineComponent)
+  [115] if !(CallFunc_IsValid_ReturnValue) goto @1838
+  [129] CallFunc_GetCameraComponent_ReturnValue = CameraStateMachineComponent.GetCameraComponent()
+  [171] CameraComponent = CallFunc_GetCameraComponent_ReturnValue
+  [190] CallFunc_IsValid_ReturnValue_1 = IsValid(CameraComponent)
+  [219] if !(CallFunc_IsValid_ReturnValue_1) goto @1838
+  [233] pop
+  [234] CameraComponent.GetCameraView(0.0, CallFunc_GetCameraView_DesiredView)
+  [284] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.CameraPitchMax, self.CameraPitchMin)
+  [330] GetAxes(CallFunc_GetCameraView_DesiredView.Rotation, CallFunc_GetAxes_X, CallFunc_GetAxes_Y, CallFunc_GetAxes_Z)
+  [385] GetYawPitchFromVector(CallFunc_GetAxes_X, CallFunc_GetYawPitchFromVector_Yaw, CallFunc_GetYawPitchFromVector_Pitch)
+  [422] CallFunc_FClamp_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetYawPitchFromVector_Pitch)
+  [451] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_FClamp_Value_ImplicitCast, self.CameraPitchMin, self.CameraPitchMax)
+  [506] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_FClamp_ReturnValue, self.CameraPitchMin)
+  [552] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_1, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [598] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [627] CallFunc_GetFloatValue_ReturnValue = self.CameraOffsetPitchCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [686] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [715] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 150.0)
+  [761] AdditiveSpringArmLength = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [788] pop
+  [789] CallFunc_GetOwner_ReturnValue = CameraComponent.GetOwner()
+  [831] CallFunc_K2_GetComponentRotation_ReturnValue = CameraComponent.K2_GetComponentRotation()
+  [881] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [931] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_K2_GetComponentRotation_ReturnValue)
+  [968] CallFunc_K2_GetComponentLocation_ReturnValue = CameraComponent.K2_GetComponentLocation()
+  [1018] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, -2500.0)
+  [1064] array{7}
+  [1077] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1123] CallFunc_SphereTraceSingleForObjects_ReturnValue = SphereTraceSingleForObjects(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, 25.0, K2Node_MakeArray_Array, false, Temp_object_Variable, 0, CallFunc_SphereTraceSingleForObjects_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1271] if !(CallFunc_SphereTraceSingleForObjects_ReturnValue) pop
+  [1281] CallFunc_GetOwner_ReturnValue = CameraComponent.GetOwner()
+  [1323] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [1373] BreakHitResult(CallFunc_SphereTraceSingleForObjects_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1554] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_BreakHitResult_Location, CallFunc_K2_GetActorLocation_ReturnValue)
+  [1600] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [1637] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(AdditiveSpringArmLength, CallFunc_VSize_ReturnValue)
+  [1683] AdditiveSpringArmLength = CallFunc_Add_DoubleDouble_ReturnValue
+  [1710] pop
+  [1711] CallFunc_FMin_ReturnValue = FMin(self.CameraMaxAdditiveSpringArmLength, AdditiveSpringArmLength)
+  [1757] K2Node_FunctionResult_SpringArmLength_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMin_ReturnValue)
+  [1786] SpringArmLength = K2Node_FunctionResult_SpringArmLength_ImplicitCast
+  [1813] ReturnValue = 2
+  [1833] goto @1881
+  [1838] SpringArmLength = 0.0
+  [1861] ReturnValue = 0
+  [1881] return ReturnValue
+  [1891] end

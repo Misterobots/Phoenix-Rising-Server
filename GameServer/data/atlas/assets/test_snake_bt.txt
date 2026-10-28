@@ -1,0 +1,19 @@
+test_snake_bt  blackboard=BlackboardData test_snake_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (MonsterIsDead is Is Not Set)]
+  Selector "RealRoot"
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack)}
+    {service distance_from_target_service  (Distance_key=bb.TargetActor, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice}
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+    [if current_target_is_valid_btdeco]
+    1) Sequence
+      1) try_set_behemoth_state_bttask  (State=Combat)
+    [if not BTDeco_CheckChosenAction  (bInverseCondition=true)]
+    [if Cooldown  (CooldownTime=1)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if BTDeco_Sandworm_IsHead]
+    [if BTDeco_Sandworm_BodyCombatReady]
+    2) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)

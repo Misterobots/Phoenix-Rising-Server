@@ -1,0 +1,81 @@
+# dp_subsequent_hits_damage_passive_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_dp_subsequent_hits_damage_passive
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(self.RequireTags)
+  [47] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(K2Node_Event_DamageInfo.Payload.InstigatorTags, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [104] if !(CallFunc_HasAnyTags_ReturnValue) goto @792
+  [118] CallFunc_IsValid_ReturnValue_1 = IsValid(self.TrackerBuff)
+  [147] if !(CallFunc_IsValid_ReturnValue_1) goto @792
+  [161] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(K2Node_Event_DamageReceiver)
+  [197] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [226] if !(K2Node_DynamicCast_bSuccess) goto @792
+  [240] CallFunc_GetMonsterPartComponent_ReturnValue = K2Node_DynamicCast_AsMonster_Part_Actor.GetMonsterPartComponent()
+  [282] K2Node_DynamicCast_AsMonsterpart_Bpc = cast<monsterpart_bpc_C>(CallFunc_GetMonsterPartComponent_ReturnValue)
+  [318] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonsterpart_Bpc)
+  [347] if !(K2Node_DynamicCast_bSuccess_1) goto @792
+  [361] self.TrackerBuff.SetMarksmanPart(K2Node_DynamicCast_AsMonsterpart_Bpc)
+  [406] goto @792
+  [411] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [431] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [467] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [496] if !(K2Node_DynamicCast_bSuccess_2) goto @792
+  [510] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [552] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [588] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [617] if !(K2Node_DynamicCast_bSuccess_3) goto @792
+  [631] self.TrackerBuff = K2Node_DynamicCast_AsDp_Weapon_Bp.self.PartTrackerBuff
+  [672] goto @792
+  [677] OnAdded()
+  [687] goto @411
+  [692] OnRemoved()
+  [702] CallFunc_IsValid_ReturnValue = IsValid(self.TrackerBuff)
+  [731] if !(CallFunc_IsValid_ReturnValue) goto @792
+  [745] self.TrackerBuff.ClearMarksmanPart()
+  [781] self.TrackerBuff = null
+  [792] return nothing
+  [794] end
+
+=== IsValidTarget
+  [0] array{GameplayTag{'Combat.Lantern'}, GameplayTag{'Combat.Item'}}
+  [65] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [102] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(InstigatorTags, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [141] if !(CallFunc_HasAnyTags_ReturnValue) goto @171
+  [155] ValidTarget = false
+  [166] goto @498
+  [171] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(TargetActor)
+  [207] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [236] if !(K2Node_DynamicCast_bSuccess_1) goto @266
+  [250] ValidTarget = true
+  [261] goto @498
+  [266] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(TargetActor)
+  [302] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [331] if !(K2Node_DynamicCast_bSuccess) goto @361
+  [345] ValidTarget = false
+  [356] goto @498
+  [361] CallFunc_GetOwner_ReturnValue = TargetActor.GetOwner()
+  [403] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [439] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [468] if !(K2Node_DynamicCast_bSuccess_2) goto @487
+  [482] goto @250
+  [487] ValidTarget = false
+  [498] return nothing
+  [500] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_dp_subsequent_hits_damage_passive(677)
+  [15] return nothing
+  [17] end
+
+=== OnDamageGiven
+  [0] frame.K2Node_Event_DamageReceived = DamageReceived
+  [18] frame.K2Node_Event_DamageReceiver = DamageReceiver
+  [36] frame.K2Node_Event_DamageInfo = DamageInfo
+  [54] ExecuteUbergraph_dp_subsequent_hits_damage_passive(10)
+  [69] return nothing
+  [71] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_dp_subsequent_hits_damage_passive(692)
+  [15] return nothing
+  [17] end

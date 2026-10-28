@@ -1,0 +1,88 @@
+# ac_passive_ability_one_duration_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_CheckBuff
+  [0] ExecuteUbergraph_ac_passive_ability_one_duration_buff(54)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ac_passive_ability_one_duration_buff
+  [0] push @1617
+  [5] goto computed(EntryPoint)
+  [15] self.PowerHandle = ActiveGameplayEffectHandle{-1, false}
+  [53] pop
+  [54] CallFunc_IsValid_ReturnValue = IsValid(self.ArchonAbilitySystem)
+  [83] if !(CallFunc_IsValid_ReturnValue) pop
+  [93] CallFunc_GetTimePercentionOfActiveEffectsWithTags_ReturnValue = self.ArchonAbilitySystem.GetTimePercentionOfActiveEffectsWithTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Combat.Aethercasters.Ability01'})})
+  [198] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTimePercentionOfActiveEffectsWithTags_ReturnValue)
+  [227] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [265] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTimePercentionOfActiveEffectsWithTags_ReturnValue)
+  [294] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.25)
+  [332] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_LessEqual_DoubleDouble_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [370] if !(CallFunc_BooleanAND_ReturnValue) goto @399
+  [384] if !(self.Active) goto @485
+  [398] pop
+  [399] if !(self.Active) pop
+  [409] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = self.ArchonAbilitySystem.RemoveActiveGameplayEffect(self.PowerHandle, -1)
+  [469] self.Active = false
+  [480] goto @15
+  [485] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [505] Default__gameplay_ability_function_library_C.ApplySpecWithMagnitude(CallFunc_GetBuffOwner_ReturnValue_1, ac_passive_ability_one_duration_power_ge_C, 1.149999976158142, self, CallFunc_ApplySpecWithMagnitude_SpecHandle)
+  [578] self.PowerHandle = CallFunc_ApplySpecWithMagnitude_SpecHandle
+  [605] TrackAppliedGameplayEffect(self.PowerHandle)
+  [624] self.Active = true
+  [635] pop
+  [636] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [656] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [685] K2Node_DynamicCast_AsArchon_Ability_System_Component = cast<ArchonAbilitySystemComponent>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [721] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_System_Component)
+  [750] if !(K2Node_DynamicCast_bSuccess) pop
+  [760] self.ArchonAbilitySystem = K2Node_DynamicCast_AsArchon_Ability_System_Component
+  [779] K2Node_CreateDelegate_OutputDelegate = bind(self.Authority_CheckBuff)
+  [802] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.25, true, 0.0, 0.0)
+  [855] self.CheckBuffTimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [882] pop
+  [883] OnAdded()
+  [893] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [913] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_2)
+  [949] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [978] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [988] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [1030] K2Node_DynamicCast_AsAc_Weapon_Bp = cast<ac_weapon_bp_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [1066] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAc_Weapon_Bp)
+  [1095] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [1105] self.Weapon = K2Node_DynamicCast_AsAc_Weapon_Bp
+  [1124] self.Weapon.FlushNetDormancy()
+  [1156] self.Weapon.self.AbilityOneDurationBonus = 10.0
+  [1205] MarkPropertyDirtyFromRepIndex(self.Weapon, 24, 'AbilityOneDurationBonus')
+  [1242] goto @636
+  [1247] OnRemoved()
+  [1257] push @1436
+  [1262] push @1596
+  [1267] CallFunc_IsValid_ReturnValue_1 = IsValid(self.Weapon)
+  [1296] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1306] self.Weapon.FlushNetDormancy()
+  [1338] self.Weapon.self.AbilityOneDurationBonus = 0.0
+  [1387] MarkPropertyDirtyFromRepIndex(self.Weapon, 24, 'AbilityOneDurationBonus')
+  [1424] self.Weapon = null
+  [1435] pop
+  [1436] CallFunc_IsValid_ReturnValue_2 = IsValid(self.ArchonAbilitySystem)
+  [1465] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1475] CallFunc_RemoveActiveGameplayEffect_ReturnValue = self.ArchonAbilitySystem.RemoveActiveGameplayEffect(self.PowerHandle, -1)
+  [1535] self.Active = false
+  [1546] self.ArchonAbilitySystem = null
+  [1557] self.PowerHandle = ActiveGameplayEffectHandle{-1, false}
+  [1595] pop
+  [1596] K2_ClearAndInvalidateTimerHandle(self, self.CheckBuffTimerHandle)
+  [1616] pop
+  [1617] return nothing
+  [1619] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ac_passive_ability_one_duration_buff(883)
+  [15] return nothing
+  [17] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_ac_passive_ability_one_duration_buff(1247)
+  [15] return nothing
+  [17] end

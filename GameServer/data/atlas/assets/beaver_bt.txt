@@ -1,0 +1,119 @@
+beaver_bt  blackboard=BlackboardData beaver_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=3)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      1) bttask_enter_rage_state  (Montage=AnimMontage beaver_rage_enter_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      2) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_away_point", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+          2) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination, BlendOutTime=0.5)
+          3) BehemothAction  (Montage=AnimMontage b_beaver_rushto180_fwd_01_mot)
+          [if passes_behemoth_requirements_btdeco "If Classification is Blaze"  (BehemothRequirements={"RequireBehemothClassificationName": "Blaze"}, bShowPropertyDetails=false)]
+          [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 3000.0, "Angle": 225.0, "ArcCenterAngle": 0.0, "CenterOffset": {"X": 0.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+          4) BehemothAction "Do the double jump attack"  (Montage=AnimMontage b_tp_beaver_00_atk_jumpslam_fwd_00_fastblend_mot, ActionClassToCooldown=BlueprintGeneratedClass beaver_blaze_jumpslam_atk_C, bShowPropertyDetails=false)
+        2) bttask_exit_rage_state  (Montage=AnimMontage b_mcr_pers_exitrage_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      3) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        [if Blackboard  (InRageState is Is Set)]
+        [if BTDeco_ArchonCooldown  (CooldownTime=15, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        [if can_perform_action_bttask  (CheckCooldown=false, CheckActionSpecificRequirements=false, ActionClass=BlueprintGeneratedClass beaver_tailtantrum_atk_C, bShowPropertyDetails=false)]
+        [if compare_targets_and_sides  (Radius=1500)]
+        [if passes_behemoth_requirements_btdeco "Classification is not Blaze"  (BehemothRequirements={"RequireBehemothClassificationName": "Blaze", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        1) Sequence
+          [if ForceSuccess]
+          1) Selector
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+            1) Sequence
+              1) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              2) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              3) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              4) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+            2) Sequence
+              1) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              2) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              [if btdeco_percentchance  (PercentChance=0.5)]
+              3) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              [if btdeco_percentchance  (PercentChance=0.5)]
+              4) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+              [if btdeco_percentchance  (PercentChance=0.5)]
+              5) BehemothAction  (Montage=AnimMontage b_beaver_tailtantrum_fast_mot)
+          2) Selector
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+            1) Sequence
+              [if ForceSuccess]
+              1) Sequence
+                [if btdeco_percentchance  (PercentChance=0.333)]
+                1) BehemothAction  (Montage=AnimMontage b_beaver_pers_rawr)
+            2) BehemothAction  (Montage=AnimMontage b_beaver_pers_rawr)
+        [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Beaver.TurnCooldown"}, bActivatesCooldown=false)]
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=0, MaxDistance=750)]
+        2) Sequence
+          1) Sequence
+            1) blackboard_math_bttask "MathResult = CurrentFightStartTime + 15"  (LeftSideKey=bb.CurrentFightStateStartTime, Type=Float, RightSideData={"ConstantFloat": 15.0}, bShowPropertyDetails=false)
+            2) get_game_time_bttask
+            [if BTDeco_CompareBBFloats "Check we're at least 15s into combat"  (Value1=bb.TempFloat, Operator=>=, Value2=bb.MathResult)]
+            3) Selector
+              1) Sequence
+                1) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Beaver.TurnCooldown"}, CooldownDuration=10)
+                [if ForceSuccess]
+                2) Selector
+                  [if passes_behemoth_requirements_btdeco "Is Blaze"  (BehemothRequirements={"RequireBehemothClassificationName": "Blaze"}, bShowPropertyDetails=false)]
+                  [if btdeco_percentchance  (PercentChance=0.333)]
+                  1) Selector
+                    [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                    1) BehemothAction  (Montage=AnimMontage b_mcr_backoff90_left_01_mot)
+                    [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.AttackTarget)]
+                    2) BehemothAction  (Montage=AnimMontage b_mcr_backoff90_right_01_mot)
+                  2) Selector
+                    [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                    1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                    [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.AttackTarget)]
+                    2) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+        [if DistanceToLocCheck  (Origin=bb.SelfPos, Target=bb.KnownTargetsAvgPos, MinDistance=0, MaxDistance=1000)]
+        [if Blackboard  (InRageState is Is Set)]
+        3) Sequence
+          1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass beaver_groundstomp_l_atk_C", "BlueprintGeneratedClass beaver_groundstomp_r_atk_C"], ChosenActionKey=bb.ChosenStompAttack)
+          2) Selector
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass beaver_groundstomp_l_atk_C, ChosenAttackKeyName=ChosenStompAttack, bShowPropertyDetails=false)]
+            1) PerformActionClass "Stomp_L"  (ActionClass=BlueprintGeneratedClass beaver_groundstomp_l_atk_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass beaver_groundstomp_r_atk_C, ChosenAttackKeyName=ChosenStompAttack, bShowPropertyDetails=false)]
+            2) PerformActionClass "Stomp_R"  (ActionClass=BlueprintGeneratedClass beaver_groundstomp_r_atk_C, bShowPropertyDetails=false)
+        4) Sequence "AttackThenTurnAroundIfOptimal"
+          [if Blackboard  (TopScore Is Greater Than 0.000000)]
+          1) Selector
+            [if BTDeco_CheckChosenAction "ChosenAttack = JumpSlam"  (ActionClass=BlueprintGeneratedClass beaver_beta_jumpslam_atk_C, bShowPropertyDetails=false)]
+            1) Sequence
+              1) reset_action_cooldown_bttask  (ActionClass=BlueprintGeneratedClass beaver_beta_jumpslam_atk_C, bShowPropertyDetails=false)
+              2) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            2) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shared_mcr_postattack_repo_bt)
+        5) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      2) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

@@ -1,0 +1,1063 @@
+{
+ "name": "debuff_buildup_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_debuff_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": 1984,
+ "sdk_header": "debuff_buildup_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuildingUp",
+   "type": "bool",
+   "offset": "0x6F8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "RefreshBuildupAmount",
+   "type": "double",
+   "offset": "0x700",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "ApplicationBuildupAmount",
+   "type": "double",
+   "offset": "0x708",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "BuildupTimer",
+   "type": "double",
+   "offset": "0x710",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 17,
+   "schema_rep_index": 17
+  },
+  {
+   "name": "MaxBuildupAmount",
+   "type": "double",
+   "offset": "0x718",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "PostBuildupHoldTime",
+   "type": "double",
+   "offset": "0x720",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "BuildupHoldTimer",
+   "type": "double",
+   "offset": "0x728",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "DoubleProperty",
+   "rep_index": 18,
+   "schema_rep_index": 18
+  },
+  {
+   "name": "DebuffToApply",
+   "type": "TSoftClassPtr<UClass>",
+   "offset": "0x730",
+   "size": 48,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "SoftClassProperty<Class>"
+  },
+  {
+   "name": "ActiveDebuff",
+   "type": "Abase_buff_C*",
+   "offset": "0x760",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<base_buff_C>"
+  },
+  {
+   "name": "HUDStatusIcon",
+   "type": "UTexture2D*",
+   "offset": "0x768",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Texture2D>"
+  },
+  {
+   "name": "UIFlashRequested",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0x770",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "AKOnFirstApplied",
+   "type": "UObject*",
+   "offset": "0x780",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  },
+  {
+   "name": "AKOnRefreshed",
+   "type": "UObject*",
+   "offset": "0x788",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  },
+  {
+   "name": "AKOnBuildupFinished",
+   "type": "UObject*",
+   "offset": "0x790",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  },
+  {
+   "name": "AppliedDebuff",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0x798",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "WidgetTrackerClassesAllowed",
+   "type": "TArray<UClass*>",
+   "offset": "0x7A8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "AllowBuildupOverMaxBuildup",
+   "type": "bool",
+   "offset": "0x7B8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AddBuildup",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Amount",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "AllowBuildupOverMaxBuildup",
+    "BuildupTimer",
+    "MaxBuildupAmount",
+    "PostBuildupHoldTime"
+   ],
+   "sets": [
+    "BuildupHoldTimer",
+    "BuildupTimer"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "ActorIsAlive",
+    "ArchonBuff.GetBuffOwner",
+    "ClientOnBuildupFinished",
+    "FinishBuildup",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AppliedDebuff__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyDebuff",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [
+    "DebuffToApply",
+    "OnBuffRemoved"
+   ],
+   "sets": [
+    "ActiveDebuff"
+   ],
+   "calls": [
+    "Actor.GetInstigator",
+    "ArchonBuff.GetBuffOwner",
+    "GameplayModifierFunctionLibrary.ApplyBuffFromSoftPtr"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanBeTrackedBy",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Widget",
+     "type": "UWidget*"
+    },
+    {
+     "name": "bCanBeTrack",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 26,
+   "reads": [
+    "WidgetTrackerClassesAllowed"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetObjectClass",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.ClassIsChildOf",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientBuildupExpired",
+   "flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "client",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientFinishedBuildingUp",
+   "flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "client",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientOnBuildupFinished",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebuffWasRemoved",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 11,
+   "reads": [
+    "ActiveDebuff",
+    "OnBuffRemoved"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonBuff.UpdateExpireTime",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_debuff_buildup",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 125,
+   "reads": [
+    "AKOnBuildupFinished",
+    "AKOnFirstApplied",
+    "AKOnRefreshed",
+    "ApplicationBuildupAmount",
+    "BuildingUp",
+    "BuildupHoldTimer",
+    "BuildupTimer",
+    "OnDebuffBuildupBegan",
+    "RefreshBuildupAmount",
+    "UIFlashRequested"
+   ],
+   "sets": [
+    "BuildingUp",
+    "BuildupHoldTimer",
+    "BuildupTimer"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "Actor.HasAuthority",
+    "Actor.ReceiveTick",
+    "Actor.SetActorTickEnabled",
+    "AddBuildup",
+    "AkGameplayStatics.PostEvent",
+    "ApplyDebuff",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.UpdateExpireTime",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "ClientBuildupExpired",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "ShouldFinishingStopBuildup",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "FinishBuildup",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "AppliedDebuff"
+   ],
+   "sets": [
+    "BuildingUp"
+   ],
+   "calls": [
+    "ApplyDebuff",
+    "ClientFinishedBuildingUp",
+    "None",
+    "ShouldFinishingStopBuildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetBuildupPct",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Pct",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 7,
+   "reads": [
+    "BuildingUp",
+    "BuildupTimer",
+    "MaxBuildupAmount"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Divide_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsBuildingUp",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BuildingUp_0",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 3,
+   "reads": [
+    "BuildingUp"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnRefreshed",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRefreshed",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReduceBuildup",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BuildupToReduce",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "BuildupTimer"
+   ],
+   "sets": [
+    "BuildupTimer"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShouldAddedBuildupPopUI",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShouldIt",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShouldFinishingStopBuildup",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShouldIt",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TriggerUIFlash",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "debuff_buildup_C.ExecuteUbergraph_debuff_buildup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UIFlashRequested__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/debuff_buildup",
+ "pseudo_file": "pseudo/debuff_buildup_C.txt",
+ "game_data": {}
+}

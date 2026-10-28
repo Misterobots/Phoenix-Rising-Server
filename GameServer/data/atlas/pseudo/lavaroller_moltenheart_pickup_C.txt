@@ -1,0 +1,84 @@
+# lavaroller_moltenheart_pickup_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Can Actor Collect Gatherable
+  [0] push @725
+  [5] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [26] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @662
+  [40] push @678
+  [45] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(Actor, self)
+  [101] Default__buff_function_library_C.GetBuffClass(2, self, CallFunc_GetBuffClass_BuffClass)
+  [149] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(CallFunc_GetBuffClass_BuffClass)
+  [204] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindBuff_ReturnValue)
+  [233] if !(CallFunc_IsValid_ReturnValue) pop
+  [243] Can Actor Collect Gatherable(Actor, CallFunc_Can_Actor_Collect_Gatherable_Can_Collect)
+  [271] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(Actor, self)
+  [327] Default__buff_function_library_C.GetBuffClass(2, self, CallFunc_GetBuffClass_BuffClass)
+  [375] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(CallFunc_GetBuffClass_BuffClass)
+  [430] K2Node_DynamicCast_AsBase_New_Buffs_Speed_Manager = cast<base_new_buffs_speed_manager_C>(CallFunc_FindBuff_ReturnValue)
+  [466] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_New_Buffs_Speed_Manager)
+  [495] K2Node_DynamicCast_AsBase_New_Buffs_Speed_Manager.GetCurrentStacks(CallFunc_GetCurrentStacks_Stacks)
+  [540] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(K2Node_DynamicCast_AsBase_New_Buffs_Speed_Manager.self.MaxStacks, CallFunc_GetCurrentStacks_Stacks)
+  [600] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Can_Actor_Collect_Gatherable_Can_Collect, CallFunc_Greater_IntInt_ReturnValue)
+  [638] Can Collect = CallFunc_BooleanAND_ReturnValue
+  [657] goto @725
+  [662] Can Collect = false
+  [673] goto @725
+  [678] Can Actor Collect Gatherable(Actor, CallFunc_Can_Actor_Collect_Gatherable_Can_Collect)
+  [706] Can Collect = CallFunc_Can_Actor_Collect_Gatherable_Can_Collect
+  [725] return nothing
+  [727] end
+
+=== ExecuteUbergraph_lavaroller_moltenheart_pickup
+  [0] push @916
+  [5] goto computed(EntryPoint)
+  [15] Delay(self, 0.0, LatentActionInfo{EX_SkipOffsetConst(Value=70), -405480130, 'ExecuteUbergraph_lavaroller_moltenheart_pickup', self})
+  [69] pop
+  [70] self.Timeline_0.PlayFromStart()
+  [102] pop
+  [103] self.Timeline_0.Play()
+  [135] pop
+  [136] Default__buff_function_library_C.AdjustBuffTempStacks(K2Node_Event_PlayerPickingUp, 1, 2, false, self)
+  [190] CallFunc_GetComponentByClass_ReturnValue = K2Node_Event_PlayerPickingUp.GetComponentByClass(ArchonBuffableComponent)
+  [241] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(molten_heart_buff_C, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, K2Node_Event_PlayerPickingUp, true)
+  [324] CallFunc_GetComponentByClass_ReturnValue = K2Node_Event_PlayerPickingUp.GetComponentByClass(ArchonBuffableComponent)
+  [375] array{}
+  [386] CallFunc_GetComponentByClass_ReturnValue.FindAllBuffsOfClass(frostbite_buildup_C, CallFunc_FindAllBuffsOfClass_OutBuffs)
+  [436] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_FindAllBuffsOfClass_OutBuffs)
+  [495] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [529] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [539] Default__KismetArrayLibrary.Array_Get(CallFunc_FindAllBuffsOfClass_OutBuffs, 0, CallFunc_Array_Get_Item)
+  [594] K2Node_DynamicCast_AsFrostbite_Buildup = cast<frostbite_buildup_C>(CallFunc_Array_Get_Item)
+  [630] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsFrostbite_Buildup)
+  [659] if !(K2Node_DynamicCast_bSuccess) pop
+  [669] K2Node_DynamicCast_AsFrostbite_Buildup.ReduceBuildup(self.FrostbiteReduction)
+  [714] K2Node_DynamicCast_AsFrostbite_Buildup.TrackFrostbiteReduction('molten_heart', self.FrostbiteReduction)
+  [773] pop
+  [774] self.Collectable_Particle.Activate(true)
+  [811] goto @103
+  [816] CallFunc_GetOwner_ReturnValue = self.Collectable_Particle.GetOwner()
+  [858] CallFunc_GetOwner_ReturnValue.K2_AddActorLocalOffset(self.Timeline_0_NewTrack_0_1288E4B94635876CFCC8FC96AD151972, false, CallFunc_K2_AddActorLocalOffset_SweepHitResult, false)
+  [910] pop
+  [911] goto @816
+  [916] return nothing
+  [918] end
+
+=== OnPickupPayload
+  [0] frame.K2Node_Event_PlayerPickingUp = PlayerPickingUp
+  [18] ExecuteUbergraph_lavaroller_moltenheart_pickup(136)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_lavaroller_moltenheart_pickup(774)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__FinishedFunc
+  [0] ExecuteUbergraph_lavaroller_moltenheart_pickup(15)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__UpdateFunc
+  [0] ExecuteUbergraph_lavaroller_moltenheart_pickup(911)
+  [15] return nothing
+  [17] end

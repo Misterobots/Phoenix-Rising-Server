@@ -1,0 +1,380 @@
+# ih_special_default_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateEmitters
+  [0] push @468
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(EmitterArray)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @394
+  [190] Default__KismetArrayLibrary.Array_Get(EmitterArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item)
+  [278] if !(CallFunc_IsValid_ReturnValue) pop
+  [288] Default__KismetArrayLibrary.Array_Get(EmitterArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [347] CallFunc_Array_Get_Item.SetEmitterEnable(EmitterName, false)
+  [393] pop
+  [394] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [436] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [463] goto @51
+  [468] return nothing
+  [470] end
+
+=== ActivateGameplayEvent
+  [0] frame.K2Node_Event_EventName = EventName
+  [18] ExecuteUbergraph_ih_special_default_bpc(3080)
+  [33] return nothing
+  [35] end
+
+=== ActivateWeaponPartGameplay
+  [0] frame.K2Node_Event_StartTime = StartTime
+  [18] ExecuteUbergraph_ih_special_default_bpc(400)
+  [33] return nothing
+  [35] end
+
+=== CommitAmmo
+  [0] CallFunc_GetCurrentAmmoCount_ReturnValue = self.AmmoComponent.GetCurrentAmmoCount()
+  [50] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, self.WeaponChargeLevel)
+  [96] OnAmmoCommitted__DelegateSignature(CallFunc_Subtract_IntInt_ReturnValue)
+  [124] return nothing
+  [126] end
+
+=== ConsumeAmmo
+  [0] CallFunc_GetCurrentAmmoCount_ReturnValue = self.AmmoComponent.GetCurrentAmmoCount()
+  [50] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 0)
+  [84] if !(CallFunc_Greater_IntInt_ReturnValue) goto @139
+  [98] self.AmmoComponent.AdjustAmmo(AmmoAdjustment)
+  [139] return nothing
+  [141] end
+
+=== DeactivateWeaponPartGameplay
+  [0] frame.K2Node_Event_EndTime = EndTime
+  [18] ExecuteUbergraph_ih_special_default_bpc(2820)
+  [33] return nothing
+  [35] end
+
+=== ElementToVector
+  [0] ExecuteUbergraph_ih_special_default_bpc(3042)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ih_special_default_bpc
+  [0] push @3959
+  [5] goto computed(EntryPoint)
+  [15] ResetAndReleaseAmmo()
+  [29] pop
+  [30] ArchonLogError('Ammo Component not valid')
+  [66] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [117] self.AimingComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [136] pop
+  [137] K2Node_DynamicCast_AsBp_Ihammer_Weapon = cast<bp_ihammer_weapon_C>(self.ArchonWeapon)
+  [173] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Ihammer_Weapon)
+  [202] if !(K2Node_DynamicCast_bSuccess) pop
+  [212] self.Hammer = K2Node_DynamicCast_AsBp_Ihammer_Weapon
+  [231] CallFunc_GetComponentByClass_ReturnValue = self.ArchonWeapon.GetComponentByClass(ammo_bpc_C)
+  [282] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [311] if !(CallFunc_IsValid_ReturnValue) goto @30
+  [325] CallFunc_GetComponentByClass_ReturnValue = self.ArchonWeapon.GetComponentByClass(ammo_bpc_C)
+  [376] self.AmmoComponent = CallFunc_GetComponentByClass_ReturnValue
+  [395] goto @66
+  [400] ActivateWeaponPartGameplay(K2Node_Event_StartTime)
+  [419] K2Node_MakeStruct_player_aim_request.AimCameraDistance = 550.0
+  [451] K2Node_MakeStruct_player_aim_request.AimCameraOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [503] K2Node_MakeStruct_player_aim_request.AimCameraFOV = 80.0
+  [535] K2Node_MakeStruct_player_aim_request.AimCameraTargetOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 175.0})
+  [587] K2Node_MakeStruct_player_aim_request.AimCameraLagSpeed = 17.5
+  [619] K2Node_MakeStruct_player_aim_request.AimPoseOverride = h_mr_ms_melee_super_aim_base_01
+  [647] K2Node_MakeStruct_player_aim_request.AimOffsetOverride = h_mr_ms_super_ao
+  [675] K2Node_MakeStruct_player_aim_request.OverrideWeaponRootForAiming = false
+  [695] K2Node_MakeStruct_player_aim_request.ReticleWidgetClass = null
+  [715] K2Node_MakeStruct_player_aim_request.TimeConstant = 0.25
+  [747] self.AimingComponent.StartAiming(K2Node_MakeStruct_player_aim_request)
+  [792] self.ChargeParticleScale = EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0})
+  [835] self.AmmoComponent.GetAverageMeterScale(CallFunc_GetAverageMeterScale_Average)
+  [880] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetAverageMeterScale_Average, self.Hammer.self.NormalAmmoScale)
+  [940] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @966
+  [954] self.IsEmpowered = true
+  [965] pop
+  [966] self.IsEmpowered = false
+  [977] pop
+  [978] SpawnAoe()
+  [992] if !(self.WeaponCharged) goto @1086
+  [1006] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.WeaponChargeLevel, -1)
+  [1048] ConsumeAmmo(CallFunc_Multiply_IntInt_ReturnValue)
+  [1071] Multicast_OnShoot()
+  [1085] pop
+  [1086] ConsumeAmmo(-1)
+  [1105] goto @1071
+  [1110] WeaponPartChargeStarted()
+  [1120] self.WeaponCharged = false
+  [1131] push @1201
+  [1136] K2Node_CreateDelegate_OutputDelegate = bind(self.OnDefaultStateChanged)
+  [1159] K2Node_CreateDelegate_OutputDelegate += None
+  [1200] pop
+  [1201] ElementToVector()
+  [1215] pop
+  [1216] self.WeaponCharged = true
+  [1227] self.WeaponChargeLevel = K2Node_Event_NewChargeLevel
+  [1254] CommitAmmo()
+  [1268] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(self.WeaponChargeLevel)
+  [1305] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_Conv_IntToFloat_ReturnValue, 0, self.ArchonCharacter, 'Weapon_Hammer_Charge_Level')
+  [1374] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_wep_hammer_charge, self.ArchonCharacter, 0, Temp_delegate_Variable, false)
+  [1457] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.WeaponChargeLevel, 0)
+  [1491] if !(K2Node_SwitchInteger_CmpSuccess) goto @1792
+  [1505] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.WeaponChargeLevel, 1)
+  [1539] if !(K2Node_SwitchInteger_CmpSuccess) goto @1836
+  [1553] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.WeaponChargeLevel, 2)
+  [1587] if !(K2Node_SwitchInteger_CmpSuccess) goto @2126
+  [1601] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.WeaponChargeLevel, 3)
+  [1635] if !(K2Node_SwitchInteger_CmpSuccess) goto @2225
+  [1649] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.WeaponChargeLevel, 4)
+  [1683] if !(K2Node_SwitchInteger_CmpSuccess) goto @1697
+  [1697] self.ChargeParticleScale = EX_VectorConst(Value={'X': 2.0, 'Y': 2.0, 'Z': 2.0})
+  [1740] SpawnAndSetBlastEmitter(CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_3, CallFunc_SpawnAndSetBlastEmitter_EmpoweredChargeParticle_3)
+  [1772] self.P_Four = CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_3
+  [1791] pop
+  [1792] self.ChargeParticleScale = EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0})
+  [1835] pop
+  [1836] self.ChargeParticleScale = EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0})
+  [1879] SpawnAndSetBlastEmitter(CallFunc_SpawnAndSetBlastEmitter_ParticleToSet, CallFunc_SpawnAndSetBlastEmitter_EmpoweredChargeParticle)
+  [1911] self.P_One = CallFunc_SpawnAndSetBlastEmitter_ParticleToSet
+  [1930] array{self.P_One}
+  [1950] ActivateEmitters(K2Node_MakeArray_Array_1, 'Two')
+  [1986] array{self.P_One, self.P_Two}
+  [2015] ActivateEmitters(K2Node_MakeArray_Array, 'Three')
+  [2051] array{self.P_One, self.P_Two, self.P_Three}
+  [2089] ActivateEmitters(K2Node_MakeArray_Array_2, 'Four')
+  [2125] pop
+  [2126] self.ChargeParticleScale = EX_VectorConst(Value={'X': 1.25, 'Y': 1.25, 'Z': 1.25})
+  [2169] SpawnAndSetBlastEmitter(CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_1, CallFunc_SpawnAndSetBlastEmitter_EmpoweredChargeParticle_1)
+  [2201] self.P_Two = CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_1
+  [2220] goto @1986
+  [2225] self.ChargeParticleScale = EX_VectorConst(Value={'X': 1.5, 'Y': 1.5, 'Z': 1.5})
+  [2268] SpawnAndSetBlastEmitter(CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_2, CallFunc_SpawnAndSetBlastEmitter_EmpoweredChargeParticle_2)
+  [2300] self.P_Three = CallFunc_SpawnAndSetBlastEmitter_ParticleToSet_2
+  [2319] goto @2051
+  [2324] push @2729
+  [2329] push @2425
+  [2334] push @2501
+  [2339] push @2577
+  [2344] push @2653
+  [2349] CallFunc_IsValid_ReturnValue_1 = IsValid(self.AimingComponent)
+  [2378] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2388] self.AimingComponent.StopAiming()
+  [2424] pop
+  [2425] CallFunc_IsValid_ReturnValue_5 = IsValid(self.P_Four)
+  [2454] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [2464] self.P_Four.Deactivate()
+  [2500] pop
+  [2501] CallFunc_IsValid_ReturnValue_4 = IsValid(self.P_Three)
+  [2530] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [2540] self.P_Three.Deactivate()
+  [2576] pop
+  [2577] CallFunc_IsValid_ReturnValue_3 = IsValid(self.P_Two)
+  [2606] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [2616] self.P_Two.Deactivate()
+  [2652] pop
+  [2653] CallFunc_IsValid_ReturnValue_2 = IsValid(self.P_One)
+  [2682] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2692] self.P_One.Deactivate()
+  [2728] pop
+  [2729] CallFunc_IsValid_ReturnValue_6 = IsValid(self.EmpoweredChargeParticle_v2)
+  [2758] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [2768] self.EmpoweredChargeParticle_v2.Deactivate()
+  [2804] pop
+  [2805] ResetAndReleaseAmmo()
+  [2819] pop
+  [2820] DeactivateWeaponPartGameplay(K2Node_Event_EndTime)
+  [2839] goto @2324
+  [2844] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, ih_default_weapon_part_q_bpff_C, true)
+  [2875] if !(CallFunc_IsFeatureEnabled_ReturnValue) pop
+  [2885] goto @1216
+  [2890] CallFunc_GetOwner_ReturnValue = self.ArchonWeapon.GetOwner()
+  [2932] Default__vfx_function_library_C.WeaponElementToVectorColor(CallFunc_GetOwner_ReturnValue, self.ArchonWeapon, self, CallFunc_WeaponElementToVectorColor_VectorColor, CallFunc_WeaponElementToVectorColor_ElementType, CallFunc_WeaponElementToVectorColor_FoundRow)
+  [3014] self.VectorColor = CallFunc_WeaponElementToVectorColor_VectorColor
+  [3041] pop
+  [3042] goto @2890
+  [3047] WeaponPartChargeLevelChanged(K2Node_Event_PreviousChargeLevel, K2Node_Event_NewChargeLevel)
+  [3075] goto @2844
+  [3080] ActivateGameplayEvent(K2Node_Event_EventName)
+  [3099] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_Event_EventName, 'Shoot')
+  [3141] if !(K2Node_SwitchName_CmpSuccess) goto @3156
+  [3155] pop
+  [3156] push @3238
+  [3161] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3181] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [3223] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [3233] goto @978
+  [3238] CallFunc_Conv_IntToFloat_ReturnValue_1 = Conv_IntToFloat(self.WeaponChargeLevel)
+  [3275] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_Conv_IntToFloat_ReturnValue_1, 0, self.ArchonCharacter, 'Weapon_Hammer_Charge_Level')
+  [3344] CallFunc_PostEvent_ReturnValue_3 = Default__AkGameplayStatics.PostEvent(Play_wep_hammer_blast, self.ArchonCharacter, 0, Temp_delegate_Variable_3, false)
+  [3427] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_Wep_Elemental_Hammer_Blast, self.ArchonCharacter, 0, Temp_delegate_Variable_2, false)
+  [3510] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Generic_Explosion_Distant_B_Hammer_Blast, self.ArchonCharacter, 0, Temp_delegate_Variable_1, false)
+  [3593] pop
+  [3594] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, ih_default_weapon_part_q_bpff_C, true)
+  [3625] if !(CallFunc_IsFeatureEnabled_ReturnValue_1) pop
+  [3635] goto @137
+  [3640] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, ih_default_weapon_part_q_bpff_C, true)
+  [3671] self.EnableMontageOverrides = CallFunc_IsFeatureEnabled_ReturnValue_1
+  [3690] OnWeaponPartEquipped()
+  [3700] goto @3594
+  [3705] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_CustomEvent_PreviousPlayerState, 10)
+  [3736] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [3746] K2Node_CreateDelegate_OutputDelegate = bind(self.OnDefaultStateChanged)
+  [3769] K2Node_CreateDelegate_OutputDelegate -= None
+  [3810] goto @2805
+  [3815] goto @3640
+  [3820] OnWeaponPartUnequipped()
+  [3830] push @3840
+  [3835] goto @2324
+  [3840] CallFunc_IsValid_ReturnValue_7 = IsValid(self.PlayerDispatcher)
+  [3869] if !(CallFunc_IsValid_ReturnValue_7) pop
+  [3879] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnDefaultStateChanged)
+  [3902] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [3943] pop
+  [3944] if !(self.WeaponCharged) pop
+  [3954] goto @15
+  [3959] return nothing
+  [3961] end
+
+=== GetAverageAmmoScale
+  [0] push @874
+  [5] if !(self.WeaponCharged) goto @509
+  [19] self.ScaleAverage = 0.0
+  [46] self.AmmoComponent.GetAmmoMeterScale(CallFunc_GetAmmoMeterScale_AmmoMeterScale)
+  [91] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAmmoMeterScale_AmmoMeterScale)
+  [150] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, self.WeaponChargeLevel)
+  [196] Temp_int_Variable = CallFunc_Subtract_IntInt_ReturnValue_1
+  [223] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAmmoMeterScale_AmmoMeterScale)
+  [282] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [324] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue)
+  [362] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @660
+  [376] push @800
+  [381] self.AmmoComponent.GetAmmoIndexScale(Temp_int_Variable, CallFunc_GetAmmoIndexScale_Scale_1)
+  [435] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_GetAmmoIndexScale_Scale_1, L_TotalScale)
+  [481] L_TotalScale = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [508] pop
+  [509] self.ScaleAverage = 0.0
+  [536] self.AmmoComponent.GetAmmoIndexScale(0, CallFunc_GetAmmoIndexScale_Scale)
+  [586] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetAmmoIndexScale_Scale, self.ScaleAverage)
+  [632] self.ScaleAverage = CallFunc_Add_DoubleDouble_ReturnValue
+  [659] pop
+  [660] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(self.WeaponChargeLevel)
+  [697] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [726] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(L_TotalScale, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [772] self.ScaleAverage = CallFunc_Divide_DoubleDouble_ReturnValue
+  [799] pop
+  [800] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [842] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [869] goto @223
+  [874] return nothing
+  [876] end
+
+=== Multicast_OnShoot
+  [0] ExecuteUbergraph_ih_special_default_bpc(3944)
+  [15] return nothing
+  [17] end
+
+=== OnAmmoCommitted__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnDefaultStateChanged
+  [0] frame.K2Node_CustomEvent_NewPlayerState = NewPlayerState
+  [18] frame.K2Node_CustomEvent_PreviousPlayerState = PreviousPlayerState
+  [36] ExecuteUbergraph_ih_special_default_bpc(3705)
+  [51] return nothing
+  [53] end
+
+=== OnReleaseAmmo__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_ih_special_default_bpc(3815)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_ih_special_default_bpc(3820)
+  [15] return nothing
+  [17] end
+
+=== ResetAndReleaseAmmo
+  [0] self.WeaponCharged = false
+  [11] self.WeaponChargeLevel = 0
+  [34] OnReleaseAmmo__DelegateSignature()
+  [53] return nothing
+  [55] end
+
+=== SpawnAndSetBlastEmitter
+  [0] CallFunc_IsValid_ReturnValue_2 = IsValid(self.EmpoweredChargeParticle_v2)
+  [29] if !(CallFunc_IsValid_ReturnValue_2) goto @79
+  [43] self.EmpoweredChargeParticle_v2.Deactivate()
+  [79] CallFunc_GetSubMesh_ReturnValue_1 = self.ArchonWeapon.GetSubMesh(1, true)
+  [124] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1 = SpawnEmitterAttached_WeaponSeparation(ih_default_hammer_charge_p, CallFunc_GetSubMesh_ReturnValue_1, 'ihammer_blast_socket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [256] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1)
+  [285] if !(CallFunc_IsValid_ReturnValue_1) goto @776
+  [299] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1.SetWorldScale3D(self.ChargeParticleScale)
+  [340] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1.SetVectorParameter('ParticleColor', self.VectorColor)
+  [398] if !(self.IsEmpowered) goto @803
+  [412] CallFunc_GetSubMesh_ReturnValue = self.ArchonWeapon.GetSubMesh(1, true)
+  [457] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue = SpawnEmitterAttached_WeaponSeparation(ih_charge_empowered_p, CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [589] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue)
+  [618] if !(CallFunc_IsValid_ReturnValue) goto @803
+  [632] self.EmpoweredChargeParticle_v2 = CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue
+  [651] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue.SetWorldScale3D(self.ChargeParticleScale)
+  [692] self.EmpoweredChargeParticle_v2.SetWorldScale3D(self.ChargeParticleScale)
+  [733] ParticleToSet = CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1
+  [752] EmpoweredChargeParticle = self.EmpoweredChargeParticle_v2
+  [771] goto @833
+  [776] ParticleToSet = null
+  [787] EmpoweredChargeParticle = null
+  [798] goto @833
+  [803] ParticleToSet = CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue_1
+  [822] EmpoweredChargeParticle = null
+  [833] return nothing
+  [835] end
+
+=== SpawnAoe
+  [0] GetAverageAmmoScale()
+  [14] CallFunc_GetSubMesh_ReturnValue = self.ArchonWeapon.GetSubMesh(1, true)
+  [59] CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue = GetSocketTransform_WeaponSeparation(CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket', 0)
+  [111] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, ih_charge_blast_bp_C, CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue, 1, self.ArchonCharacter)
+  [161] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'AmmoDamageScale', self.ScaleAverage)
+  [202] SetVectorPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'BlastParticleScale', self.ChargeParticleScale)
+  [243] SetBoolPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'IsEmpowered', self.IsEmpowered)
+  [284] Temp_int_Variable = 1
+  [307] CallFunc_MakeLiteralString_ReturnValue = MakeLiteralString('IH.Blast.LVL')
+  [349] Temp_bool_Variable = self.WeaponCharged
+  [368] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(switch(Temp_bool_Variable){false: Temp_int_Variable, true: self.WeaponChargeLevel, default: K2Node_Select_Default})
+  [449] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(CallFunc_MakeLiteralString_ReturnValue, CallFunc_Conv_IntToString_ReturnValue)
+  [495] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue)
+  [532] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OverrideDamageRow', CallFunc_Conv_StringToName_ReturnValue)
+  [573] Temp_int_Variable = 1
+  [596] Temp_bool_Variable = self.WeaponCharged
+  [615] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(switch(Temp_bool_Variable){false: Temp_int_Variable, true: self.WeaponChargeLevel, default: K2Node_Select_Default}, 1)
+  [701] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Subtract_IntInt_ReturnValue, self.BlastRadiusPerLevel)
+  [747] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.BaseBlastRadius, CallFunc_Multiply_IntFloat_ReturnValue)
+  [793] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', CallFunc_Add_DoubleDouble_ReturnValue)
+  [834] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'WedgeStartAngle', -30.0)
+  [875] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'WedgeEndAngle', 30.0)
+  [916] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.ArchonCharacter)
+  [957] CallFunc_GetSubMesh_ReturnValue = self.ArchonWeapon.GetSubMesh(1, true)
+  [1002] CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue = GetSocketTransform_WeaponSeparation(CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket', 0)
+  [1054] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue)
+  [1092] return nothing
+  [1094] end
+
+=== WeaponPartChargeLevelChanged
+  [0] frame.K2Node_Event_PreviousChargeLevel = PreviousChargeLevel
+  [18] frame.K2Node_Event_NewChargeLevel = NewChargeLevel
+  [36] ExecuteUbergraph_ih_special_default_bpc(3047)
+  [51] return nothing
+  [53] end
+
+=== WeaponPartChargeStarted
+  [0] ExecuteUbergraph_ih_special_default_bpc(1110)
+  [15] return nothing
+  [17] end

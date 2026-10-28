@@ -1,0 +1,30 @@
+shared_flee_burrow_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (InFleeState is Is Set)]
+  [root if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+  Sequence "Flee"
+    1) Selector
+      1) Sequence
+        [if set_state_btdeco  (State=ActivelyFleeing)]
+        1) Sequence
+          {service show_moveto_bts}
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_prep_bt)
+          [if ForceSuccess]
+          [if not should_despawn_on_flee_btdeco "Not Despawning after Flee"  (bInverseCondition=true)]
+          2) pivot_towards_target_bttask  (PivotTarget=bb.NextPatrolPoint, BlendOutTime=0.25)
+          3) audio_enter_flee_state_bttask
+          4) generic_action_bttask  (ActionType=Burrow)
+        [if set_state_btdeco  (State=behemoth_states_enum::Successfully Fled)]
+        2) Sequence
+          {service hide_behemoth_bttask}
+          1) Wait  (WaitTime=2)
+          2) Selector
+            1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_despawn_bt)
+            2) Sequence
+              1) RunBehavior  (BehaviorAsset=BehaviorTree sub_burrow_to_point)
+              2) Wait  (WaitTime=10)
+        3) generic_action_bttask  (ActionType=Unburrow)
+        4) RunBehavior  (BehaviorAsset=BehaviorTree sub_flee_arrive)
+        5) audio_exit_flee_state_bttask
+      2) ResetFleeTimer "BTTask_ResetFleeTimer"

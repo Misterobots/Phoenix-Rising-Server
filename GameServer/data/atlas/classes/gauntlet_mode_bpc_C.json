@@ -1,0 +1,328 @@
+{
+ "name": "gauntlet_mode_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "GauntletGameModeComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayersHandledEoH",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Session Start Time",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ArrayOfSpawnLocations",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ArenaPatrolPoints",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AuthGameStateChanged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewState",
+     "type": "EnumProperty<EGauntletGameModeState>"
+    },
+    {
+     "name": "StateTransitionType",
+     "type": "EnumProperty<EStateTransitionType>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_mode_bpc_C.ExecuteUbergraph_gauntlet_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DetermineRoundLocation",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "RoundIndex",
+     "type": "IntProperty"
+    },
+    {
+     "name": "EncounterDefintion",
+     "type": "StructProperty<EncounterDefinition>"
+    },
+    {
+     "name": "RoundTransform",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [
+    "ArenaPatrolPoints",
+    "GauntletModeSpecification"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintMapLibrary.Map_Find",
+    "KismetMathLibrary.MakeTransform"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_gauntlet_mode_bpc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetTransform_ReturnValue",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 103,
+   "reads": [
+    "ArenaName",
+    "ArenaPatrolPoints",
+    "EscalationMatchReport",
+    "GauntletGameStateComponent",
+    "MatchReport",
+    "OnHuntEnded",
+    "OnRoundStarted",
+    "Session Start Time",
+    "TimerExpired"
+   ],
+   "sets": [
+    "Danger",
+    "Session Start Time"
+   ],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ActorComponent.ReceiveBeginPlay",
+    "ActorIsAlive",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "BlueprintMapLibrary.Map_Add",
+    "EscalationMatchReport.GetRoundReport",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GauntletGameStateComponent.GetCurrentRound",
+    "GetDangerLevel",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "ReviveFromBleedOut",
+    "StartEndOfMatchCeremony",
+    "setDanger"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass BP_PatrolCenterPoint_C"
+   ]
+  },
+  {
+   "name": "OnEventEndingBegin",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_mode_bpc_C.ExecuteUbergraph_gauntlet_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnHuntEnded_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "bSuccess",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_mode_bpc_C.ExecuteUbergraph_gauntlet_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRoundStarted_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Round",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_mode_bpc_C.ExecuteUbergraph_gauntlet_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_mode_bpc_C.ExecuteUbergraph_gauntlet_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/gamemodes/escalation/base_blueprints/gauntlet_mode_bpc",
+ "pseudo_file": "pseudo/gauntlet_mode_bpc_C.txt",
+ "game_data": {}
+}

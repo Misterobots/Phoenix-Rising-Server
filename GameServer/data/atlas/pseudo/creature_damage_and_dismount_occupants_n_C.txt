@@ -1,0 +1,50 @@
+# creature_damage_and_dismount_occupants_n_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetNotifyName
+  [0] ReturnValue = '(Creature) Damage and Dismount Occupants'
+  [60] return ReturnValue
+  [70] end
+
+=== Received_Notify
+  [0] push @997
+  [5] push @970
+  [10] push @364
+  [15] CallFunc_IsValid_ReturnValue_1 = IsValid(MeshComp)
+  [44] if !(CallFunc_IsValid_ReturnValue_1) goto @986
+  [58] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [100] OwningActor = CallFunc_GetOwner_ReturnValue
+  [119] CallFunc_IsValid_ReturnValue = IsValid(OwningActor)
+  [148] if !(CallFunc_IsValid_ReturnValue) goto @986
+  [162] CallFunc_GetComponentByClass_ReturnValue = OwningActor.GetComponentByClass(ArchonMountableComponent)
+  [213] OwnerMountableComponent = CallFunc_GetComponentByClass_ReturnValue
+  [232] CallFunc_IsValid_ReturnValue_3 = IsValid(OwnerMountableComponent)
+  [261] if !(CallFunc_IsValid_ReturnValue_3) goto @986
+  [275] array{}
+  [286] OwnerMountableComponent.GetActiveSyncedAnimationInstances(self.Socket, CallFunc_GetActiveSyncedAnimationInstances_OutSyncedAnimationInstances)
+  [336] SyncedAnimationInstances = CallFunc_GetActiveSyncedAnimationInstances_OutSyncedAnimationInstances
+  [363] pop
+  [364] Temp_int_Loop_Counter_Variable = 0
+  [387] Temp_int_Array_Index_Variable = 0
+  [410] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(SyncedAnimationInstances)
+  [469] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [507] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [517] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [544] push @896
+  [549] Default__KismetArrayLibrary.Array_Get(SyncedAnimationInstances, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [608] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_Array_Get_Item.ParentSyncedAnimationTask)
+  [646] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [656] Default__KismetArrayLibrary.Array_Get(SyncedAnimationInstances, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [715] CallFunc_GetControllerTask_ReturnValue = CallFunc_Array_Get_Item.ParentSyncedAnimationTask.GetControllerTask()
+  [766] K2Node_DynamicCast_AsCreature_Base_Mounted_Synced_Anim_Controller = cast<creature_base_mounted_synced_anim_controller_C>(CallFunc_GetControllerTask_ReturnValue)
+  [802] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCreature_Base_Mounted_Synced_Anim_Controller)
+  [831] if !(K2Node_DynamicCast_bSuccess) pop
+  [841] K2Node_DynamicCast_AsCreature_Base_Mounted_Synced_Anim_Controller.DamageAndDismountOccupant(self.DamageRowName, self.DamageScale)
+  [895] pop
+  [896] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [938] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [965] goto @410
+  [970] ReturnValue = true
+  [981] goto @997
+  [986] ReturnValue = false
+  [997] return ReturnValue
+  [1007] end

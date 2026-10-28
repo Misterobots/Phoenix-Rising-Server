@@ -1,0 +1,24 @@
+shared_combat_reposition_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (TopScore Is Equal To 0.000000)]
+  [root if current_target_is_valid_btdeco  (FlowAbortMode=Self)]
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Selector "No Helper GOTO AttackTarget"
+    {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper, Interval=2.5, RandomDeviation=0.25)}
+    1) Selector
+      [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=950, MaxDistance=100000000)]
+      1) MoveTo  (AcceptableRadius=900, bReachTestIncludesAgentRadius=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      2) Sequence "MoveTo"
+        [if Blackboard  (CurrentHelper is Is Set)]
+        1) Sequence
+          {service LookAlongPath  (HelperKey=bb.CurrentHelper)}
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.CurrentHelper, MinDistance=50, MaxDistance=10000)]
+          1) MoveToAndFace  (FacingAngleBlackboardKey=bb.CurrentHelper, bAlignWithFacingObject=true, AcceptableRadius=10, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bReachTestIncludesAgentRadius=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentHelper)
+        [if not ConeCheck  (ConeHalfAngle=22, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget, bInverseCondition=true)]
+        [if Blackboard  (AttackTarget is Is Set)]
+        2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, TimeInFutureToPredict=0.5)
+    [if not ConeCheck  (ConeHalfAngle=22, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget, bInverseCondition=true)]
+    [if Blackboard  (AttackTarget is Is Set)]
+    2) Sequence
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, TimeInFutureToPredict=0.5)

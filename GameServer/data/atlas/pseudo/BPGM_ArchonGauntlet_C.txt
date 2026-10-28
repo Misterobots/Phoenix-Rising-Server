@@ -1,0 +1,161 @@
+# BPGM_ArchonGauntlet_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_BPGM_ArchonGauntlet
+  [0] goto computed(EntryPoint)
+  [10] self.gauntlet_mode_bpc.AuthGameStarting()
+  [42] goto @1631
+  [47] self.MainGameModeComponent = self.gauntlet_mode_bpc
+  [66] CallFunc_SeparateGauntletSeasonAndLevelNumber_ReturnValue = SeparateGauntletSeasonAndLevelNumber(self.CurrentMissionInfo.GauntletLevel, CallFunc_SeparateGauntletSeasonAndLevelNumber_SeasonNumber, CallFunc_SeparateGauntletSeasonAndLevelNumber_LevelNumber)
+  [122] self.SeasonNumber = CallFunc_SeparateGauntletSeasonAndLevelNumber_SeasonNumber
+  [149] self.LevelNumber = CallFunc_SeparateGauntletSeasonAndLevelNumber_LevelNumber
+  [176] self.IsDebugSeason = CallFunc_SeparateGauntletSeasonAndLevelNumber_ReturnValue
+  [195] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.SeasonNumber, 1)
+  [237] CallFunc_Max_ReturnValue = Max(CallFunc_Subtract_IntInt_ReturnValue, 0)
+  [279] GetGauntletSeasonTables(CallFunc_Max_ReturnValue, CallFunc_GetGauntletSeasonTables_SpecTable, CallFunc_GetGauntletSeasonTables_TuningTable)
+  [320] self.GauntletSpecTable = CallFunc_GetGauntletSeasonTables_SpecTable
+  [339] self.GauntletModTable = CallFunc_GetGauntletSeasonTables_TuningTable
+  [358] GetGauntletRowNames(CallFunc_GetGauntletRowNames_SpecRowName, CallFunc_GetGauntletRowNames_ModRowName)
+  [390] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(CallFunc_GetGauntletRowNames_ModRowName, 'None')
+  [432] if !(CallFunc_NotEqual_NameName_ReturnValue) goto @570
+  [446] CallFunc_GetDataTableRowFromName_ReturnValue_1 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(self.GauntletModTable, CallFunc_GetGauntletRowNames_ModRowName, CallFunc_GetDataTableRowFromName_OutRow_1)
+  [515] if !(CallFunc_GetDataTableRowFromName_ReturnValue_1) goto @570
+  [529] self.gauntlet_mode_bpc.SetTuning(CallFunc_GetDataTableRowFromName_OutRow_1)
+  [570] CallFunc_NotEqual_NameName_ReturnValue_1 = NotEqual_NameName(CallFunc_GetGauntletRowNames_SpecRowName, 'None')
+  [612] if !(CallFunc_NotEqual_NameName_ReturnValue_1) goto @1020
+  [626] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(self.GauntletSpecTable, CallFunc_GetGauntletRowNames_SpecRowName, CallFunc_GetDataTableRowFromName_OutRow)
+  [695] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @1020
+  [709] self.gauntlet_mode_bpc.AuthInitialize(CallFunc_GetDataTableRowFromName_OutRow, self.LevelNumber, self.IsDebugSeason)
+  [768] CallFunc_IsPlayInEditor_ReturnValue = IsPlayInEditor(self)
+  [789] CallFunc_GetArchonEditorUserSettings_ReturnValue = GetArchonEditorUserSettings(self)
+  [810] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsPlayInEditor_ReturnValue)
+  [839] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetArchonEditorUserSettings_ReturnValue.self.EnableOpeningCinematic, CallFunc_IsPlayInEditor_ReturnValue)
+  [899] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [937] if !(CallFunc_BooleanOR_ReturnValue) goto @10
+  [951] K2Node_CreateDelegate_OutputDelegate = bind(self.ReadyToStart)
+  [974] K2Node_CreateDelegate_OutputDelegate += None
+  [1015] goto @1631
+  [1020] CallFunc_GetRowNames_ReturnValue = self.GauntletSpecTable.GetRowNames()
+  [1070] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue)
+  [1129] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [1163] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1631
+  [1177] CallFunc_GetRowNames_ReturnValue = self.GauntletSpecTable.GetRowNames()
+  [1227] CallFunc_GetDataTableRowFromName_ReturnValue_2 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(self.GauntletSpecTable, EX_ArrayGetByRef(ArrayVariable=CallFunc_GetRowNames_ReturnValue,ArrayIndex=0), CallFunc_GetDataTableRowFromName_OutRow_2)
+  [1302] if !(CallFunc_GetDataTableRowFromName_ReturnValue_2) goto @1631
+  [1316] self.gauntlet_mode_bpc.AuthInitialize(CallFunc_GetDataTableRowFromName_OutRow_2, 1, false)
+  [1363] goto @768
+  [1368] goto @10
+  [1373] ReceiveBeginPlay()
+  [1383] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [1404] K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State = cast<BPGS_ArchonGauntlet_GameState_C>(CallFunc_GetArchonGameState_ReturnValue)
+  [1440] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State)
+  [1469] if !(K2Node_DynamicCast_bSuccess) goto @1631
+  [1483] K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State.FlushNetDormancy()
+  [1515] K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State.self.DangerSystemEnabled = false
+  [1548] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State, 40, 'DangerSystemEnabled')
+  [1585] K2Node_DynamicCast_AsBPGS_Archon_Gauntlet_Game_State.OnRep_DangerSystemEnabled()
+  [1621] goto @47
+  [1626] goto @1373
+  [1631] return nothing
+  [1633] end
+
+=== Get Completion Rewards
+  [0] HuntRewards = self.LootTableRewards
+  [27] return nothing
+  [29] end
+
+=== GetConnectedPlayerCount
+  [0] Count = 4
+  [23] return nothing
+  [25] end
+
+=== GetGameModeCreatureXPScale
+  [0] ReturnValue = 1.0
+  [23] return ReturnValue
+  [33] end
+
+=== GetGauntletRowNames
+  [0] push @1367
+  [5] push @1313
+  [10] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.LevelNumber, 0)
+  [44] CallFunc_GetRowNames_ReturnValue_1 = self.GauntletSpecTable.GetRowNames()
+  [94] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue_1)
+  [153] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [187] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_1, CallFunc_Greater_IntInt_ReturnValue)
+  [225] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [235] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.LevelNumber, 1)
+  [277] CallFunc_GetRowNames_ReturnValue_1 = self.GauntletSpecTable.GetRowNames()
+  [327] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue_1)
+  [386] CallFunc_Percent_IntInt_ReturnValue = Percent_IntInt(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Length_ReturnValue_1)
+  [432] Default__KismetArrayLibrary.Array_Get(CallFunc_GetRowNames_ReturnValue_1, CallFunc_Percent_IntInt_ReturnValue, CallFunc_Array_Get_Item)
+  [491] L_SpecRowName = CallFunc_Array_Get_Item
+  [518] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.LevelNumber, 1)
+  [560] CallFunc_GetRowNames_ReturnValue = self.GauntletModTable.GetRowNames()
+  [610] CallFunc_GetRowNames_ReturnValue_1 = self.GauntletSpecTable.GetRowNames()
+  [660] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue)
+  [719] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue_1)
+  [778] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Length_ReturnValue_1)
+  [824] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Divide_IntInt_ReturnValue, 1)
+  [866] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(CallFunc_Array_Length_ReturnValue, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [904] CallFunc_Greater_IntInt_ReturnValue_3 = Greater_IntInt(CallFunc_Subtract_IntInt_ReturnValue_1, -1)
+  [938] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_2, CallFunc_Greater_IntInt_ReturnValue_3)
+  [976] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [986] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.LevelNumber, 1)
+  [1028] CallFunc_GetRowNames_ReturnValue = self.GauntletModTable.GetRowNames()
+  [1078] CallFunc_GetRowNames_ReturnValue_1 = self.GauntletSpecTable.GetRowNames()
+  [1128] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetRowNames_ReturnValue_1)
+  [1187] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Length_ReturnValue_1)
+  [1233] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Divide_IntInt_ReturnValue, 1)
+  [1275] L_ModRowName = EX_ArrayGetByRef(ArrayVariable=CallFunc_GetRowNames_ReturnValue,ArrayIndex=CallFunc_Subtract_IntInt_ReturnValue_1)
+  [1312] pop
+  [1313] SpecRowName = L_SpecRowName
+  [1340] ModRowName = L_ModRowName
+  [1367] return nothing
+  [1369] end
+
+=== GetGauntletSeasonTables
+  [0] array{}
+  [11] GetDataTableRowNames(self.GauntletSeasonsTable, CallFunc_GetDataTableRowNames_OutRowNames)
+  [39] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames)
+  [98] CallFunc_Percent_IntInt_ReturnValue = Percent_IntInt(SeasonNumber, CallFunc_Array_Length_ReturnValue)
+  [144] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(self.GauntletSeasonsTable, EX_ArrayGetByRef(ArrayVariable=CallFunc_GetDataTableRowNames_OutRowNames,ArrayIndex=CallFunc_Percent_IntInt_ReturnValue), CallFunc_GetDataTableRowFromName_OutRow)
+  [223] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @298
+  [237] SpecTable = CallFunc_GetDataTableRowFromName_OutRow.SeasonSpecificationTable
+  [265] TuningTable = CallFunc_GetDataTableRowFromName_OutRow.SeasonTuningTable
+  [293] goto @336
+  [298] SpecTable = gauntlet_mode_encounter_specs
+  [317] TuningTable = gauntlet_mode_tuning_specs
+  [336] return nothing
+  [338] end
+
+=== GetHuntRewards
+  [0] array{}
+  [11] HuntRewards = K2Node_MakeArray_Array
+  [38] return nothing
+  [40] end
+
+=== GetPerGameModeBehemothTuningOverrides
+  [0] UseOverrides = true
+  [11] BaseHealthScaleOverride = 1.0
+  [38] BasePartHealthScaleOverride = 0.800000011920929
+  [65] PerPlayerCoreHealthScaleOverride = 1.0
+  [92] BasePartWoundHealthScaleOverride = 1.0
+  [119] PerPlayerWoundHealthScaleOverride = 0.30000001192092896
+  [146] BaseStaggerScaleOverride = 1.0
+  [173] PerPlayerStaggerHealthScaleOverride = 0.6000000238418579
+  [200] return nothing
+  [202] end
+
+=== ReadyToStart
+  [0] ExecuteUbergraph_BPGM_ArchonGauntlet(1368)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_BPGM_ArchonGauntlet(1626)
+  [15] return nothing
+  [17] end
+
+=== UseNewHealthTuning
+  [0] UseNew = true
+  [11] return nothing
+  [13] end

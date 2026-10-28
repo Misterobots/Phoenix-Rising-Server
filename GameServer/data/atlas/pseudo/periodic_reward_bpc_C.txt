@@ -1,0 +1,185 @@
+# periodic_reward_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_periodic_reward_bpc
+  [0] push @3820
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [35] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(cooldown_bpc_C)
+  [86] self.CooldownComponent = CallFunc_GetComponentByClass_ReturnValue
+  [105] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [125] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(cooldown_bpc_C)
+  [176] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [205] if !(CallFunc_IsValid_ReturnValue) goto @284
+  [219] K2Node_CreateDelegate_OutputDelegate = bind(self.OnRefreshCooldownStatus)
+  [242] K2Node_CreateDelegate_OutputDelegate += None
+  [283] pop
+  [284] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [313] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [363] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [405] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'missing cooldown_bpc on player controller!')
+  [486] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [560] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [580] if !(CallFunc_IsShipping_ReturnValue) goto @595
+  [594] pop
+  [595] StackTrace()
+  [605] pop
+  [606] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [626] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [668] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [678] Temp_int_Loop_Counter_Variable = 0
+  [701] Temp_int_Array_Index_Variable = 0
+  [724] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Rules)
+  [783] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [821] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [831] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [858] push @1642
+  [863] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [922] CallFunc_GetCooldown_ReturnValue = self.CooldownComponent.GetCooldown(CallFunc_Array_Get_Item.RuleID, CallFunc_GetCooldown_TimeElapsedSeconds)
+  [991] push @1716
+  [996] if !(CallFunc_GetCooldown_ReturnValue) goto @2761
+  [1010] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1069] CallFunc_FromHours_ReturnValue = FromHours(CallFunc_Array_Get_Item.TimeInHours)
+  [1115] CallFunc_FromSeconds_ReturnValue = FromSeconds(CallFunc_GetCooldown_TimeElapsedSeconds)
+  [1152] CallFunc_GreaterEqual_TimespanTimespan_ReturnValue = GreaterEqual_TimespanTimespan(CallFunc_FromSeconds_ReturnValue, CallFunc_FromHours_ReturnValue)
+  [1190] if !(CallFunc_GreaterEqual_TimespanTimespan_ReturnValue) pop
+  [1200] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1259] CallFunc_FromHours_ReturnValue = FromHours(CallFunc_Array_Get_Item.TimeInHours)
+  [1305] CallFunc_FromSeconds_ReturnValue = FromSeconds(CallFunc_GetCooldown_TimeElapsedSeconds)
+  [1342] CallFunc_TimespanRatio_ReturnValue = TimespanRatio(CallFunc_FromSeconds_ReturnValue, CallFunc_FromHours_ReturnValue)
+  [1388] CallFunc_FFloor_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_TimespanRatio_ReturnValue)
+  [1417] CallFunc_FFloor_ReturnValue = FFloor(CallFunc_FFloor_A_ImplicitCast)
+  [1454] RunRuleLogic(CallFunc_Array_Get_Item.RuleID, CallFunc_FFloor_ReturnValue)
+  [1495] GetDateTimeForLastDay(0, CallFunc_GetDateTimeForLastDay_ResetTimeForDay)
+  [1523] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1582] self.CooldownComponent.SetCooldown(CallFunc_Array_Get_Item.RuleID, CallFunc_GetDateTimeForLastDay_ResetTimeForDay)
+  [1641] pop
+  [1642] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1684] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1711] goto @724
+  [1716] if !(self.Debug) pop
+  [1726] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1785] CallFunc_GetCooldown_ReturnValue_1 = self.CooldownComponent.GetCooldown(CallFunc_Array_Get_Item.RuleID, CallFunc_GetCooldown_TimeElapsedSeconds_1)
+  [1854] if !(CallFunc_GetCooldown_ReturnValue_1) pop
+  [1864] GetDateTimeForLastDay(0, CallFunc_GetDateTimeForLastDay_ResetTimeForDay_2)
+  [1892] CallFunc_MakeTimespan_ReturnValue = MakeTimespan(1, 0, 0, 0, 0)
+  [1945] CallFunc_Add_DateTimeTimespan_ReturnValue = Add_DateTimeTimespan(CallFunc_GetDateTimeForLastDay_ResetTimeForDay_2, CallFunc_MakeTimespan_ReturnValue)
+  [1991] CallFunc_UtcNow_ReturnValue = UtcNow()
+  [2019] CallFunc_Subtract_DateTimeDateTime_ReturnValue = Subtract_DateTimeDateTime(CallFunc_Add_DateTimeTimespan_ReturnValue, CallFunc_UtcNow_ReturnValue)
+  [2065] CallFunc_FormatTimeRemainingText_ReturnValue = FormatTimeRemainingText(self, CallFunc_Subtract_DateTimeDateTime_ReturnValue)
+  [2103] CallFunc_FromSeconds_ReturnValue_1 = FromSeconds(CallFunc_GetCooldown_TimeElapsedSeconds_1)
+  [2140] CallFunc_AsTimespan_Timespan_ReturnValue = AsTimespan_Timespan(CallFunc_FromSeconds_ReturnValue_1)
+  [2177] CallFunc_MakeTimespan_ReturnValue = MakeTimespan(1, 0, 0, 0, 0)
+  [2230] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_AsTimespan_Timespan_ReturnValue)
+  [2267] CallFunc_Add_DateTimeTimespan_ReturnValue = Add_DateTimeTimespan(CallFunc_GetDateTimeForLastDay_ResetTimeForDay_2, CallFunc_MakeTimespan_ReturnValue)
+  [2313] CallFunc_AsTimeZoneDateTime_DateTime_ReturnValue = AsTimeZoneDateTime_DateTime(CallFunc_Add_DateTimeTimespan_ReturnValue, '')
+  [2352] CallFunc_Conv_TextToString_ReturnValue_1 = Conv_TextToString(CallFunc_AsTimeZoneDateTime_DateTime_ReturnValue)
+  [2389] CallFunc_Conv_TextToString_ReturnValue_2 = Conv_TextToString(CallFunc_FormatTimeRemainingText_ReturnValue)
+  [2426] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('Time until next patrol token ', CallFunc_Conv_TextToString_ReturnValue_2)
+  [2494] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ', at ')
+  [2538] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_TextToString_ReturnValue_1)
+  [2584] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, ' - time elapsed: ')
+  [2640] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, CallFunc_Conv_TextToString_ReturnValue)
+  [2686] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_7, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 12.0, 'None')
+  [2760] pop
+  [2761] GetDateTimeForLastDay(0, CallFunc_GetDateTimeForLastDay_ResetTimeForDay_1)
+  [2789] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2848] self.CooldownComponent.SetCooldown(CallFunc_Array_Get_Item.RuleID, CallFunc_GetDateTimeForLastDay_ResetTimeForDay_1)
+  [2907] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2966] RunRuleLogic(CallFunc_Array_Get_Item.RuleID, 1)
+  [3003] pop
+  [3004] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_RuleID, 'GRANT_PATROL_BOOST_TOKEN')
+  [3059] if !(K2Node_SwitchString_CmpSuccess) goto @3468
+  [3073] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_RuleID, 'GRANT_TOKEN_HEROICPLUS_REWARD_AVAILABLE')
+  [3143] if !(K2Node_SwitchString_CmpSuccess) goto @3158
+  [3157] pop
+  [3158] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [3178] K2Node_DynamicCast_AsArchon_Player_Controller_1 = cast<ArchonPlayerController>(CallFunc_GetOwner_ReturnValue_3)
+  [3214] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller_1)
+  [3243] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [3253] CallFunc_GetInventory_ReturnValue_1 = K2Node_DynamicCast_AsArchon_Player_Controller_1.GetInventory()
+  [3295] K2Node_MakeStruct_PlayFabCatalogItemQuantity_1.Item = 'TOKEN_HEROICPLUS_REWARD_AVAILABLE'
+  [3357] K2Node_MakeStruct_PlayFabCatalogItemQuantity_1.Amount = 2
+  [3389] array{K2Node_MakeStruct_PlayFabCatalogItemQuantity_1}
+  [3409] CallFunc_GetInventory_ReturnValue_1.GrantItemsWithQuantity(K2Node_MakeArray_Array_1, 'PERIODIC_REWARD')
+  [3467] pop
+  [3468] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [3488] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwner_ReturnValue_2)
+  [3524] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [3553] if !(K2Node_DynamicCast_bSuccess) pop
+  [3563] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(K2Node_CustomEvent_NumberOfTimesCooldownElapsed, 2)
+  [3605] K2Node_MakeStruct_PlayFabCatalogItemQuantity.Item = 'TOKEN_DAILY_PATROL_BONUS'
+  [3658] K2Node_MakeStruct_PlayFabCatalogItemQuantity.Amount = CallFunc_Multiply_IntInt_ReturnValue
+  [3694] array{K2Node_MakeStruct_PlayFabCatalogItemQuantity}
+  [3714] CallFunc_GetInventory_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetInventory()
+  [3756] CallFunc_GetInventory_ReturnValue.GrantItemsWithQuantity(K2Node_MakeArray_Array, 'PERIODIC_REWARD')
+  [3814] pop
+  [3815] goto @606
+  [3820] return nothing
+  [3822] end
+
+=== GetDateTimeForLastDay
+  [0] CallFunc_UtcNow_ReturnValue = UtcNow()
+  [28] BreakDateTime(CallFunc_UtcNow_ReturnValue, CallFunc_BreakDateTime_Year, CallFunc_BreakDateTime_Month, CallFunc_BreakDateTime_Day, CallFunc_BreakDateTime_Hour, CallFunc_BreakDateTime_Minute, CallFunc_BreakDateTime_Second, CallFunc_BreakDateTime_Millisecond)
+  [110] CallFunc_MakeDateTime_ReturnValue = MakeDateTime(CallFunc_BreakDateTime_Year, CallFunc_BreakDateTime_Month, CallFunc_BreakDateTime_Day, 0, 0, 0, 0)
+  [185] ResetTimeForDay = CallFunc_MakeDateTime_ReturnValue
+  [212] return nothing
+  [214] end
+
+=== GetIndexOfRule
+  [0] push @467
+  [5] push @354
+  [10] Temp_int_Loop_Counter_Variable = 0
+  [33] Temp_int_Array_Index_Variable = 0
+  [56] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Rules)
+  [115] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [153] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [163] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [190] push @393
+  [195] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [254] CallFunc_EqualEqual_StrStr_ReturnValue = EqualEqual_StrStr(CallFunc_Array_Get_Item.RuleID, RuleID)
+  [301] if !(CallFunc_EqualEqual_StrStr_ReturnValue) pop
+  [311] Index = Temp_int_Array_Index_Variable
+  [338] Found = true
+  [349] goto @467
+  [354] Index = -1
+  [377] Found = false
+  [388] goto @467
+  [393] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [435] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [462] goto @56
+  [467] return nothing
+  [469] end
+
+=== GetNextTimeForRule
+  [0] GetIndexOfRule(RuleID, CallFunc_GetIndexOfRule_Index, CallFunc_GetIndexOfRule_Found)
+  [41] if !(CallFunc_GetIndexOfRule_Found) goto @302
+  [55] GetDateTimeForLastDay(0, CallFunc_GetDateTimeForLastDay_ResetTimeForDay)
+  [83] CallFunc_UtcNow_ReturnValue = UtcNow()
+  [111] CallFunc_FromHours_ReturnValue = FromHours(EX_ArrayGetByRef(ArrayVariable=self.Rules,ArrayIndex=CallFunc_GetIndexOfRule_Index).TimeInHours)
+  [167] CallFunc_Add_DateTimeTimespan_ReturnValue = Add_DateTimeTimespan(CallFunc_GetDateTimeForLastDay_ResetTimeForDay, CallFunc_FromHours_ReturnValue)
+  [213] CallFunc_Subtract_DateTimeDateTime_ReturnValue = Subtract_DateTimeDateTime(CallFunc_Add_DateTimeTimespan_ReturnValue, CallFunc_UtcNow_ReturnValue)
+  [259] Found = true
+  [270] TimeUntilNextReward = CallFunc_Subtract_DateTimeDateTime_ReturnValue
+  [297] goto @345
+  [302] Found = false
+  [313] TimeUntilNextReward = Timespan{}
+  [345] return nothing
+  [347] end
+
+=== OnRefreshCooldownStatus
+  [0] frame.K2Node_CustomEvent_CooldownComponent = CooldownComponent
+  [18] ExecuteUbergraph_periodic_reward_bpc(3815)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_periodic_reward_bpc(15)
+  [15] return nothing
+  [17] end
+
+=== RunRuleLogic
+  [0] frame.K2Node_CustomEvent_RuleID = RuleID
+  [18] frame.K2Node_CustomEvent_NumberOfTimesCooldownElapsed = NumberOfTimesCooldownElapsed
+  [36] ExecuteUbergraph_periodic_reward_bpc(3004)
+  [51] return nothing
+  [53] end

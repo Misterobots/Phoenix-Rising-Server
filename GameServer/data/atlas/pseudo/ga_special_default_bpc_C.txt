@@ -1,0 +1,106 @@
+# ga_special_default_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateWeaponPartGameplay
+  [0] frame.K2Node_Event_StartTime = StartTime
+  [18] ExecuteUbergraph_ga_special_default_bpc(541)
+  [33] return nothing
+  [35] end
+
+=== CustomEvent
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_ga_special_default_bpc(1661)
+  [87] return nothing
+  [89] end
+
+=== ExecuteUbergraph_ga_special_default_bpc
+  [0] push @1886
+  [5] goto computed(EntryPoint)
+  [15] OnWeaponPartEquipped()
+  [25] push @275
+  [30] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [59] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp01'})
+  [133] self.TalentSp01Active = CallFunc_HasMatchingGameplayTag_ReturnValue_1
+  [152] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [181] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [255] self.TalentSp04Active = CallFunc_HasMatchingGameplayTag_ReturnValue
+  [274] pop
+  [275] K2Node_DynamicCast_AsBP_Axe_Weapon = cast<BP_Axe_Weapon_C>(self.ArchonWeapon)
+  [311] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Axe_Weapon)
+  [340] if !(K2Node_DynamicCast_bSuccess) pop
+  [350] self.AxeWeapon = K2Node_DynamicCast_AsBP_Axe_Weapon
+  [369] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [390] if !(CallFunc_IsInCity_ReturnValue) goto @405
+  [404] pop
+  [405] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [425] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [467] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [477] CallFunc_CreateActorPool_ReturnValue = CreateActorPool(self.ArchonWeapon, ga_special_default_aoe_bp_C, 5, true)
+  [521] self.Axe Default AOE Pool = CallFunc_CreateActorPool_ReturnValue
+  [540] pop
+  [541] ActivateWeaponPartGameplay(K2Node_Event_StartTime)
+  [560] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(ArchonBuffableComponent)
+  [611] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [640] if !(CallFunc_IsValid_ReturnValue) pop
+  [650] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(ArchonBuffableComponent)
+  [701] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(ga_special_axe_throw_handler_buff_C, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable_1, null, true)
+  [776] K2Node_DynamicCast_AsGa_Special_Axe_Throw_Handler_Buff = cast<ga_special_axe_throw_handler_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [812] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsGa_Special_Axe_Throw_Handler_Buff)
+  [841] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [851] self.HandlerBuff = K2Node_DynamicCast_AsGa_Special_Axe_Throw_Handler_Buff
+  [870] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [891] if !(CallFunc_IsServer_ReturnValue) goto @989
+  [905] RefreshTalent()
+  [919] push @1121
+  [924] if !(self.TalentSp01Active) pop
+  [934] Default__buff_function_library_C.AdjustBuffTempStacks(self.ArchonCharacter, 1, 3, false, self)
+  [988] pop
+  [989] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(ArchonBuffableComponent)
+  [1040] CallFunc_TryAddBuffWithDurationNonReplicated_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuffWithDurationNonReplicated(ga_predictive_throw_buff_C, 1.0, CallFunc_TryAddBuffWithDurationNonReplicated_BuffAdded, Temp_struct_Variable, null, true)
+  [1120] pop
+  [1121] if !(self.TalentSp04Active) pop
+  [1131] K2Node_CreateDelegate_OutputDelegate = bind(self.CustomEvent)
+  [1154] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1205] K2Node_CreateDelegate_OutputDelegate -= None
+  [1246] K2Node_CreateDelegate_OutputDelegate = bind(self.CustomEvent)
+  [1269] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1320] K2Node_CreateDelegate_OutputDelegate += None
+  [1361] pop
+  [1362] OnWeaponPartUnequipped()
+  [1372] CallFunc_IsValid_ReturnValue_1 = IsValid(self.Axe Default AOE Pool)
+  [1401] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1411] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1431] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [1473] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [1483] self.Axe Default AOE Pool.K2_DestroyComponent(self)
+  [1516] CallFunc_IsValid_ReturnValue_2 = IsValid(self.HandlerBuff)
+  [1545] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1555] self.HandlerBuff.self.UnequipInProcess = true
+  [1588] self.ArchonCharacter.self.ArchonBuffableComponent.RemoveBuff(self.HandlerBuff)
+  [1655] pop
+  [1656] goto @30
+  [1661] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.SpecialMove'}, false)
+  [1718] if !(CallFunc_HasTag_ReturnValue) pop
+  [1728] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [1766] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 0.025)
+  [1812] Default__archon_function_library_C.HealTarget(self.ArchonCharacter, self.ArchonCharacter, self.ArchonCharacter, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [1885] pop
+  [1886] return nothing
+  [1888] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_ga_special_default_bpc(15)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_ga_special_default_bpc(1362)
+  [15] return nothing
+  [17] end
+
+=== RefreshTalent
+  [0] ExecuteUbergraph_ga_special_default_bpc(1656)
+  [15] return nothing
+  [17] end

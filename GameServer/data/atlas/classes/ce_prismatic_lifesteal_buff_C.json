@@ -1,0 +1,265 @@
+{
+ "name": "ce_prismatic_lifesteal_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifestealPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "ExposeOnSpawn"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debug",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EffectToRemove",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "KoshaiInstantFX",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_ce_prismatic_lifesteal_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 40,
+   "reads": [
+    "Debug",
+    "LifestealPercent",
+    "OnPostMitigationDealtAnyDamage"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonBuff.GetBuffOwner",
+    "CanProcOnDamageEffects",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetSkeletalMeshComponent",
+    "HealTarget",
+    "HealVFX",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.PrintString",
+    "SetActorParameter",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "ParticleSystem buff_heal_generic_p"
+   ]
+  },
+  {
+   "name": "HealVFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "VFXTarget",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_prismatic_lifesteal_buff_C.ExecuteUbergraph_ce_prismatic_lifesteal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsValidTarget",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "InsitgatorTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "ValidTarget",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_prismatic_lifesteal_buff_C.ExecuteUbergraph_ce_prismatic_lifesteal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_prismatic_lifesteal_buff_C.ExecuteUbergraph_ce_prismatic_lifesteal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Content/Prismatic/ce_prismatic_lifesteal_buff",
+ "pseudo_file": "pseudo/ce_prismatic_lifesteal_buff_C.txt",
+ "game_data": {}
+}

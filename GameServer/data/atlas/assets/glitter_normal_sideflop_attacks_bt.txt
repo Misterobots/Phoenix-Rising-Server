@@ -1,0 +1,24 @@
+glitter_normal_sideflop_attacks_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Side Flop Attacks"]
+  Sequence
+    [if Blackboard  (TempAction is Is Not Set)]
+    [if ForceSuccess]
+    1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass glitter_normal_action_sideflop_l_C", "BlueprintGeneratedClass glitter_normal_action_sideflop_r_C"], ChosenActionKey=bb.TempAction)
+    [if ConditionalLoop  (TempAction is Is Set)]
+    2) Selector
+      [if BTDeco_CheckChosenAction "Was Side Flop L Chosen?"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sideflop_l_C, ChosenAttackKeyName=TempAction, bShowPropertyDetails=false)]
+      1) Selector
+        1) Sequence
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) PhxPerformGameplayAction "Side Flop L"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+          2) ClearBBVar "Clear Chosen Action"  (BBVar=bb.TempAction)
+      [if BTDeco_CheckChosenAction "Was Side Flop R Chosen?"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sideflop_r_C, ChosenAttackKeyName=TempAction, bShowPropertyDetails=false)]
+      2) Selector
+        1) Sequence
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) PhxPerformGameplayAction "Side Flop R"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+          2) ClearBBVar "Clear Chosen Action"  (BBVar=bb.TempAction)
+      [if comment_btdeco "Fallback if both options fail to break out of the loop"]
+      3) ClearBBVar "Clear Chosen Action"  (BBVar=bb.TempAction)

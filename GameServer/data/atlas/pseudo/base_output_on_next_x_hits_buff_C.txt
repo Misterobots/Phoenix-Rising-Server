@@ -1,0 +1,103 @@
+# base_output_on_next_x_hits_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CustomCanAffectTarget
+  [0] CanAffect = true
+  [11] return nothing
+  [13] end
+
+=== ExecuteUbergraph_base_output_on_next_x_hits_buff
+  [0] push @1146
+  [5] goto computed(EntryPoint)
+  [15] HandleHitEvent(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageTags)
+  [47] pop
+  [48] HandleHitEvent(K2Node_CustomEvent_DamagedActor_1, K2Node_CustomEvent_DamageAndInstigatorTags)
+  [80] pop
+  [81] push @165
+  [86] if !(self.bOnlyCountWeaponHits) goto @298
+  [100] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnPostWeaponHitComplete_Event_0)
+  [123] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [164] pop
+  [165] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [185] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [221] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [250] if !(K2Node_DynamicCast_bSuccess) pop
+  [260] K2Node_DynamicCast_AsPlayer_Interface.AddEmpoweredWeaponEffectsStack()
+  [297] pop
+  [298] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPostMitigationDealtAnyDamage)
+  [321] K2Node_CreateDelegate_OutputDelegate += None
+  [362] pop
+  [363] Default__meter_gaining_rules_C.CanProcOnDamageEffects(K2Node_CustomEvent_DamagedActor_1, K2Node_CustomEvent_DamageAndInstigatorTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [427] if !(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects) pop
+  [437] CallFunc_Delay_Duration_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.ServerDeflectionTime)
+  [466] Delay(self, CallFunc_Delay_Duration_ImplicitCast_1, LatentActionInfo{EX_SkipOffsetConst(Value=48), 1497557893, 'ExecuteUbergraph_base_output_on_next_x_hits_buff', self})
+  [524] pop
+  [525] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'DamageType.Crit'}, false)
+  [582] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasTag_ReturnValue, self.CritsOnly)
+  [620] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [630] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.ServerDeflectionTime, 0.0)
+  [668] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @15
+  [682] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.ServerDeflectionTime)
+  [711] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=15), -532511771, 'ExecuteUbergraph_base_output_on_next_x_hits_buff', self})
+  [769] pop
+  [770] self.PlayerEventDispatcher = null
+  [781] pop
+  [782] OnRemoved()
+  [792] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [812] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [848] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [877] if !(K2Node_DynamicCast_bSuccess_1) goto @770
+  [891] K2Node_DynamicCast_AsPlayer_Interface_1.RemoveEmpoweredWeaponEffectsStack()
+  [928] goto @770
+  [933] OnAdded()
+  [943] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [963] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue_1)
+  [992] if !(CallFunc_IsValid_ReturnValue) pop
+  [1002] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1022] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1073] self.PlayerEventDispatcher = CallFunc_GetComponentByClass_ReturnValue
+  [1092] CallFunc_IsValid_ReturnValue_1 = IsValid(self.PlayerEventDispatcher)
+  [1121] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1131] goto @81
+  [1136] goto @782
+  [1141] goto @933
+  [1146] return nothing
+  [1148] end
+
+=== HandleHitEvent
+  [0] CustomCanAffectTarget(DamagedActor, DamageAndInstigatorTags, CallFunc_CustomCanAffectTarget_CanAffect)
+  [41] if !(CallFunc_CustomCanAffectTarget_CanAffect) goto @236
+  [55] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.NumHitsAllowed, 1)
+  [97] Temp_int_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [124] self.NumHitsAllowed = Temp_int_Variable
+  [151] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, 0)
+  [185] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @236
+  [199] self.OwnerBuffableComponent.RemoveBuff(self)
+  [236] return nothing
+  [238] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_base_output_on_next_x_hits_buff(1141)
+  [15] return nothing
+  [17] end
+
+=== OnPostMitigationDealtAnyDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_base_output_on_next_x_hits_buff(525)
+  [87] return nothing
+  [89] end
+
+=== OnPostWeaponHitComplete_Event_0
+  [0] frame.K2Node_CustomEvent_DamageAndInstigatorTags = DamageAndInstigatorTags
+  [18] frame.K2Node_CustomEvent_DamagedActor_1 = DamagedActor
+  [36] frame.K2Node_CustomEvent_FinalDamageAmount = FinalDamageAmount
+  [54] ExecuteUbergraph_base_output_on_next_x_hits_buff(363)
+  [69] return nothing
+  [71] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_base_output_on_next_x_hits_buff(1136)
+  [15] return nothing
+  [17] end

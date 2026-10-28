@@ -1,0 +1,317 @@
+{
+ "name": "ce_lowhp_apply_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WhereShouldMagnitudeBeApplied",
+   "type": "ByteProperty<cell_damage_modification>",
+   "bp_type": "ByteProperty<cell_damage_modification>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "geEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HealthThreshold",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GameplayEffectClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Character",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcEffect",
+   "type": "ObjectProperty<ParticleSystem>",
+   "bp_type": "ObjectProperty<ParticleSystem>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcAudio",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ManualMagnitudeAdjustment",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LowHPTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_ce_lowhp_apply_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 58,
+   "reads": [
+    "Character",
+    "GameplayEffectClass",
+    "HealthThreshold",
+    "ManualMagnitudeAdjustment",
+    "Mesh",
+    "OnProcAudio",
+    "OnProcEffect",
+    "geEffectHandle"
+   ],
+   "sets": [
+    "Character",
+    "geEffectHandle"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "ActorIsAlive",
+    "AkGameplayStatics.PostEvent",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonCharacter.GetHealth",
+    "ArchonCharacter.GetMaxHealth",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetCellEffectMagnitude",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MakeOutgoingSpec",
+    "MeshEmitVFX_Multi",
+    "RemoveActiveGameplayEffect",
+    "SetActorParameter",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LowHP_Polling",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_apply_buff_C.ExecuteUbergraph_ce_lowhp_apply_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MeshEmitVFX_Multi",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_apply_buff_C.ExecuteUbergraph_ce_lowhp_apply_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_apply_buff_C.ExecuteUbergraph_ce_lowhp_apply_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_apply_buff_C.ExecuteUbergraph_ce_lowhp_apply_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_apply_buff_C.ExecuteUbergraph_ce_lowhp_apply_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_lowhp_apply_buff",
+ "pseudo_file": "pseudo/ce_lowhp_apply_buff_C.txt",
+ "game_data": {}
+}

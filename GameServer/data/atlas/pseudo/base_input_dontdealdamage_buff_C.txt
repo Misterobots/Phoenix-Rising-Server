@@ -1,0 +1,205 @@
+# base_input_dontdealdamage_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CheckDamage
+  [0] Default__meter_gaining_rules_C.CanProcOnDamageEffects(TargetActor, DamageTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [64] CallFunc_HasTag_ReturnValue = HasTag(DamageTags, GameplayTag{'DamageTag.ForObjectives.PlayerRole'}, false)
+  [121] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects, CallFunc_HasTag_ReturnValue)
+  [159] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [188] CallFunc_NotEqual_DoubleDouble_ReturnValue = NotEqual_DoubleDouble(self.Time, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [226] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_BooleanOR_ReturnValue, CallFunc_NotEqual_DoubleDouble_ReturnValue)
+  [264] if !(CallFunc_BooleanAND_ReturnValue) goto @350
+  [278] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [307] self.Time = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [334] Match = true
+  [345] goto @361
+  [350] Match = false
+  [361] return nothing
+  [363] end
+
+=== CustomActivateEffect
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(528)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_base_input_dontdealdamage_buff
+  [0] push @2764
+  [5] goto computed(EntryPoint)
+  [15] Try Activate Effect(false, CallFunc_Try_Activate_Effect_ActivatedEffect)
+  [39] RemoveVFX()
+  [53] pop
+  [54] ResetTimer()
+  [68] pop
+  [69] goto @15
+  [74] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [94] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [104] K2_ClearAndInvalidateTimerHandle(self, self.TimerHandle)
+  [124] K2_ClearAndInvalidateTimerHandle(self, self.EffectTimerHandle)
+  [144] RemoveVFX()
+  [158] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnTimerFinished)
+  [181] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeNotDealingDamageToApply)
+  [210] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [267] self.TimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [294] K2Node_CreateDelegate_OutputDelegate = bind(self.PlayWarmupEffect)
+  [317] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.TimeNotDealingDamageToApply, 2.0)
+  [363] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [392] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1, false, 0.0, 0.0)
+  [449] self.EffectTimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [476] self.EffectActive = false
+  [487] pop
+  [488] ResetTimer()
+  [502] pop
+  [503] ReceiveBeginPlay()
+  [513] ResetTimer()
+  [527] pop
+  [528] CallFunc_IsValid_ReturnValue = IsValid(self.BuffToTrack)
+  [557] if !(CallFunc_IsValid_ReturnValue) goto @683
+  [571] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff = cast<ce_stacked_onnexthit_damage_buff_C>(self.BuffToTrack)
+  [607] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff)
+  [636] if !(K2Node_DynamicCast_bSuccess) pop
+  [646] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff.RefillStacks()
+  [682] pop
+  [683] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [703] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(ArchonBuffableComponent)
+  [754] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(self.BuffClass, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, CallFunc_GetBuffOwner_ReturnValue, false)
+  [837] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_2 = cast<ce_stacked_onnexthit_damage_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [873] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_2)
+  [902] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [912] CallFunc_FTrunc_ReturnValue = FTrunc(self.CellEffectMagnitude)
+  [949] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_2.self.TotalStacks = CallFunc_FTrunc_ReturnValue
+  [998] self.BuffToTrack = CallFunc_TryAddBuff_ReturnValue
+  [1017] self.BuffToTrack.StartBuff()
+  [1053] pop
+  [1054] CallFunc_IsValid_ReturnValue_1 = IsValid(self.BuffToTrack)
+  [1083] if !(CallFunc_IsValid_ReturnValue_1) goto @488
+  [1097] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_1 = cast<ce_stacked_onnexthit_damage_buff_C>(self.BuffToTrack)
+  [1133] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_1)
+  [1162] if !(K2Node_DynamicCast_bSuccess_1) goto @488
+  [1176] K2Node_DynamicCast_AsCe_Stacked_Onnexthit_Damage_Buff_1.RemoveStack()
+  [1212] goto @488
+  [1217] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [1237] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_5)
+  [1273] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1302] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [1312] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(K2Node_DynamicCast_AsArchon_Character)
+  [1341] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [1351] Default__vfx_function_library_C.PersistentWeaponMeshEffect(K2Node_DynamicCast_AsArchon_Character, paper_weapon_cell_warmup_p, paper_weapon_cell_warmup_ac_p, 'None', self, CallFunc_PersistentWeaponMeshEffect_WeaponEffect, CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft, CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight)
+  [1455] push @1889
+  [1460] push @1830
+  [1465] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_PersistentWeaponMeshEffect_WeaponEffect)
+  [1494] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [1504] self.EffectToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffect
+  [1523] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [1543] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetBuffOwner_ReturnValue_6)
+  [1579] K2Node_DynamicCast_bSuccess_5 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [1608] if !(K2Node_DynamicCast_bSuccess_5) goto @1952
+  [1622] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [1668] self.EffectToRemove.SetActorParameter('VertSurfaceActor', CallFunc_GetOwnedWeapon_Weapon)
+  [1726] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [1746] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_RawElemental_Player_Lp, CallFunc_GetBuffOwner_ReturnValue_6, 0, Temp_delegate_Variable, false)
+  [1829] pop
+  [1830] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft)
+  [1859] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [1869] self.RepeatersLeftToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft
+  [1888] pop
+  [1889] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight)
+  [1918] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [1928] self.RepeatersRightToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight
+  [1947] goto @1726
+  [1952] CallFunc_GetOwnedWeapon_Weapon = null
+  [1963] goto @1668
+  [1968] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1988] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [2024] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [2053] if !(K2Node_DynamicCast_bSuccess_2) goto @2133
+  [2067] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [2113] self.SkelMesh = CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp
+  [2132] pop
+  [2133] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [2144] goto @2113
+  [2149] MulticastOnAdded()
+  [2159] goto @1968
+  [2164] Default__archon_function_library_C.TryDestroyComponent(self.EffectToRemove, self)
+  [2210] Default__archon_function_library_C.TryDestroyComponent(self.RepeatersLeftToRemove, self)
+  [2256] Default__archon_function_library_C.TryDestroyComponent(self.RepeatersRightToRemove, self)
+  [2302] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [2322] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_Gameplay_Buff_RawElemental_Player_Lp, CallFunc_GetBuffOwner_ReturnValue_2, 0, Temp_delegate_Variable_1, false)
+  [2405] pop
+  [2406] OnAdded()
+  [2416] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [2436] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_3.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [2487] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnPostMit)
+  [2510] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [2551] pop
+  [2552] CheckDamage(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageTags, CallFunc_CheckDamage_Match)
+  [2593] if !(CallFunc_CheckDamage_Match) pop
+  [2603] goto @1054
+  [2608] CallFunc_IsValid_ReturnValue_2 = IsValid(self.BuffToTrack)
+  [2637] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2647] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [2667] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetBuffOwner_ReturnValue_4.GetComponentByClass(ArchonBuffableComponent)
+  [2718] CallFunc_GetComponentByClass_ReturnValue_2.RemoveBuff(self.BuffToTrack)
+  [2763] pop
+  [2764] return nothing
+  [2766] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(2149)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(2406)
+  [15] return nothing
+  [17] end
+
+=== OnPostMit
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_base_input_dontdealdamage_buff(2552)
+  [87] return nothing
+  [89] end
+
+=== OnTimerFinished
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(69)
+  [15] return nothing
+  [17] end
+
+=== PlayWarmupEffect
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(1217)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(503)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(2608)
+  [15] return nothing
+  [17] end
+
+=== RemoveVFX
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(2164)
+  [15] return nothing
+  [17] end
+
+=== ResetCooldown
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(54)
+  [15] return nothing
+  [17] end
+
+=== ResetTimer
+  [0] ExecuteUbergraph_base_input_dontdealdamage_buff(74)
+  [15] return nothing
+  [17] end
+
+=== Try Activate Effect
+  [0] Try Activate Effect(ResetCooldown, CallFunc_Try_Activate_Effect_ActivatedEffect)
+  [28] if !(CallFunc_Try_Activate_Effect_ActivatedEffect) goto @53
+  [42] self.EffectActive = true
+  [53] ActivatedEffect = CallFunc_Try_Activate_Effect_ActivatedEffect
+  [72] return nothing
+  [74] end

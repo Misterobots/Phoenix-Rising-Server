@@ -1,0 +1,73 @@
+# attached_object_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthAttachToActor
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @473
+  [76] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(AttachActor, behemoth_interface_C)
+  [114] if !(CallFunc_DoesImplementInterface_ReturnValue) goto @435
+  [128] CallFunc_GetOuter_ReturnValue = GetOuter(HitComponent)
+  [157] K2Node_DynamicCast_AsMonster_Part_Component = cast<MonsterPartComponent>(CallFunc_GetOuter_ReturnValue)
+  [193] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Component)
+  [222] if !(K2Node_DynamicCast_bSuccess) goto @473
+  [236] self.AttachedToMonsterPartComponent = K2Node_DynamicCast_AsMonster_Part_Component
+  [255] self.DirectDamageTargetActor = K2Node_DynamicCast_AsMonster_Part_Component.self.MonsterPartActor
+  [296] self.AttachedActor = AttachActor
+  [315] K2Node_CreateDelegate_OutputDelegate = bind(self.On_AttachedActor_PartSevered)
+  [338] CallFunc_GetComponentByClass_ReturnValue = AttachActor.GetComponentByClass(behemoth_eventdispatcher_bpc_C)
+  [389] K2Node_CreateDelegate_OutputDelegate += None
+  [430] goto @473
+  [435] self.DirectDamageTargetActor = AttachActor
+  [454] self.AttachedActor = AttachActor
+  [473] return nothing
+  [475] end
+
+=== AuthDetachFromActor
+  [0] push @347
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] push @318
+  [82] push @284
+  [87] CallFunc_IsValid_ReturnValue = IsValid(self.AttachedToMonsterPartComponent)
+  [116] if !(CallFunc_IsValid_ReturnValue) pop
+  [126] CallFunc_GetOwner_ReturnValue_1 = self.AttachedToMonsterPartComponent.GetOwner()
+  [168] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(behemoth_eventdispatcher_bpc_C)
+  [219] K2Node_CreateDelegate_OutputDelegate = bind(self.On_AttachedActor_PartSevered)
+  [242] K2Node_CreateDelegate_OutputDelegate -= None
+  [283] pop
+  [284] self.AttachedToMonsterPartComponent = null
+  [295] self.DirectDamageTargetActor = null
+  [306] self.AttachedActor = null
+  [317] pop
+  [318] OnDetachedFromActor__DelegateSignature(DetachReason)
+  [346] pop
+  [347] return nothing
+  [349] end
+
+=== ExecuteUbergraph_attached_object_bpc
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [30] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [72] if !(CallFunc_HasAuthority_ReturnValue) goto @219
+  [86] CallFunc_IsValid_ReturnValue = IsValid(K2Node_CustomEvent_SeveredMonsterPart)
+  [115] if !(CallFunc_IsValid_ReturnValue) goto @219
+  [129] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_CustomEvent_SeveredMonsterPart.self.MonsterPartActor, self.DirectDamageTargetActor)
+  [189] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @219
+  [203] AuthDetachFromActor(1)
+  [219] return nothing
+  [221] end
+
+=== OnAttachedToActor__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnDetachedFromActor__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== On_AttachedActor_PartSevered
+  [0] frame.K2Node_CustomEvent_SeveredMonsterPart = SeveredMonsterPart
+  [18] ExecuteUbergraph_attached_object_bpc(10)
+  [33] return nothing
+  [35] end

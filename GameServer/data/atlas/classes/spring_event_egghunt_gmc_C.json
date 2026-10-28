@@ -1,0 +1,256 @@
+{
+ "name": "spring_event_egghunt_gmc_C",
+ "kind": "blueprint",
+ "parents": [
+  "GameModeContent",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "type": "ObjectProperty<SceneComponent>",
+   "bp_type": "ObjectProperty<SceneComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActivityTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 12
+  },
+  {
+   "name": "EggsCollected",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CalculateScore",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Result",
+     "type": "EnumProperty<EGameModeContentResult>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<GameModeContentScore>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "EggsCollected"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Conv_IntToFloat"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_spring_event_egghunt_gmc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors_1",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 48,
+   "reads": [
+    "DefaultSceneRoot",
+    "EggsCollected",
+    "OnEggPickedUp",
+    "event_gamestate_bpc"
+   ],
+   "sets": [
+    "EggsCollected"
+   ],
+   "calls": [
+    "ArchonGameplayStatics.GetArchonGameState",
+    "EventGameStateComponent.UpdateScoreSummaries",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetAllActorsOfClass",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsServer",
+    "SceneComponent.K2_GetComponentToWorld"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass gatherable_spring_event_egg_C",
+    "BlueprintGeneratedClass spring_event_bunny_pen_bp_C"
+   ]
+  },
+  {
+   "name": "OnEggPickup",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "spring_event_egghunt_gmc_C.ExecuteUbergraph_spring_event_egghunt_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "spring_event_egghunt_gmc_C.ExecuteUbergraph_spring_event_egghunt_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "spring_event_egghunt_gmc_C.ExecuteUbergraph_spring_event_egghunt_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UserConstructionScript",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/gamemodes/event/spring_event_egghunt_gmc",
+ "pseudo_file": "pseudo/spring_event_egghunt_gmc_C.txt",
+ "game_data": {}
+}

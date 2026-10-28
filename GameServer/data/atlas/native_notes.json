@@ -1,0 +1,257 @@
+{
+ "_about": "Layer 3 notes: what a native function does, added on demand after decompiling it. Key = Class.Function as in index_native.json (or Class::Function at an address for functions without a reflected name). Hand-written; build never touches this file. Fields: summary, details, source (tool + address), date.",
+ "notes": {
+  "ArchonInventory.CanEquipItem": {
+   "summary": "Per-item filter for every Loadout assign list (weapons, armour, lanterns...). Hides an item if its ItemId is not in the catalog or the catalog item is tagged 'hidden' or 'legacy'. No quest, journey or level check.",
+   "details": "impl 0x287A900 (names itself in a log string 'AArchonInventory::CanEquipItem'). false if item null; GetCatalog() (0x2884510, lazily caches the game instance catalog in CachedCatalog +0x568) -> UArchonCatalog::GetCatalogItem(item.ItemId +0x78) (0x27056A0), false if missing; ItemHasTag(catalogItem, 'hidden') (0x270FB00) -> false; ItemHasTag(catalogItem, 'legacy') -> false; then only for rows of FPlayFabTransmogCatalogTableData in catalogItem.Catalog: FindRow(ItemId) and hide if the row object's byte +0x72A is set; otherwise true.",
+   "source": "capstone disassembly of Dauntless-Win64-Shipping.exe 2.1.1, image base 0x140000000",
+   "date": "2026-10-26"
+  },
+  "LoadoutViewModel::GetAssignableWeapons @0x2CD96B0": {
+   "summary": "Builds the weapon assign list: inventory weapons that pass CanEquipItem and whose WeaponType equals the open tab, one 0x370-byte FLoadoutItemViewModel each.",
+   "details": "Inventory from weak ptr +0xC8; 0x2CB7060 (inventory helper) walks UArchonInventoryData.Items (+0x30 of InventoryData +0x538), keeps IsA(ArchonInventoryItem_Weapon) && CanEquipItem; then keeps item.WeaponType (+0x131) == tab weapon type (taken from the equipped weapon); 0x2CCD7A0 makes each view model; sorted by 0x2CBC410. Afterwards, in elite trials only, sets bIsHighEnoughLevelForHunt from ProgressionLevel. Caller: LoadoutGearScreen open-panel virtual (vtable slot 0x580, 0x2CEEF60) -> panel fill 0x2D0C0E0 -> 0x2CFD480 makes one button per entry (no further filtering; empty list shows EmptyPanelTextBlock).",
+   "source": "capstone disassembly, 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "LoadoutViewModel::GetAssignableArmour @0x2CD33F0": {
+   "summary": "Armour assign list: InventoryData.Items that are armour, pass CanEquipItem, and whose ArmorType (+0x171) equals the slot.",
+   "details": "Same pattern as the weapon list. ArmorType is set at item init (0x28D6431) from the catalog tags: an EArmorType name match, else tag Helm=0, Chest=1, Legs=2, Arms=3. WeaponType (+0x131) is set nearby (0x28D6570). Sibling list builders with the same CanEquipItem gate: 0x2CD5AA0, 0x2CD5853 (dyes), 0x2CB6E60, 0x2CB6F60, 0x2CB7160.",
+   "source": "capstone disassembly, 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonInventory::AddInstancedItem @0x2878000": {
+   "summary": "Where V2 AddItem operations land: creates the UArchonInventoryItem and inserts it into InventoryData (Items + instance-id cache), the same container the Loadout lists read.",
+   "details": "Called from the ClientHandleItemStateUpdates AddItem branch (0x288E902), which first resolves the catalog item by the operation's ItemIdCrc (0x27057C0) and skips the add when that fails; the item's ItemId string comes from that catalog entry. Logs 'Add/inserting new item' / 'updating existing item'.",
+   "source": "capstone disassembly, 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonDamage::Execute_Implementation @0x261CB70": {
+   "summary": "Damage execution of damage_ge/behemoth_damage_ge: per-element resistance delta, attacker-side damage curve, post-mitigation multipliers, then shield-first output modifiers on CurrentShield/CurrentHealth.",
+   "details": "vtable 0x6893DF8 slot 88. Captures (DamageStatics 0x2619D80 -> ctor 0x2603070; capture def k at +8+0x48k): ArchonHealthAttributeSet from Target (CurrentHealth, MaxHealth, CurrentShield, Global/Elemental/<Elem>Resistance, <Elem>MultiplicativeResistance, *SelfPostMigationMultiplier) and ArchonDamageAttributeSet from Source (*Damage, *Power, *TargetPostMigationMultiplier, crit, lifesteal, Explicit*). Element index 0 Physical, 1 Flame, 2 Frost, 3 Shock, 4 Radiant, 5 Umbral, 6 Terra, 7 Raw (Raw uses physical resist/power). Curves from the SOURCE ArchonAbilitySystemComponent: +0x13D8 DamageCurve, +0x13E0 ElementalDamageCurve, +0x13E8 ElementalWeaknessCurve (target mult-res > 1), +0x13F0 ElementalStrengthCurve (< 1); fallback this->DamageCurve (+0x40). BaseDamage is added to the attack element slot. Then MitigateAndScaleDamage 0x26DED40; total = max(0, phys + elem + RawDamage + TrueDamage); 0 if CurrentHealth <= 0; vtable +0x2C8 hook is empty for UArchonDamage; capped at health+shield-1 when a cannot-die check passes; when a role byte on the target avatar == 3 (probably ROLE_Authority) it adds output mods -shieldPart to CurrentShield and -healthPart to CurrentHealth, shield absorbing first. Extended branch 0x262E1B0 (part/stagger/expose/crit) not decompiled. See topics/armor.md.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonDamageStatics.ComputeResistanceDeltas": {
+   "summary": "delta_i = (Power_i + ElementalPower if i in 1..6) * MultiplicativeResistance_i + GlobalPower - (Resistance_i + ElementalResistance if i in 1..6 + GlobalResistance), over 8 element slots.",
+   "details": "impl 0x2615E70. FArchonPowerInfo {FlatPowerAttributes[8], GlobalFlatPower, ElementalFlatPower}; FArchonResistanceInfo {FlatResistanceAttributes[8], MultiplicativeResistanceAttributes[8], GlobalFlatResistance, ElementalFlatResistance}. Slots 0 (physical) and 7 (raw) get no elemental add.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonDamageStatics.ComputeDamageMultipliers": {
+   "summary": "mult_i = curve(delta_i): physical uses PhysicalDamageCurve, elements ElementalDamageCurve; StrengthCurve when target mult-res < 1, WeaknessCurve when > 1 (if set); 1.0 when there is no curve.",
+   "details": "impl 0x26153C0; curve evaluation 0x4CE9560 (UCurveFloat::GetFloatValue).",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonDamageStatics.ComputePostMitigationDamages": {
+   "summary": "Scales each element's damage by additive-stacked post-mitigation multipliers (self = target's *SelfPostMigation*, target = attacker's *TargetPostMigation*).",
+   "details": "impl 0x2615500 -> MitigateAndScaleDamage 0x26DED40 (log string names it). d_i = mult_i*damage_i + add_i; physical = d_0*(GSelf+Self_0-1)*(GTarget+Target_0+A-1)*M; element i=1..7 = d_i*(GSelf+Self_i-1+ESelf-1)*(GTarget+Target_i+A-1+ETarget-1)*M; returns physical and elemental sums. A = AdditiveDamageMultiplier, M = MultiplicativEAttackModifier.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonArmor::ApplyArmourEffect @0x269E1C0": {
+   "summary": "Server only: applies armour_ge_C to the owner with SetByCaller Global/Flame/Frost/Shock/Radiant/Umbral/Terra Resistance from the armor's ResistanceTable row (row = ItemId, level = CurrentLevel).",
+   "details": "Descriptive name (no reflected name). Returns when net mode == 3 (client). Row via LookupResistanceTableRow (BlueprintNativeEvent; native impl 0x26B0C50 = FindRow on ArchonArmor.ResistanceTable +0x580). Spec level = AbilityLevel (+0x398); values from 0x26CDA70(row, element 8=Global or 1..6, CurrentLevel +0x39C). Row GrantedTags -> spec dynamic granted tags, AssetTags -> asset tags; applied with ApplyGameplayEffectSpecToSelf (vtable +0x658), handle kept at +0x3B8; logs \"AArchonArmor: failed to add armour effect for %s\". The effect class comes from a static class finder for /Game/game/abilities/armor/armour_ge.armour_ge_C (0x26F8850, global 0x8893C58). Called through a virtual; caller not traced.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArmourResistanceTableData::GetResistance @0x26CDA70": {
+   "summary": "value(element, L) = Base + PerLevelBonuses[L] + piecewise per-level growth with per-level overrides (Global: GlobalResistancePerLevelOverrides; elements: ElementalResistancePerLevelOverrides).",
+   "details": "Descriptive name. Element 8 = Global (+0x18 Base, +0x1C PerLevel, +0x20 Bonuses, overrides +0x30); 1..6 = Flame..Terra (+0x50 on, overrides +0x40). growth: rate = PerLevel, prev = 0; for each (StartingLevel, NewPerLevelValue) with StartingLevel <= L: c = max(StartingLevel-1, 0); growth += max(c-prev, 0)*rate; prev = c; rate = NewPerLevelValue. Then growth += max(L-prev, 0)*rate.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonArmor::CacheResistanceTableData @0x26A1290": {
+   "summary": "Sets ArchonArmor.ResistanceTable = ArchonGlobalTuning.GetArmourResistanceTable(CurrentLevel) and caches the ItemId row (+0x588).",
+   "details": "Names itself in a string. Callers 0x26A0580 and 0x26B9530 (not traced).",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonGlobalTuning.GetArmourResistanceTable": {
+   "summary": "ArmourProgressionReworkFeature on -> ArmourProgressionReworkResistanceTable; else ProgressionReworkFeature on -> ArmourResistanceTablePerLevels[ItemLevel]; else ArmourResistanceTable.",
+   "details": "impl 0x27FA650. bp_archon_global_tuning: rework = armour_progression_rework_resistance_table; per level Level_00 = armour_resistance_table, Level_01 = armour_resistance_table_level_01; fallback = armour_resistance_table_obprog. Both flags use the UFeatureFlag constructor 0x228B9B0 (bEnabled = true) and are absent from the paks' DefaultGame.ini; remote overrides (IsFeatureEnabled 0x14D45F0) not verified.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonCharacter::InternalUpdateProgressionBonuses @0x2686380": {
+   "summary": "Server only (ProgressionReworkFeature): applies player_progression_ge with SetByCaller GlobalPower = BasePower + level*AddedPowerPerLevel and GlobalResistance = BaseResistance + level*AddedResistancePerLevel.",
+   "details": "Names itself in log strings. Needs the weapon, lantern and all four armor pieces. Tuning from GlobalTuning PlayerProgressionTable = player_progression_tuning ONLY_ROW; all four values are 0 in 2.1.1, so it adds nothing. The level comes from UpdateProgressionBonuses 0x2694450 (PlayerExperienceComponent weapon experience). The previous handle at +0x9C8 is removed first.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonCharacter::RefreshCellBonuses @0x2694A20": {
+   "summary": "Calls cell_manager_bpc.ApplyCellBonuses(GetAllEquippedCellEffects()) through the native event wrapper 0x22C73F0.",
+   "details": "Descriptive name. Called from HandleActiveGameplayStateChanged and loadout/equipment handlers (0x26895B0, 0x2689E10, 0x268A1F0, 0x268A360, 0x268A5A0, 0x29D6B40). ApplyCellBonuses is BlueprintAuthorityOnly.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonCharacter.GetAllEquippedCellEffects": {
+   "summary": "Collects cell effect counters from the inventory items behind the four armor slots, the lantern and the weapon, for the current loadout.",
+   "details": "impl 0x2680E00: inventory = PlayerController.GetInventory; armor actors at character +0x910 on -> id (0x26A9700) -> inventory lookup (0x28862B0) -> IsA CellContainer -> 0x2681640 (GetLoadout, then 0x28BFEA0 per item; not decompiled). Whether permanent cells (PermanentCellsPerLevel) are included is unconfirmed.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonHealthAttributeSet::ArchonHealthAttributeSet @0x2609070": {
+   "summary": "Constructor defaults: every *MultiplicativeResistance = 1.0, every *SelfPostMigationMultiplier = 1.0, HealRadius = 500; flat resistances and health stay 0.",
+   "details": "The attributes are plain replicated floats (no FGameplayAttributeData).",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonDamage::UnpackDamageEventData @0x262E1B0": {
+   "summary": "Copies an FDamageEventData returned by a pre-mitigation hook back into the damage execution's locals; no math of its own.",
+   "details": "Called from UArchonDamage::Execute_Implementation (0x261EE06) only when the attacker's ArchonDamageGiverInterface hook or the target's ArchonDamageTakerInterface hook set bOverrideDamageData (locals rbp-0x7d / rbp-0x7c). Copies element 0..7 of Multipliers, PreMitigationDamages, ResistanceDeltas and PostResistDamages, then TrueDamage (+0x10), ExplicitPartBreak/Stagger/Expose (+0x48/+0x4C/+0x50), FinalStagger/FinalExpose (+0x54/+0x58), AdditiveDamageMultiplier (+0x60, the A of MitigateAndScaleDamage), MultiplicativeDamageMultiplier (+0x64, M) and CoreDamageFromBP (+0x5C, used only for the damage summary and ArchonPlayerState.IncrementDamageDealt). Defaults without a hook: A = 0, M = 1. See topics/armor.md section 2.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonCharacter::OnPremitigateDamage @0x268AC70": {
+   "summary": "IArchonDamageTakerInterface thunk on AArchonCharacter: adjusts this by -0x7D0 and calls the OnPreMitigateDamageBP event wrapper (0x22C8C80).",
+   "details": "Sits in vtables 0x686D418 and 0x699A9F0. The outgoing twin 0x268ACD0 calls OnPreMitigateOutgoingDamageBP (wrapper 0x22C9130). The execution reaches these through interface vtable slots +0x30 (taker) and +0x20 (giver); a Blueprint-only taker is called through Execute_OnPremitigateDamageNonNative 0x22EF850.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonBehemoth.UpdateBasePowers": {
+   "summary": "Copies the behemoth's GlobalPower..RawElementalPower properties (+0x874..+0x898) into the matching ArchonDamageAttributeSet bases with SetNumericAttributeBase.",
+   "details": "Thunk 0x22B6C50 jumps to 0x265AFC0. Called by bp_gamemode_behemoth_spawner_component.SetBehemothPowerOverride after it sets GlobalPower and GlobalResistance to the override. See topics/behemoth_scaling.md.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonBehemoth.UpdateBaseResists": {
+   "summary": "Copies the behemoth's GlobalResistance..TerraMultiplicativeResistance properties (+0x89C..+0x8D8) into the matching ArchonHealthAttributeSet bases with SetNumericAttributeBase.",
+   "details": "Thunk 0x22B6C70 calls 0x265B2C0 with the bool parameter (its effect past the copies not read). See topics/behemoth_scaling.md.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "ArchonEquipment.AddGearStatsToOwner": {
+   "summary": "Server-side gear stat and set bonus application for one equipment piece, gated by GearCells2Feature (off by default).",
+   "details": "Thunk 0x22F4E40 jumps to 0x27F1400; native caller AArchonEquipment::HandleEquipForGameplay 0x28018D0 (refuses on clients). Returns if IsFeatureEnabled(GearCells2Feature) is false. Errors if AppliedGearStats is already set. Needs the owner ASC and ArchonPlayerController inventory; finds the inventory item by ItemId. AppliedGearStats (+0x2F0) = item gear stats (0x28C43D0, FGearStatData); for each stat and each attribute: UAbilitySystemComponent::ApplyModToAttribute(attr, Additive, Magnitude) (0xDBBE30 -> ActiveGameplayEffects.ApplyModToAttribute 0xE266F0), i.e. a base-value add, no gameplay effect. AppliedGearSetBonusId (+0x300) = item set bonus row (0x28C42F0); if set, AArchonCharacter::AddGearSetBonusSource(row, FName(ItemId)) 0x26728D0. Then registers the item damage modifiers on the owner and stores the GUID in AppliedDamageModifiersHandle (+0x310).",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "GearSetBonusComponent::AddGearSetBonusSource @0x276A960": {
+   "summary": "Adds one source (item id) to an equipped set and applies every set tier whose RequiredSources is now reached.",
+   "details": "Finds or appends the FEquippedGearSetData (0x70 bytes) in EquippedGearSets (+0xA0) by SetBonusId, AddUnique the source FName to SourceIds, count = SourceIds.Num(). Reads the FGearSetBonusTableData row (0x2765A60; logs \"Unable to get set bonus data row\" if missing). For each FGearSetBonus (0x78 bytes) with RequiredSources <= count and no AppliedEffectsMap entry for RequiredSources: NewObject UArchonGameplayModifierGroup, apply the tier GameplayModifiers (0x260B790), add to AppliedEffectsMap[RequiredSources]. Reached through AArchonCharacter::AddGearSetBonusSource 0x26728D0, which logs if the character has no GearSetBonusComponent.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "GearCells2Feature::GearCells2Feature @0x2292B10": {
+   "summary": "Constructor: writes 0x0100 to +0x118, i.e. bEnabled = false, bVisibleInUI = true.",
+   "details": "Unlike the shared UFeatureFlag constructor 0x228B9B0 (bEnabled = true). No ini in the paks configures it, so gear stats and set bonuses (ArchonEquipment.AddGearStatsToOwner) are off unless a remote feature-flag override enables it.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-26"
+  },
+  "DamageNotifyState::DamageNotifyState @0x272BA20": {
+   "summary": "Constructor: MultipleHitLockoutPerTarget = -1, bExcludedHitActorsForDurationOfMontage = true, bUsePreAttackRaycastTest = false, DodgeDetectPreDamageWindow = 0, UseCurrentWeapon = false. Vtable 0x6A922E8.",
+   "details": "Only two AnimNotifyState virtuals are overridden: slot 89 (NotifyBegin, 0x2742C00) and slot 93 (NotifyEnd, 0x2744370). There is no NotifyTick override; the per-tick work is in DamageComponent::TickComponent.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageNotifyState::NotifyBegin @0x2742C00": {
+   "summary": "Registers one active damager per weapon role with the owner's DamageComponent (0x271C6F0), if ShouldApplyDamage passes.",
+   "details": "Calls the ShouldApplyDamage event (0x2435FD0; archon_damage_window checks BehemothRequirements there) once at the window start, and stops if it returns false. Finds the owner's DamageComponent (0x273A4B0). Finds its own FAnimNotifyEvent in the montage to get the start time and the montage position. Keys: if UseCurrentWeapon, ModifyWeaponDamageKeys(owner's current weapon, DamageKeys / DamageKeysAfterFirstHitPerTarget) (0x24359C0), else ModifyDamageKeys (0x2435850); a non-empty result replaces the original list. Then for each PhysicsBodyNameMap entry it builds a record: notify id, keys, after-first-hit keys, body names, dodge time = start + DodgeDetectPreDamageWindow (-1 if the event is not found), MultipleHitLockoutPerTarget, bExcludedHitActorsForDurationOfMontage (forced false when the lockout > 0), duration, anim instance, role. It passes the record to DamageComponent 0x271C6F0. The body list of each role is a set built from PhysicsBodies, then SkelPhysicsBodies (FWeaponPhysicsBodyData +0x10 then +0x0), turned back into an array: both lists are merged, duplicates removed.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageNotifyState::NotifyEnd @0x2744370": {
+   "summary": "For each PhysicsBodyNameMap role, removes this notify's damager from the DamageComponent (0x2701D60), passing the role's LastChancePhysicsBody.",
+   "details": "",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::AddDamager @0x271C6F0": {
+   "summary": "(name ours) Adds an active damager (0x70 bytes) to the role entry in the role map at +0x150 (entries 0xE0, keyed by EWeaponRole byte); does nothing if the role has no registered mesh.",
+   "details": "Damager: +0 notify id, +8 keys, +0x18 after-first-hit keys, +0x28 per-body array (0x80 each: bone index, last transform, initialised flag +0x74, hit flag +0x75), +0x38 notify, +0x40 anim instance (weak), +0x48 dodge time, +0x4C lockout, +0x50 exclude-for-montage, +0x54 time left (counted down each tick), +0x58 end = montage position + duration, +0x5C montage instance id, +0x60 tick count, +0x68 role. Role entries are registered with SetMeshComponent(s); each holds the mesh whose physics asset supplies the bodies.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::TickComponent @0x2722960": {
+   "summary": "Every tick (not in the city): for each role entry with a valid mesh, PerformDamageSweeps (0x2714420) on each active damager, then caches the current bone transforms; then processes all collected hits (0x26FC840).",
+   "details": "After the hits it updates hit-pause / per-weapon hit counters (weapon +0x7C4); that part matters for players only. Hit processing is 0x26FC840 (see DamageComponent::ProcessHits).",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::PerformDamageSweeps @0x2714420": {
+   "summary": "(name from its log string) Sweeps every collision shape of every damaging body from last tick's pose to this tick's pose.",
+   "details": "Time left -= DeltaTime. For each body: gets its BodySetup from the role mesh's physics asset, and for each sphere, capsule (sphyl) and box in AggGeom builds the shape at the bone transform (scaled by bone scale) and calls 0x271EF50 with the keys, notify, dodge time, lockout and role. Then stores the current transform as the body's last transform. A body that has not been initialised and whose bone is not cached yet is skipped that tick.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::SweepBodyShape @0x271EF50": {
+   "summary": "(name ours) Splits one shape's movement into sub-steps: n = max(1, rotation angle between the two poses / MaxStepAngle), MaxStepAngle defaulting to 45 degrees. It interpolates the transform and sweeps each step with 0x271DAE0, stopping at the first step that hits.",
+   "details": "",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::SweepShapeStep @0x271DAE0": {
+   "summary": "(name ours) One SweepSingle by object type (tag \"DamageNotifySweep\") from the step start to the step end, object types from DamageComponent.ObjectTypes. If it hits and 0x2724400 accepts the hit, it appends a hit record (0x150 bytes, with a new GUID) for processing.",
+   "details": "Only the first blocking hit of each sweep is seen. Draws debug shapes when DebugDrawSweep is set. Hit record (0x150): +0 GUID, +0x10 FHitResult (0x100), +0x110 squared distance from the impact point to the translation of a transform argument of the step (which end is not confirmed), +0x118 a normalized direction, +0x130 the keys, +0x140/+0x148 two stack arguments.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::AcceptHit @0x2724400": {
+   "summary": "(name ours) The once-per-target rule, using the actor -> last-hit-time map at DamageComponent+0x100 (time = montage position).",
+   "details": "If the hit actor is already in the map: accepted only if lockout > 0 and (now - last) > lockout; then last = now, and the keys used are DamageKeysAfterFirstHitPerTarget when that list is non-empty, else DamageKeys. Otherwise rejected. If it is not in the map and 0 < now < dodge time (the first DodgeDetectPreDamageWindow seconds): no damage; if the actor's ability system has State.InvulnerableDodge (native tag table 0x8890A10 + 0x240, filled at 0x2601F34; owned or parent tags) it is added to the map, so the window cannot hit it later; without the tag it is not added. Otherwise the actor is added at the current time and DamageKeys are used. Each key is then looked up in DamageComponent.DamageTable (+0xB0); it logs \"Damage Key or Table is invalid for damage sweep\" if a row is missing. Then, if the hit actor implements ArchonDamageTakerInterface, each key's row is looked up and OnSweepHit(DamageComponent owner, row.AssetTags, true, HitResult) is called (0x22EFA20); false rejects the hit. Every implementation in the game (BP_PlayerCharacter, base_creature_bp, base_gameobject_bp, behemoth_umbral_debuff_cyst) returns true. The hit is added to the hit map before the keys are looked up, and a key whose row is missing only logs and is skipped; AcceptHit still returns true. So a window whose row is missing uses up the target for the montage (with default settings) and deals no damage.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::RemoveDamager @0x2701D60": {
+   "summary": "(name ours) Ends a window: an optional final sweep of LastChancePhysicsBody (0x2701F70) with its hits processed, then it clears the hit-actor map unless the damager's exclude-for-montage flag is set, then removes the damager.",
+   "details": "",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent.OnMontageStarted": {
+   "summary": "Thunk 0x2437330 -> 0x2710A20: clears the hit-actor map at +0x100.",
+   "details": "With the defaults (lockout -1, exclude-for-montage true) the map is only cleared here, so a target is hit at most once per montage across all of its damage windows and roles.",
+   "source": "capstone disassembly of the 2.1.1 client",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::ProcessHits @0x26FC840": {
+   "summary": "(name ours) Sorts the hits collected this tick and runs TryDoDamage (0x2719190) on each.",
+   "details": "Copies the hit records and sorts them with 0x26F5A00: records whose hit has bStartPenetrating false come first (FHitResult +0xC5 bit 1, record +0xD5), then ascending squared distance (+0x110). Then for each record calls 0x2719190(this, hit result, direction, keys, GUID, two extra fields). Called from TickComponent (0x2722CA2), RemoveDamager (LastChance sweep, 0x2701EB9) and 0x26FC52C.",
+   "source": "capstone disassembly of the 2.1.1 client (0x26FC840, sort 0x26F5A00)",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::TryDoDamage @0x2719190": {
+   "summary": "Per accepted hit and per damage key: local apply, ClientTryDoDamage or ServerTryDoDamage. Log string \"UArchonDamage::TryDoDamage %s %s\".",
+   "details": "Gets the attacker ability system (AbilitySystemInterface on the owner, else on owner +0x140) and whether its actor info is locally controlled. Continues only if the hit actor is a Pawn whose role is AutonomousProxy, or the attacker is locally controlled. For each key builds an FDamagePayload (key, hit result, direction, ...). If the attacker's avatar is a SimulatedProxy on this machine, it only calls ClientTryDoDamage locally (stub 0x24348B0) when the hit actor is the autonomous pawn. Otherwise: not locally controlled -> ClientTryDoDamage (sent to the owning client); locally controlled (a local player, or AI with authority such as a behemoth on the server) -> InternalTryDoDamage 0x270E9A0 with an empty prediction key.",
+   "source": "capstone disassembly of the 2.1.1 client (0x2719190)",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::InternalTryDoDamage @0x270E9A0": {
+   "summary": "(name from its log strings) Server: check, prediction key, RespondToHit. Client: ServerTryDoDamage plus a predicted RespondToHit.",
+   "details": "Returns early when not locally controlled, the flag at +0x260 is clear and there is no prediction key. If the owner is an ArchonCharacter it records the hit location (+0x240 array, StartRecordingHitLocations). Then 0x26FE340 must pass (not traced; reads the current weapon). With authority (owner role 3): creates a prediction key if none was given, opens a scoped prediction window, calls the stub 0x2434860 when not locally controlled (it takes only an FPredictionKey, so by its parameters ClientDoDamageSucceed), then RespondToHit 0x26FBCB0. Without authority: ServerTryDoDamage (stub 0x2435ED0) with the ability system's prediction key, then a predicted RespondToHit.",
+   "source": "capstone disassembly of the 2.1.1 client (0x270E9A0)",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::RespondToHit @0x26FBCB0": {
+   "summary": "(name from its profiling scope \"UDamageComponent::RespondToHit\") Looks up the damage row and applies its gameplay effect to the target.",
+   "details": "Row = DamageTable.FindRow(key) (logs \"Failed to find damage key %s in Damagetable %s\"). Effect = row.Effect (FDamageTableData +0x50) if it is a GameplayEffect class, else DefaultEffect (+0xF0). Applies it with 0x26FC250 first through the hit component (HitResult.Component), then to the hit actor's ability system; the second call is skipped when the first succeeded and bApplyDamageToComponentAndActor (+0xE8) is false. If anything applied: broadcasts OnHitFromAbilitySystemDelegate (+0xD0) when bound, and calls the owner's ArchonDamageGiverInterface (vtable +0x50). If nothing applied: broadcasts OnHitDelegate (+0xC0) when bound, else with authority calls 0x26C3270 (another apply path, not traced).",
+   "source": "capstone disassembly of the 2.1.1 client (0x26FBCB0)",
+   "date": "2026-10-27"
+  },
+  "DamageComponent::ApplyEffectToTarget @0x26FC250": {
+   "summary": "(name ours) Applies the damage effect to one target; player targets go through ArchonHittableComponent.",
+   "details": "If the target ability system's avatar is an ArchonAbilityCharacter, ClientAuthoritativeDamageFeature is enabled, the avatar has an ArchonHittableComponent and this machine has authority: builds the hit parameters (0x2612B90, with DefaultPhysicalType/DefaultElementalType from +0xF8/+0xF9), lets the attacker's ArchonDamageGiverInterface adjust them (vtable +0x38), then calls 0x2724140 (ArchonHittableComponent::TryHit). Otherwise it applies the effect directly; that branch calls GameplayStatics.ApplyDamage and ArchonDamageStatics.RecordDamageTelemetryEvent (not traced in detail).",
+   "source": "capstone disassembly of the 2.1.1 client (0x26FC250)",
+   "date": "2026-10-27"
+  },
+  "ArchonHittableComponent::TryHit @0x2724140": {
+   "summary": "(name ours) Server side of a hit on a player: sends ClientTryHit or processes the hit at once.",
+   "details": "Gets the invulnerability tags for the attack (0x2707600); bHitWouldHaveSucceededOnServer = no tags. If the owner is a Pawn that is not locally controlled (vtable +0x788): new GUID, the hit is stored in OutstandingHits_Server (+0xA0) and ClientTryHit is sent (stub 0x2334500, via ProcessEvent). The client answers ServerAcceptHit / ServerRefuseHit. Otherwise the hit is processed on the server directly (0x26FD910, 0x27166A0).",
+   "source": "capstone disassembly of the 2.1.1 client (0x2724140)",
+   "date": "2026-10-27"
+  },
+  "ArchonDamageTakerInterface.OnSweepHit": {
+   "summary": "Asked by DamageComponent::AcceptHit for each damage row of a sweep hit; false drops the hit.",
+   "details": "Called through 0x22EFA20 (Blueprint override via ProcessEvent, else the native implementation) with (DamageGiver = DamageComponent owner, DamageEventTags = row.AssetTags, bHasHitResult = true, HitResult). The Blueprint implementations in BP_PlayerCharacter, base_creature_bp, base_gameobject_bp and behemoth_umbral_debuff_cyst all return true.",
+   "source": "capstone disassembly of the 2.1.1 client (0x22EFA20, thunk 0x22F1120)",
+   "date": "2026-10-27"
+  },
+  "ArchonBehemoth.GetDamageInfo": {
+   "summary": "Looks a damage row up in the behemoth's DamageComponent.DamageTable; nothing else.",
+   "details": "Thunk 0x22B55C0 calls vtable slot 0x9B0 (ArchonBehemoth vtable 0x684AC90, constructor 0x2637F80) = 0x2645100: FindComponentByClass(DamageComponent) on self, table = component +0xB0 (DamageTable), checks its RowStruct is DamageTableData, then FindRow (0x4D068E0). Returns false when the component, table or row is missing. Bp_Behemoth.DamageTableLookup falls back to DamageTable_Generic after it. No Blueprint writes DamageTable (BlueprintReadOnly) and no class in 2.1.1 overrides GetDamageInfo.",
+   "source": "capstone disassembly of the 2.1.1 client (0x22B55C0, 0x2645100)",
+   "date": "2026-10-27"
+  }
+ }
+}

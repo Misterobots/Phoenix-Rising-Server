@@ -1,0 +1,38 @@
+# experience_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetBehemothExperienceValue
+  [0] push @970
+  [5] ExperienceBonus = 0.0
+  [32] push @895
+  [37] push @434
+  [42] CallFunc_IsValid_ReturnValue_1 = IsValid(Player)
+  [71] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [81] CallFunc_IsValid_ReturnValue_2 = IsValid(Player.self.HuntSystem)
+  [132] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [142] CallFunc_GetPlayerHuntID_ReturnValue = Player.self.HuntSystem.GetPlayerHuntID()
+  [214] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetPlayerHuntID_ReturnValue)
+  [251] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_hunts_table, CallFunc_Conv_StringToName_ReturnValue, CallFunc_GetDataTableRowFromName_OutRow)
+  [320] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [330] CallFunc_HasTag_ReturnValue = HasTag(CallFunc_GetDataTableRowFromName_OutRow.HuntTags, GameplayTag{'Hunt.Patrol'}, false)
+  [396] if !(CallFunc_HasTag_ReturnValue) pop
+  [406] ExperienceBonus = 0.0
+  [433] pop
+  [434] CallFunc_IsValid_ReturnValue = IsValid(Behemoth)
+  [463] if !(CallFunc_IsValid_ReturnValue) pop
+  [473] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(Behemoth)
+  [509] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [538] if !(K2Node_DynamicCast_bSuccess) goto @859
+  [552] K2Node_DynamicCast_AsBehemoth_Interface.GetMetadataTableName(CallFunc_GetMetadataTableName_MetadataTableName)
+  [598] Default__threat_level_library_C.GetThreatLevelForBehemoth(CallFunc_GetMetadataTableName_MetadataTableName, __WorldContext, CallFunc_GetThreatLevelForBehemoth_Success, CallFunc_GetThreatLevelForBehemoth_ThreatLevel, CallFunc_GetThreatLevelForBehemoth_ThreatLevelData)
+  [679] if !(CallFunc_GetThreatLevelForBehemoth_Success) pop
+  [689] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(ExperienceBonus, 1.0)
+  [735] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_GetThreatLevelForBehemoth_ThreatLevelData.MasteryXPReward, CallFunc_Add_DoubleDouble_ReturnValue)
+  [790] CallFunc_FCeil_ReturnValue = FCeil(CallFunc_Multiply_IntFloat_ReturnValue)
+  [827] ReturnValue = CallFunc_FCeil_ReturnValue
+  [854] goto @970
+  [859] CallFunc_GetMetadataTableName_MetadataTableName = 'None'
+  [890] goto @598
+  [895] ArchonLogError('Error finding Behemoth Experience value.')
+  [947] ReturnValue = 0
+  [970] return ReturnValue
+  [980] end

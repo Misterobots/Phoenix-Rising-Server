@@ -1,0 +1,248 @@
+# ms_blaze_01_active_ability_manager_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CreateCannonLine
+  [0] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(self.CurrentGlobalBehemoth)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @393
+  [79] K2Node_DynamicCast_AsBehemoth_Interface.GetCurrentPatrolPoint(CallFunc_GetCurrentPatrolPoint_CurrentPatrolPoint)
+  [125] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetCurrentPatrolPoint_CurrentPatrolPoint)
+  [154] if !(CallFunc_IsValid_ReturnValue) goto @409
+  [168] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetCurrentPatrolPoint_CurrentPatrolPoint.K2_GetActorLocation()
+  [218] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, StartingCannonball)
+  [264] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue, self, CallFunc_XY_Out)
+  [319] CallFunc_Normal_ReturnValue = Normal(CallFunc_XY_Out, 0.0001)
+  [361] LineDirection = CallFunc_Normal_ReturnValue
+  [388] goto @409
+  [393] CallFunc_GetCurrentPatrolPoint_CurrentPatrolPoint = null
+  [404] goto @125
+  [409] return nothing
+  [411] end
+
+=== ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff
+  [0] push @4200
+  [5] goto computed(EntryPoint)
+  [15] OnAdded()
+  [25] CallFunc_GetGameMode_ReturnValue_1 = GetGameMode(self)
+  [46] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue_1)
+  [82] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [111] if !(K2Node_DynamicCast_bSuccess_1) goto @571
+  [125] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetIsAnyBehemothInCombat(CallFunc_GetIsAnyBehemothInCombat_Return)
+  [171] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [191] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_3.K2_GetActorLocation()
+  [241] Default__behemoth_function_library_C.AuthFindClosestBehemoth(CallFunc_K2_GetActorLocation_ReturnValue_1, 5000.0, CallFunc_GetBuffOwner_ReturnValue_3, self, CallFunc_AuthFindClosestBehemoth_ClosestBehemoth_1)
+  [314] push @587
+  [319] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [340] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetGameMode_ReturnValue.GetComponentByClass(bpgm_event_dispatcher_bpc_C)
+  [391] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [420] if !(CallFunc_IsValid_ReturnValue) goto @717
+  [434] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [455] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetGameMode_ReturnValue.GetComponentByClass(bpgm_event_dispatcher_bpc_C)
+  [506] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnCombatStateChange)
+  [529] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [570] pop
+  [571] CallFunc_GetIsAnyBehemothInCombat_Return = false
+  [582] goto @171
+  [587] CallFunc_GetObjectClass_ReturnValue = GetObjectClass(CallFunc_AuthFindClosestBehemoth_ClosestBehemoth_1)
+  [616] CallFunc_EqualEqual_ClassClass_ReturnValue = EqualEqual_ClassClass(CallFunc_GetObjectClass_ReturnValue, dummy_fulgar_bp_C)
+  [654] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GetIsAnyBehemothInCombat_Return, CallFunc_EqualEqual_ClassClass_ReturnValue)
+  [692] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [702] ResetFireCannonballTimer()
+  [716] pop
+  [717] if !(false) goto @724
+  [723] pop
+  [724] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(null)
+  [753] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [803] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [845] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Could not get Event Dispatcher')
+  [914] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [988] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1008] if !(CallFunc_IsShipping_ReturnValue) goto @1023
+  [1022] pop
+  [1023] StackTrace()
+  [1033] pop
+  [1034] K2Node_CreateDelegate_OutputDelegate = bind(self.ShootCannonballsForNextPlayer)
+  [1057] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.5, false, 0.0, 0.0)
+  [1110] pop
+  [1111] push @2067
+  [1116] Default__KismetArrayLibrary.Array_Clear(self.L_CannonBallsPerPlayer)
+  [1157] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1177] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [1227] Default__behemoth_function_library_C.AuthFindClosestBehemoth(CallFunc_K2_GetActorLocation_ReturnValue, 5000.0, CallFunc_GetBuffOwner_ReturnValue, self, CallFunc_AuthFindClosestBehemoth_ClosestBehemoth)
+  [1300] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1320] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1356] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [1385] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [1395] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1415] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_1, self)
+  [1471] array{}
+  [1482] CallFunc_GetArchonBuffableComponent_ReturnValue.FindAllBuffsOfClass(ms_blaze_01_active_ability_buff_C, CallFunc_FindAllBuffsOfClass_OutBuffs_2)
+  [1532] Default__KismetArrayLibrary.Array_Get(CallFunc_FindAllBuffsOfClass_OutBuffs_2, 0, CallFunc_Array_Get_Item_3)
+  [1587] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2 = cast<ms_blaze_01_active_ability_buff_C>(CallFunc_Array_Get_Item_3)
+  [1623] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2)
+  [1652] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [1662] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2.self.CurrentBehemoth = CallFunc_AuthFindClosestBehemoth_ClosestBehemoth
+  [1703] push @2030
+  [1708] self.CurrentGlobalBehemoth = K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2.self.CurrentBehemoth
+  [1749] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2.GetNumCannonballsAvailable(CallFunc_GetNumCannonballsAvailable_NumCannonBalls)
+  [1794] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_GetNumCannonballsAvailable_NumCannonBalls, 0)
+  [1828] if !(CallFunc_Greater_IntInt_ReturnValue_1) pop
+  [1838] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2.GetNumCannonballsAvailable(CallFunc_GetNumCannonballsAvailable_NumCannonBalls)
+  [1883] K2Node_MakeStruct_pawn_int_pair.Pawn = K2Node_DynamicCast_AsPawn
+  [1911] K2Node_MakeStruct_pawn_int_pair.Int = CallFunc_GetNumCannonballsAvailable_NumCannonBalls
+  [1947] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.L_CannonBallsPerPlayer, K2Node_MakeStruct_pawn_int_pair)
+  [2015] ShootCannonballsForNextPlayer()
+  [2029] pop
+  [2030] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_2.ResetStaggerDamageCounter()
+  [2066] pop
+  [2067] ResetFireCannonballTimer()
+  [2081] pop
+  [2082] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.TryToFireCannonBalls)
+  [2105] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenDrivebys)
+  [2134] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [2191] self.CannonballDrivebyTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [2218] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [2238] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_2)
+  [2274] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [2303] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [2313] CallFunc_HasBuff_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.ArchonBuffableComponent.HasBuff(ms_blaze_01_active_ability_buff_C)
+  [2390] if !(CallFunc_HasBuff_ReturnValue) pop
+  [2400] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(K2Node_DynamicCast_AsArchon_Character, K2Node_DynamicCast_AsArchon_Character, ms_blaze_01_active_ability_cooldownactive_ge_C, -1, self)
+  [2469] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(K2Node_DynamicCast_AsArchon_Character, ms_blaze_01_active_ability_cooldownactive_ge_C, self.TimeBetweenDrivebys, self, CallFunc_ApplySpecWithDuration_SpecHandle)
+  [2542] pop
+  [2543] push @3450
+  [2548] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.L_CannonBallsPerPlayer)
+  [2607] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [2641] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [2651] Default__KismetArrayLibrary.Array_Get(self.L_CannonBallsPerPlayer, 0, CallFunc_Array_Get_Item)
+  [2706] self.CurrentShootingPlayer = CallFunc_Array_Get_Item.Pawn
+  [2734] Default__KismetArrayLibrary.Array_Get(self.L_CannonBallsPerPlayer, 0, CallFunc_Array_Get_Item)
+  [2789] self.CurrentNumCannonballs = CallFunc_Array_Get_Item.Int
+  [2825] CallFunc_GetComponentByClass_ReturnValue_2 = self.CurrentShootingPlayer.GetComponentByClass(ArchonBuffableComponent)
+  [2876] array{}
+  [2887] CallFunc_GetComponentByClass_ReturnValue_2.FindAllBuffsOfClass(ms_blaze_01_active_ability_buff_C, CallFunc_FindAllBuffsOfClass_OutBuffs_1)
+  [2937] Default__KismetArrayLibrary.Array_Get(CallFunc_FindAllBuffsOfClass_OutBuffs_1, 0, CallFunc_Array_Get_Item_2)
+  [2992] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1 = cast<ms_blaze_01_active_ability_buff_C>(CallFunc_Array_Get_Item_2)
+  [3028] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1)
+  [3057] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [3067] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1.AimCannons(K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1.self.CurrentBehemoth, CallFunc_AimCannons_SpawnTransform)
+  [3143] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1.self.CannonSpawnTransform = CallFunc_AimCannons_SpawnTransform
+  [3192] BreakTransform(K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff_1.self.CannonSpawnTransform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [3260] self.PreviousCannonBallPosition = CallFunc_BreakTransform_Location
+  [3287] CreateCannonLine(self.PreviousCannonBallPosition, CallFunc_CreateCannonLine_LineDirection)
+  [3319] self.CannonLineDirection = CallFunc_CreateCannonLine_LineDirection
+  [3346] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.FireIndividualCannonball)
+  [3369] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_3, 0.15, true, 0.0, 0.0)
+  [3422] self.IndividualCannonballTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_2
+  [3449] pop
+  [3450] Default__KismetArrayLibrary.Array_Remove(self.L_CannonBallsPerPlayer, 0)
+  [3496] pop
+  [3497] push @4053
+  [3502] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.CurrentNumCannonballs, 1)
+  [3544] Temp_int_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [3571] self.CurrentNumCannonballs = Temp_int_Variable
+  [3598] CallFunc_GetComponentByClass_ReturnValue = self.CurrentShootingPlayer.GetComponentByClass(ArchonBuffableComponent)
+  [3649] array{}
+  [3660] CallFunc_GetComponentByClass_ReturnValue.FindAllBuffsOfClass(ms_blaze_01_active_ability_buff_C, CallFunc_FindAllBuffsOfClass_OutBuffs)
+  [3710] Default__KismetArrayLibrary.Array_Get(CallFunc_FindAllBuffsOfClass_OutBuffs, 0, CallFunc_Array_Get_Item_1)
+  [3765] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff = cast<ms_blaze_01_active_ability_buff_C>(CallFunc_Array_Get_Item_1)
+  [3801] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff)
+  [3830] if !(K2Node_DynamicCast_bSuccess) pop
+  [3840] GetCannonBallPositionAndAiming(self.PreviousCannonBallPosition, self.CannonLineDirection, CallFunc_GetCannonBallPositionAndAiming_NextCannonBallPosition, CallFunc_GetCannonBallPositionAndAiming_NextCannonBallAiming, CallFunc_GetCannonBallPositionAndAiming_Succeeded)
+  [3899] if !(CallFunc_GetCannonBallPositionAndAiming_Succeeded) pop
+  [3909] self.PreviousCannonBallPosition = CallFunc_GetCannonBallPositionAndAiming_NextCannonBallPosition
+  [3936] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetCannonBallPositionAndAiming_NextCannonBallPosition, CallFunc_GetCannonBallPositionAndAiming_NextCannonBallAiming, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [4007] K2Node_DynamicCast_AsMs_Blaze_01_Active_Ability_Buff.Fire Cannons(CallFunc_MakeTransform_ReturnValue)
+  [4052] pop
+  [4053] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(self.CurrentNumCannonballs, 0)
+  [4087] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [4097] K2_ClearAndInvalidateTimerHandle(self, self.IndividualCannonballTimer)
+  [4117] goto @1034
+  [4122] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [4141] pop
+  [4142] if !(K2Node_CustomEvent_IsAnyBehemothInCombat) goto @4185
+  [4156] TryToFireCannonBalls()
+  [4170] ResetFireCannonballTimer()
+  [4184] pop
+  [4185] StopCannonTimer()
+  [4199] pop
+  [4200] return nothing
+  [4202] end
+
+=== FireIndividualCannonball
+  [0] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(3497)
+  [15] return nothing
+  [17] end
+
+=== GetCannonBallPositionAndAiming
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CurrentGlobalBehemoth)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @705
+  [43] CallFunc_GetSocketLocation_ReturnValue = self.CurrentGlobalBehemoth.self.Mesh.GetSocketLocation('spine_00_jnt')
+  [132] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_GetSocketLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -100.0}))
+  [194] L_CanonTarget = CallFunc_Subtract_VectorVector_ReturnValue_1
+  [221] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(-100.0, 100.0)
+  [267] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CannonBallLineDirection, 25.0)
+  [313] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(PreviousCannonBallPosition, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [359] BreakVector(L_CanonTarget, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [405] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Y, CallFunc_RandomFloatInRange_ReturnValue)
+  [451] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_BreakVector_X, CallFunc_RandomFloatInRange_ReturnValue)
+  [497] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_BreakVector_Z)
+  [552] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_MakeVector_ReturnValue, CallFunc_Add_VectorVector_ReturnValue)
+  [598] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_Subtract_VectorVector_ReturnValue)
+  [635] NextCannonBallPosition = CallFunc_Add_VectorVector_ReturnValue
+  [662] NextCannonBallAiming = CallFunc_MakeRotFromX_ReturnValue
+  [689] Succeeded = true
+  [700] goto @802
+  [705] NextCannonBallPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [748] NextCannonBallAiming = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [791] Succeeded = false
+  [802] return nothing
+  [804] end
+
+=== GetTimeRemainingUntilCannonballs
+  [0] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.CannonballDrivebyTimer)
+  [38] CallFunc_EqualEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [67] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(CallFunc_EqualEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [105] CallFunc_SelectFloat_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [134] CallFunc_SelectFloat_ReturnValue = SelectFloat(self.TimeBetweenDrivebys, CallFunc_SelectFloat_B_ImplicitCast, CallFunc_EqualEqual_DoubleDouble_ReturnValue)
+  [189] Time = CallFunc_SelectFloat_ReturnValue
+  [216] return nothing
+  [218] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(15)
+  [15] return nothing
+  [17] end
+
+=== OnCombatStateChange
+  [0] frame.K2Node_CustomEvent_IsAnyBehemothInCombat = IsAnyBehemothInCombat
+  [18] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(4142)
+  [33] return nothing
+  [35] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(4122)
+  [33] return nothing
+  [35] end
+
+=== ResetFireCannonballTimer
+  [0] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(2082)
+  [15] return nothing
+  [17] end
+
+=== ShootCannonballsForNextPlayer
+  [0] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(2543)
+  [15] return nothing
+  [17] end
+
+=== StopCannonTimer
+  [0] K2_ClearAndInvalidateTimerHandle(self, self.CannonballDrivebyTimer)
+  [20] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [40] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue, CallFunc_GetBuffOwner_ReturnValue, ms_blaze_01_active_ability_cooldownactive_ge_C, -1, self)
+  [109] return nothing
+  [111] end
+
+=== TryToFireCannonBalls
+  [0] ExecuteUbergraph_ms_blaze_01_active_ability_manager_buff(1111)
+  [15] return nothing
+  [17] end

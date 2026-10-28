@@ -1,0 +1,269 @@
+{
+ "name": "shared_mcr_postattack_repo_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/shared_mcr_postattack_repo_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "EQ_FindPlayerTarget",
+  "b_mcr_atk_backstep_mot",
+  "b_mcr_pers_backstepinjured_bwd_mot",
+  "b_mr_loco_turninplace_180l_mot",
+  "b_mr_loco_turninplace_180r_mot",
+  "bb_base"
+ ],
+ "exports": {
+  "shared_mcr_postattack_repo_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@BTDecorator_ForceSuccess_2"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceToLocCheck_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_1",
+      "Decorators": [
+       "@BTDecorator_Blackboard_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Selector_2": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_2",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ConeCheck_1"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@calc_knowntargetavgpos_btservice_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "IsInjured is Is Set",
+    "BlackboardKey": "bb.IsInjured",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_ConeCheck_0": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.LeftPoint",
+    "Observed": "bb.AttackTarget",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTDecorator_ConeCheck_1": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeHalfAngle": 90.0,
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.BackPoint",
+    "Observed": "bb.KnownPlayersAvgPos",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDecorator_DistanceToLocCheck_C_1": {
+   "type": "BTDecorator_DistanceToLocCheck_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.KnownTargetsAvgPos",
+    "MinDistance": 0.0,
+    "MaxDistance": 1200.0,
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_ForceSuccess_2": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_mcr_atk_backstep_mot",
+    "RecoveryTime": 0.6000000238418579,
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "BackStep",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTTask_BehemothAction_C_1": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_mcr_pers_backstepinjured_bwd_mot",
+    "RecoveryTime": 0.6000000238418579,
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "BackStep",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTTask_BehemothAction_C_2": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_mr_loco_turninplace_180l_mot",
+    "RecoveryTime": 0.6000000238418579,
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "TurnAround L",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTTask_BehemothAction_C_3": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_mr_loco_turninplace_180r_mot",
+    "RecoveryTime": 0.6000000238418579,
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "TurnAround R",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery EQ_FindPlayerTarget",
+     "QueryConfig": [
+      {
+       "ParamName": "FacingDotProductScoringFactor",
+       "ParamType": "EAIParamType::Float",
+       "Value": -0.5,
+       "BBKey": "bb.None"
+      }
+     ],
+     "EQSQueryBlackboardKey": "bb.TargetActor"
+    },
+    "BlackboardKey": "bb.AttackTarget",
+    "NodeName": "Find target behind me",
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "calc_knowntargetavgpos_btservice_C_1": {
+   "type": "calc_knowntargetavgpos_btservice_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_mcr_postattack_repo_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  }
+ }
+}

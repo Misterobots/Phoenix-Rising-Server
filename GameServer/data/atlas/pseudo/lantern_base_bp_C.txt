@@ -1,0 +1,997 @@
+# lantern_base_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddCharge
+  [0] NewCharge = 0.0
+  [27] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [48] if !(CallFunc_IsServer_ReturnValue) goto @863
+  [62] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(self.IsDischarging)
+  [91] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue_1, self.CanChargeWhileDischarging)
+  [129] if !(CallFunc_BooleanOR_ReturnValue) goto @863
+  [143] CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1 = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [181] K2Node_VariableSet_PreviousCharge_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1)
+  [210] PreviousCharge = K2Node_VariableSet_PreviousCharge_ImplicitCast
+  [237] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [275] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.ChargeRate)
+  [304] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(Charge, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [350] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [379] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [425] CallFunc_FClamp_Max_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [454] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Add_DoubleDouble_ReturnValue, 0.0, CallFunc_FClamp_Max_ImplicitCast)
+  [509] NewCharge = CallFunc_FClamp_ReturnValue
+  [536] CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast = cast<CST_DoubleToFloat>(NewCharge)
+  [565] LazyEvalStatistic_SetValue(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetValue_statisticOut, CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast)
+  [603] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [632] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(NewCharge, PreviousCharge)
+  [678] Event OnChargeAdded(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [701] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [730] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(NewCharge, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [768] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.IsDischarging)
+  [797] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_DoubleDouble_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [835] if !(CallFunc_BooleanAND_ReturnValue) goto @863
+  [849] Event OnFullyCharged()
+  [863] return nothing
+  [865] end
+
+=== AddChargeInterface
+  [0] frame.K2Node_Event_Charge = Charge
+  [18] ExecuteUbergraph_lantern_base_bp(6694)
+  [33] return nothing
+  [35] end
+
+=== AddPrimaryCharge
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @420
+  [34] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(Percent, 100.0)
+  [80] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [118] CallFunc_Lerp_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MinValue)
+  [156] CallFunc_Lerp_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [194] CallFunc_Lerp_ReturnValue = Lerp(CallFunc_Lerp_A_ImplicitCast, CallFunc_Lerp_B_ImplicitCast, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [249] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [278] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Lerp_ReturnValue)
+  [324] CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [353] LazyEvalStatistic_SetValue(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetValue_statisticOut, CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast)
+  [391] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [420] return nothing
+  [422] end
+
+=== AddPrimaryChargeInterface
+  [0] frame.K2Node_Event_Percent = Percent
+  [18] ExecuteUbergraph_lantern_base_bp(9049)
+  [33] return nothing
+  [35] end
+
+=== AddSecondaryCharge
+  [0] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(Percent, 100.0)
+  [46] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [84] CallFunc_Lerp_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentSecondaryCharge.MinValue)
+  [122] CallFunc_Lerp_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentSecondaryCharge.MaxValue)
+  [160] CallFunc_Lerp_ReturnValue = Lerp(CallFunc_Lerp_A_ImplicitCast, CallFunc_Lerp_B_ImplicitCast, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [215] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [244] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Lerp_ReturnValue)
+  [290] CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [319] LazyEvalStatistic_SetValue(self, self.CurrentSecondaryCharge, CallFunc_LazyEvalStatistic_SetValue_statisticOut, CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast)
+  [357] MarkPropertyDirtyFromRepIndex(self, 27, 'CurrentSecondaryCharge')
+  [386] return nothing
+  [388] end
+
+=== BP_OnLanternEquipped
+  [0] ExecuteUbergraph_lantern_base_bp(7124)
+  [15] return nothing
+  [17] end
+
+=== BP_OnLanternUnEquipped
+  [0] ExecuteUbergraph_lantern_base_bp(6675)
+  [15] return nothing
+  [17] end
+
+=== CheckValidMeshRenderData
+  [0] CallFunc_HasValidMeshRenderData_ReturnValue = self.SkeletalMeshToCheck.HasValidMeshRenderData()
+  [42] Result = CallFunc_HasValidMeshRenderData_ReturnValue
+  [61] return nothing
+  [63] end
+
+=== Event OnChargeAdded
+  [0] frame.K2Node_CustomEvent_ChargeAdded = ChargeAdded
+  [18] ExecuteUbergraph_lantern_base_bp(3318)
+  [33] return nothing
+  [35] end
+
+=== Event OnDischargeEnded
+  [0] ExecuteUbergraph_lantern_base_bp(6058)
+  [15] return nothing
+  [17] end
+
+=== Event OnFullyCharged
+  [0] ExecuteUbergraph_lantern_base_bp(6147)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_lantern_base_bp
+  [0] push @9559
+  [5] goto computed(EntryPoint)
+  [15] FlushNetDormancy()
+  [25] self.IsDischarging = false
+  [36] MarkPropertyDirtyFromRepIndex(self, 26, 'IsDischarging')
+  [65] Event OnDischargeEnded()
+  [79] pop
+  [80] K2Node_DynamicCast_AsSkeletal_Mesh_1 = cast<SkeletalMesh>(Temp_object_Variable)
+  [116] K2Node_DynamicCast_bSuccess_7 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsSkeletal_Mesh_1)
+  [145] if !(K2Node_DynamicCast_bSuccess_7) goto @905
+  [159] self.lantern.SetSkinnedAssetAndUpdate(K2Node_DynamicCast_AsSkeletal_Mesh_1, true)
+  [205] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.LCustomFunction)
+  [234] if !(CallFunc_IsValidClass_ReturnValue) goto @401
+  [248] RunCustomFunctionOnUnequip()
+  [262] CallFunc_SpawnObject_ReturnValue = SpawnObject(self.LCustomFunction, self)
+  [292] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_SpawnObject_ReturnValue)
+  [321] if !(CallFunc_IsValid_ReturnValue_6) goto @401
+  [335] CallFunc_SpawnObject_ReturnValue.self.Owner = self
+  [368] self.CachedCustomFunction = CallFunc_SpawnObject_ReturnValue
+  [387] RunCustomFunctionOnEquip()
+  [401] Temp_int_Loop_Counter_Variable = 0
+  [424] Temp_int_Array_Index_Variable = 0
+  [447] CallFunc_GetSkeletalMeshAsset_ReturnValue = self.lantern.GetSkeletalMeshAsset()
+  [489] CallFunc_GetMaterials_ReturnValue = CallFunc_GetSkeletalMeshAsset_ReturnValue.GetMaterials()
+  [543] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetMaterials_ReturnValue)
+  [602] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [640] if !(CallFunc_Less_IntInt_ReturnValue) goto @1297
+  [654] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [681] push @1702
+  [686] CallFunc_GetSkeletalMeshAsset_ReturnValue = self.lantern.GetSkeletalMeshAsset()
+  [728] CallFunc_GetMaterials_ReturnValue = CallFunc_GetSkeletalMeshAsset_ReturnValue.GetMaterials()
+  [782] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMaterials_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [841] self.lantern.SetMaterial(Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item.MaterialInterface)
+  [904] pop
+  [905] ArchonLogError('Error: cast to skeletal mesh failed')
+  [952] CallFunc_GetDevelopmentLoadingDelayForRemotePlayers_ReturnValue = GetDevelopmentLoadingDelayForRemotePlayers()
+  [980] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetDevelopmentLoadingDelayForRemotePlayers_ReturnValue)
+  [1009] CallFunc_LessEqual_DoubleDouble_ReturnValue_1 = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast_1, 0.0)
+  [1047] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue_1) goto @1205
+  [1061] self.has_loaded = true
+  [1072] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [1092] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue_3)
+  [1128] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [1157] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [1167] K2Node_DynamicCast_AsPlayer_Interface_1.UpdateHasLoadedInt()
+  [1204] pop
+  [1205] CallFunc_GetDevelopmentLoadingDelayForRemotePlayers_ReturnValue = GetDevelopmentLoadingDelayForRemotePlayers()
+  [1233] Delay(self, CallFunc_GetDevelopmentLoadingDelayForRemotePlayers_ReturnValue, LatentActionInfo{EX_SkipOffsetConst(Value=1292), -148346130, 'ExecuteUbergraph_lantern_base_bp', self})
+  [1291] pop
+  [1292] goto @1061
+  [1297] Default__KismetArrayLibrary.Array_Clear(self.Dynamic Materials)
+  [1338] Default__material_function_library_C.ConstructDynamicMaterial(self.lantern, self.Dynamic Materials, false, self)
+  [1394] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1414] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue_2)
+  [1450] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1479] if !(K2Node_DynamicCast_bSuccess_1) goto @1658
+  [1493] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [1539] CallFunc_K2_AttachToComponent_ReturnValue = self.lantern.K2_AttachToComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', 2, 2, 0, false)
+  [1610] self.lantern.SetLeaderPoseComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, true, false)
+  [1653] goto @952
+  [1658] ArchonLogError('Cast to player_interface failed')
+  [1701] pop
+  [1702] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1744] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1771] goto @447
+  [1776] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [1805] ResetChargeRate()
+  [1819] self.LastTimePingUsed = -10000.0
+  [1846] self.lantern.SetVisibility(false, true)
+  [1880] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1901] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @3026
+  [1915] HasAbilities(CallFunc_HasAbilities_bHasAbilities)
+  [1938] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [1969] CallFunc_IsInCity_ReturnValue_1 = IsInCity(self)
+  [1990] CallFunc_Not_PreBool_ReturnValue_3 = Not_PreBool(CallFunc_IsInCity_ReturnValue_1)
+  [2019] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_IsFeatureEnabled_ReturnValue_1, CallFunc_Not_PreBool_ReturnValue_3)
+  [2057] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(CallFunc_BooleanAND_ReturnValue_2, CallFunc_HasAbilities_bHasAbilities)
+  [2095] if !(CallFunc_BooleanAND_ReturnValue_3) goto @2279
+  [2109] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.LanternChargePolling)
+  [2132] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_3, 0.333, true, 0.0, 0.0)
+  [2185] CallFunc_LazyEvalStatistic_GetValue_ReturnValue_2 = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [2223] K2Node_VariableSet_OldChargePollValue_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue_2)
+  [2252] self.OldChargePollValue = K2Node_VariableSet_OldChargePollValue_ImplicitCast_1
+  [2279] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [2299] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_8)
+  [2335] K2Node_DynamicCast_bSuccess_6 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [2364] if !(K2Node_DynamicCast_bSuccess_6) goto @2930
+  [2378] CallFunc_K2_GetRootComponent_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.K2_GetRootComponent()
+  [2420] CallFunc_GetAkComponent_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.GetAkComponent(CallFunc_K2_GetRootComponent_ReturnValue, CallFunc_GetAkComponent_ComponentCreated, 'lanternSocket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [2520] self.CachedOwnerAKComponent = CallFunc_GetAkComponent_ReturnValue
+  [2539] push @2861
+  [2544] CallFunc_GetOwner_ReturnValue_11 = GetOwner()
+  [2564] K2Node_DynamicCast_AsArchon_Character_2 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_11)
+  [2600] K2Node_DynamicCast_bSuccess_8 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_2)
+  [2629] if !(K2Node_DynamicCast_bSuccess_8) pop
+  [2639] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnPlayerRoleEquipped)
+  [2662] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [2703] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.GetTapAbilityChargeOverrides)
+  [2726] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_5, 3.0, false, 0.0, 0.0)
+  [2779] self.HackPlayerRoleAbilityTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_2
+  [2806] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=3107), -1751434722, 'ExecuteUbergraph_lantern_base_bp', self})
+  [2860] pop
+  [2861] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [2882] if !(CallFunc_IsDedicatedServer_ReturnValue_1) pop
+  [2892] self.lantern.SetComponentTickEnabled(false)
+  [2929] pop
+  [2930] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [2950] K2Node_DynamicCast_AsPaper_Doll = cast<PaperDoll>(CallFunc_GetOwner_ReturnValue_8)
+  [2986] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPaper_Doll)
+  [3015] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [3025] pop
+  [3026] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.Flicker Light)
+  [3049] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_4, 0.1, true, 0.0, 0.0)
+  [3102] goto @2279
+  [3107] GetTapAbilityChargeOverrides()
+  [3121] pop
+  [3122] CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue = Conv_SoftObjectReferenceToObject(self.LanternSkelMesh)
+  [3151] K2Node_DynamicCast_AsSkeletal_Mesh = cast<SkeletalMesh>(CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue)
+  [3187] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsSkeletal_Mesh)
+  [3216] self.lantern.SetSkinnedAssetAndUpdate(K2Node_DynamicCast_AsSkeletal_Mesh, true)
+  [3262] goto @205
+  [3267] FlushNetDormancy()
+  [3277] self.FullyCharged = true
+  [3288] MarkPropertyDirtyFromRepIndex(self, 28, 'FullyCharged')
+  [3317] pop
+  [3318] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'GameplayCue.Combat.LanternChargeAdded'}
+  [3372] K2Node_MakeStruct_GameplayEventData.Instigator = null
+  [3392] K2Node_MakeStruct_GameplayEventData.Target = null
+  [3412] K2Node_MakeStruct_GameplayEventData.OptionalObject = null
+  [3432] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [3452] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [3493] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [3548] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [3603] K2Node_MakeStruct_EventMagnitude_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_ChargeAdded)
+  [3632] K2Node_MakeStruct_GameplayEventData.EventMagnitude = K2Node_MakeStruct_EventMagnitude_ImplicitCast
+  [3668] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [3709] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3729] SendGameplayEventToActor(CallFunc_GetOwner_ReturnValue_1, GameplayTag{'GameplayCue.Combat.LanternChargeAdded'}, K2Node_MakeStruct_GameplayEventData)
+  [3784] pop
+  [3785] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3805] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [3834] CallFunc_RemoveActiveEffectsWithGrantedTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveEffectsWithGrantedTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Abilities.LanternAbilityEffect'})})
+  [3939] pop
+  [3940] self.lantern.SetVisibility(true, true)
+  [3974] CallFunc_GetOwner_ReturnValue_4 = self.GetOwner()
+  [4008] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_4)
+  [4044] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [4073] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [4083] K2Node_CreateDelegate_OutputDelegate = bind(self.OnOwnerHiddenInGame)
+  [4106] K2Node_CreateDelegate_OutputDelegate += None
+  [4147] OnOwnerHiddenInGame(K2Node_DynamicCast_AsArchon_Character.self.bHidden)
+  [4192] pop
+  [4193] ArchonLogError('Error: No Valid Catalog Item with that ID')
+  [4246] CallFunc_HasReference_ReturnValue = HasReference(self.LanternSkelMesh)
+  [4275] if !(CallFunc_HasReference_ReturnValue) goto @4675
+  [4289] CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue = Conv_SoftObjectReferenceToObject(self.LanternSkelMesh)
+  [4318] K2Node_DynamicCast_AsSkeletal_Mesh = cast<SkeletalMesh>(CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue)
+  [4354] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsSkeletal_Mesh)
+  [4383] CallFunc_IsValid_ReturnValue = IsValid(K2Node_DynamicCast_AsSkeletal_Mesh)
+  [4412] if !(CallFunc_IsValid_ReturnValue) goto @4584
+  [4426] CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue = Conv_SoftObjectReferenceToObject(self.LanternSkelMesh)
+  [4455] K2Node_DynamicCast_AsSkeletal_Mesh = cast<SkeletalMesh>(CallFunc_Conv_SoftObjectReferenceToObject_ReturnValue)
+  [4491] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsSkeletal_Mesh)
+  [4520] WaitForPostLoad(self, K2Node_DynamicCast_AsSkeletal_Mesh, 30.0, LatentActionInfo{EX_SkipOffsetConst(Value=3122), 50127741, 'ExecuteUbergraph_lantern_base_bp', self})
+  [4583] pop
+  [4584] K2Node_CreateDelegate_OutputDelegate_7 = bind(self.OnLoaded_748850AA43EDFF2A6D33BD85E51AB6E5)
+  [4607] LoadAsset(self, self.LanternSkelMesh, K2Node_CreateDelegate_OutputDelegate_7, LatentActionInfo{-1, 767707346, 'ExecuteUbergraph_lantern_base_bp', self})
+  [4674] pop
+  [4675] ArchonLogError('Error: Asset ID has no reference')
+  [4719] goto @952
+  [4724] Default__KismetArrayLibrary.Array_Clear(self.Dynamic Materials)
+  [4765] self.LCustomFunction = self.CustomFunction
+  [4784] CallFunc_GetTransmogID_ReturnValue = GetTransmogID()
+  [4812] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_GetTransmogID_ReturnValue, 'None')
+  [4854] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_EqualEqual_NameName_ReturnValue)
+  [4883] if !(CallFunc_Not_PreBool_ReturnValue) goto @4246
+  [4897] CallFunc_GetArchonCatalog_ReturnValue = GetArchonCatalog(self)
+  [4918] CallFunc_GetTransmogID_ReturnValue = GetTransmogID()
+  [4946] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_GetTransmogID_ReturnValue)
+  [4983] CallFunc_GetCatalogItem_ReturnValue = CallFunc_GetArchonCatalog_ReturnValue.GetCatalogItem(CallFunc_Conv_NameToString_ReturnValue, CallFunc_GetCatalogItem_OutCatalogItem)
+  [5043] if !(CallFunc_GetCatalogItem_ReturnValue) goto @4193
+  [5057] CallFunc_GetArchonCatalog_ReturnValue = GetArchonCatalog(self)
+  [5078] CallFunc_GetTransmogID_ReturnValue = GetTransmogID()
+  [5106] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_GetTransmogID_ReturnValue)
+  [5143] CallFunc_GetCatalogItem_ReturnValue = CallFunc_GetArchonCatalog_ReturnValue.GetCatalogItem(CallFunc_Conv_NameToString_ReturnValue, CallFunc_GetCatalogItem_OutCatalogItem)
+  [5203] CallFunc_Conv_SoftClassPathToSoftClassRef_ReturnValue = Conv_SoftClassPathToSoftClassRef(CallFunc_GetCatalogItem_OutCatalogItem.ItemClass)
+  [5249] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnLoaded_E0DDA21141C1D7CC55D7BEB5D38CD734)
+  [5272] LoadAssetClass(self, CallFunc_Conv_SoftClassPathToSoftClassRef_ReturnValue, K2Node_CreateDelegate_OutputDelegate_2, LatentActionInfo{-1, 1455629613, 'ExecuteUbergraph_lantern_base_bp', self})
+  [5339] pop
+  [5340] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [5378] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [5407] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [5445] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [5455] StopDischarge()
+  [5469] pop
+  [5470] if !(self.IsDischarging) goto @5489
+  [5484] goto @5340
+  [5489] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [5510] if !(CallFunc_IsServer_ReturnValue) pop
+  [5520] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [5540] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_5)
+  [5569] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue_1, GameplayAttribute{'SubclassCooldownMultiplier', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:SubclassCooldownMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [5727] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue_1, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:LanternChargeMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [5856] CallFunc_NotEqual_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [5885] CallFunc_NotEqual_DoubleDouble_ReturnValue = NotEqual_DoubleDouble(CallFunc_NotEqual_DoubleDouble_A_ImplicitCast_1, self.CurrentRateMultiplier)
+  [5923] CallFunc_NotEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [5952] CallFunc_NotEqual_DoubleDouble_ReturnValue_1 = NotEqual_DoubleDouble(CallFunc_NotEqual_DoubleDouble_A_ImplicitCast, self.CurrentSecondaryRateMultiplier)
+  [5990] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_NotEqual_DoubleDouble_ReturnValue, CallFunc_NotEqual_DoubleDouble_ReturnValue_1)
+  [6028] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [6038] ResetChargeRate()
+  [6052] pop
+  [6053] goto @5470
+  [6058] goto @3785
+  [6063] K2_DetachFromActor(0, 0, 0)
+  [6079] pop
+  [6080] goto @4724
+  [6085] if !(self.IsDischarging) pop
+  [6095] goto @15
+  [6100] SetActorHiddenInGame(K2Node_CustomEvent_bNewHidden)
+  [6123] RunCustomFunctionToggleHide(K2Node_CustomEvent_bNewHidden)
+  [6146] pop
+  [6147] if !(self.FullyCharged) goto @6162
+  [6161] pop
+  [6162] push @3267
+  [6167] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [6187] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_6)
+  [6216] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [6226] CallFunc_GetOwner_ReturnValue_7 = GetOwner()
+  [6246] K2Node_DynamicCast_AsPlayer_Interface_2 = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue_7)
+  [6282] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_2)
+  [6311] if !(K2Node_DynamicCast_bSuccess_4) goto @6611
+  [6325] K2Node_DynamicCast_AsPlayer_Interface_2.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1)
+  [6371] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(lantern_fully_charged_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1, 'lanternSocket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [6503] self.chargeloopvfx = CallFunc_SpawnEmitterAttached_ReturnValue
+  [6522] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [6569] Client3rdPartyHookLanternReady__DelegateSignature()
+  [6610] pop
+  [6611] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1 = null
+  [6622] goto @6371
+  [6627] LazyEvalStatistic_SetMinMax(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetMinMax_statisticOut, 0.0, self.MaximumCharge)
+  [6670] goto @1776
+  [6675] RunCustomFunctionOnUnequip()
+  [6689] goto @6063
+  [6694] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [6725] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_IsFeatureEnabled_ReturnValue)
+  [6754] if !(CallFunc_Not_PreBool_ReturnValue_1) pop
+  [6764] AddCharge(K2Node_Event_Charge)
+  [6787] pop
+  [6788] StartDischarge(K2Node_Event_DischargeDuration)
+  [6811] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher_1)
+  [6858] Client3rdPartyHookLanternUsed__DelegateSignature()
+  [6899] pop
+  [6900] InstantDischargeSecondary(CallFunc_InstantDischargeSecondary_Success)
+  [6923] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher_3)
+  [6970] Client3rdPartyHookLanternUsed__DelegateSignature()
+  [7011] pop
+  [7012] InstantDischargePrimary(CallFunc_InstantDischargePrimary_Success)
+  [7035] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher_2)
+  [7082] Client3rdPartyHookLanternUsed__DelegateSignature()
+  [7123] pop
+  [7124] goto @4724
+  [7129] CallFunc_GetScalarParameterValue_ReturnValue = GetScalarParameterValue(self, atmospheres_mpc, 'Lantern_Intensity')
+  [7180] self.lantern.SetScalarParameterValueOnMaterials('opacity', CallFunc_GetScalarParameterValue_ReturnValue)
+  [7234] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [7255] if !(CallFunc_IsInCity_ReturnValue) goto @7270
+  [7269] pop
+  [7270] CallFunc_GetOwner_ReturnValue_10 = GetOwner()
+  [7290] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_10)
+  [7319] if !(CallFunc_IsLocalCharacter_ReturnValue_1) pop
+  [7329] CallFunc_IsValid_ReturnValue_1 = IsValid(self.CachedOwnerAKComponent)
+  [7358] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [7368] CallFunc_GetOwner_ReturnValue_9 = GetOwner()
+  [7388] Default__AkGameplayStatics.GetRTPCValue(null, 0, 2, CallFunc_GetRTPCValue_Value, CallFunc_GetRTPCValue_OutputValueType, CallFunc_GetOwner_ReturnValue_9, 'Character_Lantern_Glow_Intensity')
+  [7468] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(CallFunc_GetRTPCValue_OutputValueType, 4)
+  [7499] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @8047
+  [7513] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.Range 0, self.Range 1)
+  [7559] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetRTPCValue_Value)
+  [7588] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1, self.Max Value)
+  [7634] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetRTPCValue_Value)
+  [7663] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.Min Value)
+  [7709] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_2, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [7755] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [7801] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.Range 0)
+  [7847] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, 10.0)
+  [7893] CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [7922] self.lantern.SetScalarParameterValueOnMaterials('emissive', CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast)
+  [7976] self.lantern.SetVectorParameterValueOnMaterials('light_colour', EX_VectorConst(Value={'X': 0.0, 'Y': 0.5, 'Z': 0.5}))
+  [8046] pop
+  [8047] self.lantern.SetScalarParameterValueOnMaterials('emissive', 1.0)
+  [8097] self.lantern.SetVectorParameterValueOnMaterials('light_colour', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [8167] pop
+  [8168] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [8197] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [8235] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [8255] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_HasAuthority_ReturnValue)
+  [8293] if !(CallFunc_BooleanAND_ReturnValue_1) goto @1805
+  [8307] goto @6627
+  [8312] pop
+  [8313] WaitForPostLoad(self, Temp_object_Variable, 30.0, LatentActionInfo{EX_SkipOffsetConst(Value=80), -121119018, 'ExecuteUbergraph_lantern_base_bp', self})
+  [8376] pop
+  [8377] Default__archon_function_library_C.TryDestroyComponent(self.chargeloopvfx, self)
+  [8423] pop
+  [8424] CallFunc_IsValid_ReturnValue_2 = IsValid(self.chargeloopvfx)
+  [8453] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [8463] goto @8377
+  [8468] Temp_object_Variable = K2Node_CustomEvent_Loaded_1
+  [8487] goto @8313
+  [8492] CallFunc_IsValid_ReturnValue_3 = IsValid(self.chargeloopvfx)
+  [8521] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [8531] Default__archon_function_library_C.TryDestroyComponent(self.chargeloopvfx, self)
+  [8577] pop
+  [8578] push @8818
+  [8583] CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1 = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [8621] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1)
+  [8650] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [8688] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [8726] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(self.FullyCharged)
+  [8755] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue_2, CallFunc_GreaterEqual_DoubleDouble_ReturnValue)
+  [8793] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [8803] Event OnFullyCharged()
+  [8817] pop
+  [8818] CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1 = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [8856] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1)
+  [8885] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_2, self.OldChargePollValue)
+  [8931] Event OnChargeAdded(CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [8954] CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1 = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [8992] K2Node_VariableSet_OldChargePollValue_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue_1)
+  [9021] self.OldChargePollValue = K2Node_VariableSet_OldChargePollValue_ImplicitCast
+  [9048] pop
+  [9049] AddPrimaryCharge(K2Node_Event_Percent)
+  [9072] pop
+  [9073] CallFunc_IsValid_ReturnValue_4 = IsValid(K2Node_CustomEvent_PlayerRole)
+  [9102] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [9112] goto @2703
+  [9117] ReceiveEndPlay(K2Node_Event_EndPlayReason)
+  [9136] K2_ClearAndInvalidateTimerHandle(self, self.HackPlayerRoleAbilityTimer)
+  [9156] CallFunc_GetOwner_ReturnValue_12 = GetOwner()
+  [9176] K2Node_DynamicCast_AsArchon_Character_3 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_12)
+  [9212] K2Node_DynamicCast_bSuccess_9 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_3)
+  [9241] if !(K2Node_DynamicCast_bSuccess_9) pop
+  [9251] CallFunc_IsValid_ReturnValue_5 = IsValid(K2Node_DynamicCast_AsArchon_Character_3)
+  [9280] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [9290] K2Node_CreateDelegate_OutputDelegate_6 = bind(self.OnPlayerRoleEquipped)
+  [9313] K2Node_CreateDelegate_OutputDelegate_6 -= None
+  [9354] pop
+  [9355] goto @8492
+  [9360] K2Node_ClassDynamicCast_AsLantern_Base_Bp = cast<lantern_base_bp_C>(Temp_class_Variable)
+  [9396] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsLantern_Base_Bp)
+  [9425] if !(K2Node_ClassDynamicCast_bSuccess) pop
+  [9435] self.LanternSkelMesh = EX_ClassContext(ObjectExpression=K2Node_ClassDynamicCast_AsLantern_Base_Bp,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'lantern_base_bp_C'", 'ObjectPath': '/Game/Blueprints/Lanterns/lantern_base_bp.0'}, 'Property': {'Type': 'SoftObjectProperty', 'Name': 'LanternSkelMesh', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 56, 'PropertyFlags': 'Edit | BlueprintVisible | DisableEditOnInstance', 'PropertyClass': {'ObjectName': "Class'SkeletalMesh'", 'ObjectPath': '/Script/Engine'}}},ContextExpression=LanternSkelMesh)
+  [9484] self.LCustomFunction = EX_ClassContext(ObjectExpression=K2Node_ClassDynamicCast_AsLantern_Base_Bp,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'lantern_base_bp_C'", 'ObjectPath': '/Game/Blueprints/Lanterns/lantern_base_bp.0'}, 'Property': {'Type': 'ClassProperty', 'Name': 'CustomFunction', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 8, 'PropertyFlags': 'Edit | BlueprintVisible', 'PropertyClass': {'ObjectName': "Class'Class'", 'ObjectPath': '/Script/CoreUObject'}, 'MetaClass': {'ObjectName': "BlueprintGeneratedClass'armour_part_custom_function_bp_C'", 'ObjectPath': '/Game/Blueprints/Armour/armour_part_custom_function_bp.1'}}},ContextExpression=CustomFunction)
+  [9525] goto @4246
+  [9530] goto @8424
+  [9535] Temp_class_Variable = K2Node_CustomEvent_Loaded
+  [9554] goto @9360
+  [9559] return nothing
+  [9561] end
+
+=== Flicker Light
+  [0] ExecuteUbergraph_lantern_base_bp(7129)
+  [15] return nothing
+  [17] end
+
+=== GetCurrentSecondaryChargeInterface
+  [0] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [38] K2Node_FunctionResult_CurrentSecondaryCharge_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [67] CurrentSecondaryCharge = K2Node_FunctionResult_CurrentSecondaryCharge_ImplicitCast
+  [94] return nothing
+  [96] end
+
+=== GetDefaultPrimaryDye
+  [0] DyeRowName = 'None'
+  [31] return nothing
+  [33] end
+
+=== GetDefaultSecondaryDye
+  [0] DyeRowName = 'None'
+  [31] return nothing
+  [33] end
+
+=== GetDischargeEndedEffect
+  [0] Effect = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeEndedSound
+  [0] Sound = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeLoopEndSound
+  [0] Sound = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeLoopStartEffect
+  [0] Effect = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeLoopStartSound
+  [0] Sound = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeStartedEffect
+  [0] Effect = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeStartedSound
+  [0] Sound = null
+  [11] return nothing
+  [13] end
+
+=== GetDischargeVO
+  [0] Sound = self.DischargeVO
+  [19] return nothing
+  [21] end
+
+=== GetDischargeVODelay
+  [0] Delay = self.DischargeVODelay
+  [27] return nothing
+  [29] end
+
+=== GetIsDischarging
+  [0] IsDischarging = self.IsDischarging
+  [19] return nothing
+  [21] end
+
+=== GetLanternMesh
+  [0] Mesh = self.lantern
+  [19] return nothing
+  [21] end
+
+=== GetLanternSkelMeshPtr
+  [0] ReturnValue = self.LanternSkelMesh
+  [27] return ReturnValue
+  [37] end
+
+=== GetMaximumChargeInterface
+  [0] K2Node_FunctionResult_MaximumCharge_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [29] MaximumCharge = K2Node_FunctionResult_MaximumCharge_ImplicitCast
+  [56] return nothing
+  [58] end
+
+=== GetPresentationInfo
+  [0] SkeletalMesh = self.LanternSkelMesh
+  [27] DisplayOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [70] return nothing
+  [72] end
+
+=== GetPrimaryChargePercent
+  [0] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [38] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [76] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @328
+  [90] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [128] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [157] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [195] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [241] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Divide_DoubleDouble_ReturnValue, 0.0, 1.0)
+  [296] ChargePercent = CallFunc_FClamp_ReturnValue
+  [323] goto @355
+  [328] ChargePercent = 0.0
+  [355] return nothing
+  [357] end
+
+=== GetPrimaryChargePercentInterface
+  [0] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [38] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [76] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @328
+  [90] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [128] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [157] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentPrimaryCharge.MaxValue)
+  [195] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [241] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Divide_DoubleDouble_ReturnValue, 0.0, 1.0)
+  [296] ChargePercent = CallFunc_FClamp_ReturnValue
+  [323] goto @355
+  [328] ChargePercent = 0.0
+  [355] return nothing
+  [357] end
+
+=== GetPrimarySkeletalMeshComponent
+  [0] ReturnValue = self.lantern
+  [19] return ReturnValue
+  [29] end
+
+=== GetSecondaryChargeCount
+  [0] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentSecondaryCharge.MaxValue)
+  [38] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [76] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @272
+  [90] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [128] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [157] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.SingleChargeCost)
+  [203] CallFunc_FFloor_ReturnValue = FFloor(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [240] ChargePercent = CallFunc_FFloor_ReturnValue
+  [267] goto @295
+  [272] ChargePercent = 0
+  [295] return nothing
+  [297] end
+
+=== GetSecondaryChargePercent
+  [0] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentSecondaryCharge.MaxValue)
+  [38] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [76] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) goto @331
+  [90] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.SingleChargeCost, 0.0)
+  [128] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @299
+  [142] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [180] CallFunc_EqualEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentSecondaryCharge.MaxValue)
+  [218] CallFunc_EqualEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [247] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(CallFunc_EqualEqual_DoubleDouble_A_ImplicitCast, CallFunc_EqualEqual_DoubleDouble_B_ImplicitCast)
+  [285] if !(CallFunc_EqualEqual_DoubleDouble_ReturnValue) goto @363
+  [299] ChargePercent = 1.0
+  [326] goto @549
+  [331] ChargePercent = 0.0
+  [358] goto @549
+  [363] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [401] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [430] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.SingleChargeCost)
+  [476] CallFunc_Percent_FloatFloat_ReturnValue = Percent_FloatFloat(CallFunc_Divide_DoubleDouble_ReturnValue, 1.0)
+  [522] ChargePercent = CallFunc_Percent_FloatFloat_ReturnValue
+  [549] return nothing
+  [551] end
+
+=== GetSingleChargeCostInterface
+  [0] SingleChargeCost = self.SingleChargeCost
+  [27] return nothing
+  [29] end
+
+=== GetTapAbilityChargeOverrides
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [31] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @895
+  [45] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [65] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [94] K2Node_DynamicCast_AsArchon_Ability_System_Component = cast<ArchonAbilitySystemComponent>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [130] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_System_Component)
+  [159] if !(K2Node_DynamicCast_bSuccess) goto @895
+  [173] array{GameplayTag{'Abilities.LanternAbility.Tap'}}
+  [211] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [248] CallFunc_GetAbilitiesWithTag_ReturnValue = K2Node_DynamicCast_AsArchon_Ability_System_Component.GetAbilitiesWithTag(CallFunc_MakeGameplayTagContainerFromArray_ReturnValue)
+  [307] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAbilitiesWithTag_ReturnValue)
+  [366] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [400] if !(CallFunc_Greater_IntInt_ReturnValue) goto @895
+  [414] array{GameplayTag{'Abilities.LanternAbility.Tap'}}
+  [452] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [489] CallFunc_GetAbilitiesWithTag_ReturnValue = K2Node_DynamicCast_AsArchon_Ability_System_Component.GetAbilitiesWithTag(CallFunc_MakeGameplayTagContainerFromArray_ReturnValue)
+  [548] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAbilitiesWithTag_ReturnValue, 0, CallFunc_Array_Get_Item)
+  [603] K2Node_DynamicCast_AsLanterninstant_Base_Ab = cast<lanterninstant_base_ab_C>(CallFunc_Array_Get_Item)
+  [639] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsLanterninstant_Base_Ab)
+  [668] if !(K2Node_DynamicCast_bSuccess_1) goto @895
+  [682] self.SingleChargeCost = K2Node_DynamicCast_AsLanterninstant_Base_Ab.self.SingleChargeCost
+  [731] self.PassiveSecondaryChargeRate = K2Node_DynamicCast_AsLanterninstant_Base_Ab.self.PassiveSecondaryChargeRate
+  [780] CallFunc_LazyEvalStatistic_SetMinMax_newMax_ImplicitCast = cast<CST_DoubleToFloat>(self.SingleChargeCost)
+  [809] LazyEvalStatistic_SetMinMax(self, self.CurrentSecondaryCharge, CallFunc_LazyEvalStatistic_SetMinMax_statisticOut, 0.0, CallFunc_LazyEvalStatistic_SetMinMax_newMax_ImplicitCast)
+  [852] MarkPropertyDirtyFromRepIndex(self, 27, 'CurrentSecondaryCharge')
+  [881] ResetChargeRate()
+  [895] return nothing
+  [897] end
+
+=== HasAbilities
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Abilities)
+  [59] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [93] bHasAbilities = CallFunc_Greater_IntInt_ReturnValue
+  [112] return nothing
+  [114] end
+
+=== HasFinishedLoading
+  [0] CallFunc_GetOwner_ReturnValue = self.GetOwner()
+  [34] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [70] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [99] if !(K2Node_DynamicCast_bSuccess) goto @197
+  [113] CallFunc_IsLocallyControlled_ReturnValue = K2Node_DynamicCast_AsArchon_Character.IsLocallyControlled()
+  [159] if !(CallFunc_IsLocallyControlled_ReturnValue) goto @197
+  [173] ReturnValue = self.has_loaded
+  [192] goto @208
+  [197] ReturnValue = true
+  [208] return ReturnValue
+  [218] end
+
+=== InstantDischargePrimary
+  [0] push @343
+  [5] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [43] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [72] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [101] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [139] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @316
+  [153] MultiOnPrimaryDischarged()
+  [167] push @332
+  [172] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [192] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [202] LazyEvalStatistic_SetValue(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetValue_statisticOut, 0.0)
+  [236] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [265] FlushNetDormancy()
+  [275] self.FullyCharged = false
+  [286] MarkPropertyDirtyFromRepIndex(self, 28, 'FullyCharged')
+  [315] pop
+  [316] Success = false
+  [327] goto @343
+  [332] Success = true
+  [343] return nothing
+  [345] end
+
+=== InstantDischargePrimaryInterface
+  [0] ExecuteUbergraph_lantern_base_bp(7012)
+  [15] return nothing
+  [17] end
+
+=== InstantDischargeSecondary
+  [0] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [38] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [67] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, self.SingleChargeCost)
+  [105] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @344
+  [119] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentSecondaryCharge)
+  [157] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [186] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.SingleChargeCost)
+  [232] CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [261] LazyEvalStatistic_SetValue(self, self.CurrentSecondaryCharge, CallFunc_LazyEvalStatistic_SetValue_statisticOut, CallFunc_LazyEvalStatistic_SetValue_newValue_ImplicitCast)
+  [299] MarkPropertyDirtyFromRepIndex(self, 27, 'CurrentSecondaryCharge')
+  [328] Success = true
+  [339] goto @355
+  [344] Success = false
+  [355] return nothing
+  [357] end
+
+=== InstantDischargeSecondaryInterface
+  [0] ExecuteUbergraph_lantern_base_bp(6900)
+  [15] return nothing
+  [17] end
+
+=== LanternChargePolling
+  [0] ExecuteUbergraph_lantern_base_bp(8578)
+  [15] return nothing
+  [17] end
+
+=== LookupLanternResistanceTableRow
+  [0] CallFunc_GetDataTableRowFromName_Generic_ReturnValue = Default__ArchonGameplayStatics.GetDataTableRowFromName_Generic(lantern_resistance_table, RowName, TempRow, CallFunc_GetDataTableRowFromName_Generic_OutRow)
+  [78] OutResistanceTableRow = CallFunc_GetDataTableRowFromName_Generic_OutRow
+  [105] ReturnValue = CallFunc_GetDataTableRowFromName_Generic_ReturnValue
+  [124] return ReturnValue
+  [134] end
+
+=== LookupSetItemTableRow
+  [0] CallFunc_GetDataTableRowFromName_Generic_ReturnValue = Default__ArchonGameplayStatics.GetDataTableRowFromName_Generic(lantern_resistance_table, RowName, Temp Row, CallFunc_GetDataTableRowFromName_Generic_OutRow)
+  [78] OutResistanceTableRow = CallFunc_GetDataTableRowFromName_Generic_OutRow
+  [105] ReturnValue = CallFunc_GetDataTableRowFromName_Generic_ReturnValue
+  [124] return ReturnValue
+  [134] end
+
+=== MultiOnPrimaryDischarged
+  [0] ExecuteUbergraph_lantern_base_bp(9355)
+  [15] return nothing
+  [17] end
+
+=== OnAddLanternChargeModifyHook__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnDamageGiven
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [31] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsFeatureEnabled_ReturnValue)
+  [60] if !(CallFunc_Not_PreBool_ReturnValue) goto @980
+  [74] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [94] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [123] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [152] if !(CallFunc_IsValid_ReturnValue) goto @980
+  [166] Default__meter_gaining_rules_C.TargetCanProcOnDamageEffects(DamageTarget, self, CallFunc_TargetCanProcOnDamageEffects_TargetCanProcOnDamageEffects)
+  [221] if !(CallFunc_TargetCanProcOnDamageEffects_TargetCanProcOnDamageEffects) goto @980
+  [235] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [256] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.ChargePerDamageDone)
+  [285] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [323] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_DoubleDouble_ReturnValue, CallFunc_IsServer_ReturnValue)
+  [361] if !(CallFunc_BooleanAND_ReturnValue) goto @980
+  [375] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [395] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [415] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [444] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [473] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:LanternChargeMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [602] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue_1, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:LanternChargePerHitBonus'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [732] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.ChargePerDamageDone)
+  [761] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, Damage)
+  [807] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [836] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [882] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [911] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [957] AddCharge(CallFunc_Add_DoubleDouble_ReturnValue)
+  [980] return nothing
+  [982] end
+
+=== OnLoaded_748850AA43EDFF2A6D33BD85E51AB6E5
+  [0] frame.K2Node_CustomEvent_Loaded_1 = Loaded
+  [18] ExecuteUbergraph_lantern_base_bp(8468)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_E0DDA21141C1D7CC55D7BEB5D38CD734
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_lantern_base_bp(9535)
+  [33] return nothing
+  [35] end
+
+=== OnOwnerHiddenInGame
+  [0] frame.K2Node_CustomEvent_bNewHidden = bNewHidden
+  [18] ExecuteUbergraph_lantern_base_bp(6100)
+  [33] return nothing
+  [35] end
+
+=== OnPlayerRoleEquipped
+  [0] frame.K2Node_CustomEvent_PlayerRole = PlayerRole
+  [18] ExecuteUbergraph_lantern_base_bp(9073)
+  [33] return nothing
+  [35] end
+
+=== OutputDebugInformation
+  [0] return nothing
+  [2] end
+
+=== ReEquip
+  [0] ExecuteUbergraph_lantern_base_bp(6080)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_lantern_base_bp(8168)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_lantern_base_bp(9530)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_lantern_base_bp(9117)
+  [33] return nothing
+  [35] end
+
+=== ReceiveGameplayStart
+  [0] ExecuteUbergraph_lantern_base_bp(3940)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_lantern_base_bp(6053)
+  [33] return nothing
+  [35] end
+
+=== RegisterToModifyAddCharge
+  [0] ExecuteUbergraph_lantern_base_bp(8312)
+  [15] return nothing
+  [17] end
+
+=== ResetChargeRate
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @947
+  [35] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [55] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [84] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:LanternChargeMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [213] K2Node_VariableSet_CurrentRateMultiplier_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [242] self.CurrentRateMultiplier = K2Node_VariableSet_CurrentRateMultiplier_ImplicitCast
+  [269] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [289] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [318] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'SubclassCooldownMultiplier', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:SubclassCooldownMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [476] K2Node_VariableSet_CurrentSecondaryRateMultiplier_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [505] self.CurrentSecondaryRateMultiplier = K2Node_VariableSet_CurrentSecondaryRateMultiplier_ImplicitCast
+  [532] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [563] CallFunc_SelectFloat_ReturnValue = SelectFloat(self.CurrentSecondaryRateMultiplier, 1.0, CallFunc_IsFeatureEnabled_ReturnValue)
+  [618] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.PassiveSecondaryChargeRate, CallFunc_SelectFloat_ReturnValue)
+  [664] CallFunc_LazyEvalStatistic_SetRate_newRate_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [693] LazyEvalStatistic_SetRate(self, self.CurrentSecondaryCharge, CallFunc_LazyEvalStatistic_SetRate_statisticOut_1, CallFunc_LazyEvalStatistic_SetRate_newRate_ImplicitCast_1)
+  [731] MarkPropertyDirtyFromRepIndex(self, 27, 'CurrentSecondaryCharge')
+  [760] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, LanternSubclassFeature, true)
+  [791] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @947
+  [805] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.PassivePrimaryChargeRate, self.CurrentRateMultiplier)
+  [851] CallFunc_LazyEvalStatistic_SetRate_newRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [880] LazyEvalStatistic_SetRate(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetRate_statisticOut, CallFunc_LazyEvalStatistic_SetRate_newRate_ImplicitCast)
+  [918] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [947] return nothing
+  [949] end
+
+=== RunCustomFunctionOnEquip
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CachedCustomFunction)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @79
+  [43] self.CachedCustomFunction.OnEquip()
+  [79] return nothing
+  [81] end
+
+=== RunCustomFunctionOnUnequip
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CachedCustomFunction)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @79
+  [43] self.CachedCustomFunction.OnUnEquip()
+  [79] return nothing
+  [81] end
+
+=== RunCustomFunctionToggleHide
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CachedCustomFunction)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @88
+  [43] self.CachedCustomFunction.ToggleHide(Hide)
+  [88] return nothing
+  [90] end
+
+=== SetTierAttributes
+  [0] push @925
+  [5] push @846
+  [10] Temp_int_Loop_Counter_Variable = 0
+  [33] Temp_int_Array_Index_Variable = 0
+  [56] CallFunc_GetMaterials_ReturnValue = self.lantern.GetMaterials()
+  [110] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetMaterials_ReturnValue)
+  [169] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [207] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [217] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [244] push @851
+  [249] CallFunc_GetMaterials_ReturnValue = self.lantern.GetMaterials()
+  [303] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMaterials_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [362] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item)
+  [391] if !(CallFunc_IsValid_ReturnValue) pop
+  [401] CallFunc_GetMaterials_ReturnValue = self.lantern.GetMaterials()
+  [455] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMaterials_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [514] CallFunc_GetBaseMaterial_ReturnValue = CallFunc_Array_Get_Item.GetBaseMaterial()
+  [556] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_GetBaseMaterial_ReturnValue, null)
+  [586] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [596] CallFunc_GetItemInstanceID_ReturnValue = GetItemInstanceID()
+  [624] CallFunc_GetArchonCatalog_ReturnValue = GetArchonCatalog(self)
+  [645] CallFunc_GetCatalogItem_ReturnValue = CallFunc_GetArchonCatalog_ReturnValue.GetCatalogItem(CallFunc_GetItemInstanceID_ReturnValue, CallFunc_GetCatalogItem_OutCatalogItem)
+  [705] Default__KismetArrayLibrary.Array_Get(self.tier_data, CallFunc_GetCatalogItem_OutCatalogItem.ItemData.TierLevel, CallFunc_Array_Get_Item_1)
+  [782] self.lantern.SetMaterial(Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1.lantern_basic_MI)
+  [845] pop
+  [846] goto @925
+  [851] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [893] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [920] goto @56
+  [925] return nothing
+  [927] end
+
+=== StartDischarge
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @480
+  [34] if !(self.IsDischarging) goto @53
+  [48] goto @480
+  [53] FlushNetDormancy()
+  [63] self.IsDischarging = true
+  [74] MarkPropertyDirtyFromRepIndex(self, 26, 'IsDischarging')
+  [103] CallFunc_LazyEvalStatistic_GetValue_ReturnValue = LazyEvalStatistic_GetValue(self, self.CurrentPrimaryCharge)
+  [141] CallFunc_FClamp_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LazyEvalStatistic_GetValue_ReturnValue)
+  [170] CallFunc_FClamp_Max_ImplicitCast = cast<CST_FloatToDouble>(self.MaximumCharge)
+  [199] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_FClamp_Value_ImplicitCast, 0.0, CallFunc_FClamp_Max_ImplicitCast)
+  [254] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_FClamp_ReturnValue, DischargeDuration)
+  [300] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, -1.0)
+  [346] CallFunc_LazyEvalStatistic_SetValueAndRate_newValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FClamp_ReturnValue)
+  [375] CallFunc_LazyEvalStatistic_SetValueAndRate_newRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [404] LazyEvalStatistic_SetValueAndRate(self, self.CurrentPrimaryCharge, CallFunc_LazyEvalStatistic_SetValueAndRate_statisticOut, CallFunc_LazyEvalStatistic_SetValueAndRate_newValue_ImplicitCast, CallFunc_LazyEvalStatistic_SetValueAndRate_newRate_ImplicitCast)
+  [451] MarkPropertyDirtyFromRepIndex(self, 25, 'CurrentPrimaryCharge')
+  [480] return nothing
+  [482] end
+
+=== StartDischargeInterface
+  [0] frame.K2Node_Event_DischargeDuration = DischargeDuration
+  [18] ExecuteUbergraph_lantern_base_bp(6788)
+  [33] return nothing
+  [35] end
+
+=== StopDischarge
+  [0] ExecuteUbergraph_lantern_base_bp(6085)
+  [15] return nothing
+  [17] end
+
+=== UserConstructionScript
+  [0] push @599
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_GetMaterials_ReturnValue = self.lantern.GetMaterials()
+  [105] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetMaterials_ReturnValue)
+  [164] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [202] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [212] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [239] push @525
+  [244] CallFunc_GetMaterials_ReturnValue = self.lantern.GetMaterials()
+  [298] Default__KismetArrayLibrary.Array_Get(CallFunc_GetMaterials_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [357] CallFunc_CreateDynamicMaterialInstance_ReturnValue = CreateDynamicMaterialInstance(self, CallFunc_Array_Get_Item, 'None', 0)
+  [402] self.lantern.SetMaterial(Temp_int_Array_Index_Variable, CallFunc_CreateDynamicMaterialInstance_ReturnValue)
+  [456] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.Dynamic Materials, CallFunc_CreateDynamicMaterialInstance_ReturnValue)
+  [524] pop
+  [525] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [567] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [594] goto @51
+  [599] return nothing
+  [601] end

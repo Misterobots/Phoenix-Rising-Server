@@ -1,0 +1,69 @@
+# nemesis_statemanager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Apply Tags
+  [0] CallFunc_MakeOutgoingSpec_ReturnValue = self.Owning Behemoth.self.AbilitySystemComponent.MakeOutgoingSpec(nemesis_phase_two_ge_C, 0.0, GameplayEffectContextHandle{})
+  [104] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = self.Owning Behemoth.self.AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(CallFunc_MakeOutgoingSpec_ReturnValue)
+  [185] return nothing
+  [187] end
+
+=== CheckForSecondPhase
+  [0] if !(self.IsInSecondPhase) goto @19
+  [14] goto @169
+  [19] CallFunc_GetCurrentHealthPercent_ReturnValue = self.Owning Behemoth.GetCurrentHealthPercent()
+  [69] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurrentHealthPercent_ReturnValue)
+  [98] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, 0.5)
+  [136] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @169
+  [150] EnterSecondPhase()
+  [164] goto @169
+  [169] return nothing
+  [171] end
+
+=== EnterSecondPhase
+  [0] push @92
+  [5] push @72
+  [10] push @56
+  [15] self.IsInSecondPhase = true
+  [26] MarkPropertyDirtyFromRepIndex(self, 2, 'IsInSecondPhase')
+  [55] pop
+  [56] SetComponentTickEnabled(false)
+  [71] pop
+  [72] EnterSecondPhaseDispatcher__DelegateSignature()
+  [91] pop
+  [92] return nothing
+  [94] end
+
+=== EnterSecondPhaseDispatcher__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ExecuteUbergraph_nemesis_statemanager_bpc
+  [0] goto computed(EntryPoint)
+  [10] CheckForSecondPhase()
+  [24] goto @34
+  [29] goto @10
+  [34] return nothing
+  [36] end
+
+=== GetIsInSecondPhase
+  [0] IsInSecondPhase = self.IsInSecondPhase
+  [19] return nothing
+  [21] end
+
+=== HealBehemoth
+  [0] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Owning Behemoth)
+  [29] CallFunc_GetMaxHealth_ReturnValue = self.Owning Behemoth.GetMaxHealth()
+  [79] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(heal_by_amount_ge_C, 0.0, GameplayEffectContextHandle{})
+  [161] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'HealAmount', CallFunc_GetMaxHealth_ReturnValue)
+  [220] return nothing
+  [222] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_nemesis_statemanager_bpc(34)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_nemesis_statemanager_bpc(29)
+  [33] return nothing
+  [35] end

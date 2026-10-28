@@ -1,0 +1,92 @@
+# reticle_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_reticle_bpw
+  [0] goto computed(EntryPoint)
+  [10] Tick(Geometry{}, 0.0)
+  [39] SetReticleVisibility(CallFunc_SetReticleVisibility_IsVisible, CallFunc_SetReticleVisibility_VisibleImage)
+  [71] if !(CallFunc_SetReticleVisibility_IsVisible) goto @118
+  [85] SetReticleColor(CallFunc_SetReticleVisibility_VisibleImage)
+  [108] goto @118
+  [113] goto @10
+  [118] return nothing
+  [120] end
+
+=== SetReticleColor
+  [0] CallFunc_GetPlayerPawn_ReturnValue = GetPlayerPawn(self, 0)
+  [26] K2Node_DynamicCast_AsReticle_Interface = cast<reticle_interface_C>(CallFunc_GetPlayerPawn_ReturnValue)
+  [62] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsReticle_Interface)
+  [91] if !(K2Node_DynamicCast_bSuccess) goto @306
+  [105] K2Node_DynamicCast_AsReticle_Interface.GetReticleData(CallFunc_GetReticleData_ValidHit, CallFunc_GetReticleData_ReticleType, CallFunc_GetReticleData_AlphaToApply)
+  [169] if !(CallFunc_GetReticleData_ValidHit) goto @369
+  [183] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(CallFunc_GetReticleData_AlphaToApply, 0.0)
+  [221] if !(CallFunc_EqualEqual_DoubleDouble_ReturnValue) goto @440
+  [235] Target.SetColorAndOpacity(LinearColor{1.0, 0.0, 0.0, 1.0})
+  [301] goto @506
+  [306] CallFunc_GetReticleData_ValidHit = false
+  [317] CallFunc_GetReticleData_ReticleType = 0
+  [337] CallFunc_GetReticleData_AlphaToApply = 0.0
+  [364] goto @169
+  [369] Target.SetColorAndOpacity(LinearColor{1.0, 1.0, 1.0, 1.0})
+  [435] goto @506
+  [440] Target.SetColorAndOpacity(LinearColor{1.0, 1.0, 1.0, 1.0})
+  [506] return nothing
+  [508] end
+
+=== SetReticleVisibility
+  [0] CallFunc_GetPlayerPawn_ReturnValue = GetPlayerPawn(self, 0)
+  [26] K2Node_DynamicCast_AsReticle_Interface = cast<reticle_interface_C>(CallFunc_GetPlayerPawn_ReturnValue)
+  [62] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsReticle_Interface)
+  [91] if !(K2Node_DynamicCast_bSuccess) goto @493
+  [105] K2Node_DynamicCast_AsReticle_Interface.IsReticleVisible(CallFunc_IsReticleVisible_IsVisible)
+  [151] IsEnabled = CallFunc_IsReticleVisible_IsVisible
+  [170] if !(IsEnabled) goto @509
+  [184] CallFunc_GetPlayerPawn_ReturnValue_1 = GetPlayerPawn(self, 0)
+  [210] K2Node_DynamicCast_AsReticle_Interface_1 = cast<reticle_interface_C>(CallFunc_GetPlayerPawn_ReturnValue_1)
+  [246] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsReticle_Interface_1)
+  [275] if !(K2Node_DynamicCast_bSuccess_1) goto @650
+  [289] K2Node_DynamicCast_AsReticle_Interface_1.GetReticleData(CallFunc_GetReticleData_ValidHit, CallFunc_GetReticleData_ReticleType, CallFunc_GetReticleData_AlphaToApply)
+  [353] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetReticleData_ReticleType, 0)
+  [384] if !(K2Node_SwitchEnum_CmpSuccess) goto @713
+  [398] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetReticleData_ReticleType, 1)
+  [429] if !(K2Node_SwitchEnum_CmpSuccess) goto @862
+  [443] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetReticleData_ReticleType, 2)
+  [474] if !(K2Node_SwitchEnum_CmpSuccess) goto @1011
+  [488] goto @1155
+  [493] CallFunc_IsReticleVisible_IsVisible = false
+  [504] goto @151
+  [509] self.crosshair.SetVisibility(2)
+  [547] self.dot.SetVisibility(2)
+  [585] self.circle.SetVisibility(2)
+  [623] IsVisible = false
+  [634] VisibleImage = null
+  [645] goto @1155
+  [650] CallFunc_GetReticleData_ValidHit = false
+  [661] CallFunc_GetReticleData_ReticleType = 0
+  [681] CallFunc_GetReticleData_AlphaToApply = 0.0
+  [708] goto @353
+  [713] self.crosshair.SetVisibility(0)
+  [751] self.dot.SetVisibility(2)
+  [789] self.circle.SetVisibility(2)
+  [827] IsVisible = true
+  [838] VisibleImage = self.crosshair
+  [857] goto @1155
+  [862] self.dot.SetVisibility(0)
+  [900] self.crosshair.SetVisibility(2)
+  [938] self.circle.SetVisibility(2)
+  [976] IsVisible = true
+  [987] VisibleImage = self.dot
+  [1006] goto @1155
+  [1011] self.circle.SetVisibility(0)
+  [1049] self.crosshair.SetVisibility(2)
+  [1087] self.dot.SetVisibility(2)
+  [1125] IsVisible = true
+  [1136] VisibleImage = self.circle
+  [1155] return nothing
+  [1157] end
+
+=== Tick
+  [0] frame.K2Node_Event_MyGeometry = MyGeometry
+  [18] frame.K2Node_Event_InDeltaTime = InDeltaTime
+  [36] ExecuteUbergraph_reticle_bpw(113)
+  [51] return nothing
+  [53] end

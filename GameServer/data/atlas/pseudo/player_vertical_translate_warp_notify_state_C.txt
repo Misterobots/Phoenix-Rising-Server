@@ -1,0 +1,46 @@
+# player_vertical_translate_warp_notify_state_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExtractEndPoint
+  [0] CallFunc_GetObjectClass_ReturnValue = GetObjectClass(self)
+  [21] GetNotifyStartAndEnd(montage, CallFunc_GetObjectClass_ReturnValue, CallFunc_GetNotifyStartAndEnd_OutStartTime, CallFunc_GetNotifyStartAndEnd_OutEndTime)
+  [67] CallFunc_ExtractRootMotionFromMontage_ReturnValue = ExtractRootMotionFromMontage(montage, CallFunc_GetNotifyStartAndEnd_OutStartTime, CallFunc_GetNotifyStartAndEnd_OutEndTime)
+  [122] CallFunc_K2_GetComponentToWorld_ReturnValue = Mesh.K2_GetComponentToWorld()
+  [172] CallFunc_DegTan_ReturnValue = DegTan(self.SlopeAngleDown)
+  [209] CallFunc_ComposeTransforms_ReturnValue = ComposeTransforms(CallFunc_ExtractRootMotionFromMontage_ReturnValue, CallFunc_K2_GetComponentToWorld_ReturnValue)
+  [255] BreakTransform(CallFunc_ExtractRootMotionFromMontage_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [301] BreakTransform(CallFunc_ComposeTransforms_ReturnValue, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [347] BreakVector(CallFunc_BreakTransform_Location, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [393] CallFunc_Abs_ReturnValue = Abs(CallFunc_BreakVector_Y)
+  [430] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Abs_ReturnValue, CallFunc_DegTan_ReturnValue)
+  [476] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [531] CallFunc_DegTan_ReturnValue_1 = DegTan(self.SlopeAngleUp)
+  [568] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_BreakTransform_Location_1, CallFunc_MakeVector_ReturnValue)
+  [614] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Abs_ReturnValue, CallFunc_DegTan_ReturnValue_1)
+  [660] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [715] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_BreakTransform_Location_1, CallFunc_MakeVector_ReturnValue_1)
+  [761] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(Mesh, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, self.TraceColour, LinearColor{0.0, 1.0, 0.0, 1.0}, 10.0)
+  [880] CallFunc_K2_GetComponentToWorld_ReturnValue = Mesh.K2_GetComponentToWorld()
+  [930] CallFunc_ComposeTransforms_ReturnValue = ComposeTransforms(CallFunc_ExtractRootMotionFromMontage_ReturnValue, CallFunc_K2_GetComponentToWorld_ReturnValue)
+  [976] BreakTransform(CallFunc_ComposeTransforms_ReturnValue, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [1022] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1203] Temp_bool_Variable = CallFunc_LineTraceSingle_ReturnValue
+  [1222] OriginalEndPoint = CallFunc_BreakTransform_Location_1
+  [1249] WarpedEndPoint = switch(Temp_bool_Variable){false: CallFunc_BreakHitResult_TraceEnd, true: CallFunc_BreakHitResult_Location, default: K2Node_Select_Default}
+  [1320] return nothing
+  [1322] end
+
+=== Received_NotifyBegin
+  [0] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Animation)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @334
+  [79] CallFunc_ExtractEndPoint_Duration_ImplicitCast = cast<CST_FloatToDouble>(TotalDuration)
+  [108] ExtractEndPoint(CallFunc_ExtractEndPoint_Duration_ImplicitCast, MeshComp, K2Node_DynamicCast_AsAnim_Montage, CallFunc_ExtractEndPoint_OriginalEndPoint, CallFunc_ExtractEndPoint_WarpedEndPoint)
+  [167] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [209] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [245] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [274] if !(K2Node_DynamicCast_bSuccess_1) goto @334
+  [288] K2Node_DynamicCast_AsPlayer_Interface.UpdateTranslateWarpTargetPosition(CallFunc_ExtractEndPoint_WarpedEndPoint)
+  [334] CallFunc_Received_NotifyBegin_ReturnValue = Received_NotifyBegin(MeshComp, Animation, TotalDuration, Temp_struct_Variable)
+  [390] ReturnValue = CallFunc_Received_NotifyBegin_ReturnValue
+  [409] return ReturnValue
+  [419] end

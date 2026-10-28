@@ -1,0 +1,29 @@
+rock_ice_combat_bt  blackboard=BlackboardData sq_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector
+    [if Blackboard  (AetherCharged is Is Set)]
+    1) Sequence "Aether Charge State"
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass rock_shellslam_atk_C)]
+      1) Sequence
+        1) PerformActionClass  (ActionClass=BlueprintGeneratedClass rock_shellslam_atk_C)
+        [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass rock_ice_icedaggers_atk_C)]
+        2) PerformActionClass  (ActionClass=BlueprintGeneratedClass rock_ice_icedaggers_atk_C)
+    2) Selector "Combat Options"
+      1) Sequence "Ice Spire -> Bulldozer"
+        [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass rock_ice_icespire_atk_C)]
+        [if ForceSuccess]
+        1) Selector
+          [if btdeco_percentchance  (PercentChance=0.25)]
+          1) PerformActionClass "Ice Spires (Circle)"  (ActionClass=BlueprintGeneratedClass rock_ice_icespire_circle_atk_C)
+          2) BehemothAction "Ice Spires (Line)"  (Montage=AnimMontage b_rock_ice_icespire_atk_mot, ActionClassToCooldown=BlueprintGeneratedClass rock_ice_icespire_atk_C)
+        [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass rock_ice_bulldozer_atk_C)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree rock_ice_bulldozer_bt)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      2) Selector "Pick Chosen Attack"
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    [if Blackboard  (InRageState is Is Set)]
+    3) Sequence "Aether Charge State"
+      1) BehemothAction "Rolling Fortress"  (Montage=AnimMontage b_rock_ice_rollingfortress_atk_mot)
+      2) RunBehavior "Rolling Charge"  (BehaviorAsset=BehaviorTree rock_ice_rollingcharge_bt)
+      3) bttask_exit_rage_state  (Montage=AnimMontage salt_b_sq_gen_00_rageexit_fwd_00_mot)

@@ -1,0 +1,572 @@
+{
+ "name": "BPGM_ArchonGauntlet_C",
+ "kind": "blueprint",
+ "parents": [
+  "BPGM_Archon_Prototype_C",
+  "ArchonGameMode_Island",
+  "ArchonGameMode",
+  "ArchonGameModeBase",
+  "GameMode",
+  "GameModeBase",
+  "Info",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "gauntlet_mode_bpc",
+   "type": "ObjectProperty<gauntlet_mode_bpc_C>",
+   "bp_type": "ObjectProperty<gauntlet_mode_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LootTableRewards",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GauntletSpecTable",
+   "type": "ObjectProperty<DataTable>",
+   "bp_type": "ObjectProperty<DataTable>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GauntletModTable",
+   "type": "ObjectProperty<DataTable>",
+   "bp_type": "ObjectProperty<DataTable>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GauntletSeasonsTable",
+   "type": "ObjectProperty<DataTable>",
+   "bp_type": "ObjectProperty<DataTable>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SeasonNumber",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LevelNumber",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IsDebugSeason",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "gauntlet_mode_bpc",
+   "class": "gauntlet_mode_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_BPGM_ArchonGauntlet",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetRowNames_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 56,
+   "reads": [
+    "CurrentMissionInfo",
+    "EnableOpeningCinematic",
+    "GauntletModTable",
+    "GauntletSpecTable",
+    "IsDebugSeason",
+    "LevelNumber",
+    "OnServerStop",
+    "SeasonNumber",
+    "bpgm_arrival_cinematic_bpc",
+    "gauntlet_mode_bpc"
+   ],
+   "sets": [
+    "DangerSystemEnabled",
+    "GauntletModTable",
+    "GauntletSpecTable",
+    "IsDebugSeason",
+    "LevelNumber",
+    "MainGameModeComponent",
+    "SeasonNumber"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "ArchonGameplayStatics.GetArchonEditorUserSettings",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "ArchonGameplayStatics.IsPlayInEditor",
+    "ArchonGauntletFunctionLibrary.SeparateGauntletSeasonAndLevelNumber",
+    "BPGM_Archon_Prototype_C.ReceiveBeginPlay",
+    "DataTable.GetRowNames",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GauntletGameModeComponent.AuthGameStarting",
+    "GauntletGameModeComponent.AuthInitialize",
+    "GauntletGameModeComponent.SetTuning",
+    "GetGauntletRowNames",
+    "GetGauntletSeasonTables",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_IntInt",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_DangerSystemEnabled"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Get Completion Rewards",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "HuntSystem",
+     "type": "ObjectProperty<HuntSystemComponent>"
+    },
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "HuntRewards",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "LootTableRewards"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetConnectedPlayerCount",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Count",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetGameModeCreatureXPScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetGauntletRowNames",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "SpecRowName",
+     "type": "NameProperty"
+    },
+    {
+     "name": "ModRowName",
+     "type": "NameProperty"
+    },
+    {
+     "name": "CallFunc_GetRowNames_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetRowNames_ReturnValue_1",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 37,
+   "reads": [
+    "GauntletModTable",
+    "GauntletSpecTable",
+    "LevelNumber"
+   ],
+   "sets": [],
+   "calls": [
+    "DataTable.GetRowNames",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Divide_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Percent_IntInt",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetGauntletSeasonTables",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "SeasonNumber",
+     "type": "IntProperty"
+    },
+    {
+     "name": "SpecTable",
+     "type": "ObjectProperty<DataTable>"
+    },
+    {
+     "name": "TuningTable",
+     "type": "ObjectProperty<DataTable>"
+    },
+    {
+     "name": "CallFunc_GetDataTableRowNames_OutRowNames",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [
+    "GauntletSeasonsTable"
+   ],
+   "sets": [],
+   "calls": [
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "DataTableFunctionLibrary.GetDataTableRowNames",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Percent_IntInt"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable gauntlet_mode_encounter_specs",
+    "DataTable gauntlet_mode_tuning_specs"
+   ],
+   "assets": []
+  },
+  {
+   "name": "GetHuntRewards",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "HuntSuccess",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HuntSystem",
+     "type": "ObjectProperty<HuntSystemComponent>"
+    },
+    {
+     "name": "MatchMakerHuntID",
+     "type": "StrProperty"
+    },
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "HuntRewards",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetPerGameModeBehemothTuningOverrides",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "UseOverrides",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "BaseHealthScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "BasePartHealthScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "PerPlayerCoreHealthScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "BasePartWoundHealthScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "PerPlayerWoundHealthScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "BaseStaggerScaleOverride",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "PerPlayerStaggerHealthScaleOverride",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReadyToStart",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonGauntlet_C.ExecuteUbergraph_BPGM_ArchonGauntlet"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonGauntlet_C.ExecuteUbergraph_BPGM_ArchonGauntlet"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UseNewHealthTuning",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "UseNew",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable gauntlet_mode_encounter_specs",
+  "DataTable gauntlet_mode_seasons_setup",
+  "DataTable gauntlet_mode_tuning_specs"
+ ],
+ "package": "/Game/Blueprints/GameMode/BPGM_ArchonGauntlet",
+ "pseudo_file": "pseudo/BPGM_ArchonGauntlet_C.txt",
+ "game_data": {
+  "data/2.1.1/hunts.json": 4
+ }
+}

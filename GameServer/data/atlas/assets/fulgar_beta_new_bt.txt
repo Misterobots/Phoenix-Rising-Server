@@ -1,0 +1,173 @@
+fulgar_beta_new_bt  blackboard=BlackboardData fulgar_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.01)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_announce_bt)
+      2) Selector
+        [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+        1) BehemothAction "DIE!!! Left"  (Montage=AnimMontage fulgar_death_l_mot)
+        2) BehemothAction "DIE!!!Right"  (Montage=AnimMontage fulgar_death_r_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree fulgars_stupid_deaggro_bt)
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    6) Sequence "Flee"
+      {service service_managefulgartimers_bpt "ManageFulgarTimers"}
+      1) RunBehavior "Flee"  (BehaviorAsset=BehaviorTree fulgar_flee_bt)
+    7) Selector "Rage States"
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      1) Sequence
+        1) bttask_exit_rage_state  (Montage=AnimMontage fulgar_discharge_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      2) Selector
+        1) bttask_enter_rage_state  (Montage=AnimMontage fulgar_embercharge_mot)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    9) Selector "StateGate"
+      {service service_managefulgartimers_bpt "BTService_ManageFulgarTimers"  (UnPause?=true)}
+      [if Blackboard  (HasDoneMegaAttack is Is Not Set)]
+      [if compare_health_btdeco  (CompareType=<, PercentValue(Decimal)=0.5)]
+      1) Sequence
+        {service hide_behemoth_bttask  (HideOnStart=false)}
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_random_point_away_from_player"}, BlackboardKey=bb.MoveDestination)
+        2) Selector
+          1) teleport_bttask  (FacingTargetKeyName=KnownTargetsAvgPos, OptionalMontage=AnimMontage fulgar_teleport_entry_mot, TeleportDelay=2.25, HideBehemothOnTeleport=true)
+          2) bttask_set_boolean  (Key=bb.HasDoneMegaAttack)
+        3) bttask_set_boolean  (Key=bb.HasDoneMegaAttack, Value=true)
+        4) Wait  (WaitTime=1.5)
+        5) teleport_bttask  (FacingTargetKeyName=KnownTargetsAvgPos)
+        6) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+      [if btdeco_variablecooldown  (Cooldown_Min=30, Cooldown_Max=60, StartTime=30)]
+      2) Sequence
+        1) Selector
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=3000)]
+          1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+          2) perform_action_montage_bttask  (Montage=AnimMontage fulgar_lightningbreath_mot)
+      [if Blackboard "Ember Charged"  (EmberCharged is Is Set)]
+      3) Selector "EmberCharged"
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedLightningBreath_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        1) Selector "3 breath combo"
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=3000)]
+          1) Sequence "Tooclose, backstep first"
+            1) TestCollisionForSpecificAction "Test Backstep collision"  (ActionClassToTest=BlueprintGeneratedClass Atk_Fulgar_Backstep_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+            2) BehemothAction "BackStep"  (Montage=AnimMontage fulgar_backstep_mot)
+            3) PerformActionClass "ChargedLightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedLightningBreath_C, bShowPropertyDetails=false)
+          2) PerformActionClass "ChargedLightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedLightningBreath_C, bShowPropertyDetails=false)
+        [if Cooldown  (CooldownTime=30)]
+        2) Sequence "PounceComboCombo"
+          [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+          1) PerformActionClass "ChargedPounceBite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, bShowPropertyDetails=false)
+          2) EvaluateSpecificAction "Re-EvaluatePounce"  (ActionClassesToTest=["BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C"], ChosenActionKey=bb.TargetActor)
+          [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+          3) PerformActionClass "ChargedPounceBite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        3) PerformActionClass "ChargedPounceBite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedPounceBite_C, bShowPropertyDetails=false)
+        4) Sequence "Bite Combo (3)"
+          1) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "BiteComboL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "BiteComboR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, bShowPropertyDetails=false)
+          2) EvaluateSpecificAction "Re-EvaluateBites"  (ActionClassesToTest=["BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C", "BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C"], ChosenActionKey=bb.TargetActor)
+          [if ForceSuccess]
+          3) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "BiteComboL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "BiteComboR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, bShowPropertyDetails=false)
+          4) EvaluateSpecificAction "Re-EvaluateBites"  (ActionClassesToTest=["BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C", "BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C"], ChosenActionKey=bb.TargetActor)
+          [if ForceSuccess]
+          5) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "BiteComboL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "BiteComboR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, bShowPropertyDetails=false)
+        [if Blackboard  (TailSevered is Is Not Set)]
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_360TailSwipe_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        5) PerformActionClass "360TailSwipe"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_360TailSwipe_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckL_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        6) PerformActionClass "HipCheckL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckL_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckR_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        7) PerformActionClass "HipCheckR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckR_C, bShowPropertyDetails=false)
+        [if Blackboard "CheckTailCut"  (TailSevered is Is Set)]
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180Bite_C, TopScoreKey=bb.EmberCharged, bShowPropertyDetails=false)]
+        8) PerformActionClass "180Bite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180Bite_C, bShowPropertyDetails=false)
+      4) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if Blackboard  (EmberCharged is Is Not Set)]
+      5) Selector "Normal"
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_LightningBreath_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        [if Blackboard  (EmberChargeStateChange is Is Not Set)]
+        1) Selector
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=3000)]
+          1) Sequence
+            1) TestCollisionForSpecificAction "Test Backstep collision"  (ActionClassToTest=BlueprintGeneratedClass Atk_Fulgar_Backstep_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+            2) BehemothAction "BackStep"  (Montage=AnimMontage fulgar_backstep_mot)
+            3) PerformActionClass "LightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_LightningBreath_C, bShowPropertyDetails=false)
+          2) PerformActionClass "LightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_LightningBreath_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_PounceBite_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        2) PerformActionClass "PounceBite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_PounceBite_C, bShowPropertyDetails=false)
+        3) Sequence "Bite Combo (2)"
+          1) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "BiteComboL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "BiteComboR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, bShowPropertyDetails=false)
+          2) EvaluateSpecificAction "Re-EvaluateBites"  (ActionClassesToTest=["BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C", "BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C"], ChosenActionKey=bb.TargetActor)
+          [if ForceSuccess]
+          3) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "BiteComboL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_L_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "BiteComboR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_BiteCombo_R_C, bShowPropertyDetails=false)
+        [if Blackboard "CheckTailCut"  (TailSevered is Is Set)]
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180Bite_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        4) PerformActionClass "180Bite"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180Bite_C, bShowPropertyDetails=false)
+        [if Blackboard  (TailSevered is Is Not Set)]
+        5) Selector "CheckForSwipeCombo"
+          [if Cooldown  (CooldownTime=60)]
+          1) Sequence
+            1) Selector
+              [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+              1) PerformActionClass "180SwipeL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, bShowPropertyDetails=false)
+              [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+              2) PerformActionClass "180SwipeR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, bShowPropertyDetails=false)
+            2) EvaluateSpecificAction "Re-EvaluateSwipes"  (ActionClassesToTest=["BlueprintGeneratedClass Atk_Fulgar_180swipeL_C", "BlueprintGeneratedClass Atk_Fulgar_180swipeR_C"], ChosenActionKey=bb.TargetActor)
+            3) Selector
+              [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+              1) PerformActionClass "180SwipeR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, bShowPropertyDetails=false)
+              [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+              2) PerformActionClass "180SwipeL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, bShowPropertyDetails=false)
+          2) Selector
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            1) PerformActionClass "180SwipeR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeR_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+            2) PerformActionClass "180SwipeL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_180swipeL_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckL_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        6) PerformActionClass "HipCheckL"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckL_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckR_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        7) PerformActionClass "HipCheckR"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_HipCheckR_C, bShowPropertyDetails=false)
+    10) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    11) Selector "Selector_AttackOrNonAttack"
+      [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 25.0}, MaxCooldown={"ConstantFloat": 35.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"])]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Sequence
+        1) RotateTowardsTarget  (Target=bb.AttackTarget)
+        [if ForceSuccess]
+        2) Sequence
+          1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage fuglar_roar_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage fuglar_roar_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage fuglar_roar_mot", "Chance": 1.0}])
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+    12) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

@@ -1,0 +1,775 @@
+{
+ "name": "BPGM_ArchonLegendHunt_C",
+ "kind": "blueprint",
+ "parents": [
+  "BPGM_Archon_Prototype_C",
+  "ArchonGameMode_Island",
+  "ArchonGameMode",
+  "ArchonGameModeBase",
+  "GameMode",
+  "GameModeBase",
+  "Info",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "portal_director_bpc",
+   "type": "ObjectProperty<portal_director_bpc_C>",
+   "bp_type": "ObjectProperty<portal_director_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "exploration_game_mode_bpc",
+   "type": "ObjectProperty<exploration_game_mode_bpc_C>",
+   "bp_type": "ObjectProperty<exploration_game_mode_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherablesCineReady",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherablesStreamLevelReady",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CreatureMetadataName",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CreatureComplexityScore",
+   "type": "FloatProperty",
+   "bp_type": "FloatProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ConsideringLevel",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WeaponLevel",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "exploration_game_mode_bpc",
+   "class": "exploration_game_mode_bpc_C",
+   "source": "SCS"
+  },
+  {
+   "name": "portal_director_bpc",
+   "class": "portal_director_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AdjustBehemothHealthForPlayerCount",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSublevelSpawnGatherables",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_BPGM_ArchonLegendHunt",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetActiveGameContents_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 70,
+   "reads": [
+    "IslandDirectorComponent",
+    "IslandDirectorSpecification",
+    "OnLevelLoaded",
+    "exploration_game_mode_bpc",
+    "gatherable_manager"
+   ],
+   "sets": [
+    "SupplyCrateQuantityAmount"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "AuthSetDangerLevel",
+    "BPGM_Archon_Prototype_C.K2_OnRestartPlayer",
+    "BPGM_Archon_Prototype_C.K2_PostLogin",
+    "BPGM_Archon_Prototype_C.On Monster Death",
+    "BPGM_Archon_Prototype_C.PlayerCharacterSpawned",
+    "BPGM_Archon_Prototype_C.ReceiveBeginPlay",
+    "BPGM_Archon_Prototype_C.setDanger",
+    "GameplayStatics.GetStreamingLevel",
+    "HandlePlayerCharacterSpawned",
+    "IslandDirectorComponent.HasIslandDirectorBeenInitialized",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "LevelStreaming.IsLevelLoaded",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "PhxGameContentComponent.GetActiveGameContents",
+    "SendBehemothKillTelemetry",
+    "SendHuntStartedTelemetry",
+    "SpawnGatherables"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCreatureLevelXPModifier",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CreatureXPTuningData",
+     "type": "StructProperty<CreatureXPTuningData>"
+    },
+    {
+     "name": "CreatureComplexityXPMultiplier",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [
+    "CreatureComplexityScore"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Conv_IntToDouble",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetGameModeCreatureXPScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<GameplayTag>"
+    },
+    {
+     "name": "Temp_struct_Variable_1",
+     "type": "StructProperty<GameplayTag>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 36,
+   "reads": [
+    "CurrentMissionInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameMode.GetGameModeCreatureXPScale",
+    "ArchonGameplayStatics.GetHunts",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintMapLibrary.Map_Find",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GetCreatureLevelXPModifier",
+    "HuntCatalog.GetMatchmakerHunt",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable player_progression_tuning"
+   ],
+   "assets": []
+  },
+  {
+   "name": "HandlePlayerCharacterSpawned",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "InArchonCharacter",
+     "type": "ObjectProperty<ArchonCharacter>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 29,
+   "reads": [
+    "IslandDirectorComponent",
+    "IslandDirectorSpecification",
+    "exploration_game_mode_bpc"
+   ],
+   "sets": [
+    "bAutoReviveEnabled"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.RemoveActiveEffectsWithTags",
+    "Actor.GetComponentByClass",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetSystemLibrary.IsValid",
+    "MakeOutgoingSpec",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass override_player_power_and_resist_ge_C",
+    "BlueprintGeneratedClass player_self_revive_bpc_C"
+   ]
+  },
+  {
+   "name": "IsIntroCinematicEnabled",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Enabled",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_OnRestartPlayer",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewPlayer",
+     "type": "ObjectProperty<Controller>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_PostLogin",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewPlayer",
+     "type": "ObjectProperty<PlayerController>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MoveCharacterstoArrivalArea",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 40,
+   "reads": [
+    "IslandPlayerStartMap"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_GetActorRotation",
+    "Actor.K2_SetActorLocationAndRotation",
+    "ArchonArrayExtensions.Map_KeyValueAt",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "BlueprintMapLibrary.Map_Find",
+    "Controller.K2_GetPawn",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.PrintString",
+    "Pawn.GetController"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "On Monster Death",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    },
+    {
+     "name": "FightDuration",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "TriggerEndOfGameCeremony",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayerCharacterSpawned",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerCharacter",
+     "type": "ObjectProperty<ArchonCharacter>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SendBehemothKillTelemetry",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    },
+    {
+     "name": "CallFunc_GetParticipants_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 51,
+   "reads": [
+    "Instigator",
+    "PlayerState"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonPlayerControllerBase.GetCharacterId",
+    "ArchonPlayerState.GetUniqueIdAsString",
+    "ArchonTelemetryBPLibrary.TriggerTitleEvent",
+    "JsonBPLibrary.CreateJsonObject",
+    "JsonBPLibrary.CreateJsonObjectField",
+    "JsonBPLibrary.CreateJsonValueInt",
+    "JsonBPLibrary.CreateJsonValueString",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.JoinStringArray",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "Pawn.GetController",
+    "PhxGameContentParticipationComponent.GetParticipants"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SendHuntStartedTelemetry",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 53,
+   "reads": [
+    "CurrentMissionInfo",
+    "PlayerState",
+    "SelectedTODClass"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.GetLocalPlayerHuntId",
+    "ArchonPlayerController.GetLoadout",
+    "ArchonPlayerController.GetPlayerExperienceComponent",
+    "ArchonPlayerControllerBase.GetCharacterId",
+    "ArchonPlayerState.GetUniqueIdAsString",
+    "Controller.K2_GetPawn",
+    "Emit Hunt Started Event",
+    "GameplayStatics.GetAllActorsOfClass",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.GetClassDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "PlayerExperienceComponent.GetWeaponExperience",
+    "Track Player Hunt Inventory Event"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass global_telemetry_actor_C"
+   ]
+  },
+  {
+   "name": "SpawnGatherablesImpl",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UseNewHealthTuning",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "UseNew",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "setDanger",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "danger",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BPGM_ArchonLegendHunt_C.ExecuteUbergraph_BPGM_ArchonLegendHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable player_progression_tuning"
+ ],
+ "package": "/Game/Blueprints/GameMode/BPGM_ArchonLegendHunt",
+ "pseudo_file": "pseudo/BPGM_ArchonLegendHunt_C.txt",
+ "game_data": {
+  "data/2.1.1/hunts.json": 24
+ }
+}

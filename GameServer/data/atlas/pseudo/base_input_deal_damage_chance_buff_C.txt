@@ -1,0 +1,74 @@
+# base_input_deal_damage_chance_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CustomActivate
+  [0] Try Activate Effect(false, CallFunc_Try_Activate_Effect_ActivatedEffect)
+  [24] return nothing
+  [26] end
+
+=== ExecuteUbergraph_base_input_deal_damage_chance_buff
+  [0] goto computed(EntryPoint)
+  [10] K2Node_DynamicCast_AsCe_Deal_Damage_Chance_Shield_Buff = cast<ce_deal_damage_chance_shield_buff_C>(self)
+  [38] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCe_Deal_Damage_Chance_Shield_Buff)
+  [67] if !(K2Node_DynamicCast_bSuccess) goto @157
+  [81] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'DamageType.BastionSlam'}, true)
+  [138] if !(CallFunc_HasTag_ReturnValue) goto @157
+  [152] goto @488
+  [157] CallFunc_RollDice_TotalDamageDealt_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_DamageSummary.BaseDamageWithMultipliersApplied)
+  [195] RollDice(CallFunc_RollDice_TotalDamageDealt_ImplicitCast)
+  [218] goto @488
+  [223] self.ChanceIncreasePerFailure = self.CurrentChance
+  [250] K2Node_CreateDelegate_OutputDelegate = bind(self.TriggerDamage)
+  [273] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [293] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [344] K2Node_CreateDelegate_OutputDelegate += None
+  [385] goto @488
+  [390] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TargetsProcPerHundredDamage, self.DamageCheckInterval)
+  [436] self.CurrentChance = CallFunc_Divide_DoubleDouble_ReturnValue
+  [463] goto @223
+  [468] MulticastOnAdded()
+  [478] goto @390
+  [483] goto @10
+  [488] return nothing
+  [490] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_base_input_deal_damage_chance_buff(468)
+  [15] return nothing
+  [17] end
+
+=== RollDice
+  [0] push @683
+  [5] Temp_int_Variable = 0
+  [28] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(TotalDamageDealt, self.DamageCheckInterval)
+  [74] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_Divide_DoubleDouble_ReturnValue_1)
+  [111] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_FTrunc_ReturnValue)
+  [149] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [159] push @535
+  [164] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 1.0)
+  [210] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue, self.CurrentChance)
+  [248] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @609
+  [262] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.CurrentChance, self.TargetsProcPerHundredDamage)
+  [308] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.CurrentChance, self.TargetsProcPerHundredDamage)
+  [346] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TargetsProcPerHundredDamage, self.DamageCheckInterval)
+  [392] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [438] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue)
+  [493] self.CurrentChance = CallFunc_SelectFloat_ReturnValue
+  [520] CustomActivate()
+  [534] pop
+  [535] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [577] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [604] goto @28
+  [609] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(self.CurrentChance, self.ChanceIncreasePerFailure)
+  [655] self.CurrentChance = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [682] pop
+  [683] return nothing
+  [685] end
+
+=== TriggerDamage
+  [0] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [18] frame.K2Node_CustomEvent_DamageSummary = DamageSummary
+  [36] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_base_input_deal_damage_chance_buff(483)
+  [87] return nothing
+  [89] end

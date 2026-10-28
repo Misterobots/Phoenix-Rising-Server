@@ -1,0 +1,499 @@
+# modifier_manager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthAddModifier
+  [0] frame.K2Node_CustomEvent_Modifier = Modifier
+  [18] frame.K2Node_CustomEvent_ModifierSourceGUID = ModifierSourceGUID
+  [36] ExecuteUbergraph_modifier_manager_bpc(6920)
+  [51] return nothing
+  [53] end
+
+=== AuthCleanupNextActor
+  [0] K2_ClearAndInvalidateTimerHandle(self, self.QueuedActorCleanupTimer)
+  [20] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ActorsQueuedForCleanup)
+  [79] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [113] if !(CallFunc_Greater_IntInt_ReturnValue) goto @219
+  [127] Default__KismetArrayLibrary.Array_Get(self.ActorsQueuedForCleanup, 0, CallFunc_Array_Get_Item)
+  [182] AuthCleanupQueuedActor(CallFunc_Array_Get_Item)
+  [205] AuthSetQueueTimerIfNeeded()
+  [219] return nothing
+  [221] end
+
+=== AuthCleanupQueuedActor
+  [0] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthOnQueuedActorDestroyed)
+  [23] K2Node_CreateDelegate_OutputDelegate -= None
+  [64] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.ActorsQueuedForCleanup, Actor)
+  [124] K2Node_DynamicCast_AsSpawnedactor_Interface = cast<spawnedactor_interface_C>(Actor)
+  [160] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsSpawnedactor_Interface)
+  [189] if !(K2Node_DynamicCast_bSuccess) goto @240
+  [203] K2Node_DynamicCast_AsSpawnedactor_Interface.SpawnedActor_Cleanup()
+  [240] return nothing
+  [242] end
+
+=== AuthClearAllModifiers
+  [0] push @649
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [110] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @282
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @575
+  [194] CallFunc_Array_AddUnique_ReturnValue = Default__KismetArrayLibrary.Array_AddUnique(L_GUIDS, EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=Temp_int_Array_Index_Variable).GUID)
+  [281] pop
+  [282] Temp_int_Loop_Counter_Variable_1 = 0
+  [305] Temp_int_Array_Index_Variable_1 = 0
+  [328] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(L_GUIDS)
+  [387] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [425] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [435] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [462] push @501
+  [467] AuthClearModifiersWithGUID(EX_ArrayGetByRef(ArrayVariable=L_GUIDS,ArrayIndex=Temp_int_Array_Index_Variable_1))
+  [500] pop
+  [501] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [543] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [570] goto @328
+  [575] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [617] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [644] goto @51
+  [649] return nothing
+  [651] end
+
+=== AuthClearModifiersWithGUID
+  [0] frame.K2Node_CustomEvent_GUID_1 = GUID
+  [18] ExecuteUbergraph_modifier_manager_bpc(7515)
+  [33] return nothing
+  [35] end
+
+=== AuthGetAllModifiers
+  [0] push @510
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] push @404
+  [82] Temp_int_Loop_Counter_Variable = 0
+  [105] Temp_int_Array_Index_Variable = 0
+  [128] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [187] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [225] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [235] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [262] push @436
+  [267] Default__KismetArrayLibrary.Array_Get(self.ModifierBuffs, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [326] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Modifiers, CallFunc_Array_Get_Item.Buff)
+  [403] pop
+  [404] Modifiers = L_Modifiers
+  [431] goto @510
+  [436] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [478] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [505] goto @128
+  [510] return nothing
+  [512] end
+
+=== AuthOnQueuedActorDestroyed
+  [0] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthOnQueuedActorDestroyed)
+  [23] K2Node_CreateDelegate_OutputDelegate -= None
+  [64] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.ActorsQueuedForCleanup, DestroyedActor)
+  [124] return nothing
+  [126] end
+
+=== AuthQueueActorForCleanup
+  [0] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(self.ActorsQueuedForCleanup, ActorToQueue)
+  [60] if !(CallFunc_Array_Contains_ReturnValue) goto @79
+  [74] goto @225
+  [79] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthOnQueuedActorDestroyed)
+  [102] K2Node_CreateDelegate_OutputDelegate += None
+  [143] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.ActorsQueuedForCleanup, ActorToQueue)
+  [211] AuthSetQueueTimerIfNeeded()
+  [225] return nothing
+  [227] end
+
+=== AuthQueueActorsForCleanup
+  [0] push @347
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(ActorsToBeCleaned)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @273
+  [190] Default__KismetArrayLibrary.Array_Get(ActorsToBeCleaned, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] AuthQueueActorForCleanup(CallFunc_Array_Get_Item)
+  [272] pop
+  [273] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [315] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [342] goto @51
+  [347] return nothing
+  [349] end
+
+=== AuthSetQueueTimerIfNeeded
+  [0] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.QueuedActorCleanupTimer)
+  [30] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @49
+  [44] goto @185
+  [49] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthCleanupNextActor)
+  [72] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.ActorCleanupDelay)
+  [101] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [158] self.QueuedActorCleanupTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [185] return nothing
+  [187] end
+
+=== AuthStopAllActiveModifiers
+  [0] push @444
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @370
+  [190] Default__KismetArrayLibrary.Array_Get(self.ModifierBuffs, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] K2Node_DynamicCast_AsBase_Hunt_Modifier = cast<base_hunt_modifier_C>(CallFunc_Array_Get_Item.Buff)
+  [294] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_Hunt_Modifier)
+  [323] if !(K2Node_DynamicCast_bSuccess) pop
+  [333] K2Node_DynamicCast_AsBase_Hunt_Modifier.AuthStopModifier()
+  [369] pop
+  [370] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [412] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [439] goto @51
+  [444] return nothing
+  [446] end
+
+=== AuthStopModifiersByGUID
+  [0] push @467
+  [5] GetModifierBuffsByGUID(GUID, CallFunc_GetModifierBuffsByGUID_Buffs)
+  [37] Temp_int_Loop_Counter_Variable = 0
+  [60] Temp_int_Array_Index_Variable = 0
+  [83] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetModifierBuffsByGUID_Buffs)
+  [142] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [180] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [190] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [217] push @393
+  [222] Default__KismetArrayLibrary.Array_Get(CallFunc_GetModifierBuffsByGUID_Buffs, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [281] K2Node_DynamicCast_AsBase_Hunt_Modifier = cast<base_hunt_modifier_C>(CallFunc_Array_Get_Item)
+  [317] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_Hunt_Modifier)
+  [346] if !(K2Node_DynamicCast_bSuccess) pop
+  [356] K2Node_DynamicCast_AsBase_Hunt_Modifier.AuthStopModifier()
+  [392] pop
+  [393] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [435] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [462] goto @83
+  [467] return nothing
+  [469] end
+
+=== ExecuteUbergraph_modifier_manager_bpc
+  [0] push @7745
+  [5] goto computed(EntryPoint)
+  [15] push @280
+  [20] CallFunc_EqualEqual_GuidGuid_ReturnValue = EqualEqual_GuidGuid(EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=self.L_Index).GUID, K2Node_CustomEvent_GUID_1)
+  [77] if !(CallFunc_EqualEqual_GuidGuid_ReturnValue) goto @392
+  [91] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnModifierBuffDestroyed)
+  [114] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [174] EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=self.L_Index).Buff.K2_DestroyActor()
+  [229] Default__KismetArrayLibrary.Array_Remove(self.ModifierBuffs, self.L_Index)
+  [279] pop
+  [280] CallFunc_Array_Length_ReturnValue_7 = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [339] CallFunc_Less_IntInt_ReturnValue_6 = Less_IntInt(self.L_Index, CallFunc_Array_Length_ReturnValue_7)
+  [377] if !(CallFunc_Less_IntInt_ReturnValue_6) pop
+  [387] goto @15
+  [392] CallFunc_Add_IntInt_ReturnValue_9 = Add_IntInt(self.L_Index, 1)
+  [434] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_9
+  [461] self.L_Index = Temp_int_Variable
+  [488] pop
+  [489] K2Node_DynamicCast_AsHunt_Modifier = cast<Hunt_Modifier>(Temp_object_Variable)
+  [525] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsHunt_Modifier)
+  [554] if !(K2Node_DynamicCast_bSuccess) pop
+  [564] CallFunc_IsValid_ReturnValue = IsValid(K2Node_DynamicCast_AsHunt_Modifier)
+  [593] if !(CallFunc_IsValid_ReturnValue) pop
+  [603] Temp_int_Loop_Counter_Variable_4 = 0
+  [626] Temp_int_Array_Index_Variable_8 = 0
+  [649] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsHunt_Modifier.self.BehemothBuffList)
+  [730] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue_3)
+  [768] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @2148
+  [782] Temp_int_Array_Index_Variable_8 = Temp_int_Loop_Counter_Variable_4
+  [809] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.BehemothBuffList, Temp_int_Array_Index_Variable_8, CallFunc_Array_Get_Item_7)
+  [890] CallFunc_LoadAssetClassSynchronously_ReturnValue_2 = LoadAssetClassSynchronously(CallFunc_Array_Get_Item_7)
+  [919] K2Node_ClassDynamicCast_AsArchon_Buff_2 = cast<ArchonBuff>(CallFunc_LoadAssetClassSynchronously_ReturnValue_2)
+  [955] K2Node_ClassDynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsArchon_Buff_2)
+  [984] if !(K2Node_ClassDynamicCast_bSuccess_2) goto @2074
+  [998] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1018] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetOwner_ReturnValue_1)
+  [1054] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [1083] if !(K2Node_DynamicCast_bSuccess_1) goto @5235
+  [1097] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetSpawnedBehemoths(CallFunc_GetSpawnedBehemoths_Behemoths)
+  [1143] Temp_int_Loop_Counter_Variable_2 = 0
+  [1166] Temp_int_Array_Index_Variable_1 = 0
+  [1189] CallFunc_Array_Length_ReturnValue_6 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetSpawnedBehemoths_Behemoths)
+  [1248] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_6)
+  [1286] if !(CallFunc_Less_IntInt_ReturnValue_5) pop
+  [1296] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [1323] push @5281
+  [1328] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_Behemoths, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_5)
+  [1387] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item_5.GetComponentByClass(ArchonBuffableComponent)
+  [1438] CallFunc_TryAddBuff_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(K2Node_ClassDynamicCast_AsArchon_Buff_2, CallFunc_TryAddBuff_BuffAdded_1, Temp_struct_Variable, null, true)
+  [1513] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_Behemoths, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_5)
+  [1572] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_Array_Get_Item_5)
+  [1609] CallFunc_GetClassDisplayName_ReturnValue = GetClassDisplayName(K2Node_ClassDynamicCast_AsArchon_Buff_2)
+  [1646] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Hunt modifier buff ', CallFunc_GetClassDisplayName_ReturnValue)
+  [1704] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' applied ')
+  [1752] CallFunc_SelectString_ReturnValue = SelectString('successfully', 'unsuccessfully', CallFunc_TryAddBuff_BuffAdded_1)
+  [1819] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_SelectString_ReturnValue)
+  [1865] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' to ')
+  [1908] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_GetDisplayName_ReturnValue)
+  [1954] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 5.0, 'None')
+  [2028] if !(CallFunc_TryAddBuff_BuffAdded_1) goto @2074
+  [2042] TrackBuff(self.L_GUID, CallFunc_TryAddBuff_ReturnValue_1)
+  [2074] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [2116] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_5
+  [2143] goto @649
+  [2148] Temp_int_Loop_Counter_Variable = 0
+  [2171] Temp_int_Array_Index_Variable = 0
+  [2194] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerBuffList)
+  [2275] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [2313] if !(CallFunc_Less_IntInt_ReturnValue) goto @3083
+  [2327] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [2354] push @3009
+  [2359] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerBuffList, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2440] CallFunc_LoadAssetClassSynchronously_ReturnValue = LoadAssetClassSynchronously(CallFunc_Array_Get_Item)
+  [2469] K2Node_ClassDynamicCast_AsArchon_Buff = cast<ArchonBuff>(CallFunc_LoadAssetClassSynchronously_ReturnValue)
+  [2505] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsArchon_Buff)
+  [2534] if !(K2Node_ClassDynamicCast_bSuccess) pop
+  [2544] array{}
+  [2555] array{}
+  [2566] GetPlayerStatesAndCharacters(self, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [2596] Temp_int_Loop_Counter_Variable_8 = 0
+  [2619] Temp_int_Array_Index_Variable_5 = 0
+  [2642] CallFunc_Array_Length_ReturnValue_9 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [2701] CallFunc_Less_IntInt_ReturnValue_8 = Less_IntInt(Temp_int_Loop_Counter_Variable_8, CallFunc_Array_Length_ReturnValue_9)
+  [2739] if !(CallFunc_Less_IntInt_ReturnValue_8) pop
+  [2749] Temp_int_Array_Index_Variable_5 = Temp_int_Loop_Counter_Variable_8
+  [2776] push @5355
+  [2781] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_6)
+  [2840] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_Array_Get_Item_6.GetComponentByClass(ArchonBuffableComponent)
+  [2891] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_1.TryAddBuff(K2Node_ClassDynamicCast_AsArchon_Buff, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable_1, null, true)
+  [2966] if !(CallFunc_TryAddBuff_BuffAdded) pop
+  [2976] TrackBuff(self.L_GUID, CallFunc_TryAddBuff_ReturnValue)
+  [3008] pop
+  [3009] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [3051] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [3078] goto @2194
+  [3083] Temp_int_Loop_Counter_Variable_3 = 0
+  [3106] Temp_int_Array_Index_Variable_3 = 0
+  [3129] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsHunt_Modifier.self.GlobalBuffList)
+  [3210] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_1)
+  [3248] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @3812
+  [3262] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_3
+  [3289] push @3738
+  [3294] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.GlobalBuffList, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [3375] CallFunc_LoadAssetClassSynchronously_ReturnValue_1 = LoadAssetClassSynchronously(CallFunc_Array_Get_Item_1)
+  [3404] K2Node_ClassDynamicCast_AsArchon_Buff_1 = cast<ArchonBuff>(CallFunc_LoadAssetClassSynchronously_ReturnValue_1)
+  [3440] K2Node_ClassDynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsArchon_Buff_1)
+  [3469] if !(K2Node_ClassDynamicCast_bSuccess_1) pop
+  [3479] CallFunc_GetComponentByClass_ReturnValue_2 = self.GlobalModifierActor.GetComponentByClass(ArchonBuffableComponent)
+  [3530] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue_2)
+  [3559] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3569] CallFunc_GetComponentByClass_ReturnValue_2 = self.GlobalModifierActor.GetComponentByClass(ArchonBuffableComponent)
+  [3620] CallFunc_TryAddBuff_ReturnValue_2 = CallFunc_GetComponentByClass_ReturnValue_2.TryAddBuff(K2Node_ClassDynamicCast_AsArchon_Buff_1, CallFunc_TryAddBuff_BuffAdded_2, Temp_struct_Variable_2, null, true)
+  [3695] if !(CallFunc_TryAddBuff_BuffAdded_2) pop
+  [3705] TrackBuff(self.L_GUID, CallFunc_TryAddBuff_ReturnValue_2)
+  [3737] pop
+  [3738] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [3780] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [3807] goto @3129
+  [3812] array{}
+  [3823] array{}
+  [3834] GetPlayerStatesAndCharacters(self, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates_1, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters_1)
+  [3864] Temp_int_Loop_Counter_Variable_6 = 0
+  [3887] Temp_int_Array_Index_Variable_6 = 0
+  [3910] CallFunc_Array_Length_ReturnValue_10 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters_1)
+  [3969] CallFunc_Less_IntInt_ReturnValue_9 = Less_IntInt(Temp_int_Loop_Counter_Variable_6, CallFunc_Array_Length_ReturnValue_10)
+  [4007] if !(CallFunc_Less_IntInt_ReturnValue_9) pop
+  [4017] Temp_int_Array_Index_Variable_6 = Temp_int_Loop_Counter_Variable_6
+  [4044] push @5161
+  [4049] Temp_int_Loop_Counter_Variable_5 = 0
+  [4072] Temp_int_Array_Index_Variable_4 = 0
+  [4095] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerGameplayEffects)
+  [4176] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_5, CallFunc_Array_Length_ReturnValue)
+  [4214] if !(CallFunc_Less_IntInt_ReturnValue_3) goto @5069
+  [4228] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_5
+  [4255] push @5429
+  [4260] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerGameplayEffects, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_2)
+  [4341] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters_1, Temp_int_Array_Index_Variable_6, CallFunc_Array_Get_Item_8)
+  [4400] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_Array_Get_Item_8.self.AbilitySystemComponent.MakeOutgoingSpec(CallFunc_Array_Get_Item_2.Effect, 0.0, GameplayEffectContextHandle{})
+  [4513] self.L_Spec = CallFunc_MakeOutgoingSpec_ReturnValue
+  [4540] Temp_int_Loop_Counter_Variable_7 = 0
+  [4563] Temp_int_Array_Index_Variable_7 = 0
+  [4586] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerGameplayEffects, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_2)
+  [4667] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_2.Overrides)
+  [4735] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_7, CallFunc_Array_Length_ReturnValue_4)
+  [4773] if !(CallFunc_Less_IntInt_ReturnValue_4) goto @5503
+  [4787] Temp_int_Array_Index_Variable_7 = Temp_int_Loop_Counter_Variable_7
+  [4814] push @5644
+  [4819] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsHunt_Modifier.self.PlayerGameplayEffects, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_2)
+  [4900] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_2.Overrides, Temp_int_Array_Index_Variable_7, CallFunc_Array_Get_Item_3)
+  [4968] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(self.L_Spec, CallFunc_Array_Get_Item_3.Name, CallFunc_Array_Get_Item_3.Value)
+  [5041] self.L_Spec = CallFunc_AssignSetByCallerMagnitude_ReturnValue
+  [5068] pop
+  [5069] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters_1, Temp_int_Array_Index_Variable_6, CallFunc_Array_Get_Item_8)
+  [5128] CallFunc_Array_Get_Item_8.RestoreHealthAttributes()
+  [5160] pop
+  [5161] CallFunc_Add_IntInt_ReturnValue_6 = Add_IntInt(Temp_int_Loop_Counter_Variable_6, 1)
+  [5203] Temp_int_Loop_Counter_Variable_6 = CallFunc_Add_IntInt_ReturnValue_6
+  [5230] goto @3910
+  [5235] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetSpawnedBehemoths_Behemoths)
+  [5276] goto @1143
+  [5281] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [5323] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [5350] goto @1189
+  [5355] CallFunc_Add_IntInt_ReturnValue_8 = Add_IntInt(Temp_int_Loop_Counter_Variable_8, 1)
+  [5397] Temp_int_Loop_Counter_Variable_8 = CallFunc_Add_IntInt_ReturnValue_8
+  [5424] goto @2642
+  [5429] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_5, 1)
+  [5471] Temp_int_Loop_Counter_Variable_5 = CallFunc_Add_IntInt_ReturnValue_4
+  [5498] goto @4095
+  [5503] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters_1, Temp_int_Array_Index_Variable_6, CallFunc_Array_Get_Item_8)
+  [5562] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_Array_Get_Item_8.self.AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(self.L_Spec)
+  [5643] pop
+  [5644] CallFunc_Add_IntInt_ReturnValue_7 = Add_IntInt(Temp_int_Loop_Counter_Variable_7, 1)
+  [5686] Temp_int_Loop_Counter_Variable_7 = CallFunc_Add_IntInt_ReturnValue_7
+  [5713] goto @4586
+  [5718] push @5852
+  [5723] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=Temp_int_Array_Index_Variable_2).Buff, K2Node_CustomEvent_DestroyedActor)
+  [5780] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [5790] Default__KismetArrayLibrary.Array_Remove(self.ModifierBuffs, Temp_int_Array_Index_Variable_2)
+  [5840] Temp_bool_True_if_break_was_hit_Variable = true
+  [5851] pop
+  [5852] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [5894] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [5921] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [5950] CallFunc_Array_Length_ReturnValue_8 = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [6009] CallFunc_Less_IntInt_ReturnValue_7 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_8)
+  [6047] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue_7)
+  [6085] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [6095] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_1
+  [6122] goto @5718
+  [6127] Temp_int_Loop_Counter_Variable_1 = 0
+  [6150] Temp_int_Array_Index_Variable_2 = 0
+  [6173] goto @5921
+  [6178] Temp_bool_True_if_break_was_hit_Variable = false
+  [6189] goto @6127
+  [6194] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [6214] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [6256] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [6266] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [6369] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [6389] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, global_modifier_actor_bp_C, CallFunc_MakeTransform_ReturnValue, 0, CallFunc_GetOwner_ReturnValue_2)
+  [6439] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [6542] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [6580] self.GlobalModifierActor = CallFunc_FinishSpawningActor_ReturnValue
+  [6599] pop
+  [6600] push @6706
+  [6605] push @6650
+  [6610] if !(Temp_bool_Has_Been_Initd_Variable) goto @6625
+  [6624] pop
+  [6625] Temp_bool_Has_Been_Initd_Variable = true
+  [6636] if !(false) pop
+  [6638] Temp_bool_IsClosed_Variable = true
+  [6649] pop
+  [6650] if !(Temp_bool_IsClosed_Variable) goto @6665
+  [6664] pop
+  [6665] Temp_bool_IsClosed_Variable = true
+  [6676] if !(false) goto @6694
+  [6682] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = false
+  [6693] pop
+  [6694] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = true
+  [6705] pop
+  [6706] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = false
+  [6717] pop
+  [6718] push @6728
+  [6723] goto @6605
+  [6728] Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable = true
+  [6739] pop
+  [6740] push @6750
+  [6745] goto @6605
+  [6750] if !(Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable) pop
+  [6760] push @6600
+  [6765] Default__KismetArrayLibrary.Array_Get(self.L_ModQueue, 0, CallFunc_Array_Get_Item_4)
+  [6820] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnLoaded_D9356A3D465FB5F5041881B49A063A6C)
+  [6843] LoadAsset(self, CallFunc_Array_Get_Item_4.HuntModifierSoftRef, K2Node_CreateDelegate_OutputDelegate_2, LatentActionInfo{-1, -109274694, 'ExecuteUbergraph_modifier_manager_bpc', self})
+  [6919] pop
+  [6920] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(hunt_modifiers, K2Node_CustomEvent_Modifier, CallFunc_GetDataTableRowFromName_OutRow)
+  [6989] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [6999] K2Node_MakeStruct_hunt_mod_soft_guid_pair.HuntModifierSoftRef = CallFunc_GetDataTableRowFromName_OutRow.ModifierAsset
+  [7044] K2Node_MakeStruct_hunt_mod_soft_guid_pair.GUID = K2Node_CustomEvent_ModifierSourceGUID
+  [7080] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.L_ModQueue, K2Node_MakeStruct_hunt_mod_soft_guid_pair)
+  [7148] pop
+  [7149] K2Node_CreateDelegate_OutputDelegate = bind(self.PollQueue)
+  [7172] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.2, true, 0.0, 0.0)
+  [7225] goto @6194
+  [7230] goto @7149
+  [7235] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(self.L_ModQueue)
+  [7294] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_5, 0)
+  [7328] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [7338] goto @6740
+  [7343] Temp_object_Variable = K2Node_CustomEvent_Loaded
+  [7362] push @489
+  [7367] push @7377
+  [7372] goto @6718
+  [7377] Default__KismetArrayLibrary.Array_Get(self.L_ModQueue, 0, CallFunc_Array_Get_Item_4)
+  [7432] self.L_GUID = CallFunc_Array_Get_Item_4.GUID
+  [7468] Default__KismetArrayLibrary.Array_Remove(self.L_ModQueue, 0)
+  [7514] pop
+  [7515] self.L_Index = 0
+  [7538] goto @280
+  [7543] goto @6178
+  [7548] K2Node_MakeStruct_buff_GUID_pair.Buff = K2Node_CustomEvent_Buff
+  [7576] K2Node_MakeStruct_buff_GUID_pair.GUID = K2Node_CustomEvent_GUID
+  [7612] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.ModifierBuffs, K2Node_MakeStruct_buff_GUID_pair)
+  [7680] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnModifierBuffDestroyed)
+  [7703] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [7744] pop
+  [7745] return nothing
+  [7747] end
+
+=== GetModifierBuffsByGUID
+  [0] push @455
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ModifierBuffs)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @349
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @381
+  [194] CallFunc_EqualEqual_GuidGuid_ReturnValue = EqualEqual_GuidGuid(EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=Temp_int_Array_Index_Variable).GUID, GUID)
+  [251] if !(CallFunc_EqualEqual_GuidGuid_ReturnValue) pop
+  [261] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Buffs, EX_ArrayGetByRef(ArrayVariable=self.ModifierBuffs,ArrayIndex=Temp_int_Array_Index_Variable).Buff)
+  [348] pop
+  [349] Buffs = L_Buffs
+  [376] goto @455
+  [381] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [423] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [450] goto @51
+  [455] return nothing
+  [457] end
+
+=== OnLoaded_D9356A3D465FB5F5041881B49A063A6C
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_modifier_manager_bpc(7343)
+  [33] return nothing
+  [35] end
+
+=== OnModifierBuffDestroyed
+  [0] frame.K2Node_CustomEvent_DestroyedActor = DestroyedActor
+  [18] ExecuteUbergraph_modifier_manager_bpc(7543)
+  [33] return nothing
+  [35] end
+
+=== PollQueue
+  [0] ExecuteUbergraph_modifier_manager_bpc(7235)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_modifier_manager_bpc(7230)
+  [15] return nothing
+  [17] end
+
+=== TrackBuff
+  [0] frame.K2Node_CustomEvent_GUID = GUID
+  [18] frame.K2Node_CustomEvent_Buff = Buff
+  [36] ExecuteUbergraph_modifier_manager_bpc(7548)
+  [51] return nothing
+  [53] end

@@ -1,0 +1,116 @@
+wolf_frost_combat_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Selector
+    [if Blackboard  (AetherCharged is Is Set)]
+    1) Selector "Aether Charge State"
+      [if Blackboard  (InRageState is Is Not Set)]
+      [if Cooldown  (CooldownTime=30)]
+      1) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=45)
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_wolf_frost_howl_spawn_mot)
+        3) RunEQSQuery "Try to find an open spot"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        4) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass wolf_frost_hunterandprey_atk_C)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_hunterandprey_bt)
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass wolf_frost_frostgeyser_atk_C)]
+      [if btdeco_percentchance  (PercentChance=0.5)]
+      3) Sequence
+        1) RunEQSQuery "Run EQS Query: get space near patrol"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+        3) BehemothAction "Frost Geyser"  (Montage=AnimMontage b_wolf_frost_frostgeyser_atk_mot, ActionClassToCooldown=BlueprintGeneratedClass wolf_frost_frostgeyser_atk_C)
+    [if Blackboard  (InRageState is Is Set)]
+    2) Sequence
+      1) Selector
+        {service rng_float_service  (RNG_Float_key=bb.PounceLocation, bCallTickOnSearchStart=true, bRestartTimerOnEachActivation=true)}
+        [if comment_btdeco "Chilling Howl"]
+        [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass wolf_frost_chillinghowl_atk_C)]
+        1) PerformActionClass  (ActionClass=BlueprintGeneratedClass wolf_frost_chillinghowl_atk_C)
+        [if Cooldown  (CooldownTime=30)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_pounce_sync_bt)
+        [if Cooldown  (CooldownTime=15)]
+        [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=1000, MaxDistance=3000)]
+        3) RunBehavior "Rollout Attack"  (BehaviorAsset=BehaviorTree wolf_frost_rollout_bt)
+        [if Cooldown  (CooldownTime=45)]
+        4) Sequence
+          1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass lerawr_sidegore_l_atk_C", "BlueprintGeneratedClass lerawr_sidegore_r_atk_C", "BlueprintGeneratedClass wolf_frost_tailswipe_l_atk_C", "BlueprintGeneratedClass wolf_frost_tailswipe_r_atk_C"], ChosenActionKey=bb.ChosenAttack)
+          2) Selector
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass lerawr_sidegore_l_atk_C, bShowPropertyDetails=false)]
+            1) BehemothAction "Side Gore Left"  (Montage=AnimMontage b_leRawr_loco_sidegore_left_Montage, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass lerawr_sidegore_r_atk_C, bShowPropertyDetails=false)]
+            2) BehemothAction "Side Gore Right"  (Montage=AnimMontage b_leRawr_loco_sidegore_right_Montage, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass wolf_frost_tailswipe_l_atk_C, bShowPropertyDetails=false)]
+            3) BehemothAction "Tail swipe Left"  (Montage=AnimMontage b_wolf_frost_tailswipe_l_atk_mot, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass wolf_frost_tailswipe_r_atk_C, bShowPropertyDetails=false)]
+            4) BehemothAction "Tail swipe right"  (Montage=AnimMontage b_wolf_frost_tailswipe_r_atk_mot, bShowPropertyDetails=false)
+        [if Cooldown  (CooldownTime=30)]
+        [if btdeco_lock_target]
+        [if Loop  (NumLoops=2)]
+        5) Sequence
+          1) RunEQSQuery "Run EQS Query: Pounce Location"  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1400.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+          2) set_blackboard_key_bttask "Set ShouldFaceAttackTarget Key"  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+          3) RunBehavior "Run Behavior: JumpTo"  (BehaviorAsset=BehaviorTree lerawr_jumpto_bt)
+          4) Selector "Pounce"
+            {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+            [if btdeco_percentchance  (PercentChance=0.8)]
+            1) BehemothAction "Forward"  (Montage=AnimMontage b_wolf_frost_pounce_fwd_mot, bShowPropertyDetails=false)
+            [if btdeco_percentchance  (PercentChance=0.5)]
+            2) BehemothAction "Left"  (Montage=AnimMontage b_wolf_frost_pounce_fwdleft_mot, bShowPropertyDetails=false)
+            3) BehemothAction "Right"  (Montage=AnimMontage b_wolf_frost_pounce_fwdright_mot, bShowPropertyDetails=false)
+    3) Selector "Combat Options"
+      [if Blackboard  (AetherCharged is Is Set)]
+      1) Sequence "Find a location to jump to"
+        1) RunEQSQuery "Check if there is space to back jump"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_point_in_circle_around_behemoth", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": -1.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": -0.8, "BBKey": "bb.None"}], "RunMode": "EEnvQueryRunMode::AllMatching"}, BlackboardKey=bb.PounceLocation)
+        2) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        [if Blackboard  (TargetActor is Is Set)]
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=0, MaxDistance=2000)]
+        3) Selector "Back Jump Combos"
+          [if Cooldown  (CooldownTime=15)]
+          1) Selector
+            [if btdeco_percentchance  (PercentChance=0.5)]
+            1) PhxPerformGameplayAction "Back Jump to Ice Blade Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+            [if Cooldown  (CooldownTime=15)]
+            2) PhxPerformGameplayAction "Back Jump to Chomp Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+          [if Cooldown  (CooldownTime=30)]
+          2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_bite_sync_bt)
+          [if Cooldown  (CooldownTime=20)]
+          3) Sequence
+            1) perform_action_montage_bttask "Back Jump"  (Montage=AnimMontage b_wolf_frost_back_jump_atk_mot)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_close_range_atks_bt)
+      2) Selector
+        [if Cooldown  (CooldownTime=15)]
+        1) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_close_range_atks_bt)
+        2) Sequence
+          [if ForceSuccess]
+          1) Sequence "Move to an open spot if we can"
+            1) RunEQSQuery "Try to find an open spot"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+            3) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+            4) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=35)
+          2) Selector "Long Range Tactics"
+            [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=1500, MaxDistance=8000)]
+            1) Selector
+              [if Cooldown  (CooldownTime=45)]
+              1) Selector
+                [if btdeco_percentchance  (PercentChance=0.5)]
+                1) Sequence
+                  [if ForceSuccess "We want to return success as long as an attempt was made"]
+                  1) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_pounce_sync_bt)
+                2) RunBehavior "Rollout Attack"  (BehaviorAsset=BehaviorTree wolf_frost_rollout_bt)
+              [if Cooldown  (CooldownTime=15)]
+              [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=1500, MaxDistance=2600)]
+              2) PhxPerformGameplayAction "Chomp Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+              3) Sequence
+                1) RunBehavior "Run Behavior: Run and Pounce"  (BehaviorAsset=BehaviorTree wolf_frost_runandpounce_bt)
+                [if ForceSuccess]
+                [if btdeco_percentchance  (PercentChance=0.5)]
+                2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_close_range_atks_bt)
+                3) Wait  (WaitTime=0.5)
+            2) Sequence
+              1) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_close_range_atks_bt)
+              2) Wait  (WaitTime=0.5)
+      [if Blackboard  (ChosenAttack is Is Set)]
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      3) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)

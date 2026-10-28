@@ -1,0 +1,143 @@
+# wait_for_past_target_bttask_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_wait_for_past_target_bttask
+  [0] goto computed(EntryPoint)
+  [10] Finish(false)
+  [25] goto @1144
+  [30] CallFunc_GetBlackboardValueAsActor_ReturnValue = GetBlackboardValueAsActor(self, self.TargetKey)
+  [60] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBlackboardValueAsActor_ReturnValue)
+  [89] if !(CallFunc_IsValid_ReturnValue) goto @10
+  [103] CallFunc_GetBlackboardValueAsActor_ReturnValue = GetBlackboardValueAsActor(self, self.TargetKey)
+  [133] Default__archon_function_library_C.GetHorizPredictedMovement(CallFunc_GetBlackboardValueAsActor_ReturnValue, self.TimeInFutureToPredictTargetPos, self, CallFunc_GetHorizPredictedMovement_FutureLocation)
+  [197] self.L_TargetPos = CallFunc_GetHorizPredictedMovement_FutureLocation
+  [224] IsPastTarget(K2Node_Event_ControlledPawn_2, self.L_TargetPos, CallFunc_IsPastTarget_PastTarget, CallFunc_IsPastTarget_GoingToCollide)
+  [274] if !(CallFunc_IsPastTarget_GoingToCollide) goto @308
+  [288] Finish(true)
+  [303] goto @1144
+  [308] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.TimeWaitType, 1)
+  [339] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.TimeWaitType, 0)
+  [370] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsPastTarget_PastTarget)
+  [399] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_IsPastTarget_PastTarget, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [437] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_1)
+  [475] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue_1, CallFunc_BooleanAND_ReturnValue_2)
+  [513] if !(CallFunc_BooleanOR_ReturnValue) goto @546
+  [527] if !(self.TurnQueued) goto @769
+  [541] goto @1144
+  [546] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.StartTimeStamp, self.MaximumTimeToWait)
+  [592] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.MaximumTimeToWait, 0.0)
+  [630] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [659] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [697] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [735] if !(CallFunc_BooleanAND_ReturnValue) goto @1144
+  [749] Finish(false)
+  [764] goto @1144
+  [769] self.TurnQueued = true
+  [780] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(self.TimeAfterPassingTargetToStop, 0.0)
+  [818] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) goto @973
+  [832] K2Node_CreateDelegate_OutputDelegate = bind(self.QueuedTurn)
+  [855] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeAfterPassingTargetToStop)
+  [884] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [941] self.L_TurnQuee = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [968] goto @1144
+  [973] Finish(true)
+  [988] goto @1144
+  [993] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [1022] self.StartTimeStamp = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [1049] self.TurnQueued = false
+  [1060] goto @1144
+  [1065] goto @973
+  [1070] K2_ClearAndInvalidateTimerHandle(self, self.L_TurnQuee)
+  [1090] FinishExecute(K2Node_CustomEvent_Success)
+  [1109] goto @1144
+  [1114] K2_ClearAndInvalidateTimerHandle(self, self.L_TurnQuee)
+  [1134] FinishAbort()
+  [1144] return nothing
+  [1146] end
+
+=== Finish
+  [0] frame.K2Node_CustomEvent_Success = Success
+  [18] ExecuteUbergraph_wait_for_past_target_bttask(1070)
+  [33] return nothing
+  [35] end
+
+=== IsPastTarget
+  [0] push @641
+  [5] push @36
+  [10] if !(self.TurnQueued) goto @111
+  [24] L_PastTarget = true
+  [35] pop
+  [36] WillCollideWithTerrain(Pawn, CallFunc_WillCollideWithTerrain_ShouldStop)
+  [68] PastTarget = L_PastTarget
+  [87] GoingToCollide = CallFunc_WillCollideWithTerrain_ShouldStop
+  [106] goto @641
+  [111] CallFunc_K2_GetActorLocation_ReturnValue = Pawn.K2_GetActorLocation()
+  [161] CallFunc_GetActorForwardVector_ReturnValue = Pawn.GetActorForwardVector()
+  [211] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(TargetPos, CallFunc_K2_GetActorLocation_ReturnValue)
+  [257] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [299] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(CallFunc_GetActorForwardVector_ReturnValue, CallFunc_Normal_ReturnValue)
+  [345] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Dot_VectorVector_ReturnValue, 0.0)
+  [383] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @409
+  [397] L_PastTarget = true
+  [408] pop
+  [409] CallFunc_K2_GetActorLocation_ReturnValue = Pawn.K2_GetActorLocation()
+  [459] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(TargetPos, CallFunc_K2_GetActorLocation_ReturnValue)
+  [505] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [542] CallFunc_MultiplyMultiply_FloatFloat_ReturnValue = MultiplyMultiply_FloatFloat(self.DistanceToTargetToEndEarly, 2.0)
+  [588] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_VSizeSquared_ReturnValue, CallFunc_MultiplyMultiply_FloatFloat_ReturnValue)
+  [626] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [636] goto @397
+  [641] return nothing
+  [643] end
+
+=== QueuedTurn
+  [0] ExecuteUbergraph_wait_for_past_target_bttask(1065)
+  [15] return nothing
+  [17] end
+
+=== ReceiveAbortAI
+  [0] frame.K2Node_Event_OwnerController = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn = ControlledPawn
+  [36] ExecuteUbergraph_wait_for_past_target_bttask(1114)
+  [51] return nothing
+  [53] end
+
+=== ReceiveExecuteAI
+  [0] frame.K2Node_Event_OwnerController_1 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_1 = ControlledPawn
+  [36] ExecuteUbergraph_wait_for_past_target_bttask(993)
+  [51] return nothing
+  [53] end
+
+=== ReceiveTickAI
+  [0] frame.K2Node_Event_OwnerController_2 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_2 = ControlledPawn
+  [36] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [54] ExecuteUbergraph_wait_for_past_target_bttask(30)
+  [69] return nothing
+  [71] end
+
+=== WillCollideWithTerrain
+  [0] push @627
+  [5] Collided = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.OffsetLocationsToNavTest)
+  [121] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [159] if !(CallFunc_Less_IntInt_ReturnValue) goto @529
+  [173] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [200] push @553
+  [205] Default__KismetArrayLibrary.Array_Get(self.OffsetLocationsToNavTest, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [264] CallFunc_MakeVector_ReturnValue = MakeVector(self.CollisionTest_XLenght, 0.0, 0.0)
+  [319] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Array_Get_Item, CallFunc_MakeVector_ReturnValue)
+  [365] array{CallFunc_Array_Get_Item, CallFunc_Add_VectorVector_ReturnValue}
+  [394] CallFunc_PathHitsNavMesh_ReturnValue = PathHitsNavMesh('', self, K2Node_MakeArray_Array, false, CallFunc_PathHitsNavMesh_OutHitPoint, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit, CallFunc_PathHitsNavMesh_OutFoundNavMesh, ParentActor, null, null, null, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), false, false, 0.1)
+  [507] if !(CallFunc_PathHitsNavMesh_ReturnValue) pop
+  [517] Collided = true
+  [528] pop
+  [529] ShouldStop = Collided
+  [548] goto @627
+  [553] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [595] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [622] goto @62
+  [627] return nothing
+  [629] end

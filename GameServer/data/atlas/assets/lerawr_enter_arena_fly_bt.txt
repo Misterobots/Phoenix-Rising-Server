@@ -1,0 +1,14 @@
+lerawr_enter_arena_fly_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=EnteringArena)]
+  Sequence
+    {service hide_behemoth_bttask  (DisableCollisionDuringHide=false)}
+    [if ForceSuccess]
+    1) Sequence
+      1) Sequence
+        {service hide_behemoth_bttask  (DisableCollisionDuringHide=false)}
+        1) Wait  (WaitTime=0.3)
+      2) call_specific_behemoth_function_bttask "Behemoth Specific Function: LeaveFleeState"  (SpecificFunction=LeaveFleeState, bShowPropertyDetails=false)
+      3) BehemothAction "exit fly"  (Montage=AnimMontage b_aq_lerawr_00_loco_jumplandturntoidle_fwd_00_mot)
+    2) try_set_behemoth_state_bttask  (State=EnteringArena, StateChangeType=End, WhenInterruptedChangeState=EnteringArena, InterruptedChangeStateEvent=End)

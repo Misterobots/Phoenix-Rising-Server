@@ -1,0 +1,158 @@
+# poisonzone_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthApplyCustomPersistentEffects
+  [0] frame.K2Node_Event_Target = Target
+  [18] ExecuteUbergraph_poisonzone_bp(1116)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_poisonzone_bp
+  [0] goto computed(EntryPoint)
+  [10] ReceiveBeginPlay()
+  [20] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [48] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [68] array{CallFunc_GetInstigator_ReturnValue_2}
+  [88] Default__archon_function_library_C.GetGroundPosAndNormal(CallFunc_K2_GetActorLocation_ReturnValue, 250.0, K2Node_MakeArray_Array_1, 0, 800.0, self, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [190] if !(CallFunc_GetGroundPosAndNormal_HitGround) goto @244
+  [204] CallFunc_K2_SetActorLocation_ReturnValue = K2_SetActorLocation(CallFunc_GetGroundPosAndNormal_GroundPos, false, CallFunc_K2_SetActorLocation_SweepHitResult, false)
+  [244] SetupPoisonZoneManager()
+  [258] CallFunc_K2_GetComponentLocation_ReturnValue = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [308] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.PoisonAreaFX, CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [401] self.ActivePoisonAreaVFX = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [420] CallFunc_CreateDynamicMaterialInstance_ReturnValue = CreateDynamicMaterialInstance(self, self.DecalMaterial, 'None', 0)
+  [465] CallFunc_K2_GetComponentLocation_ReturnValue = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [515] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 360.0)
+  [561] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [590] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, -90.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [637] CallFunc_K2_GetComponentScale_ReturnValue = self.Capsule.K2_GetComponentScale()
+  [687] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(CallFunc_K2_GetComponentScale_ReturnValue, EX_VectorConst(Value={'X': 100.0, 'Y': 450.0, 'Z': 450.0}))
+  [749] CallFunc_SpawnDecalAtLocation_ReturnValue = Default__GameplayStatics.SpawnDecalAtLocation(self, CallFunc_CreateDynamicMaterialInstance_ReturnValue, CallFunc_Multiply_VectorVector_ReturnValue, CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_MakeRotator_ReturnValue, 0.0)
+  [833] self.Decal = CallFunc_SpawnDecalAtLocation_ReturnValue
+  [852] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Poison_Persistent_Pool, self, 0, Temp_delegate_Variable, false)
+  [927] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.InitialLifeSpan)
+  [956] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.DecalFadeTime)
+  [1002] CallFunc_SetFadeOut_StartDelay_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [1031] CallFunc_SetFadeOut_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.DecalFadeTime)
+  [1060] self.Decal.SetFadeOut(CallFunc_SetFadeOut_StartDelay_ImplicitCast, CallFunc_SetFadeOut_Duration_ImplicitCast, true)
+  [1111] goto @4105
+  [1116] AuthApplyCustomPersistentEffects(K2Node_Event_Target)
+  [1135] self.ActorOverlapping = null
+  [1146] self.ActorOverlapping = K2Node_Event_Target
+  [1165] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ActorOverlapping)
+  [1194] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Buffs.PoisonImmune'})
+  [1268] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [1297] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @4105
+  [1311] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ActorOverlapping)
+  [1340] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Buffs.PoisonSoak'})
+  [1414] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue_1)
+  [1443] if !(CallFunc_Not_PreBool_ReturnValue_2) goto @2732
+  [1457] self.Manager.CanZoneAffectTarget(self, K2Node_Event_Target, CallFunc_CanZoneAffectTarget_Can_)
+  [1512] if !(CallFunc_CanZoneAffectTarget_Can_) goto @4105
+  [1526] self.Manager.ZoneAffectedTarget(self, K2Node_Event_Target)
+  [1572] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [1592] CallFunc_ApplyBuffFromSoftPtr_ReturnValue = ApplyBuffFromSoftPtr(K2Node_Event_Target, self.Buff, CallFunc_ApplyBuffFromSoftPtr_BuffAdded, Temp_struct_Variable, EX_NoInterface(), CallFunc_GetInstigator_ReturnValue, true)
+  [1659] Default__gameplay_helpers_fl_C.ActorHasAbilitySystemGameplayTag(K2Node_Event_Target, GameplayTag{'Buffs.Poisoned'}, self, CallFunc_ActorHasAbilitySystemGameplayTag_HasTag)
+  [1741] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_ActorHasAbilitySystemGameplayTag_HasTag)
+  [1770] if !(CallFunc_Not_PreBool_ReturnValue) goto @4105
+  [1784] array{GameplayTag{'Stagger.None'}, GameplayTag{'DamageType.DoDamageToInvulnerableDodge'}, GameplayTag{'DamageType.Dot'}, GameplayTag{'DamageType.Poison'}}
+  [1903] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [1923] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = Guid{0, 0, 0, 0}
+  [1984] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = K2Node_MakeArray_Array
+  [2020] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [2040] K2Node_MakeStruct_ArchonCombatHitParams.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [2095] K2Node_MakeStruct_ArchonCombatHitParams.SourceActor = CallFunc_GetInstigator_ReturnValue_1
+  [2123] K2Node_MakeStruct_ArchonCombatHitParams.HitDirection = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [2175] K2Node_MakeStruct_ArchonCombatHitParams.HitInfo = HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}
+  [2581] K2Node_MakeStruct_ArchonCombatHitParams.DamageRow = self.DamageRow
+  [2617] K2Node_MakeStruct_ArchonCombatHitParams.DamageScale = 1.0
+  [2649] K2Node_MakeStruct_ArchonCombatHitParams.bApplyBuffsOnHit = false
+  [2669] TryHitActor(K2Node_Event_Target, self, K2Node_MakeStruct_ArchonCombatHitParams, CallFunc_GetInstigatorController_ReturnValue, CallFunc_GetInstigator_ReturnValue_1, null, K2Node_MakeStruct_ArchonExtendedDamageInfo, null)
+  [2727] goto @4105
+  [2732] CallFunc_GetComponentByClass_ReturnValue = self.ActorOverlapping.GetComponentByClass(ArchonBuffableComponent)
+  [2783] CallFunc_HasBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.HasBuff(poisonsoak_active_buff_C)
+  [2838] if !(CallFunc_HasBuff_ReturnValue) goto @2857
+  [2852] goto @1457
+  [2857] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(self.ActorOverlapping, poisonsoak_active_buff_C, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable_1, EX_NoInterface(), self.ActorOverlapping, true)
+  [2924] Multicast_RemoveDecal()
+  [2938] K2_DestroyActor()
+  [2952] goto @4105
+  [2957] ReceiveActorBeginOverlap(K2Node_Event_OtherActor_1)
+  [2976] K2Node_DynamicCast_AsPawn = cast<Pawn>(K2Node_Event_OtherActor_1)
+  [3012] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [3041] if !(K2Node_DynamicCast_bSuccess) goto @4105
+  [3055] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(K2Node_DynamicCast_AsPawn)
+  [3091] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [3120] if !(K2Node_DynamicCast_bSuccess_1) goto @3458
+  [3134] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [3180] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetMesh_SkeletalMesh)
+  [3209] if !(CallFunc_IsValid_ReturnValue) goto @4105
+  [3223] CallFunc_IsValid_ReturnValue_1 = IsValid(self.CharacterVFX)
+  [3252] if !(CallFunc_IsValid_ReturnValue_1) goto @4105
+  [3266] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue = SpawnEmitterAttached_WeaponSeparation(self.CharacterVFX, CallFunc_GetMesh_SkeletalMesh, self.VFXAttachPoint_0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [3394] Default__BlueprintMapLibrary.Map_Add(self.PawnToVFX, K2Node_DynamicCast_AsPawn, CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue)
+  [3453] goto @4105
+  [3458] CallFunc_GetMesh_SkeletalMesh = null
+  [3469] goto @3180
+  [3474] ReceiveActorEndOverlap(K2Node_Event_OtherActor)
+  [3493] K2Node_DynamicCast_AsPawn_1 = cast<Pawn>(K2Node_Event_OtherActor)
+  [3529] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn_1)
+  [3558] if !(K2Node_DynamicCast_bSuccess_2) goto @4105
+  [3572] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.PawnToVFX, K2Node_DynamicCast_AsPawn_1, CallFunc_Map_Find_Value)
+  [3641] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_Map_Find_Value)
+  [3670] if !(CallFunc_IsValid_ReturnValue_2) goto @4105
+  [3684] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.PawnToVFX, K2Node_DynamicCast_AsPawn_1, CallFunc_Map_Find_Value)
+  [3753] CallFunc_Map_Find_Value.Deactivate()
+  [3789] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.PawnToVFX, K2Node_DynamicCast_AsPawn_1)
+  [3849] goto @4105
+  [3854] ReceiveEndPlay(K2Node_Event_EndPlayReason)
+  [3873] CallFunc_IsValid_ReturnValue_3 = IsValid(self.ActivePoisonAreaVFX)
+  [3902] if !(CallFunc_IsValid_ReturnValue_3) goto @4105
+  [3916] self.ActivePoisonAreaVFX.K2_DestroyComponent(self)
+  [3949] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Poison_Persistent_Pool, self, 0, Temp_delegate_Variable_1, false)
+  [4024] goto @4105
+  [4029] CallFunc_SetFadeOut_Duration_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.DecalFadeTime)
+  [4058] self.Decal.SetFadeOut(0.0, CallFunc_SetFadeOut_Duration_ImplicitCast_1, true)
+  [4105] return nothing
+  [4107] end
+
+=== Multicast_RemoveDecal
+  [0] ExecuteUbergraph_poisonzone_bp(4029)
+  [15] return nothing
+  [17] end
+
+=== ReceiveActorBeginOverlap
+  [0] frame.K2Node_Event_OtherActor_1 = OtherActor
+  [18] ExecuteUbergraph_poisonzone_bp(2957)
+  [33] return nothing
+  [35] end
+
+=== ReceiveActorEndOverlap
+  [0] frame.K2Node_Event_OtherActor = OtherActor
+  [18] ExecuteUbergraph_poisonzone_bp(3474)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_poisonzone_bp(10)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_poisonzone_bp(3854)
+  [33] return nothing
+  [35] end
+
+=== SetupPoisonZoneManager
+  [0] CallFunc_GetActorOfClass_ReturnValue = GetActorOfClass(self, poisonzone_manager_C)
+  [30] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetActorOfClass_ReturnValue)
+  [59] if !(CallFunc_IsValid_ReturnValue) goto @97
+  [73] self.Manager = CallFunc_GetActorOfClass_ReturnValue
+  [92] goto @402
+  [97] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [200] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, poisonzone_manager_C, CallFunc_MakeTransform_ReturnValue, 0, null)
+  [242] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [345] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [383] self.Manager = CallFunc_FinishSpawningActor_ReturnValue
+  [402] return nothing
+  [404] end

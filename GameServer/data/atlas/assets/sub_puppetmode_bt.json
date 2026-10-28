@@ -1,0 +1,124 @@
+{
+ "name": "sub_puppetmode_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/sub_puppetmode_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base"
+ ],
+ "exports": {
+  "sub_puppetmode_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_0",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@BTDecorator_Blackboard_11"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveToAndFace_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_Blackboard_11": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "PuppetMode is Set",
+    "NotifyObserver": "EBTBlackboardRestart::ValueChange",
+    "BlackboardKey": "bb.PuppetMode",
+    "FlowAbortMode": "EBTFlowAbortMode::Both",
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_1": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.TargetActor",
+    "MinDistance": 401.0,
+    "MaxDistance": 1000000000.0,
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTService_LookAlongPath_C_0": {
+   "type": "BTService_LookAlongPath_C",
+   "props": {
+    "HelperKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_MoveToAndFace_1": {
+   "type": "BTTask_MoveToAndFace",
+   "props": {
+    "FacingAngleBlackboardKey": "bb.TargetActor",
+    "bAlignWithFacingObject": true,
+    "AcceptableRadius": 400.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.TargetActor",
+    "Services": [
+     "@BTService_LookAlongPath_C_0"
+    ],
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.5,
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_Wait_2": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.5,
+    "TreeAsset": "BehaviorTree sub_puppetmode_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  }
+ }
+}

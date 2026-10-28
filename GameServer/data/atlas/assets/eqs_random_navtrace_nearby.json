@@ -1,0 +1,106 @@
+{
+ "name": "eqs_random_navtrace_nearby",
+ "package": "Archon/Content/Monsters/_shared/eqs_queries/eqs_random_navtrace_nearby",
+ "type": "EnvQuery",
+ "refs": [
+  "EQContext_CurrentPatrolCenterPoint_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MinDistanceFromQuerier"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MaxDistanceFromQuerier"
+   }
+  },
+  "eqs_random_navtrace_nearby": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_random_navtrace_nearby",
+    "Options": [
+     "@EnvQueryOption_0"
+    ]
+   }
+  },
+  "EnvQueryGenerator_OnCircle_0": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "NumberOfPoints": {
+     "DefaultValue": 20
+    },
+    "PointOnCircleSpacingMethod": "EPointOnCircleSpacingMethod::ByNumberOfPoints",
+    "bCenterCircleArcCorrectly": true,
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_0": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_0",
+    "Tests": [
+     "@EnvQueryTest_Distance_13",
+     "@EnvQueryTest_ArchonNavCircleTest_1",
+     "@EnvQueryTest_Distance_1"
+    ]
+   }
+  },
+  "EnvQueryTest_ArchonNavCircleTest_1": {
+   "type": "EnvQueryTest_ArchonNavCircleTest",
+   "props": {
+    "NavCircleRadius": {
+     "DefaultValue": 400.0
+    },
+    "TestOrder": 1,
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_1": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_CurrentPatrolCenterPoint_C",
+    "TestOrder": 2,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "ScoringFactor": {
+     "DefaultValue": -0.5
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_13": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "FloatValueMin": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 9999999.0,
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

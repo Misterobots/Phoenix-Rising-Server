@@ -1,0 +1,38 @@
+shared_generic_ai_coordination_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if check_next_message_type_btdeco]
+  Selector
+    [if check_next_message_type_btdeco  (MessageType=AllyEnteredCombat)]
+    1) Sequence
+      {service handle_message_bts  (MessageType=AllyEnteredCombat)}
+      [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+      1) try_set_behemoth_state_bttask  (State=Combat)
+      [if ForceSuccess]
+      2) Sequence
+        [if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+        1) Sequence
+          1) store_coordination_ally
+          [if set_behemoth_loco_mode_btdeco]
+          2) MoveTo  (AcceptableRadius=1750, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.TargetActor)
+    [if check_next_message_type_btdeco  (MessageType=CloseDistanceBetweenAllies)]
+    2) Sequence
+      {service handle_message_bts  (MessageType=CloseDistanceBetweenAllies)}
+      1) store_coordination_ally
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+      2) MoveTo  (AcceptableRadius=1750, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.TargetActor)
+    [if check_next_message_type_btdeco  (MessageType=TooCloseToAlly)]
+    3) Sequence
+      {service handle_message_bts  (MessageType=TooCloseToAlly)}
+      [if ForceSuccess]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shared_move_away_from_behemoths"}, BlackboardKey=bb.MoveDestination)
+        2) store_coordination_ally
+        3) move_towards_point_bttask  (GenericActionsToConsider=["behemoth_generic_action_type::StrafeLeft", "behemoth_generic_action_type::StrafeRight", "behemoth_generic_action_type::BackUp", "behemoth_generic_action_type::StepForward", "behemoth_generic_action_type::Backoff90TurnLeft", "behemoth_generic_action_type::Backoff90TurnRight", "behemoth_generic_action_type::RushTo180"])
+          {service override_lookat_target_bts}
+    [if check_next_message_type_btdeco  (MessageType=AllyDied)]
+    4) Sequence
+      {service handle_message_bts  (MessageType=AllyDied)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_allydeathreact_bt)
+    5) Sequence
+      1) consume_next_message_bttask

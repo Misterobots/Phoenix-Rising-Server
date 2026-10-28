@@ -1,0 +1,232 @@
+{
+ "name": "ce_mod_by_current_determination_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentMeter",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationPollTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MeterGameplayEffect",
+   "type": "StructProperty<EffectDef>",
+   "bp_type": "StructProperty<EffectDef>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveMeterGameplayEffect",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WeaponAbilitySystemComp",
+   "type": "ObjectProperty<ArchonAbilitySystemComponent>",
+   "bp_type": "ObjectProperty<ArchonAbilitySystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthPullPercentOfDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_mod_by_current_determination_buff_C.ExecuteUbergraph_ce_mod_by_current_determination_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CreateMeterEffect",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Result",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 43,
+   "reads": [
+    "CurrentMeter",
+    "MeterGameplayEffect",
+    "WeaponAbilitySystemComp"
+   ],
+   "sets": [
+    "ActiveMeterGameplayEffect",
+    "WeaponAbilitySystemComp"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToTarget",
+    "ArchonBuff.GetBuffOwner",
+    "GetCellEffectMagnitude",
+    "GetOwnedWeapon",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetSystemLibrary.IsValidClass",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_mod_by_current_determination_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 31,
+   "reads": [
+    "ActiveMeterGameplayEffect",
+    "OwnerAbilitySystemComponent",
+    "WeaponAbilitySystemComp"
+   ],
+   "sets": [
+    "ActiveMeterGameplayEffect",
+    "CurrentMeter",
+    "DeterminationPollTimer"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "CreateMeterEffect",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "RemoveActiveGameplayEffect",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_mod_by_current_determination_buff_C.ExecuteUbergraph_ce_mod_by_current_determination_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_mod_by_current_determination_buff",
+ "pseudo_file": "pseudo/ce_mod_by_current_determination_buff_C.txt",
+ "game_data": {}
+}

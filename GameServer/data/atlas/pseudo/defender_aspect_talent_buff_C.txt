@@ -1,0 +1,72 @@
+# defender_aspect_talent_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateBuffTracking
+  [0] ExecuteUbergraph_defender_aspect_talent_buff(477)
+  [15] return nothing
+  [17] end
+
+=== AvatarCheck
+  [0] ExecuteUbergraph_defender_aspect_talent_buff(119)
+  [15] return nothing
+  [17] end
+
+=== BehemothStaggered
+  [0] frame.K2Node_CustomEvent_Behemoth = Behemoth
+  [18] frame.K2Node_CustomEvent_PlayerState = PlayerState
+  [36] frame.K2Node_CustomEvent_WasInterrupt = WasInterrupt
+  [54] ExecuteUbergraph_defender_aspect_talent_buff(638)
+  [69] return nothing
+  [71] end
+
+=== ExecuteUbergraph_defender_aspect_talent_buff
+  [0] push @1054
+  [5] goto computed(EntryPoint)
+  [15] K2Node_CreateDelegate_OutputDelegate = bind(self.AvatarCheck)
+  [38] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 4.0, true, 0.0, 0.0)
+  [91] self.AvatarCheckTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [118] pop
+  [119] push @330
+  [124] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [144] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [173] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'GameMode.Escalation.Buffs.Warden.DefenderAmp'})
+  [247] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) pop
+  [257] self.HasAvatarOfControl = true
+  [268] self.AtkSpdIncrease = 0.019999999552965164
+  [295] K2_ClearAndInvalidateTimerHandle(self, self.AvatarCheckTimer)
+  [315] ActivateBuffTracking()
+  [329] pop
+  [330] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [350] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [379] CallFunc_HasAnyMatchingGameplayTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasAnyMatchingGameplayTags(self.OtherAvatarTags)
+  [435] if !(CallFunc_HasAnyMatchingGameplayTags_ReturnValue) pop
+  [445] self.AtkSpdIncrease = 0.009999999776482582
+  [472] goto @295
+  [477] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [498] K2Node_DynamicCast_AsArchon_Game_State = cast<ArchonGameState>(CallFunc_GetGameState_ReturnValue)
+  [534] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_State)
+  [563] if !(K2Node_DynamicCast_bSuccess) pop
+  [573] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.BehemothStaggered)
+  [596] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [637] pop
+  [638] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_CustomEvent_WasInterrupt)
+  [667] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(self.StaggeredBehemoths, K2Node_CustomEvent_Behemoth)
+  [727] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_Array_Contains_ReturnValue)
+  [756] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Not_PreBool_ReturnValue_1)
+  [794] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [804] CallFunc_Array_AddUnique_ReturnValue = Default__KismetArrayLibrary.Array_AddUnique(self.StaggeredBehemoths, K2Node_CustomEvent_Behemoth)
+  [872] if !(self.HasAvatarOfControl) goto @959
+  [886] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [906] Default__buff_function_library_C.AdjustBuffMaxStacks(CallFunc_GetBuffOwner_ReturnValue_1, 1, 2, self)
+  [959] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [979] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetBuffOwner_ReturnValue_1, 1, 2, false, self)
+  [1033] pop
+  [1034] OnAdded()
+  [1044] goto @15
+  [1049] goto @1034
+  [1054] return nothing
+  [1056] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_defender_aspect_talent_buff(1049)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,119 @@
+# creature_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetCreatureMetadata
+  [0] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(creature_metadata_table, CreatureName, CallFunc_GetDataTableRowFromName_OutRow)
+  [69] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @126
+  [83] FoundCreature = true
+  [94] CreatureMetadata = CallFunc_GetDataTableRowFromName_OutRow
+  [121] goto @224
+  [126] FoundCreature = false
+  [137] CreatureMetadata = CreatureMetadata{'None', EX_TextConst(Value={'SourceString': ''}), 0.0, EX_SoftObjectConst(Value='None'), GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}}
+  [224] return nothing
+  [226] end
+
+=== GetCreatureMetadataMatchingTagQuery
+  [0] push @651
+  [5] array{}
+  [16] GetDataTableRowNames(creature_metadata_table, CallFunc_GetDataTableRowNames_OutRowNames)
+  [44] Temp_int_Loop_Counter_Variable = 0
+  [67] Temp_int_Array_Index_Variable = 0
+  [90] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames)
+  [149] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [187] if !(CallFunc_Less_IntInt_ReturnValue) goto @483
+  [201] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [228] push @515
+  [233] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [292] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(creature_metadata_table, CallFunc_Array_Get_Item, CallFunc_GetDataTableRowFromName_OutRow)
+  [361] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [371] CallFunc_IsTagQueryEmpty_ReturnValue = IsTagQueryEmpty(TagQuery)
+  [400] if !(CallFunc_IsTagQueryEmpty_ReturnValue) goto @589
+  [414] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_MatchingCreatureMetadata, CallFunc_GetDataTableRowFromName_OutRow)
+  [482] pop
+  [483] MatchingCreatureMetadata = L_MatchingCreatureMetadata
+  [510] goto @651
+  [515] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [557] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [584] goto @90
+  [589] CallFunc_DoesContainerMatchTagQuery_ReturnValue = DoesContainerMatchTagQuery(CallFunc_GetDataTableRowFromName_OutRow.CreatureTags, TagQuery)
+  [636] if !(CallFunc_DoesContainerMatchTagQuery_ReturnValue) pop
+  [646] goto @414
+  [651] return nothing
+  [653] end
+
+=== GetLaunchTargetFromIncomingDamage
+  [0] CallFunc_K2_GetActorLocation_ReturnValue = DamagedActor.K2_GetActorLocation()
+  [50] Default__archon_function_library_C.XY(HitDirection, __WorldContext, CallFunc_XY_Out)
+  [113] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, VerticalAim)
+  [168] CallFunc_GetActorForwardVector_ReturnValue = Damager.GetActorForwardVector()
+  [218] CallFunc_VLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(PercentOfHitDirectionComparedToDamagerFacing)
+  [247] CallFunc_VLerp_ReturnValue = VLerp(CallFunc_GetActorForwardVector_ReturnValue, CallFunc_XY_Out, CallFunc_VLerp_Alpha_ImplicitCast)
+  [302] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_VLerp_ReturnValue, Force)
+  [348] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue)
+  [394] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [440] LaunchTarget = CallFunc_Add_VectorVector_ReturnValue_1
+  [467] return nothing
+  [469] end
+
+=== RollCreatureStackFromWaveEntry
+  [0] push @1060
+  [5] push @492
+  [10] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [38] CallFunc_LessEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(DefinitionEntry.PercentChance)
+  [76] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_RandomFloat_ReturnValue, CallFunc_LessEqual_DoubleDouble_B_ImplicitCast)
+  [114] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [124] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(DefinitionEntry.Creature.RowName, 'None')
+  [184] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(DefinitionEntry.Creature.DataTable, null)
+  [232] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ObjectObject_ReturnValue, CallFunc_EqualEqual_NameName_ReturnValue)
+  [270] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_BooleanOR_ReturnValue)
+  [299] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @559
+  [313] K2Node_MakeStruct_creature_wave_entry.CreatureName = DefinitionEntry.Creature.RowName
+  [367] K2Node_MakeStruct_creature_wave_entry.Amount = DefinitionEntry.Amount
+  [412] K2Node_MakeStruct_creature_wave_entry.SpawnQuery = DefinitionEntry.SpawnQuery
+  [449] EntryWasChosen = true
+  [460] ChosenCreatureAndCount = K2Node_MakeStruct_creature_wave_entry
+  [487] goto @1060
+  [492] EntryWasChosen = false
+  [503] ChosenCreatureAndCount = creature_wave_entry{'None', 0, null}
+  [554] goto @1060
+  [559] CallFunc_IsTagQueryEmpty_ReturnValue = IsTagQueryEmpty(DefinitionEntry.AcceptCreaturesPassingThisQuery)
+  [597] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsTagQueryEmpty_ReturnValue)
+  [626] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [636] GetCreatureMetadataMatchingTagQuery(DefinitionEntry.AcceptCreaturesPassingThisQuery, __WorldContext, CallFunc_GetCreatureMetadataMatchingTagQuery_MatchingCreatureMetadata)
+  [686] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCreatureMetadataMatchingTagQuery_MatchingCreatureMetadata)
+  [745] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [779] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [789] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCreatureMetadataMatchingTagQuery_MatchingCreatureMetadata)
+  [848] CallFunc_RandomInteger_ReturnValue = RandomInteger(CallFunc_Array_Length_ReturnValue)
+  [885] K2Node_MakeStruct_creature_wave_entry_1.CreatureName = EX_ArrayGetByRef(ArrayVariable=CallFunc_GetCreatureMetadataMatchingTagQuery_MatchingCreatureMetadata,ArrayIndex=CallFunc_RandomInteger_ReturnValue).CreatureName
+  [940] K2Node_MakeStruct_creature_wave_entry_1.Amount = DefinitionEntry.Amount
+  [985] K2Node_MakeStruct_creature_wave_entry_1.SpawnQuery = DefinitionEntry.SpawnQuery
+  [1022] EntryWasChosen = true
+  [1033] ChosenCreatureAndCount = K2Node_MakeStruct_creature_wave_entry_1
+  [1060] return nothing
+  [1062] end
+
+=== RollWaveFromWaveDefinition
+  [0] push @673
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(WaveDefinition.WaveContents)
+  [119] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [157] if !(CallFunc_Less_IntInt_ReturnValue) goto @351
+  [171] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [198] push @599
+  [203] RollCreatureStackFromWaveEntry(EX_ArrayGetByRef(ArrayVariable=WaveDefinition.WaveContents,ArrayIndex=Temp_int_Array_Index_Variable), __WorldContext, CallFunc_RollCreatureStackFromWaveEntry_EntryWasChosen, CallFunc_RollCreatureStackFromWaveEntry_ChosenCreatureAndCount)
+  [272] if !(CallFunc_RollCreatureStackFromWaveEntry_EntryWasChosen) pop
+  [282] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_WaveContents, CallFunc_RollCreatureStackFromWaveEntry_ChosenCreatureAndCount)
+  [350] pop
+  [351] L_ChosenWave.WaveContents = L_WaveContents
+  [387] L_ChosenWave.NextWaveCondition = WaveDefinition.NextWaveCondition
+  [432] L_ChosenWave.PercentRemainingNeededToStartNextWave = WaveDefinition.FinishWaveWhenThisPercentRemain
+  [477] L_ChosenWave.TimeUntilNextWaveMin = WaveDefinition.TimeUntilNextWaveMin
+  [522] L_ChosenWave.TimeUntilNextWaveMax = WaveDefinition.TimeUntilNextWaveMax
+  [567] ChosenWave = L_ChosenWave
+  [594] goto @673
+  [599] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [641] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [668] goto @51
+  [673] return nothing
+  [675] end

@@ -1,0 +1,132 @@
+# ce_weapons_mantis_aoe_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CheckDistanceToOwnerForDestroy
+  [0] if !(self.StartCheckingDistanceToOwner) goto @229
+  [14] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [34] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue)
+  [63] if !(CallFunc_IsValid_ReturnValue) goto @229
+  [77] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [97] CallFunc_GetDistanceTo_ReturnValue = GetDistanceTo(CallFunc_GetOwner_ReturnValue)
+  [134] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDistanceTo_ReturnValue)
+  [163] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, 100.0)
+  [201] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @229
+  [215] K2_DestroyActor()
+  [229] return nothing
+  [231] end
+
+=== CheckDistanceToOwnerForHomingChange
+  [0] if !(self.StartCheckingDistanceToOwner) goto @242
+  [14] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [34] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue)
+  [63] if !(CallFunc_IsValid_ReturnValue) goto @242
+  [77] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [97] CallFunc_GetDistanceTo_ReturnValue = GetDistanceTo(CallFunc_GetOwner_ReturnValue)
+  [134] CallFunc_GetFloatValue_ReturnValue = self.HomingAccelCurve.GetFloatValue(CallFunc_GetDistanceTo_ReturnValue)
+  [193] self.ProjectileMovement.self.HomingAccelerationMagnitude = CallFunc_GetFloatValue_ReturnValue
+  [242] return nothing
+  [244] end
+
+=== DealAoeDamage
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @235
+  [34] Temp_name_Variable = 'Cell.MantisRank1'
+  [65] Temp_name_Variable_1 = 'Cell.MantisRank2'
+  [96] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(self.CellRank, 1)
+  [130] Temp_bool_Variable = CallFunc_EqualEqual_IntInt_ReturnValue
+  [149] Apply Ao EDamage(self.CapsuleCollision, switch(Temp_bool_Variable){false: Temp_name_Variable_1, true: Temp_name_Variable, default: K2Node_Select_Default}, false, CallFunc_Apply_Ao_EDamage_ImpactLocation)
+  [235] return nothing
+  [237] end
+
+=== DealDamage
+  [0] ExecuteUbergraph_ce_weapons_mantis_aoe(977)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ce_weapons_mantis_aoe
+  [0] push @982
+  [5] goto computed(EntryPoint)
+  [15] self.StartCheckingDistanceToOwner = true
+  [26] pop
+  [27] CheckDistanceToOwnerForHomingChange()
+  [41] pop
+  [42] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [84] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Shock_Strike_Small_Danger_Zone, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [178] pop
+  [179] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [221] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, amp_s11a_shock_player_exp_p, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [314] goto @42
+  [319] DealAoeDamage()
+  [333] pop
+  [334] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [354] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue)
+  [383] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [393] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [414] if !(CallFunc_IsDedicatedServer_ReturnValue) pop
+  [424] pop
+  [425] CallFunc_K2_GetRootComponent_ReturnValue = self.HomingTargetActor.K2_GetRootComponent()
+  [467] self.ProjectileMovement.self.HomingTargetComponent = CallFunc_K2_GetRootComponent_ReturnValue
+  [508] Delay(self, 1.0, LatentActionInfo{EX_SkipOffsetConst(Value=15), 1668348441, 'ExecuteUbergraph_ce_weapons_mantis_aoe', self})
+  [562] pop
+  [563] ReceiveBeginPlay()
+  [573] CallFunc_K2_GetComponentToWorld_ReturnValue = self.DefaultSceneRoot.K2_GetComponentToWorld()
+  [623] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, mantis_aoe_homing_actor_C, CallFunc_K2_GetComponentToWorld_ReturnValue, 0, null)
+  [665] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [685] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue_1)
+  [726] CallFunc_K2_GetComponentToWorld_ReturnValue = self.DefaultSceneRoot.K2_GetComponentToWorld()
+  [776] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_K2_GetComponentToWorld_ReturnValue)
+  [814] self.HomingTargetActor = CallFunc_FinishSpawningActor_ReturnValue
+  [833] goto @425
+  [838] ReceiveDestroyed()
+  [848] self.HomingTargetActor.K2_DestroyActor()
+  [884] goto @179
+  [889] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [908] FollowGround()
+  [922] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=27), 1837969455, 'ExecuteUbergraph_ce_weapons_mantis_aoe', self})
+  [976] pop
+  [977] goto @319
+  [982] return nothing
+  [984] end
+
+=== FollowGround
+  [0] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [50] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue_1, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 200.0}))
+  [112] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue_1, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 50.0}))
+  [174] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 1.0)
+  [310] if !(CallFunc_LineTraceSingle_ReturnValue) goto @846
+  [324] CallFunc_K2_GetComponentLocation_ReturnValue = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [374] BreakVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [420] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [601] BreakVector(CallFunc_BreakHitResult_Location, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [647] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_BreakVector_Z, CallFunc_BreakVector_Z_1)
+  [693] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.TargetHeight, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [739] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [794] self.DefaultSceneRoot.K2_AddWorldOffset(CallFunc_MakeVector_ReturnValue, false, CallFunc_K2_AddWorldOffset_SweepHitResult, false)
+  [846] return nothing
+  [848] end
+
+=== GetCustomDamageScale
+  [0] Scale = self.DamageScale
+  [27] return nothing
+  [29] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ce_weapons_mantis_aoe(563)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_ce_weapons_mantis_aoe(838)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ce_weapons_mantis_aoe(889)
+  [33] return nothing
+  [35] end
+
+=== SpawnParticles
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] ExecuteUbergraph_ce_weapons_mantis_aoe(334)
+  [33] return nothing
+  [35] end

@@ -1,0 +1,312 @@
+# amber_aether_seal_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyBuffToActor
+  [0] CallFunc_IsValidClass_ReturnValue = IsValidClass(Buff Class)
+  [29] if !(CallFunc_IsValidClass_ReturnValue) goto @102
+  [43] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(ActorToBuff, Buff Class, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable, EX_NoInterface(), null, true)
+  [102] return nothing
+  [104] end
+
+=== AuthDie
+  [0] ExecuteUbergraph_amber_aether_seal_bp(2819)
+  [15] return nothing
+  [17] end
+
+=== AuthOnSealActivated
+  [0] ExecuteUbergraph_amber_aether_seal_bp(943)
+  [15] return nothing
+  [17] end
+
+=== Check Actors in Area
+  [0] push @747
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [91] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ActorsInSealArea)
+  [150] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [188] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [226] if !(CallFunc_BooleanAND_ReturnValue_1) goto @630
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @673
+  [272] Default__KismetArrayLibrary.Array_Get(self.ActorsInSealArea, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [331] K2Node_DynamicCast_AsAmber_Aether_Seal_Bp = cast<amber_aether_seal_bp_C>(CallFunc_Array_Get_Item)
+  [367] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAmber_Aether_Seal_Bp)
+  [396] if !(K2Node_DynamicCast_bSuccess_1) goto @421
+  [410] FoundSeal = true
+  [421] Default__KismetArrayLibrary.Array_Get(self.ActorsInSealArea, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [480] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_Array_Get_Item)
+  [516] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [545] if !(K2Node_DynamicCast_bSuccess) goto @570
+  [559] FoundBehemoth = true
+  [570] CallFunc_BooleanAND_ReturnValue = BooleanAND(FoundSeal, FoundBehemoth)
+  [608] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [618] Temp_bool_True_if_break_was_hit_Variable = true
+  [629] pop
+  [630] Found Behemoth = FoundBehemoth
+  [649] Found Seal = FoundSeal
+  [668] goto @747
+  [673] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [715] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [742] goto @62
+  [747] return nothing
+  [749] end
+
+=== CleapupTimerHandles
+  [0] K2_ClearAndInvalidateTimerHandle(self, self.ChargeUpHandle)
+  [20] K2_ClearAndInvalidateTimerHandle(self, self.SealUpdateLoopHandle)
+  [40] return nothing
+  [42] end
+
+=== ExecuteUbergraph_amber_aether_seal_bp
+  [0] push @3143
+  [5] goto computed(EntryPoint)
+  [15] self.ChargeUpTime = 0.009999999776482582
+  [42] if !(self.IsActivated) goto @57
+  [56] pop
+  [57] AuthOnSealActivated()
+  [71] self.IsActivated = true
+  [82] pop
+  [83] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnAuthSealUpdate)
+  [106] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 0.1, true, 0.0, 0.0)
+  [159] self.SealUpdateLoopHandle = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [186] pop
+  [187] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [207] if !(CallFunc_HasAuthority_ReturnValue) goto @309
+  [221] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.ActivationTime)
+  [250] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=83), -820862100, 'ExecuteUbergraph_amber_aether_seal_bp', self})
+  [308] pop
+  [309] GetSealWithTag(self.CurrentSealTag, CallFunc_GetSealWithTag_Data, CallFunc_GetSealWithTag_Found_Data)
+  [350] self.CurrentSealData = CallFunc_GetSealWithTag_Data
+  [377] if !(CallFunc_GetSealWithTag_Found_Data) pop
+  [387] CallFunc_K2_GetActorLocation_ReturnValue_1 = K2_GetActorLocation()
+  [415] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.CurrentSealData.SealSpawnParticleSystem, CallFunc_K2_GetActorLocation_ReturnValue_1, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [517] self.RuntimeSealSpawnParticleSystem = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [536] pop
+  [537] CallFunc_HasAuthority_ReturnValue_1 = HasAuthority()
+  [557] if !(CallFunc_HasAuthority_ReturnValue_1) goto @572
+  [571] pop
+  [572] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_vfx_summoning_seal_expire, self, 0, Temp_delegate_Variable_2, false)
+  [647] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_vfx_summon_seal_lp, self, 0, Temp_delegate_Variable, false)
+  [722] Default__archon_function_library_C.TryDestroyComponent(self.RuntimeSealSpawnParticleSystem, self)
+  [768] CallFunc_K2_GetActorLocation_ReturnValue_2 = K2_GetActorLocation()
+  [796] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, self.CurrentSealData.SealExpireParticleSystem, CallFunc_K2_GetActorLocation_ReturnValue_2, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [898] self.RuntimeSealExpireParticleSystem = CallFunc_SpawnEmitterAtLocation_ReturnValue_1
+  [917] pop
+  [918] ReceiveBeginPlay()
+  [928] InitializeRandomSeal()
+  [942] pop
+  [943] K2Node_CreateDelegate_OutputDelegate = bind(self.OnChargeUpTimeComplete)
+  [966] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.ChargeUpTime)
+  [995] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [1052] self.ChargeUpHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1079] pop
+  [1080] push @2101
+  [1085] push @1187
+  [1090] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.TimesActivated, 1)
+  [1132] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1159] self.TimesActivated = Temp_int_Variable
+  [1186] pop
+  [1187] UpdateActorsInSealArea()
+  [1201] CallFunc_HaveActorsInSealArea_ReturnValue_1 = HaveActorsInSealArea()
+  [1225] if !(CallFunc_HaveActorsInSealArea_ReturnValue_1) pop
+  [1235] push @2161
+  [1240] push @1636
+  [1245] CallFunc_IsValidClass_ReturnValue_1 = IsValidClass(self.CurrentPlayerBuff)
+  [1274] if !(CallFunc_IsValidClass_ReturnValue_1) pop
+  [1284] Temp_int_Loop_Counter_Variable = 0
+  [1307] Temp_int_Array_Index_Variable = 0
+  [1330] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ActorsInSealArea)
+  [1389] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [1427] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1437] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1464] push @2631
+  [1469] Default__KismetArrayLibrary.Array_Get(self.ActorsInSealArea, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1528] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item)
+  [1564] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1593] if !(K2Node_DynamicCast_bSuccess) pop
+  [1603] ApplyBuffToActor(K2Node_DynamicCast_AsArchon_Character, self.CurrentPlayerBuff)
+  [1635] pop
+  [1636] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.CurrentBehemothBuff)
+  [1665] if !(CallFunc_IsValidClass_ReturnValue) pop
+  [1675] Temp_int_Loop_Counter_Variable_1 = 0
+  [1698] Temp_int_Array_Index_Variable_1 = 0
+  [1721] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ActorsInSealArea)
+  [1780] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1818] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1828] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [1855] push @2027
+  [1860] Default__KismetArrayLibrary.Array_Get(self.ActorsInSealArea, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [1919] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_Array_Get_Item_1)
+  [1955] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [1984] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1994] ApplyBuffToActor(K2Node_DynamicCast_AsArchon_Behemoth, self.CurrentBehemothBuff)
+  [2026] pop
+  [2027] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2069] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [2096] goto @1721
+  [2101] self.IsActivated = false
+  [2112] CallFunc_ReachedMaxActivations_ReturnValue = ReachedMaxActivations()
+  [2136] if !(CallFunc_ReachedMaxActivations_ReturnValue) pop
+  [2146] AuthDie()
+  [2160] pop
+  [2161] CallFunc_IsValidClass_ReturnValue_2 = IsValidClass(self.CurrentAOEToSpawn)
+  [2190] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.ShouldSpawnAOE, CallFunc_IsValidClass_ReturnValue_2)
+  [2228] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [2238] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [2266] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2353] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, self.CurrentAOEToSpawn, CallFunc_MakeTransform_ReturnValue, 0, null)
+  [2395] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OverrideDamageRow', self.CurrentAOEDamageKey)
+  [2436] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', self.CurrentAOEDamageRadius)
+  [2477] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [2505] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2592] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [2630] pop
+  [2631] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2673] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [2700] goto @1330
+  [2705] UpdateActorsInSealArea()
+  [2719] CallFunc_HaveActorsInSealArea_ReturnValue = HaveActorsInSealArea()
+  [2743] if !(CallFunc_HaveActorsInSealArea_ReturnValue) pop
+  [2753] Check Actors in Area(CallFunc_Check_Actors_in_Area_Found_Behemoth, CallFunc_Check_Actors_in_Area_Found_Seal)
+  [2785] if !(CallFunc_Check_Actors_in_Area_Found_Behemoth) goto @2804
+  [2799] goto @15
+  [2804] if !(CallFunc_Check_Actors_in_Area_Found_Seal) goto @42
+  [2818] pop
+  [2819] CleapupTimerHandles()
+  [2833] AuthDie()
+  [2843] pop
+  [2844] self.CurrentSealTag = K2Node_CustomEvent_Seal_Tag
+  [2871] CallFunc_PostEvent_ReturnValue_3 = Default__AkGameplayStatics.PostEvent(Play_vfx_summoning_seal_spawn, self, 0, Temp_delegate_Variable_3, false)
+  [2946] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_vfx_summon_seal_lp, self, 0, Temp_delegate_Variable_1, false)
+  [3021] goto @187
+  [3026] goto @537
+  [3031] ReceiveEndPlay(K2Node_Event_EndPlayReason)
+  [3050] Default__archon_function_library_C.TryDestroyComponent(self.RuntimeSealSpawnParticleSystem, self)
+  [3096] Default__archon_function_library_C.TryDestroyComponent(self.RuntimeSealExpireParticleSystem, self)
+  [3142] pop
+  [3143] return nothing
+  [3145] end
+
+=== GetRandomSealAtIndex
+  [0] CallFunc_Map_Length_ReturnValue = Default__BlueprintMapLibrary.Map_Length(self.SealEffectsMap)
+  [59] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Map_Length_ReturnValue, 0)
+  [93] if !(CallFunc_Greater_IntInt_ReturnValue) goto @235
+  [107] CallFunc_Map_Length_ReturnValue = Default__BlueprintMapLibrary.Map_Length(self.SealEffectsMap)
+  [166] CallFunc_RandomInteger_ReturnValue = RandomInteger(CallFunc_Map_Length_ReturnValue)
+  [203] Index = CallFunc_RandomInteger_ReturnValue
+  [230] goto @258
+  [235] Index = -1
+  [258] return nothing
+  [260] end
+
+=== GetSealWithTag
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Key, CallFunc_Map_Find_Value)
+  [69] Data = CallFunc_Map_Find_Value
+  [96] Found Data = CallFunc_Map_Find_ReturnValue
+  [115] return nothing
+  [117] end
+
+=== HaveActorsInSealArea
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ActorsInSealArea)
+  [59] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [93] ReturnValue = CallFunc_Greater_IntInt_ReturnValue
+  [112] return ReturnValue
+  [122] end
+
+=== InitializeRandomSeal
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @199
+  [34] GetRandomSealAtIndex(CallFunc_GetRandomSealAtIndex_Index)
+  [57] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetRandomSealAtIndex_Index, 0)
+  [91] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @199
+  [105] array{}
+  [116] Default__BlueprintMapLibrary.Map_Keys(self.SealEffectsMap, CallFunc_Map_Keys_Keys)
+  [166] InitializeSeal(EX_ArrayGetByRef(ArrayVariable=CallFunc_Map_Keys_Keys,ArrayIndex=CallFunc_GetRandomSealAtIndex_Index))
+  [199] return nothing
+  [201] end
+
+=== InitializeSeal
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @805
+  [34] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [103] if !(CallFunc_Map_Find_ReturnValue) goto @805
+  [117] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [186] self.CurrentBehemothBuff = CallFunc_Map_Find_Value.BehemothBuff
+  [214] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [283] self.CurrentPlayerBuff = CallFunc_Map_Find_Value.PlayerBuff
+  [311] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [380] CallFunc_BooleanOR_ReturnValue = BooleanOR(self.IsNemesis, CallFunc_Map_Find_Value.SpawnAOE)
+  [427] self.ShouldSpawnAOE = CallFunc_BooleanOR_ReturnValue
+  [446] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [515] self.CurrentAOEToSpawn = CallFunc_Map_Find_Value.AOE
+  [543] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [612] K2Node_VariableSet_CurrentAOEDamageRadius_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.AOEDamageRadius)
+  [650] self.CurrentAOEDamageRadius = K2Node_VariableSet_CurrentAOEDamageRadius_ImplicitCast
+  [677] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.SealEffectsMap, Seal Gameplay Tag, CallFunc_Map_Find_Value)
+  [746] self.CurrentAOEDamageKey = CallFunc_Map_Find_Value.AOEDamageKey
+  [782] MulticastOnSealInitialized(Seal Gameplay Tag)
+  [805] return nothing
+  [807] end
+
+=== MulticastOnSealInitialized
+  [0] frame.K2Node_CustomEvent_Seal_Tag = Seal Tag
+  [18] ExecuteUbergraph_amber_aether_seal_bp(2844)
+  [33] return nothing
+  [35] end
+
+=== OnAuthSealUpdate
+  [0] ExecuteUbergraph_amber_aether_seal_bp(2705)
+  [15] return nothing
+  [17] end
+
+=== OnChargeUpTimeComplete
+  [0] ExecuteUbergraph_amber_aether_seal_bp(1080)
+  [15] return nothing
+  [17] end
+
+=== OnSealActivated__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnSealInitialized__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReachedMaxActivations
+  [0] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.TimesActivated, self.MaxActivations)
+  [38] ReturnValue = CallFunc_GreaterEqual_IntInt_ReturnValue
+  [57] return ReturnValue
+  [67] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_amber_aether_seal_bp(918)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_amber_aether_seal_bp(3026)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_amber_aether_seal_bp(3031)
+  [33] return nothing
+  [35] end
+
+=== UpdateActorsInSealArea
+  [0] array{}
+  [11] self.Capsule.GetOverlappingActors(CallFunc_GetOverlappingActors_OverlappingActors, Actor)
+  [61] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetOverlappingActors_OverlappingActors)
+  [120] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [154] if !(CallFunc_Greater_IntInt_ReturnValue) goto @261
+  [168] array{}
+  [179] self.Capsule.GetOverlappingActors(CallFunc_GetOverlappingActors_OverlappingActors, Actor)
+  [229] self.ActorsInSealArea = CallFunc_GetOverlappingActors_OverlappingActors
+  [256] goto @340
+  [261] CallFunc_HaveActorsInSealArea_ReturnValue = HaveActorsInSealArea()
+  [285] if !(CallFunc_HaveActorsInSealArea_ReturnValue) goto @340
+  [299] Default__KismetArrayLibrary.Array_Clear(self.ActorsInSealArea)
+  [340] return nothing
+  [342] end

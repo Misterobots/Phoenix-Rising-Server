@@ -1,0 +1,127 @@
+{
+ "name": "shadowcat_enter_combat_pounce_bt",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/shadowcat_enter_combat_pounce_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "lerawr_bb",
+  "shadowcat_portal_attack",
+  "shadowcat_try_enter_aether"
+ ],
+ "exports": {
+  "archon_distance_check_btdeco_C_1": {
+   "type": "archon_distance_check_btdeco_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.AttackTarget",
+    "PredictTargetHorizFuturePosTime": 1.0,
+    "MaxDistance": {
+     "BlackboardKeyName": "EnterCombatRange"
+    },
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt"
+   }
+  },
+  "shadowcat_enter_combat_pounce_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_18",
+    "BlackboardAsset": "BlackboardData lerawr_bb",
+    "RootDecorators": [
+     "@current_target_is_valid_btdeco_C_1",
+     "@archon_distance_check_btdeco_C_1",
+     "@behemoth_in_state_btdeco_C_1",
+     "@set_behemoth_loco_mode_btdeco_C_1"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "FlowAbortMode": "EBTFlowAbortMode::LowerPriority",
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt"
+   }
+  },
+  "BTComposite_Sequence_18": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt"
+   }
+  },
+  "BTTask_RunBehavior_0": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_attack",
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "BTTask_RunBehavior_3": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_try_enter_aether",
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "current_target_is_valid_btdeco_C_1": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt"
+   }
+  },
+  "pivot_towards_target_bttask_C_3": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_1": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Run",
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_1": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "TreeAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  }
+ }
+}

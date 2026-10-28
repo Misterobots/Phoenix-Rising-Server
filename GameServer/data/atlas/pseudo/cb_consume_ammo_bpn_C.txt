@@ -1,0 +1,30 @@
+# cb_consume_ammo_bpn_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Received_Notify
+  [0] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [42] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetOwner_ReturnValue)
+  [78] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [107] if !(K2Node_DynamicCast_bSuccess) goto @682
+  [121] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [167] K2Node_DynamicCast_AsCblades_Weapon_Bp = cast<cblades_weapon_bp_C>(CallFunc_GetOwnedWeapon_Weapon)
+  [203] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCblades_Weapon_Bp)
+  [232] if !(K2Node_DynamicCast_bSuccess_1) goto @744
+  [246] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [288] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [317] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Combat.DontConsumeAmmo'})
+  [391] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [420] if !(CallFunc_Not_PreBool_ReturnValue) goto @698
+  [434] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [476] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [518] if !(CallFunc_HasAuthority_ReturnValue) goto @666
+  [532] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.AmmoToConsume, -1)
+  [574] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetComponentByClass(ammo_bpc_C)
+  [625] CallFunc_GetComponentByClass_ReturnValue.AdjustAmmo(CallFunc_Multiply_IntInt_ReturnValue)
+  [666] ReturnValue = true
+  [677] goto @744
+  [682] CallFunc_GetOwnedWeapon_Weapon = null
+  [693] goto @167
+  [698] OnAmmoSkipped__DelegateSignature()
+  [739] goto @666
+  [744] return ReturnValue
+  [754] end

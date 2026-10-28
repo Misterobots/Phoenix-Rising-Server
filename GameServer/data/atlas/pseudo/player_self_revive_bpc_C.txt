@@ -1,0 +1,203 @@
+# player_self_revive_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_TrySelfRevive
+  [0] push @534
+  [5] push @371
+  [10] push @251
+  [15] push @135
+  [20] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [40] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [76] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [105] if !(K2Node_DynamicCast_bSuccess) pop
+  [115] OwningPawn = K2Node_DynamicCast_AsPawn
+  [134] pop
+  [135] CallFunc_IsValid_ReturnValue = IsValid(OwningPawn)
+  [164] if !(CallFunc_IsValid_ReturnValue) goto @235
+  [178] CallFunc_HasAuthority_ReturnValue = OwningPawn.HasAuthority()
+  [220] if !(CallFunc_HasAuthority_ReturnValue) goto @235
+  [234] pop
+  [235] bSuccess = false
+  [246] goto @534
+  [251] if !(self.bHasReceivedAutoReviveCharge) pop
+  [261] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.NumAutoRevivesPerformed, 1)
+  [303] self.NumAutoRevivesPerformed = CallFunc_Add_IntInt_ReturnValue
+  [330] MarkPropertyDirtyFromRepIndex(self, 3, 'NumAutoRevivesPerformed')
+  [359] self.bHasReceivedAutoReviveCharge = false
+  [370] pop
+  [371] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(OwningPawn)
+  [407] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [436] if !(K2Node_DynamicCast_bSuccess_1) goto @523
+  [450] K2Node_DynamicCast_AsPlayer_Interface.ReviveFromBleedOut(OwningPawn, GameplayTag{'Abilities.Revive'})
+  [523] bSuccess = true
+  [534] return nothing
+  [536] end
+
+=== ExecuteUbergraph_player_self_revive_bpc
+  [0] push @436
+  [5] goto computed(EntryPoint)
+  [15] ReceiveEndPlay(K2Node_Event_EndPlayReason)
+  [34] CallFunc_IsValid_ReturnValue_1 = IsValid(self.PlayerEventDispatcherComponent)
+  [63] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [73] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnBleedoutStateChanged)
+  [96] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [137] pop
+  [138] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [158] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue)
+  [187] if !(CallFunc_IsValid_ReturnValue) pop
+  [197] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [217] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [268] self.PlayerEventDispatcherComponent = CallFunc_GetComponentByClass_ReturnValue
+  [287] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PlayerEventDispatcherComponent)
+  [316] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [326] K2Node_CreateDelegate_OutputDelegate = bind(self.OnBleedoutStateChanged)
+  [349] K2Node_CreateDelegate_OutputDelegate += None
+  [390] pop
+  [391] push @401
+  [396] goto @138
+  [401] ResetAutoReviveChargeTimerScaling()
+  [415] pop
+  [416] ReceiveBeginPlay()
+  [426] goto @391
+  [431] goto @416
+  [436] return nothing
+  [438] end
+
+=== GetGrantAutoReviveChargeTimeRemaining
+  [0] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.GrantAutoReviveChargeTimer)
+  [38] K2Node_FunctionResult_ReturnValue_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [67] ReturnValue = K2Node_FunctionResult_ReturnValue_ImplicitCast
+  [94] return ReturnValue
+  [104] end
+
+=== IsAutoReviveEnabled
+  [0] bReturnValue = self.bAutoReviveEnabled
+  [19] return nothing
+  [21] end
+
+=== IsGrantAutoReviveChargeTimerActive
+  [0] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.GrantAutoReviveChargeTimer)
+  [30] ReturnValue = CallFunc_K2_IsTimerActiveHandle_ReturnValue
+  [49] return ReturnValue
+  [59] end
+
+=== OnBleedoutStateChanged
+  [0] if !(NewBleedoutState) goto @33
+  [14] OnEnteredBleedoutState()
+  [28] goto @47
+  [33] OnExitedBleedoutState()
+  [47] return nothing
+  [49] end
+
+=== OnEnteredBleedoutState
+  [0] IsAutoReviveEnabled(CallFunc_IsAutoReviveEnabled_bReturnValue)
+  [23] if !(CallFunc_IsAutoReviveEnabled_bReturnValue) goto @344
+  [37] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [57] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [93] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [122] if !(K2Node_DynamicCast_bSuccess) goto @314
+  [136] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [182] Loadout = CallFunc_GetLoadout_Loadout
+  [201] CallFunc_IsValid_ReturnValue = IsValid(Loadout)
+  [230] if !(CallFunc_IsValid_ReturnValue) goto @344
+  [244] CallFunc_HasRemaining_ReturnValue = Loadout.HasRemaining(Ability_QuickItem_ReviveTalisman_C)
+  [295] if !(CallFunc_HasRemaining_ReturnValue) goto @330
+  [309] goto @344
+  [314] CallFunc_GetLoadout_Loadout = null
+  [325] goto @182
+  [330] StartGrantAutoReviveChargeTimer()
+  [344] return nothing
+  [346] end
+
+=== OnExitedBleedoutState
+  [0] push @537
+  [5] push @25
+  [10] StopGrantAutoReviveChargeTimer()
+  [24] pop
+  [25] if !(self.bHasReceivedAutoReviveCharge) pop
+  [35] push @509
+  [40] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [60] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [102] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [112] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [132] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue_1)
+  [168] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [197] if !(K2Node_DynamicCast_bSuccess) goto @521
+  [211] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [257] Loadout = CallFunc_GetLoadout_Loadout
+  [276] CallFunc_IsValid_ReturnValue = IsValid(Loadout)
+  [305] if !(CallFunc_IsValid_ReturnValue) pop
+  [315] CallFunc_GetQuickItemRemainingByClass_ReturnValue = CallFunc_GetLoadout_Loadout.GetQuickItemRemainingByClass(Ability_QuickItem_ReviveTalisman_C)
+  [374] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetQuickItemRemainingByClass_ReturnValue, 1)
+  [416] CallFunc_Max_ReturnValue = Max(CallFunc_Subtract_IntInt_ReturnValue, 0)
+  [458] Loadout.AuthSetRemainingChargesByClass(Ability_QuickItem_ReviveTalisman_C, CallFunc_Max_ReturnValue)
+  [508] pop
+  [509] self.bHasReceivedAutoReviveCharge = false
+  [520] pop
+  [521] CallFunc_GetLoadout_Loadout = null
+  [532] goto @257
+  [537] return nothing
+  [539] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_player_self_revive_bpc(431)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_player_self_revive_bpc(15)
+  [33] return nothing
+  [35] end
+
+=== ResetAutoReviveChargeTimerScaling
+  [0] self.AutoReviveChargeTimerBase = self.NumAutoRevivesPerformed
+  [27] MarkPropertyDirtyFromRepIndex(self, 4, 'AutoReviveChargeTimerBase')
+  [56] return nothing
+  [58] end
+
+=== StartGrantAutoReviveChargeTimer
+  [0] CallFunc_FMax_ReturnValue = FMax(self.AutoReviveTimerDurationPerTier, 0.0)
+  [46] CallFunc_FMax_ReturnValue_1 = FMax(self.MinAutoReviveTimerDuration, 0.0)
+  [92] CallFunc_Max_ReturnValue = Max(self.MaxNumAutoReviveTimerTiers, 0)
+  [134] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.NumAutoRevivesPerformed, self.AutoReviveChargeTimerBase)
+  [180] K2Node_CreateDelegate_OutputDelegate = bind(self.TryGrantAutoReviveCharge)
+  [203] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Max_ReturnValue)
+  [249] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Min_ReturnValue, CallFunc_FMax_ReturnValue)
+  [295] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue_1, CallFunc_Multiply_IntFloat_ReturnValue)
+  [341] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [370] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [427] self.GrantAutoReviveChargeTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [454] return nothing
+  [456] end
+
+=== StopGrantAutoReviveChargeTimer
+  [0] K2_ClearAndInvalidateTimerHandle(self, self.GrantAutoReviveChargeTimer)
+  [20] return nothing
+  [22] end
+
+=== TryGrantAutoReviveCharge
+  [0] push @521
+  [5] push @25
+  [10] StopGrantAutoReviveChargeTimer()
+  [24] pop
+  [25] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [45] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [87] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [97] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [117] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [153] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [182] if !(K2Node_DynamicCast_bSuccess) goto @505
+  [196] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [242] Loadout = CallFunc_GetLoadout_Loadout
+  [261] CallFunc_IsValid_ReturnValue = IsValid(Loadout)
+  [290] if !(CallFunc_IsValid_ReturnValue) pop
+  [300] CallFunc_GetQuickItemRemainingByClass_ReturnValue = Loadout.GetQuickItemRemainingByClass(Ability_QuickItem_ReviveTalisman_C)
+  [359] CallFunc_Max_ReturnValue = Max(CallFunc_GetQuickItemRemainingByClass_ReturnValue, 0)
+  [401] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Max_ReturnValue, 1)
+  [443] Loadout.AuthSetRemainingChargesByClass(Ability_QuickItem_ReviveTalisman_C, CallFunc_Add_IntInt_ReturnValue)
+  [493] self.bHasReceivedAutoReviveCharge = true
+  [504] pop
+  [505] CallFunc_GetLoadout_Loadout = null
+  [516] goto @242
+  [521] return nothing
+  [523] end

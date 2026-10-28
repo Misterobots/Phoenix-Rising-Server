@@ -1,0 +1,27 @@
+mf_genus_combat_repo_with_strafing_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (TopScore Is Equal To 0.000000)]
+  [root if current_target_is_valid_btdeco  (FlowAbortMode=Self)]
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Selector "No Helper GOTO AttackTarget"
+    {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+    1) Selector
+      [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=1000, MaxDistance=100000000)]
+      1) MoveToAndFace  (FacingAngleBlackboardKey=bb.AttackTarget, AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      2) Sequence "MoveTo"
+        [if Blackboard  (CurrentHelper is Is Set)]
+        1) Sequence
+          {service LookAlongPath  (HelperKey=bb.CurrentHelper)}
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.CurrentHelper, MinDistance=50, MaxDistance=10000)]
+          1) MoveToAndFace  (FacingAngleBlackboardKey=bb.CurrentHelper, bAlignWithFacingObject=true, AcceptableRadius=10, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentHelper)
+    2) Selector
+      [if BTDeco_CollisionSweep  (ActionDisplacement={"X": 1.0, "Y": 500.0, "Z": 0.0})]
+      [if ConeCheck  (ConeHalfAngle=95, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.AttackTarget)]
+      1) BehemothAction  (Montage=AnimMontage b_mf_atk_strafe_right_mot)
+      [if BTDeco_CollisionSweep  (ActionDisplacement={"X": 1.0, "Y": -500.0, "Z": 0.0})]
+      2) BehemothAction  (Montage=AnimMontage b_mf_atk_strafe_left_mot)
+    [if not ConeCheck  (ConeHalfAngle=22, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget, bInverseCondition=true)]
+    [if Blackboard  (AttackTarget is Is Set)]
+    3) Sequence
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, TimeInFutureToPredict=0.5)

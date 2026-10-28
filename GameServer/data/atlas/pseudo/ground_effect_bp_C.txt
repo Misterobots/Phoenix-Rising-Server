@@ -1,0 +1,246 @@
+# ground_effect_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AlignComponentToGround
+  [0] push @3840
+  [5] world_up = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0})
+  [48] linetrace_offset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 300.0})
+  [91] component_pos = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [134] aligning_component = component
+  [153] CallFunc_K2_GetComponentToWorld_ReturnValue = aligning_component.K2_GetComponentToWorld()
+  [203] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [249] component_pos = CallFunc_BreakTransform_Location
+  [276] Temp_int_Loop_Counter_Variable = 0
+  [299] Temp_int_Array_Index_Variable = 0
+  [322] array{EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': -1.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': -1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 0.0, 'Z': 0.0})}
+  [458] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_MakeArray_Array)
+  [517] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [555] if !(CallFunc_Less_IntInt_ReturnValue) goto @1993
+  [569] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [596] push @2824
+  [601] GetComponentBounds(aligning_component, CallFunc_GetComponentBounds_Origin, CallFunc_GetComponentBounds_BoxExtent, CallFunc_GetComponentBounds_SphereRadius)
+  [647] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetComponentBounds_SphereRadius)
+  [676] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 0.5)
+  [722] CallFunc_EqualEqual_VectorVector_ReturnValue = EqualEqual_VectorVector(CallFunc_GetComponentBounds_Origin, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0001)
+  [781] Temp_bool_Variable = CallFunc_EqualEqual_VectorVector_ReturnValue
+  [800] array{EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': -1.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': -1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 0.0, 'Z': 0.0})}
+  [936] Default__KismetArrayLibrary.Array_Get(K2Node_MakeArray_Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [995] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Array_Get_Item, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1041] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(switch(Temp_bool_Variable){false: CallFunc_GetComponentBounds_Origin, true: component_pos, default: K2Node_Select_Default}, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1131] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_Add_VectorVector_ReturnValue, linetrace_offset)
+  [1177] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, linetrace_offset)
+  [1223] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_Subtract_VectorVector_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1359] if !(CallFunc_LineTraceSingle_ReturnValue) pop
+  [1369] if !(false) goto @2898
+  [1375] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(trace_success_count, 1)
+  [1417] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, 0)
+  [1459] trace_success_count = CallFunc_Min_ReturnValue
+  [1486] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1667] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_BreakHitResult_ImpactNormal, average_hit_normal)
+  [1713] average_hit_normal = CallFunc_Add_VectorVector_ReturnValue_2
+  [1740] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(Temp_int_Array_Index_Variable, 0)
+  [1774] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [1784] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1965] center_hit_location = CallFunc_BreakHitResult_ImpactPoint
+  [1992] pop
+  [1993] CallFunc_Conv_IntToFloat_ReturnValue_1 = Conv_IntToFloat(trace_success_count)
+  [2030] array{EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': -1.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': -1.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 0.0, 'Z': 0.0})}
+  [2166] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_MakeArray_Array)
+  [2225] CallFunc_Conv_IntToFloat_ReturnValue_2 = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue_1)
+  [2262] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue_1)
+  [2291] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue_2)
+  [2320] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [2366] trace_success_ratio = CallFunc_Divide_DoubleDouble_ReturnValue
+  [2393] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(trace_success_ratio, 0.44999998807907104)
+  [2431] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @2790
+  [2445] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(trace_success_count)
+  [2482] CallFunc_Divide_VectorFloat_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [2511] CallFunc_Divide_VectorFloat_ReturnValue = Divide_VectorFloat(average_hit_normal, CallFunc_Divide_VectorFloat_B_ImplicitCast)
+  [2557] average_hit_normal = CallFunc_Divide_VectorFloat_ReturnValue
+  [2584] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(world_up, average_hit_normal)
+  [2630] CallFunc_Acos_ReturnValue = Acos(CallFunc_Dot_VectorVector_ReturnValue)
+  [2667] CallFunc_RadiansToDegrees_ReturnValue = RadiansToDegrees(CallFunc_Acos_ReturnValue)
+  [2704] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_RadiansToDegrees_ReturnValue, self.alignment_rotation_max)
+  [2742] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) goto @2972
+  [2756] aligning_component.K2_DestroyComponent(self)
+  [2789] pop
+  [2790] aligning_component.K2_DestroyComponent(self)
+  [2823] pop
+  [2824] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2866] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [2893] goto @322
+  [2898] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(trace_success_count, 1)
+  [2940] trace_success_count = CallFunc_Add_IntInt_ReturnValue
+  [2967] goto @1486
+  [2972] CallFunc_K2_GetComponentToWorld_ReturnValue_1 = aligning_component.K2_GetComponentToWorld()
+  [3022] BreakVector(component_pos, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [3068] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [3114] BreakVector(center_hit_location, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [3160] CallFunc_Dot_VectorVector_ReturnValue = Dot_VectorVector(world_up, average_hit_normal)
+  [3206] CallFunc_Acos_ReturnValue = Acos(CallFunc_Dot_VectorVector_ReturnValue)
+  [3243] CallFunc_Cross_VectorVector_ReturnValue = Cross_VectorVector(world_up, average_hit_normal)
+  [3289] CallFunc_RadiansToDegrees_ReturnValue = RadiansToDegrees(CallFunc_Acos_ReturnValue)
+  [3326] CallFunc_Normal_ReturnValue = Normal(CallFunc_Cross_VectorVector_ReturnValue, 0.0001)
+  [3368] CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RadiansToDegrees_ReturnValue)
+  [3397] CallFunc_RotatorFromAxisAndAngle_ReturnValue = RotatorFromAxisAndAngle(CallFunc_Normal_ReturnValue, CallFunc_RotatorFromAxisAndAngle_Angle_ImplicitCast)
+  [3443] CallFunc_ComposeRotators_ReturnValue = ComposeRotators(CallFunc_BreakTransform_Rotation_1, CallFunc_RotatorFromAxisAndAngle_ReturnValue)
+  [3489] CallFunc_GetRelativeTransform_ReturnValue = aligning_component.GetRelativeTransform()
+  [3539] BreakTransform(CallFunc_GetRelativeTransform_ReturnValue, CallFunc_BreakTransform_Location_2, CallFunc_BreakTransform_Rotation_2, CallFunc_BreakTransform_Scale_2)
+  [3585] BreakVector(CallFunc_BreakTransform_Location_2, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [3631] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z_1, CallFunc_BreakVector_Z_2)
+  [3677] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_Add_DoubleDouble_ReturnValue)
+  [3732] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_MakeVector_ReturnValue, CallFunc_ComposeRotators_ReturnValue, CallFunc_BreakTransform_Scale_1)
+  [3787] aligning_component.K2_SetWorldTransform(CallFunc_MakeTransform_ReturnValue, false, CallFunc_K2_SetWorldTransform_SweepHitResult, false)
+  [3839] pop
+  [3840] return nothing
+  [3842] end
+
+=== ConsolidateMeshInstances
+  [0] push @2524
+  [5] push @482
+  [10] array{}
+  [21] self.DefaultSceneRoot.GetChildrenComponents(true, CallFunc_GetChildrenComponents_Children)
+  [63] LLChildrenComponents = CallFunc_GetChildrenComponents_Children
+  [90] Temp_int_Loop_Counter_Variable = 0
+  [113] Temp_int_Array_Index_Variable = 0
+  [136] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(LLChildrenComponents)
+  [195] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [233] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [243] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [270] push @1257
+  [275] Default__KismetArrayLibrary.Array_Get(LLChildrenComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [334] K2Node_DynamicCast_AsStatic_Mesh_Component = cast<StaticMeshComponent>(CallFunc_Array_Get_Item_1)
+  [370] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsStatic_Mesh_Component)
+  [399] if !(K2Node_DynamicCast_bSuccess_1) goto @1331
+  [413] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(staticmesh_components, K2Node_DynamicCast_AsStatic_Mesh_Component)
+  [481] pop
+  [482] Temp_int_Loop_Counter_Variable_1 = 0
+  [505] Temp_int_Array_Index_Variable_1 = 0
+  [528] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(staticmesh_components)
+  [587] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [625] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [635] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [662] push @1183
+  [667] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [726] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(instanced_component_map, CallFunc_Array_Get_Item.self.StaticMesh, CallFunc_Map_Find_Value)
+  [817] if !(CallFunc_Map_Find_ReturnValue) goto @1547
+  [831] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [890] CallFunc_K2_GetComponentToWorld_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentToWorld()
+  [940] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(instanced_component_map, CallFunc_Array_Get_Item.self.StaticMesh, CallFunc_Map_Find_Value)
+  [1031] CallFunc_AddInstanceWorldSpace_ReturnValue = CallFunc_Map_Find_Value.AddInstanceWorldSpace(CallFunc_K2_GetComponentToWorld_ReturnValue)
+  [1090] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1149] CallFunc_Array_Get_Item.K2_DestroyComponent(self)
+  [1182] pop
+  [1183] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1225] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1252] goto @528
+  [1257] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1299] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1326] goto @136
+  [1331] Default__KismetArrayLibrary.Array_Get(LLChildrenComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1390] K2Node_DynamicCast_AsInstanced_Static_Mesh_Component = cast<InstancedStaticMeshComponent>(CallFunc_Array_Get_Item_1)
+  [1426] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsInstanced_Static_Mesh_Component)
+  [1455] if !(K2Node_DynamicCast_bSuccess) pop
+  [1465] Default__BlueprintMapLibrary.Map_Add(instanced_component_map, K2Node_DynamicCast_AsInstanced_Static_Mesh_Component.self.StaticMesh, K2Node_DynamicCast_AsInstanced_Static_Mesh_Component)
+  [1546] pop
+  [1547] Temp_struct_Variable = EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': -0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})
+  [1646] CallFunc_AddComponent_ReturnValue = AddComponent('NODE_AddInstancedStaticMeshComponent-0', true, Temp_struct_Variable, self, false)
+  [1691] CallFunc_K2_AttachToComponent_ReturnValue = CallFunc_AddComponent_ReturnValue.K2_AttachToComponent(self.GroundAligned, 'None', 2, 2, 2, false)
+  [1762] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1821] CallFunc_GetCollisionProfileName_ReturnValue = CallFunc_Array_Get_Item.GetCollisionProfileName()
+  [1871] CallFunc_AddComponent_ReturnValue.SetCollisionProfileName(CallFunc_GetCollisionProfileName_ReturnValue, true)
+  [1917] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1976] CallFunc_GetCollisionEnabled_ReturnValue = CallFunc_Array_Get_Item.GetCollisionEnabled()
+  [2030] CallFunc_AddComponent_ReturnValue.SetCollisionEnabled(CallFunc_GetCollisionEnabled_ReturnValue)
+  [2075] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2134] CallFunc_SetStaticMesh_ReturnValue = CallFunc_AddComponent_ReturnValue.SetStaticMesh(CallFunc_Array_Get_Item.self.StaticMesh)
+  [2211] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2270] CallFunc_K2_GetComponentToWorld_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentToWorld()
+  [2320] CallFunc_AddInstanceWorldSpace_ReturnValue_1 = CallFunc_AddComponent_ReturnValue.AddInstanceWorldSpace(CallFunc_K2_GetComponentToWorld_ReturnValue)
+  [2379] Default__KismetArrayLibrary.Array_Get(staticmesh_components, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2438] Default__BlueprintMapLibrary.Map_Add(instanced_component_map, CallFunc_Array_Get_Item.self.StaticMesh, CallFunc_AddComponent_ReturnValue)
+  [2519] goto @1090
+  [2524] return nothing
+  [2526] end
+
+=== ExecuteUbergraph_ground_effect_bp
+  [0] goto computed(EntryPoint)
+  [10] ReceiveBeginPlay()
+  [20] goto @30
+  [25] goto @10
+  [30] return nothing
+  [32] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ground_effect_bp(25)
+  [15] return nothing
+  [17] end
+
+=== UserConstructionScript
+  [0] push @1863
+  [5] UserConstructionScript()
+  [15] array{}
+  [26] self.GroundAligned.GetChildrenComponents(true, CallFunc_GetChildrenComponents_Children)
+  [68] LLChildrenComponents = CallFunc_GetChildrenComponents_Children
+  [95] LChildren = LLChildrenComponents
+  [122] push @1524
+  [127] push @656
+  [132] if !(self.ground_align_enabled) pop
+  [142] CallFunc_SnapComponentToNavMesh_ReturnValue = SnapComponentToNavMesh(self.GroundAligned, self, 300.0)
+  [177] if !(CallFunc_SnapComponentToNavMesh_ReturnValue) pop
+  [187] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(LChildren)
+  [246] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [288] Temp_int_Loop_Counter_Variable = CallFunc_Subtract_IntInt_ReturnValue_1
+  [315] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(LChildren)
+  [374] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [416] CallFunc_Max_ReturnValue = Max(0, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [458] Temp_int_Array_Index_Variable_2 = CallFunc_Max_ReturnValue
+  [485] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Temp_int_Loop_Counter_Variable, 0)
+  [519] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [529] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable
+  [556] push @1549
+  [561] Default__KismetArrayLibrary.Array_Get(LChildren, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_1)
+  [620] CallFunc_SnapComponentToNavMesh_ReturnValue_1 = SnapComponentToNavMesh(CallFunc_Array_Get_Item_1, self, 300.0)
+  [655] pop
+  [656] Temp_int_Loop_Counter_Variable_2 = 0
+  [679] Temp_int_Array_Index_Variable_1 = 0
+  [702] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(LChildren)
+  [761] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [799] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [809] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [836] push @1450
+  [841] Default__KismetArrayLibrary.Array_Get(LChildren, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [900] K2Node_DynamicCast_AsInstanced_Static_Mesh_Component = cast<InstancedStaticMeshComponent>(CallFunc_Array_Get_Item_2)
+  [936] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsInstanced_Static_Mesh_Component)
+  [965] if !(K2Node_DynamicCast_bSuccess) pop
+  [975] CallFunc_GetMaterials_ReturnValue = K2Node_DynamicCast_AsInstanced_Static_Mesh_Component.GetMaterials()
+  [1029] LMaterials = CallFunc_GetMaterials_ReturnValue
+  [1056] Temp_int_Loop_Counter_Variable_1 = 0
+  [1079] Temp_int_Array_Index_Variable = 0
+  [1102] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(LMaterials)
+  [1161] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1199] if !(CallFunc_Less_IntInt_ReturnValue) goto @1623
+  [1213] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1240] push @1789
+  [1245] Default__KismetArrayLibrary.Array_Get(LMaterials, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1304] CallFunc_CreateDynamicMaterialInstance_ReturnValue = K2Node_DynamicCast_AsInstanced_Static_Mesh_Component.CreateDynamicMaterialInstance(Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item, 'None')
+  [1381] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.dynamic_materials, CallFunc_CreateDynamicMaterialInstance_ReturnValue)
+  [1449] pop
+  [1450] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [1492] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_1
+  [1519] goto @702
+  [1524] if !(self.consolidate_meshes) pop
+  [1534] ConsolidateMeshInstances()
+  [1548] pop
+  [1549] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1591] Temp_int_Loop_Counter_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [1618] goto @485
+  [1623] SetScalarParameterOnMaterials(self.dynamic_materials, 'radius', 0.0)
+  [1660] CallFunc_K2_GetComponentLocation_ReturnValue = self.EffectCenter.K2_GetComponentLocation()
+  [1710] CallFunc_Conv_VectorToLinearColor_ReturnValue = Conv_VectorToLinearColor(CallFunc_K2_GetComponentLocation_ReturnValue)
+  [1747] SetVectorParameterOnMaterials(self.dynamic_materials, 'effect_center', CallFunc_Conv_VectorToLinearColor_ReturnValue)
+  [1788] pop
+  [1789] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1831] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [1858] goto @1102
+  [1863] return nothing
+  [1865] end

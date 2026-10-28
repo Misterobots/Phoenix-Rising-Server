@@ -1,0 +1,1051 @@
+{
+ "name": "creature_waves_gc_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseGameContent",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentWaveIndex",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_CurrentWaveIndex",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 12
+  },
+  {
+   "name": "LoadedCreatureClasses",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EQSSpawnData",
+   "type": "StructProperty<eqs_gameplay_data>",
+   "bp_type": "StructProperty<eqs_gameplay_data>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WaveInfo",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NextWaveTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_WaveSpawnInfo",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_WaveInfo",
+   "type": "StructProperty<creature_wave_runtime_info>",
+   "bp_type": "StructProperty<creature_wave_runtime_info>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_WaveActorsCount",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_IsWaveSpawningComplete",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_WaveIndexContentsSpawned",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_TotalInitialCreaturesForWave",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bFromIslandMetaEvent",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 13
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "CheckIfWeShouldStartNextWave",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 54,
+   "reads": [
+    "CurrentWaveIndex",
+    "L_IsWaveSpawningComplete",
+    "L_TotalInitialCreaturesForWave",
+    "L_WaveActorsCount",
+    "WaveInfo",
+    "Waves"
+   ],
+   "sets": [
+    "L_IsWaveSpawningComplete",
+    "L_TotalInitialCreaturesForWave",
+    "L_WaveActorsCount"
+   ],
+   "calls": [
+    "GetCreatureWavesSpec",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.FFloor",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "WaveCompleted"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CheckIsFromIslandMetaEvent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_creature_waves_gc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedCreatures_AllSpawnedCreatures",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedCreatures_AllSpawnedCreatures_1",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 240,
+   "reads": [
+    "ContentLocationActor",
+    "CurrentWaveIndex",
+    "GameContentTags",
+    "InnerRadius",
+    "L_WaveIndexContentsSpawned",
+    "LoadedCreatureClasses",
+    "NextWaveTimer",
+    "OnDestroyed",
+    "OnFinishedRequest",
+    "OnSpawnedActor",
+    "WaveInfo",
+    "Waves",
+    "WhatToDoWhenWavesFinished",
+    "bFromIslandMetaEvent"
+   ],
+   "sets": [
+    "L_WaveIndexContentsSpawned",
+    "bFromIslandMetaEvent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonAggroComponent.AuthSetTether",
+    "ArchonGameplayStatics.IsShipping",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "CheckIfWeShouldStartNextWave",
+    "CheckIsFromIslandMetaEvent",
+    "FinishCleanup",
+    "FinishContent",
+    "FinishLoadingContent",
+    "GetCreatureMetadata",
+    "GetCreatureWavesSpec",
+    "GetGameContentLocationActor",
+    "GetIndexOfWaveFromGUID",
+    "GetSpawnedCreatures",
+    "IslandDirectorStatics.GetMutableRootContent",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.LoadAssetClass",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnFinished",
+    "PhxBaseGameContent.AuthRegisterGameplayActor",
+    "PhxBaseGameContent.AuthUnregisterGameplayActor",
+    "PhxBaseGameContent.GetContentSpecification",
+    "PhxBaseGameContent.GetGameContentState",
+    "PhxBaseGameContent.HandleBeginContent",
+    "PhxBaseGameContent.HandleCleanupContent",
+    "PhxBaseGameContent.HandleLoadingContent",
+    "PhxBaseGameContent.SetContentCanEverFinish",
+    "RemoveCreatureFromWaveInfo",
+    "SpawnedActor_Cleanup",
+    "StartWave",
+    "WaveCompleted"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass eqs_gameplay_bpc_C",
+    "BlueprintGeneratedClass island_content_location_bpc_C"
+   ]
+  },
+  {
+   "name": "GetContentDescription",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutContentDescription",
+     "type": "StructProperty<GameContentDescription>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GetContentDescription",
+    "IslandDirectorStatics.GetMutableRootContent",
+    "KismetSystemLibrary.IsValid",
+    "PhxBaseGameContent.GetParentContent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetContentParticipants_BP",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedCreatures_AllSpawnedCreatures",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetParticipants_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_CombineParticipantLists_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 29,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "GetSpawnedCreatures",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "PhxGameContentParticipationComponent.CombineParticipantLists",
+    "PhxGameContentParticipationComponent.GetParticipants"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCreatureWavesSpec",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CreatureWavesSpec",
+     "type": "ObjectProperty<creature_waves_content_spec_C>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "PhxBaseGameContent.GetContentSpecification"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetDebugString",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "CurrentWaveIndex"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetIndexOfWaveFromGUID",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "GUID",
+     "type": "StructProperty<Guid>"
+    },
+    {
+     "name": "WaveIndex",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 29,
+   "reads": [
+    "WaveInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetProgressData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutProgressData",
+     "type": "StructProperty<GameContentProgressData>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 44,
+   "reads": [
+    "CurrentWaveIndex",
+    "GameContentTags",
+    "Waves"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.HasTag",
+    "InitProgressData",
+    "IslandDirectorStatics.GetMutableRootContent",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetSystemLibrary.IsValid",
+    "PhxBaseGameContent.GetContentSpecification",
+    "PhxBaseGameContent.GetGameContentState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetSpawnedCreatures",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AllSpawnedCreatures",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 30,
+   "reads": [
+    "WaveInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Append",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleBeginContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleCleanupContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleLoadingContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "InitProgressData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OutProgressData",
+     "type": "StructProperty<GameContentProgressData>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [
+    "GameContentTags",
+    "Waves"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.HasTag",
+    "IslandDirectorStatics.GetMutableRootContent",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetSystemLibrary.IsValid",
+    "PhxBaseGameContent.GetContentSpecification"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDestroyed_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnFinishedRequest_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "RequestGUID",
+     "type": "StructProperty<Guid>"
+    },
+    {
+     "name": "RequestFinishedSuccessfully",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_2D037F864F9BEAFAA74BC9ABEAF38137",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "ClassProperty<Class>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_CurrentWaveIndex",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "GameplayStatics.GetGameState",
+    "IslandDirectorComponent.ClientEncounterProgress",
+    "KismetSystemLibrary.IsServer"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass island_director_bpc_C"
+   ]
+  },
+  {
+   "name": "OnSpawnedActor_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "SpawnedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "GUID",
+     "type": "StructProperty<Guid>"
+    },
+    {
+     "name": "QueryTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveCreatureFromWaveInfo",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ActorToRemove",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 32,
+   "reads": [
+    "CurrentWaveIndex",
+    "WaveInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "CheckIfWeShouldStartNextWave",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartNextWaveFromTimer",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_waves_gc_C.ExecuteUbergraph_creature_waves_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartWave",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "WaveIndex",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedCreatures_AllSpawnedCreatures",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_2",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 100,
+   "reads": [
+    "EQSSpawnData",
+    "L_WaveInfo",
+    "L_WaveSpawnInfo",
+    "NextWaveTimer",
+    "SpawnCapacity",
+    "WaveInfo",
+    "Waves"
+   ],
+   "sets": [
+    "L_WaveInfo",
+    "L_WaveSpawnInfo",
+    "NextWaveTimer"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "AuthSpawnActors",
+    "AutoPlayerUtilityLibrary.LoadAssetClassSynchronously",
+    "GetCreatureMetadata",
+    "GetCreatureWavesSpec",
+    "GetGameContentLocationActor",
+    "GetSpawnedCreatures",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Append",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass eqs_gameplay_bpc_C"
+   ]
+  },
+  {
+   "name": "WaveCompleted",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [
+    "CurrentWaveIndex",
+    "Waves",
+    "WhatToDoWhenWavesFinished"
+   ],
+   "sets": [
+    "CurrentWaveIndex"
+   ],
+   "calls": [
+    "FinishContent",
+    "GetCreatureWavesSpec",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_CurrentWaveIndex",
+    "StartWave"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/gamemodes/_game_content/creature_waves/creature_waves_gc",
+ "pseudo_file": "pseudo/creature_waves_gc_C.txt",
+ "game_data": {}
+}

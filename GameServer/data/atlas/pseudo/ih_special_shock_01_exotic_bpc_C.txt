@@ -1,0 +1,226 @@
+# ih_special_shock_01_exotic_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateGameplayEvent
+  [0] frame.K2Node_Event_EventName = EventName
+  [18] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(543)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_ih_special_shock_01_exotic_bpc
+  [0] push @6046
+  [5] goto computed(EntryPoint)
+  [15] GetAverageAmmoScale()
+  [29] pop
+  [30] K2Node_DynamicCast_AsBp_Ihammer_Weapon = cast<bp_ihammer_weapon_C>(self.ArchonWeapon)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Ihammer_Weapon)
+  [95] if !(K2Node_DynamicCast_bSuccess) pop
+  [105] self.AmmoComponent = K2Node_DynamicCast_AsBp_Ihammer_Weapon.self.AmmoComponent
+  [146] CallFunc_GetItemId_ReturnValue = K2Node_DynamicCast_AsBp_Ihammer_Weapon.GetItemId()
+  [196] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetItemId_ReturnValue)
+  [233] CallFunc_LookupPowerTableRow_ReturnValue = K2Node_DynamicCast_AsBp_Ihammer_Weapon.LookupPowerTableRow(CallFunc_Conv_StringToName_ReturnValue, CallFunc_LookupPowerTableRow_OutPowerTableData)
+  [297] CallFunc_SelectInt_ReturnValue = SelectInt(1, 0, self.MaxAmmoBonus1)
+  [344] CallFunc_SelectInt_ReturnValue_1 = SelectInt(1, 0, self.MaxAmmoBonus2)
+  [391] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(CallFunc_LookupPowerTableRow_OutPowerTableData.IHammer_MaxNumberOfClips, CallFunc_SelectInt_ReturnValue)
+  [446] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_1, CallFunc_SelectInt_ReturnValue_1)
+  [492] self.AmmoComponent.SetNewMaxAmmo(CallFunc_Add_IntInt_ReturnValue_2)
+  [537] pop
+  [538] goto @15
+  [543] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_Event_EventName, 'MoltenEdict')
+  [585] if !(K2Node_SwitchName_CmpSuccess) goto @656
+  [599] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_Event_EventName, 'Shoot')
+  [641] if !(K2Node_SwitchName_CmpSuccess) goto @1524
+  [655] pop
+  [656] CallFunc_GetCurrentAmmoCount_ReturnValue = self.AmmoComponent.GetCurrentAmmoCount()
+  [706] self.AmmoSpentOnBlast = CallFunc_GetCurrentAmmoCount_ReturnValue
+  [733] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.AmmoSpentOnBlast, 0)
+  [767] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [777] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [798] if !(CallFunc_IsServer_ReturnValue) pop
+  [808] Default__archon_function_library_C.GetMeshLocation(self.ArchonCharacter, self, CallFunc_GetMeshLocation_Location)
+  [863] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_GetMeshLocation_Location, EX_VectorConst(Value={'X': 100.0, 'Y': 0.0, 'Z': 0.0}))
+  [925] Default__archon_function_library_C.GetGroundPosAndNormal(CallFunc_Add_VectorVector_ReturnValue, 250.0, self.Actors to Ignore, 0, 10000.0, self, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [1027] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_GetGroundPosAndNormal_GroundPos)
+  [1064] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, ih_shock_01_tesla_tower_proj_C, CallFunc_Conv_VectorToTransform_ReturnValue, 0, self.ArchonCharacter)
+  [1114] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'ShotTimer', self.Shot Timer)
+  [1155] CallFunc_Conv_IntToDouble_ReturnValue = Conv_IntToDouble(self.AmmoSpentOnBlast)
+  [1192] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Conv_IntToDouble_ReturnValue, self.FireballLifePerAmmo)
+  [1238] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.BonusTowerDuration)
+  [1284] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'TotalLifetime', CallFunc_Add_DoubleDouble_ReturnValue_3)
+  [1325] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OwningPawn', self.ArchonCharacter)
+  [1366] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'ExpireTime', 60.0)
+  [1407] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.ArchonCharacter)
+  [1448] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_GetGroundPosAndNormal_GroundPos)
+  [1485] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [1523] pop
+  [1524] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1544] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [1586] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [1596] CallFunc_Clamp_ReturnValue = Clamp(self.WeaponChargeLevel, 1, 6)
+  [1643] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(CallFunc_Clamp_ReturnValue, -1)
+  [1685] ConsumeAmmo(CallFunc_Multiply_IntInt_ReturnValue)
+  [1708] self.TempShotCount = 0
+  [1731] CallFunc_Clamp_ReturnValue = Clamp(self.WeaponChargeLevel, 1, 6)
+  [1778] CallFunc_SelectInt_ReturnValue_2 = SelectInt(1, 0, self.BonusShot1)
+  [1825] CallFunc_SelectInt_ReturnValue_3 = SelectInt(1, 0, self.BonusShot2)
+  [1872] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(CallFunc_SelectInt_ReturnValue_2, CallFunc_SelectInt_ReturnValue_3)
+  [1918] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_3, 2)
+  [1960] CallFunc_Multiply_IntInt_ReturnValue_1 = Multiply_IntInt(CallFunc_Clamp_ReturnValue, CallFunc_Add_IntInt_ReturnValue_4)
+  [2006] self.ShotsToFire = CallFunc_Multiply_IntInt_ReturnValue_1
+  [2033] K2Node_CreateDelegate_OutputDelegate = bind(self.FireAllBolts)
+  [2056] CallFunc_Conv_IntToDouble_ReturnValue_1 = Conv_IntToDouble(self.ShotsToFire)
+  [2093] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_Conv_IntToDouble_ReturnValue_1, 2.0, 20.0, 0.1, 0.03)
+  [2166] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_MapRangeClamped_ReturnValue)
+  [2195] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [2252] self.ShootTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [2279] pop
+  [2280] OnWeaponPartEquipped()
+  [2290] push @3696
+  [2295] push @3555
+  [2300] push @3414
+  [2305] push @3178
+  [2310] push @2942
+  [2315] push @2561
+  [2320] push @2706
+  [2325] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2354] CallFunc_HasMatchingGameplayTag_ReturnValue_4 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp01'})
+  [2428] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_4) pop
+  [2438] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2467] CallFunc_HasMatchingGameplayTag_ReturnValue_4 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp01'})
+  [2541] self.BonusShot1 = CallFunc_HasMatchingGameplayTag_ReturnValue_4
+  [2560] pop
+  [2561] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2590] CallFunc_HasMatchingGameplayTag_ReturnValue_2 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp03'})
+  [2664] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_2) pop
+  [2674] self.Damage Key = 'IH.Shock01ShockballTalent03'
+  [2705] pop
+  [2706] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2735] CallFunc_HasMatchingGameplayTag_ReturnValue_3 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp02'})
+  [2809] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_3) pop
+  [2819] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2848] CallFunc_HasMatchingGameplayTag_ReturnValue_3 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp02'})
+  [2922] self.BonusShot2 = CallFunc_HasMatchingGameplayTag_ReturnValue_3
+  [2941] pop
+  [2942] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [2971] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [3045] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_1) pop
+  [3055] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [3084] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [3158] self.MaxAmmoBonus1 = CallFunc_HasMatchingGameplayTag_ReturnValue_1
+  [3177] pop
+  [3178] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [3207] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp05'})
+  [3281] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) pop
+  [3291] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [3320] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp05'})
+  [3394] self.MaxAmmoBonus2 = CallFunc_HasMatchingGameplayTag_ReturnValue
+  [3413] pop
+  [3414] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [3443] CallFunc_HasMatchingGameplayTag_ReturnValue_6 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.ue01'})
+  [3517] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_6) pop
+  [3527] self.BonusTowerDuration = 3.0
+  [3554] pop
+  [3555] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(self.ArchonCharacter)
+  [3584] CallFunc_HasMatchingGameplayTag_ReturnValue_5 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.ue02'})
+  [3658] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_5) pop
+  [3668] self.Shot Timer = 1.5
+  [3695] pop
+  [3696] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3716] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [3758] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [3768] goto @30
+  [3773] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, ih_default_weapon_part_q_bpff_C, true)
+  [3804] self.EnableMontageOverrides = CallFunc_IsFeatureEnabled_ReturnValue
+  [3823] goto @2280
+  [3828] goto @3773
+  [3833] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(self.ArchonCharacter)
+  [3869] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [3898] if !(K2Node_DynamicCast_bSuccess_1) goto @5818
+  [3912] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [3958] BreakRotator(EX_RotationConst(Value={'Pitch': 32.0, 'Yaw': 0.0, 'Roll': 0.0}), CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [4020] CallFunc_GetController_ReturnValue = self.ArchonCharacter.GetController()
+  [4062] CallFunc_GetControlRotation_ReturnValue = CallFunc_GetController_ReturnValue.GetControlRotation()
+  [4116] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [4162] CallFunc_GetSubMesh_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetSubMesh(1, true)
+  [4207] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [4236] CallFunc_Add_DoubleDouble_B_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [4265] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, CallFunc_Add_DoubleDouble_B_ImplicitCast_2)
+  [4311] CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue = GetSocketLocation_WeaponSeparation(CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket')
+  [4361] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [4390] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [4419] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [4465] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_1)
+  [4494] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll)
+  [4523] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [4569] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [4598] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [4627] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [4656] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [4711] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue, CallFunc_MakeRotator_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [4782] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1 = BeginDeferredActorSpawnFromClass(self, skies_shockball_proj_C, CallFunc_MakeTransform_ReturnValue, 0, self.ArchonCharacter)
+  [4832] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, 'OwningPawn', self.ArchonCharacter)
+  [4873] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, 'DamageKey', self.Damage Key)
+  [4914] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, 'Instigator', self.ArchonCharacter)
+  [4955] BreakRotator(EX_RotationConst(Value={'Pitch': 32.0, 'Yaw': 0.0, 'Roll': 0.0}), CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [5017] CallFunc_GetController_ReturnValue = self.ArchonCharacter.GetController()
+  [5059] CallFunc_GetControlRotation_ReturnValue = CallFunc_GetController_ReturnValue.GetControlRotation()
+  [5113] BreakRotator(CallFunc_GetControlRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [5159] CallFunc_GetSubMesh_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetSubMesh(1, true)
+  [5204] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [5233] CallFunc_Add_DoubleDouble_B_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [5262] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, CallFunc_Add_DoubleDouble_B_ImplicitCast_2)
+  [5308] CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue = GetSocketLocation_WeaponSeparation(CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket')
+  [5358] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [5387] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [5416] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [5462] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_1)
+  [5491] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll)
+  [5520] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [5566] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [5595] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [5624] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [5653] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [5708] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue, CallFunc_MakeRotator_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [5779] CallFunc_FinishSpawningActor_ReturnValue_1 = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, CallFunc_MakeTransform_ReturnValue)
+  [5817] pop
+  [5818] CallFunc_GetOwnedWeapon_Weapon = null
+  [5829] goto @3958
+  [5834] goto @3833
+  [5839] ShootBolt()
+  [5853] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.TempShotCount, 1)
+  [5895] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [5922] self.TempShotCount = Temp_int_Variable
+  [5949] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Temp_int_Variable, self.ShotsToFire)
+  [5987] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [5997] K2_ClearAndInvalidateTimerHandle(self, self.ShootTimer)
+  [6017] self.TempShotCount = 0
+  [6040] pop
+  [6041] goto @2290
+  [6046] return nothing
+  [6048] end
+
+=== FireAllBolts
+  [0] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(5839)
+  [15] return nothing
+  [17] end
+
+=== OnGameplayEffectUpdated
+  [0] frame.K2Node_Event_SpecApplied = SpecApplied
+  [18] frame.K2Node_Event_ActiveHandle = ActiveHandle
+  [36] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(6041)
+  [51] return nothing
+  [53] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(3828)
+  [15] return nothing
+  [17] end
+
+=== ShootBolt
+  [0] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(5834)
+  [15] return nothing
+  [17] end
+
+=== SpawnAoe
+  [0] ExecuteUbergraph_ih_special_shock_01_exotic_bpc(538)
+  [15] return nothing
+  [17] end

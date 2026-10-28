@@ -1,0 +1,68 @@
+# ce_crit_after_5_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_ce_crit_after_5_buff
+  [0] push @1061
+  [5] goto computed(EntryPoint)
+  [15] Temp_int_Loop_Counter_Variable = 0
+  [38] Temp_int_Array_Index_Variable = 0
+  [61] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [120] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [158] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [168] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [195] push @517
+  [200] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [220] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [279] Default__archon_function_library_C.ActorsWithinDistanceFast(CallFunc_Array_Get_Item, CallFunc_GetBuffOwner_ReturnValue_1, 2000.0, self, CallFunc_ActorsWithinDistanceFast_IsWithinDistance)
+  [352] if !(CallFunc_ActorsWithinDistanceFast_IsWithinDistance) pop
+  [362] CallFunc_FTrunc_ReturnValue = FTrunc(self.CellEffectMagnitude)
+  [399] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [458] Default__buff_function_library_C.AdjustBuffTempStacks(CallFunc_Array_Get_Item, CallFunc_FTrunc_ReturnValue, 1, false, self)
+  [516] pop
+  [517] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [559] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [586] goto @61
+  [591] ReceiveBeginPlay()
+  [601] K2Node_CreateDelegate_OutputDelegate = bind(self.HitWithWeapon)
+  [624] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [644] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [695] K2Node_CreateDelegate_OutputDelegate += None
+  [736] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [756] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.TookDamage)
+  [779] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [820] pop
+  [821] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.SuccessiveHits, 1)
+  [863] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [890] self.SuccessiveHits = Temp_int_Variable
+  [917] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.SuccessiveHits, 5)
+  [951] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [961] self.SuccessiveHits = 0
+  [984] Default__archon_function_library_C.GetPlayerCharacters(true, true, self, CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [1032] goto @15
+  [1037] self.SuccessiveHits = 0
+  [1060] pop
+  [1061] return nothing
+  [1063] end
+
+=== HitWithWeapon
+  [0] frame.K2Node_CustomEvent_DamagedActor_1 = DamagedActor
+  [18] frame.K2Node_CustomEvent_DamageSummary = DamageSummary
+  [36] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_ce_crit_after_5_buff(821)
+  [87] return nothing
+  [89] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ce_crit_after_5_buff(591)
+  [15] return nothing
+  [17] end
+
+=== TookDamage
+  [0] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [18] frame.K2Node_CustomEvent_Damage = Damage
+  [36] frame.K2Node_CustomEvent_DamageType = DamageType
+  [54] frame.K2Node_CustomEvent_InstigatedBy = InstigatedBy
+  [72] frame.K2Node_CustomEvent_DamageCauser = DamageCauser
+  [90] ExecuteUbergraph_ce_crit_after_5_buff(1037)
+  [105] return nothing
+  [107] end

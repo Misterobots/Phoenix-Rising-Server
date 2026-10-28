@@ -1,0 +1,15 @@
+salt_edgeofareana_teleport_bt_  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Teleports the behmoth to the edge of the arena"]
+  Sequence
+    1) perform_action_montage_bttask  (Montage=AnimMontage b_sq_slt_00_loco_fastteleportenter_fwd_00_mot)
+    2) Sequence
+      {service hide_behemoth_bttask  (Interval=0.01, RandomDeviation=0)}
+      {service staggerproof_behemoth_bttask}
+      1) Wait  (WaitTime=0.5, RandomDeviation=0.3)
+      2) Selector
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_salt_combat_teleport_edge", "QueryConfig": [{"ParamName": "None", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+      3) teleport_bttask "Teleport"  (FacingTargetKeyName=KnownTargetsAvgPos, BlendOutTime=0)
+    3) generic_action_bttask "Unburrow"  (ActionType=Unburrow, RequireThatActionExists=true)

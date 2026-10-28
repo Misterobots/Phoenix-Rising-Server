@@ -1,0 +1,14 @@
+shared_manage_target_lost_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+  [root if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Sequence
+    [if ForceSuccess]
+    [if Blackboard  (AttackTarget is Is Set)]
+    1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+    [if ForceSuccess]
+    2) generic_action_bttask  (ActionType=BackUp)
+    [if ForceSuccess]
+    3) try_set_behemoth_state_bttask  (State=Combat, StateChangeType=End)

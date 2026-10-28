@@ -1,0 +1,341 @@
+{
+ "name": "eb_passive_rework_swordcharge_swap_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ArchonCharacter",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DashLast",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LLRLast",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageActive",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimerHandle",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IconHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Sword",
+   "type": "ObjectProperty<BP_EB_Weapon_C>",
+   "bp_type": "ObjectProperty<BP_EB_Weapon_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyIcon",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [
+    "IconHandle"
+   ],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass eb_passive_rework_swordcharge_swap_ge_C"
+   ]
+  },
+  {
+   "name": "CustomModifyDamageEventData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "HasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ModifiedDamageEventData",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "ShouldOverrideDamageTags",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 25,
+   "reads": [
+    "DamageActive"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.HasTag",
+    "ModifyDamageEventdata",
+    "Reset"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_eb_passive_rework_swordcharge_swap_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 46,
+   "reads": [
+    "IconHandle",
+    "OnSwordchargeComboUsed",
+    "Sword"
+   ],
+   "sets": [
+    "AoEEmpowered",
+    "DamageActive",
+    "ProjectileEmpowered",
+    "Sword",
+    "TimerHandle"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.FlushNetDormancy",
+    "ApplyIcon",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "GetOwnedWeapon",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "RemoveActiveGameplayEffect",
+    "StartTimer"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "eb_passive_rework_swordcharge_swap_buff_C.ExecuteUbergraph_eb_passive_rework_swordcharge_swap_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSwordchargeComboUsed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "eb_passive_rework_swordcharge_swap_buff_C.ExecuteUbergraph_eb_passive_rework_swordcharge_swap_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Reset",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "eb_passive_rework_swordcharge_swap_buff_C.ExecuteUbergraph_eb_passive_rework_swordcharge_swap_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartTimer",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "eb_passive_rework_swordcharge_swap_buff_C.ExecuteUbergraph_eb_passive_rework_swordcharge_swap_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/Weapons/_shared/eblade/passives/eb_passive_rework_swordcharge_swap_buff",
+ "pseudo_file": "pseudo/eb_passive_rework_swordcharge_swap_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,380 @@
+{
+ "name": "periodic_reward_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 200,
+ "sdk_header": "periodic_reward_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "CooldownComponent",
+   "type": "Ucooldown_bpc_C*",
+   "offset": "0xA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<cooldown_bpc_C>"
+  },
+  {
+   "name": "Rules",
+   "type": "TArray<Fperiodic_reward_entry>",
+   "offset": "0xB0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "Debug",
+   "type": "bool",
+   "offset": "0xC0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_periodic_reward_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 115,
+   "reads": [
+    "CooldownComponent",
+    "Debug",
+    "OnRefreshCooldownStatus",
+    "Rules"
+   ],
+   "sets": [
+    "CooldownComponent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsShipping",
+    "ArchonInventory.GrantItemsWithQuantity",
+    "ArchonPlayerController.GetInventory",
+    "ArchonUIBlueprintLibrary.FormatTimeRemainingText",
+    "CooldownComponent.GetCooldown",
+    "CooldownComponent.SetCooldown",
+    "GetDateTimeForLastDay",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DateTimeTimespan",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.FFloor",
+    "KismetMathLibrary.FromHours",
+    "KismetMathLibrary.FromSeconds",
+    "KismetMathLibrary.GreaterEqual_TimespanTimespan",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeTimespan",
+    "KismetMathLibrary.Multiply_IntInt",
+    "KismetMathLibrary.Subtract_DateTimeDateTime",
+    "KismetMathLibrary.TimespanRatio",
+    "KismetMathLibrary.UtcNow",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.NotEqual_StriStri",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "KismetTextLibrary.AsTimeZoneDateTime_DateTime",
+    "KismetTextLibrary.AsTimespan_Timespan",
+    "KismetTextLibrary.Conv_TextToString",
+    "RunRuleLogic"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass cooldown_bpc_C"
+   ]
+  },
+  {
+   "name": "GetDateTimeForLastDay",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HourOffset",
+     "type": "int32"
+    },
+    {
+     "name": "ResetTimeForDay",
+     "type": "FDateTime"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.BreakDateTime",
+    "KismetMathLibrary.MakeDateTime",
+    "KismetMathLibrary.UtcNow"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetIndexOfRule",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RuleID",
+     "type": "FString"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    },
+    {
+     "name": "Found",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "Rules"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.EqualEqual_StrStr"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetNextTimeForRule",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RuleID",
+     "type": "FString"
+    },
+    {
+     "name": "Found",
+     "type": "bool"
+    },
+    {
+     "name": "TimeUntilNextReward",
+     "type": "FTimespan"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 14,
+   "reads": [
+    "Rules"
+   ],
+   "sets": [],
+   "calls": [
+    "GetDateTimeForLastDay",
+    "GetIndexOfRule",
+    "KismetMathLibrary.Add_DateTimeTimespan",
+    "KismetMathLibrary.FromHours",
+    "KismetMathLibrary.Subtract_DateTimeDateTime",
+    "KismetMathLibrary.UtcNow"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRefreshCooldownStatus",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CooldownComponent",
+     "type": "UCooldownComponent*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "periodic_reward_bpc_C.ExecuteUbergraph_periodic_reward_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "periodic_reward_bpc_C.ExecuteUbergraph_periodic_reward_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RunRuleLogic",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RuleID",
+     "type": "FString"
+    },
+    {
+     "name": "NumberOfTimesCooldownElapsed",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "periodic_reward_bpc_C.ExecuteUbergraph_periodic_reward_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/periodic_reward_bpc",
+ "pseudo_file": "pseudo/periodic_reward_bpc_C.txt",
+ "game_data": {}
+}

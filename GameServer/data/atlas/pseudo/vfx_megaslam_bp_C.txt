@@ -1,0 +1,149 @@
+# vfx_megaslam_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CustomAOELogic
+  [0] ExecuteUbergraph_vfx_megaslam_bp(1783)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_vfx_megaslam_bp
+  [0] push @3497
+  [5] goto computed(EntryPoint)
+  [15] self.p_aoe_vfx.Deactivate()
+  [51] pop
+  [52] K2_DestroyActor()
+  [66] pop
+  [67] CallFunc_SetPlayRate_NewRate_ImplicitCast = cast<CST_DoubleToFloat>(self.Speed)
+  [96] self.GrowingShockwave.SetPlayRate(CallFunc_SetPlayRate_NewRate_ImplicitCast)
+  [137] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(arm_megaslam_p_p1, self.DefaultSceneRoot, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, false, 0, true)
+  [269] self.SphereCollision.SetCollisionEnabled(0)
+  [307] self.ShockwaveCapsuleCollision.SetCollisionEnabled(1)
+  [345] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_wep_bp_atk_perchenter_C, self, 0, Temp_delegate_Variable_1, false)
+  [420] self.GrowingShockwave.Play()
+  [452] pop
+  [453] push @682
+  [458] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(1.0, self.slam duration)
+  [504] CallFunc_SetPlayRate_NewRate_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [533] self.InitialSlamTime.SetPlayRate(CallFunc_SetPlayRate_NewRate_ImplicitCast_1)
+  [574] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_wep_bp_atk_perchenter_B, self, 0, Temp_delegate_Variable, false)
+  [649] self.InitialSlamTime.Play()
+  [681] pop
+  [682] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.slam duration, self.slam_overlap)
+  [728] CallFunc_Delay_Duration_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [757] Delay(self, CallFunc_Delay_Duration_ImplicitCast_2, LatentActionInfo{EX_SkipOffsetConst(Value=67), -2140326972, 'ExecuteUbergraph_vfx_megaslam_bp', self})
+  [815] pop
+  [816] Temp_byte_Variable = 0
+  [836] CallFunc_GetRelativeTransform_ReturnValue = self.p_aoe_vfx.GetRelativeTransform()
+  [886] BreakTransform(CallFunc_GetRelativeTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [932] BreakVector(self.p_aoe_vfx.self.RelativeLocation, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1000] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_BreakVector_Z, 40.0)
+  [1046] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [1101] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.Speed, self.SinkTime)
+  [1147] CallFunc_MoveComponentTo_OverTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1176] MoveComponentTo(self.p_aoe_vfx, CallFunc_MakeVector_ReturnValue, CallFunc_BreakTransform_Rotation, false, false, CallFunc_MoveComponentTo_OverTime_ImplicitCast, false, Temp_byte_Variable, LatentActionInfo{-1, 1097497647, 'ExecuteUbergraph_vfx_megaslam_bp', self})
+  [1272] pop
+  [1273] self.risemeshmaterial.SetScalarParameterValue('animtime', self.InitialSlamTime_time_FC2D48B64DAC17CA9D653785B35E64A1)
+  [1327] CallFunc_GetPlayerCameraManager_ReturnValue_1 = GetPlayerCameraManager(self, 0)
+  [1353] CallFunc_StartCameraShake_DurationScale_ImplicitCast = cast<CST_DoubleToFloat>(self.slam duration)
+  [1382] CallFunc_StartCameraShake_ReturnValue_1 = CallFunc_GetPlayerCameraManager_ReturnValue_1.StartCameraShake(escalation_vent_burst_bp_C, 1.0, CallFunc_StartCameraShake_DurationScale_ImplicitCast, 0, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}))
+  [1478] pop
+  [1479] CallFunc_GetMaterial_ReturnValue = self.vfx_crater_rise_mesh.GetMaterial(0)
+  [1530] CallFunc_CreateDynamicMaterialInstance_ReturnValue = self.vfx_crater_rise_mesh.CreateDynamicMaterialInstance(0, CallFunc_GetMaterial_ReturnValue, 'None')
+  [1603] self.risemeshmaterial = CallFunc_CreateDynamicMaterialInstance_ReturnValue
+  [1622] self.vfx_crater_rise_mesh.SetMaterial(0, self.risemeshmaterial)
+  [1672] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1693] if !(CallFunc_IsServer_ReturnValue) pop
+  [1703] K2Node_CreateDelegate_OutputDelegate = bind(self.OnShockwaveOverlap)
+  [1726] K2Node_CreateDelegate_OutputDelegate += None
+  [1767] pop
+  [1768] ReceiveBeginPlay()
+  [1778] goto @1479
+  [1783] self.InitialShockwaveCollision = self.ShockwaveCapsuleCollision
+  [1802] goto @453
+  [1807] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.SlamCleanupTime)
+  [1836] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=15), -853709266, 'ExecuteUbergraph_vfx_megaslam_bp', self})
+  [1894] pop
+  [1895] CallFunc_Delay_Duration_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.ShockwaveCleanupTime)
+  [1924] Delay(self, CallFunc_Delay_Duration_ImplicitCast_1, LatentActionInfo{EX_SkipOffsetConst(Value=52), -1228340254, 'ExecuteUbergraph_vfx_megaslam_bp', self})
+  [1982] pop
+  [1983] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(K2Node_CustomEvent_OtherActor)
+  [2019] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [2048] if !(K2Node_DynamicCast_bSuccess) pop
+  [2058] CallFunc_GetOwner_ReturnValue = self.GetOwner()
+  [2092] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [2120] array{null}
+  [2132] Default__archon_function_library_C.ApplySingleHitDamageFromAOE(self, CallFunc_GetOwner_ReturnValue, self.Instigator, K2Node_DynamicCast_AsArchon_Character, K2Node_DynamicCast_AsArchon_Character.self.CapsuleComponent, HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}, 'mega_slam_shockwave', 1.0, CallFunc_NewGuid_ReturnValue, K2Node_MakeArray_Array, self)
+  [2647] pop
+  [2648] CallFunc_SpawnEmitterAttached_ReturnValue.SetFloatParameter('alpha', self.GrowingShockwave_alpha_3B49A9ED48B0B51B55C9D88F647A56E6)
+  [2706] CallFunc_Lerp_Alpha_ImplicitCast = cast<CST_FloatToDouble>(self.GrowingShockwave_wave_3B49A9ED48B0B51B55C9D88F647A56E6)
+  [2735] CallFunc_Lerp_ReturnValue = Lerp(self.CollisionRadius, self.ShockwaveMaxRadius, CallFunc_Lerp_Alpha_ImplicitCast)
+  [2790] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_Lerp_ReturnValue)
+  [2845] self.ShockwaveCapsuleCollision.K2_SetRelativeLocation(CallFunc_MakeVector_ReturnValue_1, false, CallFunc_K2_SetRelativeLocation_SweepHitResult, true)
+  [2897] CallFunc_Lerp_Alpha_ImplicitCast = cast<CST_FloatToDouble>(self.GrowingShockwave_wave_3B49A9ED48B0B51B55C9D88F647A56E6)
+  [2926] CallFunc_Lerp_ReturnValue = Lerp(self.CollisionRadius, self.ShockwaveMaxRadius, CallFunc_Lerp_Alpha_ImplicitCast)
+  [2981] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Lerp_ReturnValue, 2.0)
+  [3027] CallFunc_SetCapsuleHalfHeight_HalfHeight_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [3056] self.ShockwaveCapsuleCollision.SetCapsuleHalfHeight(CallFunc_SetCapsuleHalfHeight_HalfHeight_ImplicitCast, false)
+  [3098] CallFunc_Lerp_Alpha_ImplicitCast = cast<CST_FloatToDouble>(self.GrowingShockwave_wave_3B49A9ED48B0B51B55C9D88F647A56E6)
+  [3127] CallFunc_Lerp_ReturnValue = Lerp(self.CollisionRadius, self.ShockwaveMaxRadius, CallFunc_Lerp_Alpha_ImplicitCast)
+  [3182] CallFunc_SetCapsuleRadius_Radius_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Lerp_ReturnValue)
+  [3211] self.ShockwaveCapsuleCollision.SetCapsuleRadius(CallFunc_SetCapsuleRadius_Radius_ImplicitCast, true)
+  [3253] pop
+  [3254] CallFunc_SpawnEmitterAttached_ReturnValue.SetFloatParameter('wave', self.GrowingShockwave_wave_3B49A9ED48B0B51B55C9D88F647A56E6)
+  [3312] goto @2648
+  [3317] CallFunc_SpawnEmitterAttached_ReturnValue.Deactivate()
+  [3353] goto @1895
+  [3358] goto @816
+  [3363] CallFunc_GetPlayerCameraManager_ReturnValue = GetPlayerCameraManager(self, 0)
+  [3389] CallFunc_StartCameraShake_ReturnValue = CallFunc_GetPlayerCameraManager_ReturnValue.StartCameraShake(escalation_vent_burst_bp_C, 5.0, 4.0, 0, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}))
+  [3481] pop
+  [3482] goto @3254
+  [3487] goto @3317
+  [3492] goto @1807
+  [3497] return nothing
+  [3499] end
+
+=== GrowingShockwave__FinishedFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(3487)
+  [15] return nothing
+  [17] end
+
+=== GrowingShockwave__UpdateFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(3482)
+  [15] return nothing
+  [17] end
+
+=== GrowingShockwave__startCameraShake__EventFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(3363)
+  [15] return nothing
+  [17] end
+
+=== GrowingShockwave__starttosink__EventFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(3358)
+  [15] return nothing
+  [17] end
+
+=== InitialSlamTime__FinishedFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(3492)
+  [15] return nothing
+  [17] end
+
+=== InitialSlamTime__UpdateFunc
+  [0] ExecuteUbergraph_vfx_megaslam_bp(1273)
+  [15] return nothing
+  [17] end
+
+=== OnShockwaveOverlap
+  [0] frame.K2Node_CustomEvent_OverlappedComponent = OverlappedComponent
+  [18] frame.K2Node_CustomEvent_OtherActor = OtherActor
+  [36] frame.K2Node_CustomEvent_OtherComp = OtherComp
+  [54] frame.K2Node_CustomEvent_OtherBodyIndex = OtherBodyIndex
+  [72] frame.K2Node_CustomEvent_bFromSweep = bFromSweep
+  [90] frame.K2Node_CustomEvent_SweepResult = SweepResult
+  [108] ExecuteUbergraph_vfx_megaslam_bp(1983)
+  [123] return nothing
+  [125] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_vfx_megaslam_bp(1768)
+  [15] return nothing
+  [17] end

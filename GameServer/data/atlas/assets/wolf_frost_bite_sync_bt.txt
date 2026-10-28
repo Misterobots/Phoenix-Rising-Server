@@ -1,0 +1,17 @@
+wolf_frost_bite_sync_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.85, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 400.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1600.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+    [if ticket_is_available_btdeco "Is Sync Attack Entrance Ticket Available?"  (TicketDispatcherBBKey=TargetActor, FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttackEntrance"])]
+    [if ticket_is_available_btdeco "Is Sync Attack Ticket Available?"  (TicketDispatcherBBKey=TargetActor, FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttack"])]
+    [if DistanceCheck "Is Not Too Close?"  (Origin=bb.SelfActor, Target=bb.TargetActor, MaxDistance=1600, ObservedKeyNames=["SelfActor", "AttackTarget"])]
+    2) Sequence
+      1) consume_ticket_bttask  (TicketCategory=SyncAttackEntrance, TargetBBKey=TargetActor)
+      [if ForceSuccess]
+      2) perform_action_montage_bttask "Synced Pounce Entrance"  (Montage=AnimMontage b_wolf_frost_frigidbite_syncatk_miss_mot)
+      [if PhxHasSyncedAnimation "Was Bite Successful?"  (ControllerClass=BlueprintGeneratedClass wolf_frost_bite_synced_anim_controller_C)]
+      3) Sequence
+        1) consume_ticket_bttask  (TicketCategory=SyncAttack, TargetBBKey=TargetActor)
+        2) PhxWaitForSyncedAnimationCompletion "Wait for Synced Pounce Completion"  (ControllerClass=BlueprintGeneratedClass wolf_frost_bite_synced_anim_controller_C)
+      4) Wait  (WaitTime=1)

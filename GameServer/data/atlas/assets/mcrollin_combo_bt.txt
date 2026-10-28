@@ -1,0 +1,189 @@
+mcrollin_combo_bt  blackboard=BlackboardData mcr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service get_player_target_btservice  (Interval=15)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      1) BehemothAction "DIE!!!"  (Montage=AnimMontage b_mcr_dead_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    [if Blackboard  (StaggerCount Is Greater Than 0)]
+    3) Sequence "StaggerSystem"
+      1) Selector "stagger"
+        1) Sequence "ShortStagger"
+          [if Blackboard  (Staggered_Type Is Equal To 1)]
+          1) Selector
+            [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+            1) StaggerBehemoth "light stagger left"  (Montage=AnimMontage b_mr_atk_staggerlight_left_mot, StaggeredBBKey=bb.Staggered_Type, bShowPropertyDetails=false)
+            2) StaggerBehemoth "light stagger right"  (Montage=AnimMontage b_mr_atk_staggerlight_right_mot, StaggeredBBKey=bb.Staggered_Type, bShowPropertyDetails=false)
+        [if Blackboard  (Staggered_Type Is Equal To 2)]
+        2) Selector
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+          1) StaggerBehemoth "heavy stagger left"  (Montage=AnimMontage b_mr_atk_staggerheavy_left_mot, StaggeredBBKey=bb.Staggered_Type, bShowPropertyDetails=false)
+          2) StaggerBehemoth "heavy stagger right"  (Montage=AnimMontage b_mr_atk_staggerheavy_right_mot, StaggeredBBKey=bb.Staggered_Type, bShowPropertyDetails=false)
+        [if Blackboard  (Staggered_Type Is Equal To 3)]
+        3) Selector "FallStagger"
+          1) BehemothAction "TailCutStagger"  (Montage=AnimMontage b_mcr_pers_tailcutoff_fwd_01_mot)
+        [if Blackboard  (Staggered_Type Is Equal To 4)]
+        4) Selector "RollStagger"
+          1) montage_at_section_bttask  (Montage=AnimMontage b_mcr_atk_staggerfromroll_fwd_mot, RecoveryTime=0, StartSectionName=bb.StaggerStartSection)
+        [if Blackboard  (Staggered_Type Is Equal To 5)]
+        5) Selector
+          1) StaggerBehemoth "heavy stagger front"  (Montage=AnimMontage b_mcr_atk_staggerheavy_bwd_mot, StaggeredBBKey=bb.Staggered_Type, bShowPropertyDetails=false)
+      2) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.Staggered_Type)
+      3) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.StaggerCount)
+    [if BTDeco_MemberOfClassIsPresent "PatrolCenterPointPresent"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    4) Sequence "Flee"
+      1) Sequence
+        {service show_moveto_bts  (Target=["bb.MoveDestination"], Interval=0.001, RandomDeviation=0)}
+        1) Sequence "Clear Blackboard"
+          1) ClearBBVar "Clear Target"  (BBVar=bb.AttackTarget)
+          2) ClearBBVar "Clear Helper"  (BBVar=bb.CurrentHelper)
+          3) ClearBBVar "Clear TargetActor"  (BBVar=bb.TargetActor)
+          4) ClearBBVar "Clear MoveToDestination"  (BBVar=bb.TargetActor)
+        2) GetJumpPoint "BTTask_GetJumpPoint"  (JumpPointKey=bb.TargetActor, Location=bb.MoveDestination)
+        3) BehemothAction "TURN"  (Montage=AnimMontage b_mr_loco_rollenter_fwd_mot)
+        4) bttask_start_montage  (Montage=AnimMontage b_mr_loco_roll_noroot_mot)
+        5) Sequence
+          1) MoveTo  (bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+        6) follow_retreat_spline_bpt "Take Flee Path"  (JumpTargetPoint=bb.TargetActor, Destination=bb.MoveDestination)
+        7) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint"}, BlackboardKey=bb.MoveDestination)
+        8) BehemothAction "unCurl"  (Montage=AnimMontage b_mcr_atk_rollrecover_mot)
+        9) Wait  (WaitTime=1)
+        10) Sequence
+          {service LookAlongPath  (HelperKey=bb.MoveDestination)}
+          [if ForceSuccess]
+          1) MoveTo  (AcceptableRadius=200, bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+        11) behemoth_heal_on_flee_bttask
+        12) ResetFleeTimer "BTTask_ResetFleeTimer"
+    5) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    [if Blackboard  (ForceIntroAnimation is Is Set)]
+    6) Sequence
+      1) BehemothAction "IntroRoar"  (Montage=AnimMontage b_mcr_intro)
+      2) ClearBBVar "ClearIntroFlag"  (BBVar=bb.ForceIntroAnimation)
+    [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (AttackTarget is Is Not Set)]
+    7) Sequence "No Enemy - Patrol"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree sub_patrol_bt)
+    8) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      1) bttask_enter_aethercharge_state  (Montage=AnimMontage b_mcr_atk_chargeenter_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage b_mcr_exit_aethercharge_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      3) bttask_enter_rage_state  (Montage=AnimMontage b_mcr_pers_enterrage_fwd_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      4) bttask_exit_rage_state  (Montage=AnimMontage b_mcr_pers_exitrage_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      5) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (AttackTarget is Is Set)]
+      1) Selector
+        {service evaluate_chosen_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, ClassesToEvaluate=["BlueprintGeneratedClass mcr_kickclear_l_atk_C", "BlueprintGeneratedClass mcr_kickclear_r_atk_C", "BlueprintGeneratedClass mcr_tailslam_fromstand_atk_C", "BlueprintGeneratedClass mcr_roll_atk_C", "BlueprintGeneratedClass mcr_shouldercheck_l_atk_C", "BlueprintGeneratedClass mcr_shouldercheck_r_atk_C", "BlueprintGeneratedClass mcr_groundstomp_l_atk_C", "BlueprintGeneratedClass mcr_groundstomp_r_atk_C", "BlueprintGeneratedClass mcr_tailslash_l_atk_C", "BlueprintGeneratedClass mcr_tailslash_r_atk_C", "BlueprintGeneratedClass mcr_spikethrow_atk_C"])}
+        1) Sequence
+          1) Selector
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_kickclear_l_atk_C, bShowPropertyDetails=false)]
+            1) PerformActionClass "KickClearL"  (ActionClass=BlueprintGeneratedClass mcr_kickclear_l_atk_C, bShowPropertyDetails=false)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_kickclear_r_atk_C, bShowPropertyDetails=false)]
+            2) PerformActionClass "KickClearR"  (ActionClass=BlueprintGeneratedClass mcr_kickclear_r_atk_C, bShowPropertyDetails=false)
+        2) Sequence "Combo then emote"
+          1) Selector "PickComboByDirection"
+            [if Blackboard  (InRageState is Is Set)]
+            1) Selector "RageCombos"
+              1) PerformActionClass "270L"  (ActionClass=BlueprintGeneratedClass mcr_270swipe_l_atk_C, bShowPropertyDetails=false)
+              2) PerformActionClass "270R"  (ActionClass=BlueprintGeneratedClass mcr_270swipe_r_atk_C, bShowPropertyDetails=false)
+            2) Sequence "Front- Roll Slam Slam"
+              1) Selector
+                [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_tailslam_fromstand_atk_C, bShowPropertyDetails=false)]
+                1) PerformActionClass "Slam_FromStand"  (ActionClass=BlueprintGeneratedClass mcr_tailslam_fromstand_atk_C, bShowPropertyDetails=false)
+                [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_roll_atk_C, bShowPropertyDetails=false)]
+                2) RunBehavior "Roll"  (BehaviorAsset=BehaviorTree mcrollin_roll_subtree)
+              2) Selector "Shoulder charges"
+                1) RunBehavior  (BehaviorAsset=BehaviorTree kickclear_bt)
+                [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.Front45R, Observed=bb.AttackTarget)]
+                2) PerformActionClass "ShoulderCheckR"  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_r_atk_C, bShowPropertyDetails=false)
+                [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.Front45L, Observed=bb.AttackTarget)]
+                3) PerformActionClass "ShoulderCheckL"  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_l_atk_C, bShowPropertyDetails=false)
+            3) Sequence "Front 45s - Charge, Turn Roll"
+              1) Selector "Shoulder charges"
+                [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_r_atk_C, bShowPropertyDetails=false)]
+                1) PerformActionClass "ShoulderCheckR"  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_r_atk_C, bShowPropertyDetails=false)
+                [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_r_atk_C, bShowPropertyDetails=false)]
+                2) PerformActionClass "ShoulderCheckL"  (ActionClass=BlueprintGeneratedClass mcr_shouldercheck_l_atk_C, bShowPropertyDetails=false)
+              2) Selector "Turn"
+                [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                1) BehemothAction "180L"  (Montage=AnimMontage b_mr_loco_turninplace_180l_mot)
+                2) BehemothAction "180R"  (Montage=AnimMontage b_mr_loco_turninplace_180r_mot)
+              3) Selector "Slam or Roll"
+                1) RunBehavior  (BehaviorAsset=BehaviorTree kickclear_bt)
+                [if DistanceCheck  (Origin=bb.TargetActor, Target=bb.TargetActor)]
+                2) PerformActionClass "Slam_FromStand"  (ActionClass=BlueprintGeneratedClass mcr_tailslam_fromstand_atk_C, bShowPropertyDetails=false)
+                3) RunBehavior "Roll"  (BehaviorAsset=BehaviorTree mcrollin_roll_subtree)
+            4) Sequence
+              [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_r_atk_C, bShowPropertyDetails=false)]
+              1) PerformActionClass "Stomp_R"  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_r_atk_C, bShowPropertyDetails=false)
+              2) PerformActionClass "Stomp_L"  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_l_atk_C, bShowPropertyDetails=false)
+            5) Sequence
+              [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_tailslash_r_atk_C, bShowPropertyDetails=false)]
+              1) PerformActionClass "Slash_R"  (ActionClass=BlueprintGeneratedClass mcr_tailslash_r_atk_C, bShowPropertyDetails=false)
+              2) PerformActionClass "270L"  (ActionClass=BlueprintGeneratedClass mcr_270swipe_l_atk_C, bShowPropertyDetails=false)
+            6) Sequence
+              [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_l_atk_C, bShowPropertyDetails=false)]
+              1) PerformActionClass "Stomp_L"  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_l_atk_C, bShowPropertyDetails=false)
+              2) PerformActionClass "Stomp_R"  (ActionClass=BlueprintGeneratedClass mcr_groundstomp_r_atk_C, bShowPropertyDetails=false)
+            7) Sequence
+              [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_tailslash_l_atk_C, bShowPropertyDetails=false)]
+              1) PerformActionClass "Slash_L"  (ActionClass=BlueprintGeneratedClass mcr_tailslash_l_atk_C, bShowPropertyDetails=false)
+              2) PerformActionClass "270R"  (ActionClass=BlueprintGeneratedClass mcr_270swipe_r_atk_C, bShowPropertyDetails=false)
+            8) Sequence "Rear"
+              [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass mcr_spikethrow_atk_C, bShowPropertyDetails=false)]
+              1) PerformActionClass "SpikeThrow"  (ActionClass=BlueprintGeneratedClass mcr_spikethrow_atk_C, bShowPropertyDetails=false)
+              2) Selector "Turn"
+                [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+                1) BehemothAction "180L"  (Montage=AnimMontage b_mr_loco_turninplace_180l_mot)
+                2) BehemothAction "180R"  (Montage=AnimMontage b_mr_loco_turninplace_180r_mot)
+              3) RunBehavior "Roll"  (BehaviorAsset=BehaviorTree mcrollin_roll_subtree)
+          [if btdeco_variablecooldown  (Cooldown_Min=25, Cooldown_Max=30, StartTime=30)]
+          2) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.5}, {"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.25}, {"Montage": "AnimMontage b_mcr_pers_rawr_long", "Chance": 1.0}])
+        [if Blackboard  (ChosenAttack is Is Not Set)]
+        3) Selector "Reposition"
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfActor, ConeDirection=bb.BackPoint, Observed=bb.CurrentHelper)]
+          1) Selector "Target is Behind"
+            1) Sequence
+              1) TestCollisionForSpecificAction "Test Backstep collision"  (ActionClassToTest=BlueprintGeneratedClass mcr_backstep_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MaxDistance=1500)]
+              2) Selector
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_pers_backstepinjured_bwd_mot)
+                2) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_atk_backstep_mot)
+          2) Sequence "MoveTo"
+            [if Blackboard  (CurrentHelper is Is Set)]
+            1) Sequence
+              {service LookAlongPath  (HelperKey=bb.CurrentHelper)}
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.CurrentHelper, MinDistance=50, MaxDistance=10000, ObservedKeyNames=["SelfPos", "CurrentHelper"], FlowAbortMode=Self)]
+              1) MoveToAndFace  (FacingAngleBlackboardKey=bb.CurrentHelper, bAlignWithFacingObject=true, AcceptableRadius=10, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentHelper)
+              2) MatchTargetRotation  (Target=bb.CurrentHelper)
+          [if Blackboard  (CurrentHelper is Is Not Set)]
+          3) Selector "No Helper GOTO AttackTarget"
+            1) Selector
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": -1260.0, "Z": 0.0}])]
+              1) Selector "Left Sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepL_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_left_mot, RecoveryTime=0.1)
+                2) BehemothAction "SidestepL"  (Montage=AnimMontage b_mcr_loco_sidestep_left_mot, RecoveryTime=0.1)
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": 1260.0, "Z": 0.0}])]
+              2) Selector "Right sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepR_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_right_mot, RecoveryTime=0.1)
+                2) BehemothAction "SidestepR"  (Montage=AnimMontage b_mcr_loco_sidestep_right_mot, RecoveryTime=0.1)
+            [if Blackboard  (CurrentHelper is Is Not Set)]
+            2) Selector
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=300, MaxDistance=100000000)]
+              1) MoveToAndFace  (FacingAngleBlackboardKey=bb.AttackTarget, AcceptableRadius=300, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+              2) Sequence
+                1) RunEQSQuery  (QueryTemplate=EnvQuery EQ_FindRepositionLocation, EQSRequest={"QueryTemplate": "EnvQuery EQ_FindRepositionLocation"}, BlackboardKey=bb.MoveDestination)
+                2) MoveToAndFace  (FacingAngleBlackboardKey=bb.AttackTarget, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+                3) RotateTowardsTarget  (Target=bb.AttackTarget)

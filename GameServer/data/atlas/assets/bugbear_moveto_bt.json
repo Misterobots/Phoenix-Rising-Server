@@ -1,0 +1,195 @@
+{
+ "name": "bugbear_moveto_bt",
+ "package": "Archon/Content/Monsters/mb/bugbear/ai/bugbear_moveto_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base",
+  "bugbear_enter_fly_if_grounded"
+ ],
+ "exports": {
+  "archon_distance_check_btdeco_C_2": {
+   "type": "archon_distance_check_btdeco_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.MoveDestination",
+    "MinDistance": {
+     "BlackboardKeyName": "TempFloat"
+    },
+    "MaxDistance": {
+     "ConstantFloat": 99999.0
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Distance To MoveDest > TempFloat",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt"
+   }
+  },
+  "bugbear_moveto_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_4",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@comment_btdeco_C_20",
+     "@comment_btdeco_C_22",
+     "@comment_btdeco_C_24",
+     "@archon_distance_check_btdeco_C_2"
+    ]
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [
+       "@Compare_btdeco_C_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_3",
+      "ChildTask": null,
+      "Decorators": [
+       "@Compare_btdeco_C_5"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_3": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_4": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 500.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTTask_MoveTo_1": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTTask_RunBehavior_2": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree bugbear_enter_fly_if_grounded",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "comment_btdeco_C_20": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Moves to the position, starting to fly if needed",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt"
+   }
+  },
+  "comment_btdeco_C_22": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Requires MoveDestination",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt"
+   }
+  },
+  "comment_btdeco_C_24": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Requires TempFloat (Distance to move to, 500 or 1000)",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt"
+   }
+  },
+  "Compare_btdeco_C_3": {
+   "type": "Compare_btdeco_C",
+   "props": {
+    "LeftSideKey": "bb.TempFloat",
+    "CompareOperator": "Enum_CompareOperators::<",
+    "CompareType": "blackboard_comparable_key_type::Float",
+    "RightSideData": {
+     "ConstantFloat": 750.0
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "TempFloat < 750",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "Compare_btdeco_C_5": {
+   "type": "Compare_btdeco_C",
+   "props": {
+    "LeftSideKey": "bb.TempFloat",
+    "CompareOperator": "Enum_CompareOperators::>=",
+    "CompareType": "blackboard_comparable_key_type::Float",
+    "RightSideData": {
+     "ConstantFloat": 750.0
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "TempFloat >= 750",
+    "TreeAsset": "BehaviorTree bugbear_moveto_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  }
+ }
+}

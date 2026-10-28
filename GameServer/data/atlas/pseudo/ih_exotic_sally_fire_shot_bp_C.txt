@@ -1,0 +1,201 @@
+# ih_exotic_sally_fire_shot_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AudioSetIsLocal
+  [0] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetInstigator_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @164
+  [99] K2Node_DynamicCast_AsPlayer_Interface.GetIsLocalPlayerAudioEnabled(CallFunc_GetIsLocalPlayerAudioEnabled_Out)
+  [145] self.IsLocalPlayerAudioEnabled = CallFunc_GetIsLocalPlayerAudioEnabled_Out
+  [164] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [201] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, self, 'Gameplay_Created_By_Player')
+  [262] return nothing
+  [264] end
+
+=== BndEvt__ProjectileMovement_K2Node_ComponentBoundEvent_0_OnProjectileBounceDelegate__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_ImpactResult = ImpactResult
+  [18] frame.K2Node_ComponentBoundEvent_ImpactVelocity = ImpactVelocity
+  [36] ExecuteUbergraph_ih_exotic_sally_fire_shot_bp(463)
+  [51] return nothing
+  [53] end
+
+=== Detonate
+  [0] CallFunc_K2_GetComponentLocation_ReturnValue = self.Sphere.K2_GetComponentLocation()
+  [50] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, explosion_blaze_md_p_v2, CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [143] CallFunc_GetInstigator_ReturnValue = self.GetInstigator()
+  [177] CallFunc_K2_GetComponentLocation_ReturnValue = self.Sphere.K2_GetComponentLocation()
+  [227] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [314] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, BP_AoE_exotic_sally_fireshot_C, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetInstigator_ReturnValue)
+  [364] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(self.WeaponChargeLevel, self.AverageScale)
+  [410] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_IntFloat_ReturnValue, self.TalentBonus)
+  [456] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageScale', CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [497] CallFunc_GetInstigator_ReturnValue = self.GetInstigator()
+  [531] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [572] CallFunc_K2_GetComponentLocation_ReturnValue = self.Sphere.K2_GetComponentLocation()
+  [622] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [709] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [747] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(self.WeaponChargeLevel)
+  [784] PrintString(self, CallFunc_Conv_IntToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 5.0, 'None')
+  [858] return nothing
+  [860] end
+
+=== ExecuteUbergraph_ih_exotic_sally_fire_shot_bp
+  [0] push @3729
+  [5] goto computed(EntryPoint)
+  [15] self.TalentAmmoThresholdBonus = 1
+  [38] pop
+  [39] StopVFX()
+  [53] self.K2_DestroyActor()
+  [81] pop
+  [82] FlushNetDormancy()
+  [92] CallFunc_Abs_Int_ReturnValue = Abs_Int(K2Node_DynamicCast_AsIh_Special_Sally_Exotic_Bpc.self.SavedCharge)
+  [151] CallFunc_Max_ReturnValue = Max(CallFunc_Abs_Int_ReturnValue, 1)
+  [193] self.WeaponChargeLevel = CallFunc_Max_ReturnValue
+  [220] MarkPropertyDirtyFromRepIndex(self, 10, 'WeaponChargeLevel')
+  [249] FlushNetDormancy()
+  [259] self.AverageScale = K2Node_DynamicCast_AsIh_Special_Sally_Exotic_Bpc.self.SavedScale
+  [308] MarkPropertyDirtyFromRepIndex(self, 11, 'AverageScale')
+  [337] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [357] Default__legendary_ability_function_library_C.GetTalentStatusSP(CallFunc_GetInstigator_ReturnValue_2, self, CallFunc_GetTalentStatusSP_TalentSP01Active, CallFunc_GetTalentStatusSP_TalentSP02Active, CallFunc_GetTalentStatusSP_TalentSP03Active, CallFunc_GetTalentStatusSP_TalentSP04Active, CallFunc_GetTalentStatusSP_TalentSP05Active)
+  [448] if !(CallFunc_GetTalentStatusSP_TalentSP01Active) pop
+  [458] goto @15
+  [463] Detonate()
+  [477] StopSounds()
+  [491] self.ProjectileMovement.StopSimulating(K2Node_ComponentBoundEvent_ImpactResult)
+  [536] self.projectile.Deactivate()
+  [572] self.Sphere.SetCollisionEnabled(0)
+  [610] self.lk_ihammer_sally_exotic_molten_ball.SetCollisionEnabled(0)
+  [648] self.lk_ihammer_sally_exotic_molten_ball.SetVisibility(false, false)
+  [682] push @742
+  [687] Delay(self, 1.0, LatentActionInfo{EX_SkipOffsetConst(Value=39), 291237199, 'ExecuteUbergraph_ih_exotic_sally_fire_shot_bp', self})
+  [741] pop
+  [742] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(4, self.TalentAmmoThresholdBonus)
+  [784] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.WeaponChargeLevel, CallFunc_Subtract_IntInt_ReturnValue)
+  [822] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @1761
+  [836] CallFunc_K2_GetComponentLocation_ReturnValue = self.Sphere.K2_GetComponentLocation()
+  [886] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 800.0}))
+  [948] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [1010] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1146] if !(CallFunc_LineTraceSingle_ReturnValue) pop
+  [1156] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [1176] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1357] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_BreakHitResult_Location)
+  [1394] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, exotic_sally_ground_fire_bp_C, CallFunc_Conv_VectorToTransform_ReturnValue, 0, CallFunc_GetInstigator_ReturnValue)
+  [1444] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [1464] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [1505] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1686] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_BreakHitResult_Location)
+  [1723] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [1761] CallFunc_K2_GetComponentLocation_ReturnValue_2 = self.Sphere.K2_GetComponentLocation()
+  [1811] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, self.Explode Audio, CallFunc_K2_GetComponentLocation_ReturnValue_2, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [1901] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue)
+  [1930] if !(CallFunc_IsValid_ReturnValue) pop
+  [1940] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [1977] CallFunc_SpawnAkComponentAtLocation_ReturnValue.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, 'Gameplay_Created_By_Player')
+  [2052] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [2120] pop
+  [2121] self.ElapsedTime = 0.0
+  [2148] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [2168] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetInstigator_ReturnValue_1)
+  [2204] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [2233] if !(K2Node_DynamicCast_bSuccess) goto @2636
+  [2247] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetCurrentActiveWeapon(CallFunc_GetCurrentActiveWeapon_CurrentWeapon)
+  [2293] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetCurrentActiveWeapon_CurrentWeapon.GetComponentByClass(ammo_bpc_C)
+  [2344] self.MaxAmmo = CallFunc_GetComponentByClass_ReturnValue.self.MaxAmmoCount
+  [2393] push @2652
+  [2398] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [2419] if !(CallFunc_IsServer_ReturnValue) pop
+  [2429] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(CallFunc_GetCurrentActiveWeapon_CurrentWeapon)
+  [2465] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [2494] if !(K2Node_DynamicCast_bSuccess_1) goto @3471
+  [2508] K2Node_DynamicCast_AsWeapon_Bpi.GetWeaponPartByType(10, CallFunc_GetWeaponPartByType_WeaponPartRef)
+  [2556] K2Node_DynamicCast_AsIh_Special_Sally_Exotic_Bpc = cast<ih_special_sally_exotic_bpc_C>(CallFunc_GetWeaponPartByType_WeaponPartRef)
+  [2592] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsIh_Special_Sally_Exotic_Bpc)
+  [2621] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [2631] goto @82
+  [2636] CallFunc_GetCurrentActiveWeapon_CurrentWeapon = null
+  [2647] goto @2293
+  [2652] CallFunc_GetSubMesh_ReturnValue = CallFunc_GetCurrentActiveWeapon_CurrentWeapon.GetSubMesh(1, true)
+  [2697] CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue = GetSocketTransform_WeaponSeparation(CallFunc_GetSubMesh_ReturnValue, 'ihammer_blast_socket', 0)
+  [2749] BreakTransform(CallFunc_GetSocketTransform_WeaponSeparation_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [2795] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, ih_blast_blaze_p, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [2872] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.Sphere.K2_GetComponentLocation()
+  [2922] array{}
+  [2933] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_ReturnValue = Blueprint_PredictProjectilePath_ByTraceChannel(self, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutHit, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutPathPositions, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutLastTraceDestination, CallFunc_K2_GetComponentLocation_ReturnValue_1, self.ProjectileMovement.self.Velocity, true, 0.0, 21, false, Temp_object_Variable_1, 0, 0.5, 15.0, 2.0, 0.0)
+  [3061] if !(CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_ReturnValue) pop
+  [3071] if !(self.Debug) goto @3159
+  [3085] DrawDebugSphere(self, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutLastTraceDestination, 1000.0, 12, LinearColor{1.0, 1.0, 1.0, 1.0}, 0.5, 0.0)
+  [3159] Default__targeting_function_library_C.FindClosestBehemothToLocation(CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutLastTraceDestination, 1000.0, true, self, CallFunc_FindClosestBehemothToLocation_ClosestBehe)
+  [3224] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_FindClosestBehemothToLocation_ClosestBehe)
+  [3253] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3263] Temp_struct_Variable = EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': -0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})
+  [3362] CallFunc_AddComponent_ReturnValue = CallFunc_FindClosestBehemothToLocation_ClosestBehe.AddComponent('NODE_AddSceneComponent-0', false, Temp_struct_Variable, self, false)
+  [3429] self.ProjectileMovement.self.HomingTargetComponent = CallFunc_AddComponent_ReturnValue
+  [3470] pop
+  [3471] CallFunc_GetWeaponPartByType_WeaponPartRef = null
+  [3482] goto @2556
+  [3487] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [3516] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, -720.0)
+  [3562] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3591] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, CallFunc_MakeRotator_Pitch_ImplicitCast, 0.0)
+  [3638] self.lk_ihammer_sally_exotic_molten_ball.K2_AddLocalRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_AddLocalRotation_SweepHitResult, false)
+  [3690] pop
+  [3691] StartSounds()
+  [3705] goto @2121
+  [3710] AudioSetIsLocal()
+  [3724] goto @3691
+  [3729] return nothing
+  [3731] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ih_exotic_sally_fire_shot_bp(3710)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ih_exotic_sally_fire_shot_bp(3487)
+  [33] return nothing
+  [35] end
+
+=== ScaleUpBomb
+  [0] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.self.InitialLifeSpan)
+  [43] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.ElapsedTime, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [89] CallFunc_Lerp_ReturnValue = Lerp(0.10000000149011612, 1.0, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [144] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_Lerp_ReturnValue, CallFunc_Lerp_ReturnValue, CallFunc_Lerp_ReturnValue)
+  [199] self.projectile.SetWorldScale3D(CallFunc_MakeVector_ReturnValue)
+  [240] return nothing
+  [242] end
+
+=== StartSounds
+  [0] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(self.StartAudio, self, 0, Temp_delegate_Variable, false)
+  [75] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(self.PersistentAudio, self, 0, Temp_delegate_Variable_1, false)
+  [150] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(self.Passby Audio, self, 0, Temp_delegate_Variable_2, false)
+  [225] return nothing
+  [227] end
+
+=== StartVFX
+  [0] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.projectile.K2_GetComponentLocation()
+  [50] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, self.SpawnVFX, CallFunc_K2_GetComponentLocation_ReturnValue_1, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [143] CallFunc_K2_GetComponentLocation_ReturnValue = self.projectile.K2_GetComponentLocation()
+  [193] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.PersistentVFX, CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [286] self.SpawnedLoopingParticle = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [305] self.EffectsStarted = true
+  [316] return nothing
+  [318] end
+
+=== StopSounds
+  [0] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(self.Stop Persistent Audio, self, 0, Temp_delegate_Variable, false)
+  [75] return nothing
+  [77] end
+
+=== StopVFX
+  [0] Default__archon_function_library_C.TryDestroyComponent(self.SpawnedLoopingParticle, self)
+  [46] return nothing
+  [48] end
+
+=== UserConstructionScript
+  [0] self.lk_ihammer_sally_exotic_molten_ball.SetScalarParameterValueOnMaterials('WPOMult', 100.0)
+  [50] self.lk_ihammer_sally_exotic_molten_ball.SetScalarParameterValueOnMaterials('EmissiveMult', 5.0)
+  [100] return nothing
+  [102] end

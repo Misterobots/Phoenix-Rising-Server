@@ -1,0 +1,743 @@
+# mspear_special_rocketlunge_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateWeaponPartGameplay
+  [0] frame.K2Node_Event_StartTime = StartTime
+  [18] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3661)
+  [33] return nothing
+  [35] end
+
+=== CalculateEndPoint
+  [0] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(OverrideMaxDistance, 0.0)
+  [38] GetJumpValuesForDistanceType(DistanceType, CallFunc_GetJumpValuesForDistanceType_JumpTime, CallFunc_GetJumpValuesForDistanceType_MaxHeight, CallFunc_GetJumpValuesForDistanceType_MaxDistance)
+  [88] CallFunc_SelectFloat_ReturnValue = SelectFloat(OverrideMaxDistance, CallFunc_GetJumpValuesForDistanceType_MaxDistance, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [143] CalculateJumpTarget(CallFunc_SelectFloat_ReturnValue, CallFunc_GetJumpValuesForDistanceType_MaxHeight, DistanceType, CallFunc_CalculateJumpTarget_LocationFound, CallFunc_CalculateJumpTarget_Location)
+  [202] if !(CallFunc_CalculateJumpTarget_LocationFound) goto @998
+  [216] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [266] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [316] array{self.ArchonCharacter}
+  [336] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_CalculateJumpTarget_Location, CallFunc_K2_GetActorLocation_ReturnValue)
+  [382] CallFunc_ClampVectorSize_ReturnValue = ClampVectorSize(CallFunc_Subtract_VectorVector_ReturnValue, 0.0, 1000.0)
+  [437] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_ClampVectorSize_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue)
+  [483] Default__targeting_function_library_C.GetAverageGroundDelta(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_Add_VectorVector_ReturnValue, 200.0, K2Node_MakeArray_Array, 500.0, 1250.0, self, CallFunc_GetAverageGroundDelta_AvgHeightDeltaFromStart)
+  [583] GetJumpValuesForDistanceType(DistanceType, CallFunc_GetJumpValuesForDistanceType_JumpTime, CallFunc_GetJumpValuesForDistanceType_MaxHeight, CallFunc_GetJumpValuesForDistanceType_MaxDistance)
+  [633] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetJumpValuesForDistanceType_MaxHeight, 250.0)
+  [679] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetJumpValuesForDistanceType_MaxHeight, 500.0)
+  [725] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 100.0)
+  [771] Default__archon_function_library_C.RescaleAndClamp(-50.0, 50.0, CallFunc_FMax_ReturnValue, CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetAverageGroundDelta_AvgHeightDeltaFromStart, self, CallFunc_RescaleAndClamp_NewValue)
+  [862] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_RescaleAndClamp_NewValue, 100.0, 999999.0)
+  [917] EndPoint = CallFunc_CalculateJumpTarget_Location
+  [944] JumpTime = CallFunc_GetJumpValuesForDistanceType_JumpTime
+  [971] JumpHeight = CallFunc_FClamp_ReturnValue
+  [998] return nothing
+  [1000] end
+
+=== CalculateJumpTarget
+  [0] push @2086
+  [5] push @1541
+  [10] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(self.ArchonCharacter)
+  [46] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [75] if !(K2Node_DynamicCast_bSuccess) goto @1634
+  [89] K2Node_DynamicCast_AsPlayer_Interface.GetFollowCamera(CallFunc_GetFollowCamera_FollowCamera)
+  [135] CallFunc_GetFollowCamera_FollowCamera.GetCameraView(0.0, CallFunc_GetCameraView_DesiredView)
+  [185] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.BehemothSearchBeamRadius, 1.25)
+  [231] CallFunc_K2_GetActorLocation_ReturnValue_2 = self.ArchonCharacter.K2_GetActorLocation()
+  [281] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_GetCameraView_DesiredView.Rotation)
+  [327] array{}
+  [338] Default__archon_function_library_C.XY(CallFunc_GetForwardVector_ReturnValue, self, CallFunc_XY_Out)
+  [393] array{7}
+  [406] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_XY_Out, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [452] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_2, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [498] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_XY_Out, MoveDist)
+  [544] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue_2, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [590] CallFunc_SphereTraceSingleForObjects_Radius_ImplicitCast = cast<CST_DoubleToFloat>(self.BehemothSearchBeamRadius)
+  [619] CallFunc_SphereTraceSingleForObjects_ReturnValue = SphereTraceSingleForObjects(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_SphereTraceSingleForObjects_Radius_ImplicitCast, K2Node_MakeArray_Array_1, false, K2Node_MakeArray_Array, 0, CallFunc_SphereTraceSingleForObjects_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 0.2)
+  [771] if !(CallFunc_SphereTraceSingleForObjects_ReturnValue) goto @1650
+  [785] Temp_real_Variable = 150.0
+  [812] Temp_real_Variable_1 = 150.0
+  [839] Temp_real_Variable_2 = 0.0
+  [866] Temp_byte_Variable = self.CurrentDistance
+  [893] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [943] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.BehemothSearchBeamRadius, 1.5)
+  [989] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_GetCameraView_DesiredView.Rotation)
+  [1035] Default__archon_function_library_C.XY(CallFunc_GetForwardVector_ReturnValue, self, CallFunc_XY_Out)
+  [1090] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_XY_Out, CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [1136] BreakHitResult(CallFunc_SphereTraceSingleForObjects_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1317] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_BreakHitResult_Location, CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [1363] Default__targeting_function_library_C.PushVectorForward(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Add_VectorVector_ReturnValue_2, switch(Temp_byte_Variable){0: Temp_real_Variable_2, 1: Temp_real_Variable_1, 2: Temp_real_Variable, default: K2Node_Select_Default_1}, false, self, CallFunc_PushVectorForward_Position)
+  [1498] LocationFound = true
+  [1509] Location = CallFunc_PushVectorForward_Position
+  [1536] goto @2086
+  [1541] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [1591] LocationFound = false
+  [1602] Location = CallFunc_K2_GetActorLocation_ReturnValue_1
+  [1629] goto @2086
+  [1634] CallFunc_GetFollowCamera_FollowCamera = null
+  [1645] goto @135
+  [1650] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(self.ArchonCharacter)
+  [1686] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [1715] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1725] K2Node_DynamicCast_AsPlayer_Interface_1.IsStrafing(CallFunc_IsStrafing_NewParam)
+  [1771] Temp_byte_Variable_1 = Distance
+  [1798] Temp_real_Variable_3 = 800.0
+  [1825] Temp_real_Variable_4 = 800.0
+  [1852] Temp_real_Variable_5 = 250.0
+  [1879] Default__targeting_function_library_C.GetForwardJumpLocation(self.ArchonCharacter, MoveDist, switch(Temp_byte_Variable_1){0: Temp_real_Variable_5, 1: Temp_real_Variable_4, 2: Temp_real_Variable_3, default: K2Node_Select_Default}, CallFunc_IsStrafing_NewParam, 150.0, self, CallFunc_GetForwardJumpLocation_LocationFound, CallFunc_GetForwardJumpLocation_FurthestValidLocation)
+  [2040] LocationFound = CallFunc_GetForwardJumpLocation_LocationFound
+  [2059] Location = CallFunc_GetForwardJumpLocation_FurthestValidLocation
+  [2086] return nothing
+  [2088] end
+
+=== CalculateTrajectory
+  [0] push @1042
+  [5] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [34] self.JumpStartedTimeStamp = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [61] L_MaxHeight = MaxHeight
+  [88] CallFunc_IsValid_ReturnValue_1 = IsValid(self.JumpTrajectory)
+  [117] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsValid_ReturnValue_1)
+  [146] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(L_LoopCount, 5)
+  [180] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_IntInt_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [218] if !(CallFunc_BooleanAND_ReturnValue) goto @540
+  [232] push @88
+  [237] CallFunc_CreateBallisticTrajectory_MaxHeight_ImplicitCast = cast<CST_DoubleToFloat>(L_MaxHeight)
+  [266] CallFunc_CreateBallisticTrajectory_Gravity_ImplicitCast = cast<CST_DoubleToFloat>(Gravity)
+  [295] CallFunc_CreateBallisticTrajectory_ReturnValue = CreateBallisticTrajectory(StartPosition, Target, CallFunc_CreateBallisticTrajectory_MaxHeight_ImplicitCast, CallFunc_CreateBallisticTrajectory_Gravity_ImplicitCast)
+  [351] self.JumpTrajectory = CallFunc_CreateBallisticTrajectory_ReturnValue
+  [370] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(L_LoopCount, 1)
+  [412] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [439] L_LoopCount = Temp_int_Variable
+  [466] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(L_MaxHeight, 100.0)
+  [512] L_MaxHeight = CallFunc_Add_DoubleDouble_ReturnValue
+  [539] pop
+  [540] CallFunc_IsValid_ReturnValue = IsValid(self.JumpTrajectory)
+  [569] if !(CallFunc_IsValid_ReturnValue) pop
+  [579] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(self.ArchonCharacter, GameplayAttribute{'CombatPlayRateRateModifier', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:CombatPlayRateRateModifier'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [737] CallFunc_FMax_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [766] CallFunc_FMax_ReturnValue = FMax(CallFunc_FMax_A_ImplicitCast, 1.0)
+  [812] CallFunc_StartTrajectoryWarp_TimeRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [841] self.WarpComponent.StartTrajectoryWarp(self.JumpTrajectory, 0, CallFunc_StartTrajectoryWarp_TimeRate_ImplicitCast)
+  [893] self.ArchonCharacter.self.CapsuleComponent.SetCollisionResponseToChannel(14, 0)
+  [955] K2Node_CreateDelegate_OutputDelegate = bind(self.On Movement Interrupting Action)
+  [978] K2Node_CreateDelegate_OutputDelegate += None
+  [1041] pop
+  [1042] return nothing
+  [1044] end
+
+=== CustomModifyDamageEventData
+  [0] push @1042
+  [5] push @385
+  [10] CallFunc_HasTag_ReturnValue = HasTag(DamageTags, GameplayTag{'Combat.Special.RocketLunge'}, false)
+  [67] if !(CallFunc_HasTag_ReturnValue) pop
+  [77] Default__legendary_ability_function_library_C.GetTalentStatusSP(self.ArchonCharacter, self, CallFunc_GetTalentStatusSP_TalentSP01Active, CallFunc_GetTalentStatusSP_TalentSP02Active, CallFunc_GetTalentStatusSP_TalentSP03Active, CallFunc_GetTalentStatusSP_TalentSP04Active, CallFunc_GetTalentStatusSP_TalentSP05Active)
+  [168] push @601
+  [173] if !(CallFunc_GetTalentStatusSP_TalentSP05Active) pop
+  [183] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [203] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [245] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [255] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(DamagedActor)
+  [291] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [320] if !(K2Node_DynamicCast_bSuccess) pop
+  [330] Default__buff_function_library_C.AdjustBuffTempStacks(self.ArchonCharacter, 1, 3, false, self)
+  [384] pop
+  [385] ModifiedDamageEventData = false
+  [396] OverriddenDamageEventData = DamageEventData{EX_ArrayConst(InnerProperty={'Path': ['PreMitigationDamages', 'PreMitigationDamages'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, EX_ArrayConst(InnerProperty={'Path': ['Multipliers', 'Multipliers'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['ResistanceDeltas', 'ResistanceDeltas'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['PostResistDamages', 'PostResistDamages'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0}
+  [539] ShouldOverrideDamageTags = false
+  [550] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [596] goto @1042
+  [601] K2Node_DynamicCast_AsMspear_Interface = cast<mspear_interface_C>(self.ArchonWeapon)
+  [637] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsMspear_Interface)
+  [666] if !(K2Node_DynamicCast_bSuccess_1) goto @1010
+  [680] K2Node_DynamicCast_AsMspear_Interface.GetLastFiredShotAmmoScale(CallFunc_GetLastFiredShotAmmoScale_LastFiredShotAmmoScale)
+  [726] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetLastFiredShotAmmoScale_LastFiredShotAmmoScale, 0.2)
+  [772] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetLastFiredShotAmmoScale_LastFiredShotAmmoScale, CallFunc_GetTalentStatusSP_TalentSP01Active)
+  [827] Default__cell_function_library_C.ModifyDamageEventdata(CallFunc_SelectFloat_ReturnValue, 7, DamageEventData, self, CallFunc_ModifyDamageEventdata_OverrodeDamageEventData, CallFunc_ModifyDamageEventdata_OverriddenDamageEventData)
+  [902] ModifiedDamageEventData = CallFunc_ModifyDamageEventdata_OverrodeDamageEventData
+  [921] OverriddenDamageEventData = CallFunc_ModifyDamageEventdata_OverriddenDamageEventData
+  [948] ShouldOverrideDamageTags = false
+  [959] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [1005] goto @1042
+  [1010] CallFunc_GetLastFiredShotAmmoScale_LastFiredShotAmmoScale = 0.0
+  [1037] goto @726
+  [1042] return nothing
+  [1044] end
+
+=== ExecuteUbergraph_mspear_special_rocketlunge_bpc
+  [0] push @6114
+  [5] goto computed(EntryPoint)
+  [15] GetFinalEndPoint(CallFunc_GetFinalEndPoint_Succeded, CallFunc_GetFinalEndPoint_EndPoint, CallFunc_GetFinalEndPoint_JumpTime, CallFunc_GetFinalEndPoint_MaxHeight, CallFunc_GetFinalEndPoint_ArcPoints)
+  [74] if !(CallFunc_GetFinalEndPoint_Succeded) pop
+  [84] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [134] UpdateTranslatePoint(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetFinalEndPoint_EndPoint, CallFunc_GetFinalEndPoint_MaxHeight)
+  [175] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [225] Server_UpdateTranslatePoint(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetFinalEndPoint_EndPoint, CallFunc_GetFinalEndPoint_MaxHeight)
+  [266] self.LastCommittedEndPoint = CallFunc_GetFinalEndPoint_EndPoint
+  [293] self.LastCommittedSplinePoints = CallFunc_GetFinalEndPoint_ArcPoints
+  [320] self.LastCommittedJumpTime = CallFunc_GetFinalEndPoint_JumpTime
+  [347] self.LastCommittedMaxHeight = CallFunc_GetFinalEndPoint_MaxHeight
+  [374] pop
+  [375] Default__legendary_ability_function_library_C.GetTalentStatusSP(self.ArchonCharacter, self, CallFunc_GetTalentStatusSP_TalentSP01Active, CallFunc_GetTalentStatusSP_TalentSP02Active, CallFunc_GetTalentStatusSP_TalentSP03Active, CallFunc_GetTalentStatusSP_TalentSP04Active, CallFunc_GetTalentStatusSP_TalentSP05Active)
+  [466] if !(CallFunc_GetTalentStatusSP_TalentSP02Active) goto @603
+  [480] CallFunc_ApplyBuff_LifetimeOwner_CastInput_1 = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [508] CallFunc_ApplyBuff_ReturnValue_1 = ApplyBuff(self.ArchonCharacter, rocketlunge_targeting_superarmoured_buff_C, CallFunc_ApplyBuff_BuffAdded_1, Temp_struct_Variable, CallFunc_ApplyBuff_LifetimeOwner_CastInput_1, self.ArchonCharacter, true)
+  [583] self.AimingBuff = CallFunc_ApplyBuff_ReturnValue_1
+  [602] pop
+  [603] CallFunc_ApplyBuff_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [631] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(self.ArchonCharacter, rocketlunge_targeting_buff_C, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable_1, CallFunc_ApplyBuff_LifetimeOwner_CastInput, self.ArchonCharacter, true)
+  [706] self.AimingBuff = CallFunc_ApplyBuff_ReturnValue
+  [725] pop
+  [726] CallFunc_GetComponentByClass_ReturnValue = self.ArchonWeapon.GetComponentByClass(ammo_bpc_C)
+  [777] CallFunc_GetComponentByClass_ReturnValue.AdjustAmmo(-1)
+  [814] ReplicateEndpointToRemoteClients(K2Node_CustomEvent_Start, K2Node_CustomEvent_Target, K2Node_CustomEvent_JumpHeight)
+  [855] pop
+  [856] self.ArchonCharacter.self.CharacterMovement.SetMovementMode(1, 0)
+  [918] K2Node_CreateDelegate_OutputDelegate = bind(self.On Movement Interrupting Action)
+  [941] K2Node_CreateDelegate_OutputDelegate -= None
+  [1004] pop
+  [1005] CallFunc_IsValid_ReturnValue = IsValid(self.JumpTrajectory)
+  [1034] if !(CallFunc_IsValid_ReturnValue) pop
+  [1044] push @1722
+  [1049] self.WarpComponent.GetTrajectoryWarpTime(CallFunc_GetTrajectoryWarpTime_Time, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [1108] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.CurrentTrajectoryImpactTime, 0.0)
+  [1146] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive)
+  [1184] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [1194] self.WarpComponent.GetTrajectoryWarpTime(CallFunc_GetTrajectoryWarpTime_Time, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [1253] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTrajectoryWarpTime_Time)
+  [1282] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 1.0)
+  [1328] array{self.ArchonCharacter}
+  [1348] CallFunc_GetScaledCapsuleHalfHeight_ReturnValue = self.ArchonCharacter.self.CapsuleComponent.GetScaledCapsuleHalfHeight()
+  [1420] CallFunc_GetScaledCapsuleRadius_ReturnValue = self.ArchonCharacter.self.CapsuleComponent.GetScaledCapsuleRadius()
+  [1492] CallFunc_CapsuleTraceAlongTrajectoryForObjects_EndTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [1521] CallFunc_CapsuleTraceAlongTrajectoryForObjects_ReturnValue = self.JumpTrajectory.CapsuleTraceAlongTrajectoryForObjects(self.ArchonCharacter, CallFunc_GetTrajectoryWarpTime_Time, CallFunc_CapsuleTraceAlongTrajectoryForObjects_EndTime_ImplicitCast, CallFunc_GetScaledCapsuleRadius_ReturnValue, CallFunc_GetScaledCapsuleHalfHeight_ReturnValue, self.ObjectTypesThatBlockMyCapsule, false, K2Node_MakeArray_Array, false, self.ArchonCharacter, CallFunc_CapsuleTraceAlongTrajectoryForObjects_HitResult, CallFunc_CapsuleTraceAlongTrajectoryForObjects_ImpactTime)
+  [1655] if !(CallFunc_CapsuleTraceAlongTrajectoryForObjects_ReturnValue) pop
+  [1665] K2Node_VariableSet_CurrentTrajectoryImpactTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_CapsuleTraceAlongTrajectoryForObjects_ImpactTime)
+  [1694] self.CurrentTrajectoryImpactTime = K2Node_VariableSet_CurrentTrajectoryImpactTime_ImplicitCast
+  [1721] pop
+  [1722] self.WarpComponent.GetTrajectoryWarpTime(CallFunc_GetTrajectoryWarpTime_Time, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [1781] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive)
+  [1810] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(self.CurrentTrajectoryImpactTime, 0.0)
+  [1848] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTrajectoryWarpTime_Time)
+  [1877] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, self.CurrentTrajectoryImpactTime)
+  [1915] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_DoubleDouble_ReturnValue, CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1)
+  [1953] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [1991] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [2001] StopAndClearTrajectoryWarp()
+  [2015] pop
+  [2016] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [2035] goto @1005
+  [2040] OnWeaponPartEquipped()
+  [2050] push @2706
+  [2055] push @2489
+  [2060] push @2315
+  [2065] push @2141
+  [2070] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(ArchonWarpComponent)
+  [2121] self.WarpComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [2140] pop
+  [2141] CallFunc_GetComponentByClass_ReturnValue_2 = self.ArchonCharacter.GetComponentByClass(hit_reaction_bpc_C)
+  [2192] self.HitReactionComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [2211] CallFunc_IsValid_ReturnValue_2 = IsValid(self.HitReactionComponent)
+  [2240] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2250] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnStartedPerformingOperations_Event_0)
+  [2273] K2Node_CreateDelegate_OutputDelegate_4 += None
+  [2314] pop
+  [2315] CallFunc_GetComponentByClass_ReturnValue_3 = self.ArchonCharacter.GetComponentByClass(generic_eventdispatcher_bpc_C)
+  [2366] self.GenericEventDispatcher = CallFunc_GetComponentByClass_ReturnValue_3
+  [2385] CallFunc_IsValid_ReturnValue_12 = IsValid(self.GenericEventDispatcher)
+  [2414] if !(CallFunc_IsValid_ReturnValue_12) pop
+  [2424] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnGenericEvent)
+  [2447] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [2488] pop
+  [2489] Default__movement_function_library_C.GetObjectTypesThisComponentRespondsTo(self.ArchonCharacter.self.CapsuleComponent, 2, self.ArchonCharacter.self.CapsuleComponent, CallFunc_GetObjectTypesThisComponentRespondsTo_MatchingObjectTypes)
+  [2598] self.ObjectTypesThatBlockMyCapsule = CallFunc_GetObjectTypesThisComponentRespondsTo_MatchingObjectTypes
+  [2625] Temp_byte_Variable = 6
+  [2645] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.ObjectTypesThatBlockMyCapsule, Temp_byte_Variable)
+  [2705] pop
+  [2706] CallFunc_GetComponentByClass_ReturnValue_6 = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [2757] self.PlayerEventDispatcherComponent = CallFunc_GetComponentByClass_ReturnValue_6
+  [2776] pop
+  [2777] self.CurrentTrajectoryImpactTime = -1.0
+  [2804] self.WarpComponent.StopTrajectoryWarp()
+  [2836] self.ArchonCharacter.self.CapsuleComponent.SetCollisionResponseToChannel(14, 2)
+  [2898] goto @856
+  [2903] goto @2040
+  [2908] push @2957
+  [2913] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(self.ArchonCharacter)
+  [2942] if !(CallFunc_IsLocalCharacter_ReturnValue_1) pop
+  [2952] goto @15
+  [2957] self.ArchonCharacter.self.CharacterMovement.SetMovementMode(5, 0)
+  [3019] pop
+  [3020] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [3070] self.JumpStartPos = CallFunc_K2_GetActorLocation_ReturnValue_1
+  [3097] CallFunc_GetGravityZ_ReturnValue = self.ArchonCharacter.self.CharacterMovement.GetGravityZ()
+  [3173] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGravityZ_ReturnValue)
+  [3202] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 0.800000011920929)
+  [3248] CalculateTrajectory(K2Node_CustomEvent_StartPosition_1, K2Node_CustomEvent_InTarget, K2Node_CustomEvent_JumpHeight_2, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3298] pop
+  [3299] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [3320] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(self.ArchonCharacter)
+  [3349] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_IsLocalCharacter_ReturnValue, CallFunc_IsServer_ReturnValue)
+  [3387] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_BooleanOR_ReturnValue_1)
+  [3416] if !(CallFunc_Not_PreBool_ReturnValue_1) pop
+  [3426] UpdateTranslatePoint(K2Node_CustomEvent_StartPosition, K2Node_CustomEvent_Target_1, K2Node_CustomEvent_JumpHeight_1)
+  [3467] pop
+  [3468] DrawDebugSphere(self, K2Node_CustomEvent_Center, 200.0, 12, LinearColor{0.007625, 1.0, 0.157068, 1.0}, 6.0, 3.0)
+  [3542] pop
+  [3543] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3563] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [3605] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [3615] UpdateTranslatePoint(K2Node_CustomEvent_Start, K2Node_CustomEvent_Target, K2Node_CustomEvent_JumpHeight)
+  [3656] goto @726
+  [3661] ActivateWeaponPartGameplay(K2Node_Event_StartTime)
+  [3680] goto @2908
+  [3685] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3705] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [3747] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [3757] CallFunc_IsValid_ReturnValue_11 = IsValid(self.AimingBuff)
+  [3786] if !(CallFunc_IsValid_ReturnValue_11) pop
+  [3796] RemoveBuff(self.ArchonCharacter, self.AimingBuff)
+  [3824] self.AimingBuff = null
+  [3835] pop
+  [3836] MultiClearTrajectory()
+  [3850] pop
+  [3851] StopAndClearTrajectoryWarp()
+  [3865] pop
+  [3866] self.JumpTrajectory = null
+  [3877] goto @2777
+  [3882] pop
+  [3883] OnWeaponPartUnequipped()
+  [3893] push @3972
+  [3898] push @3685
+  [3903] push @4085
+  [3908] push @4302
+  [3913] push @4406
+  [3918] CallFunc_IsValid_ReturnValue_1 = IsValid(self.JumpTrajectory)
+  [3947] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3957] StopAndClearTrajectoryWarp()
+  [3971] pop
+  [3972] CallFunc_IsValid_ReturnValue_10 = IsValid(self.PlayerEventDispatcherComponent)
+  [4001] if !(CallFunc_IsValid_ReturnValue_10) pop
+  [4011] CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput_1 = cast<bpi_damageevent_modifier_C>(self)
+  [4039] self.PlayerEventDispatcherComponent.UnregisterToModifyOutgoingWeaponDamagePreMitigation(CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput_1)
+  [4084] pop
+  [4085] CallFunc_IsValid_ReturnValue_6 = IsValid(self.ArchonCharacter)
+  [4114] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [4124] CallFunc_GetComponentByClass_ReturnValue_4 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [4175] CallFunc_IsValid_ReturnValue_7 = IsValid(CallFunc_GetComponentByClass_ReturnValue_4)
+  [4204] if !(CallFunc_IsValid_ReturnValue_7) pop
+  [4214] CallFunc_GetComponentByClass_ReturnValue_4 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [4265] CallFunc_GetComponentByClass_ReturnValue_4.StopAiming()
+  [4301] pop
+  [4302] CallFunc_IsValid_ReturnValue_5 = IsValid(self.HitReactionComponent)
+  [4331] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [4341] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnStartedPerformingOperations_Event_0)
+  [4364] K2Node_CreateDelegate_OutputDelegate_3 -= None
+  [4405] pop
+  [4406] CallFunc_IsValid_ReturnValue_3 = IsValid(self.GenericEventDispatcher)
+  [4435] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [4445] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnGenericEvent)
+  [4468] K2Node_CreateDelegate_OutputDelegate_2 -= None
+  [4509] pop
+  [4510] self.AimingBuff = null
+  [4521] pop
+  [4522] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [4542] CallFunc_HasAuthority_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [4584] if !(CallFunc_HasAuthority_ReturnValue_2) pop
+  [4594] CallFunc_IsValid_ReturnValue_4 = IsValid(self.AimingBuff)
+  [4623] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [4633] RemoveBuff(self.ArchonCharacter, self.AimingBuff)
+  [4661] goto @4510
+  [4666] CallFunc_GetComponentByClass_ReturnValue_5 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [4717] CallFunc_GetComponentByClass_ReturnValue_5.StopAiming()
+  [4753] goto @4522
+  [4758] K2Node_MakeStruct_player_aim_request.AimCameraDistance = 550.0
+  [4790] K2Node_MakeStruct_player_aim_request.AimCameraOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 150.0, 'Z': -35.0})
+  [4842] K2Node_MakeStruct_player_aim_request.AimCameraFOV = 80.0
+  [4874] K2Node_MakeStruct_player_aim_request.AimCameraTargetOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 175.0})
+  [4926] K2Node_MakeStruct_player_aim_request.AimCameraLagSpeed = 17.5
+  [4958] K2Node_MakeStruct_player_aim_request.AimOffsetOverride = h_mr_ms_super_lunge_ao
+  [4986] K2Node_MakeStruct_player_aim_request.OverrideWeaponRootForAiming = false
+  [5006] K2Node_MakeStruct_player_aim_request.ReticleWidgetClass = null
+  [5026] K2Node_MakeStruct_player_aim_request.TimeConstant = 0.25
+  [5058] CallFunc_GetComponentByClass_ReturnValue_5 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [5109] CallFunc_GetComponentByClass_ReturnValue_5.StartAiming(K2Node_MakeStruct_player_aim_request)
+  [5154] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [5174] CallFunc_HasAuthority_ReturnValue_3 = CallFunc_GetOwner_ReturnValue_3.HasAuthority()
+  [5216] if !(CallFunc_HasAuthority_ReturnValue_3) pop
+  [5226] goto @375
+  [5231] CallFunc_RegisterToModifyOutgoingWeaponDamagePreMitigation_DamageEventModifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [5259] self.PlayerEventDispatcherComponent.RegisterToModifyOutgoingWeaponDamagePreMitigation(CallFunc_RegisterToModifyOutgoingWeaponDamagePreMitigation_DamageEventModifier_CastInput)
+  [5304] pop
+  [5305] self.CurrentDistance = 2
+  [5325] pop
+  [5326] CallFunc_IsValid_ReturnValue_8 = IsValid(self.PlayerEventDispatcherComponent)
+  [5355] if !(CallFunc_IsValid_ReturnValue_8) pop
+  [5365] goto @5231
+  [5370] self.CurrentDistance = 1
+  [5390] pop
+  [5391] self.CurrentDistance = 0
+  [5411] pop
+  [5412] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.Short')
+  [5475] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @5391
+  [5489] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.Medium')
+  [5553] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @5370
+  [5567] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.Long')
+  [5629] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @5305
+  [5643] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.StartAiming')
+  [5712] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @4758
+  [5726] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.StopAiming')
+  [5794] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @4666
+  [5808] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.DamageOverrideOn')
+  [5882] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @5326
+  [5896] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.RocketLunge.DamageOverrideOff')
+  [5971] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @5986
+  [5985] pop
+  [5986] CallFunc_IsValid_ReturnValue_9 = IsValid(self.PlayerEventDispatcherComponent)
+  [6015] if !(CallFunc_IsValid_ReturnValue_9) pop
+  [6025] CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [6053] self.PlayerEventDispatcherComponent.UnregisterToModifyOutgoingWeaponDamagePreMitigation(CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput)
+  [6098] pop
+  [6099] StopAndClearTrajectoryWarp()
+  [6113] pop
+  [6114] return nothing
+  [6116] end
+
+=== GetDistanceTypeForJumpTarget
+  [0] push @1281
+  [5] array{}
+  [16] Default__BlueprintMapLibrary.Map_Keys(self.JumpDistanceThresholds, CallFunc_Map_Keys_Keys)
+  [66] Temp_int_Loop_Counter_Variable = 0
+  [89] Temp_int_Array_Index_Variable = 0
+  [112] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [171] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [209] if !(CallFunc_Less_IntInt_ReturnValue) goto @839
+  [223] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [250] push @1207
+  [255] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [314] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.JumpDistanceThresholds, CallFunc_Array_Get_Item, CallFunc_Map_Find_Value)
+  [383] if !(CallFunc_Map_Find_ReturnValue) pop
+  [393] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [443] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(Target, CallFunc_K2_GetActorLocation_ReturnValue)
+  [489] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [526] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [585] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.JumpDistanceThresholds, CallFunc_Array_Get_Item, CallFunc_Map_Find_Value)
+  [654] CallFunc_MultiplyMultiply_FloatFloat_ReturnValue = MultiplyMultiply_FloatFloat(CallFunc_Map_Find_Value, 2.0)
+  [700] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_VSizeSquared_ReturnValue, CallFunc_MultiplyMultiply_FloatFloat_ReturnValue)
+  [738] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [748] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [807] Distance = CallFunc_Array_Get_Item
+  [834] goto @1281
+  [839] if !(false) goto @870
+  [845] Distance = 2
+  [865] goto @1281
+  [870] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [899] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [949] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [991] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'no valid distance found in GetJumpVAluesForTarget')
+  [1079] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [1153] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1173] if !(CallFunc_IsShipping_ReturnValue) goto @1192
+  [1187] goto @845
+  [1192] StackTrace()
+  [1202] goto @845
+  [1207] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1249] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1276] goto @112
+  [1281] return nothing
+  [1283] end
+
+=== GetFinalEndPoint
+  [0] push @3220
+  [5] CallFunc_IsValid_ReturnValue = IsValid(self.JumpTrajectory)
+  [34] if !(CallFunc_IsValid_ReturnValue) goto @172
+  [48] Succeded = true
+  [59] EndPoint = self.LastCommittedEndPoint
+  [86] JumpTime = self.LastCommittedJumpTime
+  [113] MaxHeight = self.LastCommittedMaxHeight
+  [140] ArcPoints = self.LastCommittedSplinePoints
+  [167] goto @3220
+  [172] push @1597
+  [177] GetJumpValuesForDistanceType(2, CallFunc_GetJumpValuesForDistanceType_JumpTime, CallFunc_GetJumpValuesForDistanceType_MaxHeight, CallFunc_GetJumpValuesForDistanceType_MaxDistance)
+  [220] CalculateJumpTarget(CallFunc_GetJumpValuesForDistanceType_MaxDistance, CallFunc_GetJumpValuesForDistanceType_MaxHeight, 2, CallFunc_CalculateJumpTarget_LocationFound, CallFunc_CalculateJumpTarget_Location)
+  [272] GetDistanceTypeForJumpTarget(CallFunc_CalculateJumpTarget_Location, CallFunc_GetDistanceTypeForJumpTarget_Distance)
+  [304] GetJumpValuesForDistanceType(CallFunc_GetDistanceTypeForJumpTarget_Distance, CallFunc_GetJumpValuesForDistanceType_JumpTime_1, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1, CallFunc_GetJumpValuesForDistanceType_MaxDistance_1)
+  [354] CalculateJumpTarget(CallFunc_GetJumpValuesForDistanceType_MaxDistance_1, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1, CallFunc_GetDistanceTypeForJumpTarget_Distance, CallFunc_CalculateJumpTarget_LocationFound_1, CallFunc_CalculateJumpTarget_Location_1)
+  [413] if !(CallFunc_CalculateJumpTarget_LocationFound_1) pop
+  [423] CallFunc_K2_GetActorLocation_ReturnValue_3 = self.ArchonCharacter.K2_GetActorLocation()
+  [473] Default__targeting_function_library_C.PushVectorForward(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_CalculateJumpTarget_Location_1, 0.0, true, self, CallFunc_PushVectorForward_Position)
+  [547] array{}
+  [558] Default__archon_function_library_C.GetGroundPosAndNormal(CallFunc_PushVectorForward_Position, 250.0, K2Node_MakeArray_Array, 0, 500.0, self, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [660] GetJumpValuesForDistanceType(CallFunc_GetDistanceTypeForJumpTarget_Distance, CallFunc_GetJumpValuesForDistanceType_JumpTime_1, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1, CallFunc_GetJumpValuesForDistanceType_MaxDistance_1)
+  [710] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [760] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [810] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [856] BreakVector(CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [902] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_BreakVector_Z_1, CallFunc_BreakVector_Z)
+  [948] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [994] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1)
+  [1040] Default__archon_function_library_C.FindLobbedProjectileAim(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetGroundPosAndNormal_GroundPos, 2000.0, CallFunc_Add_DoubleDouble_ReturnValue, self, CallFunc_FindLobbedProjectileAim_Velocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [1131] Default__KismetArrayLibrary.Array_Clear(ActorsToIgnore)
+  [1172] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(ActorsToIgnore, self.ArchonCharacter)
+  [1240] array{}
+  [1251] GetAllActorsOfClass(self, frank_proto_power_circle_bp_C, CallFunc_GetAllActorsOfClass_OutActors_1)
+  [1280] Temp_int_Loop_Counter_Variable_1 = 0
+  [1303] Temp_int_Array_Index_Variable = 0
+  [1326] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors_1)
+  [1385] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1423] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1776
+  [1437] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1464] push @3146
+  [1469] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors_1, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1528] CallFunc_Array_Add_ReturnValue_2 = Default__KismetArrayLibrary.Array_Add(ActorsToIgnore, CallFunc_Array_Get_Item_1)
+  [1596] pop
+  [1597] CallFunc_K2_GetActorLocation_ReturnValue_2 = self.ArchonCharacter.K2_GetActorLocation()
+  [1647] Succeded = false
+  [1658] EndPoint = CallFunc_K2_GetActorLocation_ReturnValue_2
+  [1685] JumpTime = 1.0
+  [1712] MaxHeight = 100.0
+  [1739] ArcPoints = EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "Function'mspear_special_rocketlunge_bpc_C:GetFinalEndPoint'", 'ObjectPath': '/Game/Blueprints/Weapons/_shared/mspear/mspear_special_rocketlunge_bpc.8'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'ArcPoints', 'Flags': 'RF_Public', 'ElementSize': 16, 'PropertyFlags': 'Parm | OutParm', 'Inner': {'Type': 'StructProperty', 'Name': 'ArcPoints', 'Flags': 'RF_Public', 'ElementSize': 24, 'Struct': {'ObjectName': "Class'Vector'", 'ObjectPath': '/Script/CoreUObject'}}}},Values=)
+  [1771] goto @3220
+  [1776] array{}
+  [1787] GetAllActorsOfClass(self, legendary_mint_icewall_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [1816] Temp_int_Loop_Counter_Variable = 0
+  [1839] Temp_int_Array_Index_Variable_1 = 0
+  [1862] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [1921] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [1959] if !(CallFunc_Less_IntInt_ReturnValue) goto @2207
+  [1973] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [2000] push @2133
+  [2005] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2064] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(ActorsToIgnore, CallFunc_Array_Get_Item)
+  [2132] pop
+  [2133] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2175] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2202] goto @1862
+  [2207] CallFunc_GetScaledCapsuleRadius_ReturnValue = self.ArchonCharacter.self.CapsuleComponent.GetScaledCapsuleRadius()
+  [2279] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [2329] CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OverrideGravityZ_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [2358] array{}
+  [2369] CallFunc_Blueprint_PredictProjectilePath_ByObjectType_ReturnValue = Blueprint_PredictProjectilePath_ByObjectType(self, CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OutHit, CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OutPathPositions, CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OutLastTraceDestination, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_FindLobbedProjectileAim_Velocity, true, CallFunc_GetScaledCapsuleRadius_ReturnValue, self.ObjectTypesThatBlockMyCapsule, false, ActorsToIgnore, 0, 10.0, 5.0, 5.0, CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OverrideGravityZ_ImplicitCast)
+  [2490] CallFunc_GetScaledCapsuleHalfHeight_ReturnValue = self.ArchonCharacter.self.CapsuleComponent.GetScaledCapsuleHalfHeight()
+  [2562] GetJumpValuesForDistanceType(CallFunc_GetDistanceTypeForJumpTarget_Distance, CallFunc_GetJumpValuesForDistanceType_JumpTime_1, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1, CallFunc_GetJumpValuesForDistanceType_MaxDistance_1)
+  [2612] CallFunc_MakeVector_Z_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetScaledCapsuleHalfHeight_ReturnValue)
+  [2641] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_MakeVector_Z_ImplicitCast)
+  [2696] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.ArchonCharacter.K2_GetActorLocation()
+  [2746] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [2792] BreakVector(CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [2838] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_BreakVector_Z_1, CallFunc_BreakVector_Z)
+  [2884] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [2930] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue, CallFunc_GetJumpValuesForDistanceType_MaxHeight_1)
+  [2976] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OutLastTraceDestination, CallFunc_MakeVector_ReturnValue)
+  [3022] Succeded = true
+  [3033] EndPoint = CallFunc_Add_VectorVector_ReturnValue
+  [3060] JumpTime = CallFunc_GetJumpValuesForDistanceType_JumpTime_1
+  [3087] MaxHeight = CallFunc_Add_DoubleDouble_ReturnValue
+  [3114] ArcPoints = CallFunc_Blueprint_PredictProjectilePath_ByObjectType_OutPathPositions
+  [3141] goto @3220
+  [3146] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [3188] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [3215] goto @1326
+  [3220] return nothing
+  [3222] end
+
+=== GetJumpHorizontalDistanceTravelled
+  [0] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [50] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, self.JumpStartPos)
+  [96] CallFunc_VSizeXY_ReturnValue = VSizeXY(CallFunc_Subtract_VectorVector_ReturnValue)
+  [133] DistanceTravelled = CallFunc_VSizeXY_ReturnValue
+  [160] return nothing
+  [162] end
+
+=== GetJumpValuesForDistanceType
+  [0] Default__legendary_ability_function_library_C.GetTalentStatusSP(self.ArchonCharacter, self, CallFunc_GetTalentStatusSP_TalentSP01Active, CallFunc_GetTalentStatusSP_TalentSP02Active, CallFunc_GetTalentStatusSP_TalentSP03Active, CallFunc_GetTalentStatusSP_TalentSP04Active, CallFunc_GetTalentStatusSP_TalentSP05Active)
+  [91] Temp_byte_Variable = DistanceType
+  [118] Temp_real_Variable = 3500.0
+  [145] Temp_real_Variable_1 = 2000.0
+  [172] Temp_real_Variable_2 = 1000.0
+  [199] Temp_byte_Variable_1 = DistanceType
+  [226] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(switch(Temp_byte_Variable){0: Temp_real_Variable_2, 1: Temp_real_Variable_1, 2: Temp_real_Variable, default: K2Node_Select_Default}, 1.3)
+  [333] Temp_real_Variable_3 = 350.0
+  [360] Temp_real_Variable_4 = 200.0
+  [387] Temp_real_Variable_5 = 100.0
+  [414] Temp_byte_Variable_2 = DistanceType
+  [441] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(0.4000000059604645, 1.0)
+  [487] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(0.8899999856948853, 1.0)
+  [533] CallFunc_Divide_DoubleDouble_ReturnValue_2 = Divide_DoubleDouble(1.0, 1.0)
+  [579] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Multiply_DoubleDouble_ReturnValue, switch(Temp_byte_Variable){0: Temp_real_Variable_2, 1: Temp_real_Variable_1, 2: Temp_real_Variable, default: K2Node_Select_Default}, CallFunc_GetTalentStatusSP_TalentSP04Active)
+  [695] JumpTime = switch(Temp_byte_Variable_2){0: CallFunc_Divide_DoubleDouble_ReturnValue, 1: CallFunc_Divide_DoubleDouble_ReturnValue_1, 2: CallFunc_Divide_DoubleDouble_ReturnValue_2, default: K2Node_Select_Default_2}
+  [783] MaxHeight = switch(Temp_byte_Variable_1){0: Temp_real_Variable_5, 1: Temp_real_Variable_4, 2: Temp_real_Variable_3, default: K2Node_Select_Default_1}
+  [871] MaxDistance = CallFunc_SelectFloat_ReturnValue
+  [898] return nothing
+  [900] end
+
+=== GetModifyDamageEventPriority
+  [0] Priority = 50
+  [23] return nothing
+  [25] end
+
+=== GetTimeCachedJumpTarget
+  [0] push @415
+  [5] push @388
+  [10] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [39] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.LastJumpTargetCachedTime, 0.0)
+  [77] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.LastJumpTargetCachedTime, self.JumpTargetCacheTime)
+  [123] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [161] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [199] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [209] GetJumpValuesForDistanceType(2, CallFunc_GetJumpValuesForDistanceType_JumpTime, CallFunc_GetJumpValuesForDistanceType_MaxHeight, CallFunc_GetJumpValuesForDistanceType_MaxDistance)
+  [252] CalculateJumpTarget(CallFunc_GetJumpValuesForDistanceType_MaxDistance, CallFunc_GetJumpValuesForDistanceType_MaxHeight, 2, CallFunc_CalculateJumpTarget_LocationFound, CallFunc_CalculateJumpTarget_Location)
+  [304] self.CachedJumpTarget = CallFunc_CalculateJumpTarget_Location
+  [331] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [360] self.LastJumpTargetCachedTime = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [387] pop
+  [388] Target = self.CachedJumpTarget
+  [415] return nothing
+  [417] end
+
+=== GetTimeInAir
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.JumpTrajectory)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @256
+  [43] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [72] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, self.JumpStartedTimeStamp)
+  [118] CallFunc_EndTime_ReturnValue = self.JumpTrajectory.EndTime()
+  [168] TimeSinceJump = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [195] K2Node_FunctionResult_TotalTrajectoryTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_EndTime_ReturnValue)
+  [224] TotalTrajectoryTime = K2Node_FunctionResult_TotalTrajectoryTime_ImplicitCast
+  [251] goto @310
+  [256] TimeSinceJump = -1.0
+  [283] TotalTrajectoryTime = -1.0
+  [310] return nothing
+  [312] end
+
+=== IsReadyToAttack
+  [0] push @1395
+  [5] CurrentMontagePlayRate = 0.0
+  [32] L_TrajectoryTimeRate = 1.0
+  [59] push @715
+  [64] CallFunc_IsValid_ReturnValue_4 = IsValid(self.JumpTrajectory)
+  [93] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [103] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(self.CurrentTrajectoryImpactTime, 0.0)
+  [141] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @731
+  [155] L_ImpactTime = self.CurrentTrajectoryImpactTime
+  [182] EffectiveAttackAnimDuration = self.EstimatedAttackAnimDuration
+  [209] push @1171
+  [214] push @842
+  [219] CallFunc_IsValid_ReturnValue_1 = IsValid(self.ArchonCharacter)
+  [248] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [258] CallFunc_IsValid_ReturnValue_2 = IsValid(self.ArchonCharacter.self.Mesh)
+  [309] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [319] CallFunc_GetAnimInstance_ReturnValue = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [383] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAnimInstance_ReturnValue)
+  [412] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [422] CallFunc_GetAnimInstance_ReturnValue = self.ArchonCharacter.self.Mesh.GetAnimInstance()
+  [486] CallFunc_Montage_GetPlayRate_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_GetPlayRate(null)
+  [537] K2Node_VariableSet_CurrentMontagePlayRate_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Montage_GetPlayRate_ReturnValue)
+  [566] CurrentMontagePlayRate = K2Node_VariableSet_CurrentMontagePlayRate_ImplicitCast
+  [593] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CurrentMontagePlayRate, 0.0)
+  [631] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [641] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(EffectiveAttackAnimDuration, CurrentMontagePlayRate)
+  [687] EffectiveAttackAnimDuration = CallFunc_Divide_DoubleDouble_ReturnValue
+  [714] pop
+  [715] ReadyToAttack = true
+  [726] goto @1395
+  [731] CallFunc_EndTime_ReturnValue = self.JumpTrajectory.EndTime()
+  [781] K2Node_VariableSet_L_ImpactTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_EndTime_ReturnValue)
+  [810] L_ImpactTime = K2Node_VariableSet_L_ImpactTime_ImplicitCast
+  [837] goto @182
+  [842] CallFunc_IsValid_ReturnValue = IsValid(self.WarpComponent)
+  [871] if !(CallFunc_IsValid_ReturnValue) pop
+  [881] self.WarpComponent.GetTrajectoryWarpTime(CallFunc_GetTrajectoryWarpTime_Time, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [940] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [969] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [1007] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [1045] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1055] self.WarpComponent.GetTrajectoryWarpTime(CallFunc_GetTrajectoryWarpTime_Time, CallFunc_GetTrajectoryWarpTime_IsTrajectoryWarpActive, CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [1114] K2Node_VariableSet_L_TrajectoryTimeRate_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTrajectoryWarpTime_TimeRate)
+  [1143] L_TrajectoryTimeRate = K2Node_VariableSet_L_TrajectoryTimeRate_ImplicitCast
+  [1170] pop
+  [1171] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [1200] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, self.JumpStartedTimeStamp)
+  [1246] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(L_ImpactTime, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [1292] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_1, L_TrajectoryTimeRate)
+  [1338] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue_1, EffectiveAttackAnimDuration)
+  [1376] ReadyToAttack = CallFunc_LessEqual_DoubleDouble_ReturnValue
+  [1395] return nothing
+  [1397] end
+
+=== MultiClearTrajectory
+  [0] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3851)
+  [15] return nothing
+  [17] end
+
+=== On Movement Interrupting Action
+  [0] frame.K2Node_CustomEvent_ActionSourceTags = ActionSourceTags
+  [18] ExecuteUbergraph_mspear_special_rocketlunge_bpc(6099)
+  [33] return nothing
+  [35] end
+
+=== OnGenericEvent
+  [0] frame.K2Node_CustomEvent_EventTag = EventTag
+  [18] ExecuteUbergraph_mspear_special_rocketlunge_bpc(5412)
+  [33] return nothing
+  [35] end
+
+=== OnStartedPerformingOperations_Event_0
+  [0] frame.K2Node_CustomEvent_Instigator = Instigator
+  [18] frame.K2Node_CustomEvent_InstigatorTags = InstigatorTags
+  [36] frame.K2Node_CustomEvent_Magnitude = Magnitude
+  [54] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3836)
+  [69] return nothing
+  [71] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_mspear_special_rocketlunge_bpc(2903)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3883)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_mspear_special_rocketlunge_bpc(2016)
+  [33] return nothing
+  [35] end
+
+=== ReplicateEndpointToRemoteClients
+  [0] frame.K2Node_CustomEvent_StartPosition = StartPosition
+  [18] frame.K2Node_CustomEvent_Target_1 = Target
+  [36] frame.K2Node_CustomEvent_JumpHeight_1 = JumpHeight
+  [54] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3299)
+  [69] return nothing
+  [71] end
+
+=== ServerShowTarget
+  [0] frame.K2Node_CustomEvent_Center = Center
+  [18] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3468)
+  [33] return nothing
+  [35] end
+
+=== Server_UpdateTranslatePoint
+  [0] frame.K2Node_CustomEvent_Start = Start
+  [18] frame.K2Node_CustomEvent_Target = Target
+  [36] frame.K2Node_CustomEvent_JumpHeight = JumpHeight
+  [54] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3543)
+  [69] return nothing
+  [71] end
+
+=== SpawnEffects
+  [0] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3882)
+  [15] return nothing
+  [17] end
+
+=== StopAndClearTrajectoryWarp
+  [0] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3866)
+  [15] return nothing
+  [17] end
+
+=== UpdateTranslatePoint
+  [0] frame.K2Node_CustomEvent_StartPosition_1 = StartPosition
+  [18] frame.K2Node_CustomEvent_InTarget = InTarget
+  [36] frame.K2Node_CustomEvent_JumpHeight_2 = JumpHeight
+  [54] ExecuteUbergraph_mspear_special_rocketlunge_bpc(3020)
+  [69] return nothing
+  [71] end

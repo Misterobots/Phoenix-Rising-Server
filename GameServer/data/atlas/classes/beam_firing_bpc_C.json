@@ -1,0 +1,740 @@
+{
+ "name": "beam_firing_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 208,
+ "sdk_header": "beam_firing_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "ActiveServerBeamRequests",
+   "type": "TArray<Fbeam_request>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_CurrentIndex",
+   "type": "int32",
+   "offset": "0xB8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "ActiveClientBeamRequests",
+   "type": "int32",
+   "offset": "0xBC",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "NoActiveServerBeamRequests",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0xC0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AuthRequestBeam",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BeamRequest",
+     "type": "Fbeam_request"
+    },
+    {
+     "name": "BeamRef",
+     "type": "Abase_beam_bp_C*"
+    },
+    {
+     "name": "BeamGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 117,
+   "reads": [
+    "ActiveServerBeamRequests",
+    "Instigator"
+   ],
+   "sets": [
+    "OriginalBeamRequest"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_GetActorRotation",
+    "ActorComponent.GetOwner",
+    "AuthGetNewOrExistingGUID",
+    "BindDestroyEvent",
+    "BindReturnToPoolEvent",
+    "CalculateSpeedOrDurationValue",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "KismetArrayLibrary.Array_Add",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.GreaterGreater_VectorRotator",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.SetNamePropertyByName",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "KismetSystemLibrary.SetStructurePropertyByName",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_OriginalBeamRequest",
+    "PhxActorPool.FindActorPoolForType",
+    "SpawnBeamFromPool",
+    "ValidateBeamRequest"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthTryStopBeamByGUID",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BeamGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 18,
+   "reads": [
+    "ActiveServerBeamRequests"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveTheBeamIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthTryStopBeamByUniqueName",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "UniqueName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "ActiveServerBeamRequests"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveTheBeamIndex"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BindDestroyEvent",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BindReturnToPoolEvent",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_beam_firing_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 112,
+   "reads": [
+    "ActiveServerBeamRequests",
+    "L_CurrentIndex",
+    "NoActiveServerBeamRequests",
+    "OnDestroyed",
+    "OnPoolableActorDestroyedOrReleasedDelegate"
+   ],
+   "sets": [
+    "L_CurrentIndex"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ActorComponent.IsActive",
+    "ActorComponent.ReceiveBeginPlay",
+    "ActorComponent.ReceiveTick",
+    "ArchonGameplayStatics.IsShipping",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "INTERNAL_RemoveBeamByRef",
+    "IsBeamFinished",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "None",
+    "PhxActorPool.DestroyActorPoolAgnostic",
+    "RemoveTheBeamIndex"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "INTERNAL_RemoveBeamByRef",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BeamRef",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 19,
+   "reads": [
+    "ActiveServerBeamRequests"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveTheBeamIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "NoActiveServerBeamRequests__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnABeamDestroyed",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnOwnerDestroyed",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_ActiveServerBeamRequests",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveTheBeamIndex",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "beam_firing_bpc_C.ExecuteUbergraph_beam_firing_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnBeamFromPool",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor_Pool",
+     "type": "UPhxActorPool*"
+    },
+    {
+     "name": "Params_SpawnTransform",
+     "type": "FTransform"
+    },
+    {
+     "name": "Params_Owner",
+     "type": "AActor*"
+    },
+    {
+     "name": "BoneToAttachTo",
+     "type": "FName"
+    },
+    {
+     "name": "OriginalBeamRequest",
+     "type": "Fbeam_request"
+    },
+    {
+     "name": "DamageRowName",
+     "type": "FName"
+    },
+    {
+     "name": "DamageGUID",
+     "type": "FGuid"
+    },
+    {
+     "name": "Instigator",
+     "type": "APawn*"
+    },
+    {
+     "name": "AsBase_Beam_Bp",
+     "type": "Abase_beam_bp_C*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 28,
+   "reads": [],
+   "sets": [
+    "BoneToAttachTo",
+    "DamageGUID",
+    "DamageRowName",
+    "Instigator",
+    "OriginalBeamRequest",
+    "SpawnCollisionHandlingMethod"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_OriginalBeamRequest",
+    "PhxActorPool.FinishSpawningActorFromPool",
+    "PhxActorPool.SpawnActorDeferredFromPool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ValidateBeamRequest",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BeamRequest",
+     "type": "Fbeam_request"
+    },
+    {
+     "name": "IsValid",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 11,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.NotEqual_ClassClass",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/beam_firing_bpc",
+ "pseudo_file": "pseudo/beam_firing_bpc_C.txt",
+ "game_data": {}
+}

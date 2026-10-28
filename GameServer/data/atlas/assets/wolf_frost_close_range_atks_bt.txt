@@ -1,0 +1,27 @@
+wolf_frost_close_range_atks_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) Selector
+      1) Sequence
+        1) RunEQSQuery "Try to get the best player around us"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player_in_combat"}, BlackboardKey=bb.TargetActor)
+        [if Cooldown  (CooldownTime=30)]
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.TargetActor, MinDistance=0, MaxDistance=1500)]
+        2) Selector "Jump Slam Combos"
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) Sequence "Jump Slam to Bite Sync"
+            1) perform_action_montage_bttask  (Montage=AnimMontage b_wolf_frost_jumpslam_atk_mot)
+            [if ForceSuccess "We want to return success as long as an attempt was made"]
+            2) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_bite_sync_bt)
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=0, MaxDistance=600, PredictTargetHorizFuturePosTime=0.5)]
+          2) Selector
+            1) PhxPerformGameplayAction "Jump Slam to Tail Swipe Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+            2) PhxPerformGameplayAction "Jump Slam to Chomp Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+      2) Sequence
+        1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        2) Selector
+          [if Cooldown  (CooldownTime=60)]
+          1) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_bite_sync_bt)
+          [if Cooldown  (CooldownTime=30)]
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=0, MaxDistance=600, PredictTargetHorizFuturePosTime=0.5)]
+          2) PhxPerformGameplayAction "Jump Slam to Chomp Combo"  (ActionChooser=@PhxGameplayActionClassChooser_0)

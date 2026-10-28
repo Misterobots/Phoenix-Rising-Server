@@ -1,0 +1,59 @@
+# bow_cone_shot_action_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateProjectileAngle
+  [0] _ModifiedSpread = 0.0
+  [27] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(Accuracy, 0.0, 1.0, 1.0, 0.0)
+  [100] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(ProjectileSpread, CallFunc_MapRangeClamped_ReturnValue)
+  [146] _ModifiedSpread = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [173] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(Accuracy, 0.0, 1.0, 1.0, 0.0)
+  [246] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(_ModifiedSpread, -2.0)
+  [292] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(ProjectileSpread, CallFunc_MapRangeClamped_ReturnValue)
+  [338] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [375] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(CallFunc_FTrunc_ReturnValue, self.NumOfProjectiles)
+  [421] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(ProjectileIndex, CallFunc_Divide_IntInt_ReturnValue)
+  [467] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [504] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [533] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [579] ReturnValue = CallFunc_Add_DoubleDouble_ReturnValue
+  [606] return ReturnValue
+  [616] end
+
+=== ExecuteUbergraph_bow_cone_shot_action
+  [0] push @917
+  [5] goto computed(EntryPoint)
+  [15] push @485
+  [20] CallFunc_GetActorForwardVector_ReturnValue = self.ArchonCharacter.GetActorForwardVector()
+  [70] CallFunc_FMin_ReturnValue = FMin(CallFunc_GetAccuracy_Accuracy, self.MaxAccuracy)
+  [116] CallFunc_CalculateProjectileAngle_ReturnValue = CalculateProjectileAngle(self.ProjectileSpread, CallFunc_FMin_ReturnValue, Temp_int_Variable_1)
+  [175] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateProjectileAngle_ReturnValue)
+  [204] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [251] CallFunc_GreaterGreater_VectorRotator_ReturnValue = GreaterGreater_VectorRotator(CallFunc_GetActorForwardVector_ReturnValue, CallFunc_MakeRotator_ReturnValue)
+  [297] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_GreaterGreater_VectorRotator_ReturnValue)
+  [334] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GreaterGreater_VectorRotator_ReturnValue, self.ProjectileSpeed)
+  [380] CallFunc_MakeTransform_ReturnValue = MakeTransform(self.LSpawnPoint, CallFunc_MakeRotFromX_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [451] Local_Shoot(CallFunc_MakeTransform_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue, true)
+  [484] pop
+  [485] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [527] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [554] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, Temp_int_Variable)
+  [592] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [602] goto @15
+  [607] ReceiveOnStarted()
+  [617] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [663] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [673] K2Node_DynamicCast_AsBow_Cone_Draw_Action = cast<bow_cone_draw_action_C>(self.PreviousDrawAction)
+  [709] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBow_Cone_Draw_Action)
+  [738] if !(K2Node_DynamicCast_bSuccess) pop
+  [748] K2Node_DynamicCast_AsBow_Cone_Draw_Action.GetAccuracy(CallFunc_GetAccuracy_Accuracy)
+  [793] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.NumOfProjectiles, 1)
+  [835] Temp_int_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [862] self.NumOfProjectiles = Temp_int_Variable
+  [889] Temp_int_Variable_1 = 0
+  [912] goto @554
+  [917] return nothing
+  [919] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_bow_cone_shot_action(607)
+  [15] return nothing
+  [17] end

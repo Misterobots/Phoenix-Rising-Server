@@ -1,0 +1,700 @@
+{
+ "name": "kimchi_archetype_bp",
+ "package": "Archon/Content/Monsters/bp/kimchi/kimchi_archetype_bp",
+ "type": "ClassDefaults",
+ "class": "kimchi_archetype_bp_C",
+ "refs": [
+  "AlignmentComponent",
+  "CharMoveComp",
+  "CharacterEventDispatcherComponent",
+  "CharacterMesh0",
+  "CollisionCylinder",
+  "EncounterThreatComponent",
+  "GameplayActionComponent",
+  "GameplayActionComponent.PhxComboGameplayActionActorData_0",
+  "GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0",
+  "Kimchi_00",
+  "PartCollisionComponent",
+  "PhxGameplayPropertyOverrideComponent",
+  "SyncedAnimationComponent",
+  "armstrong_combo_pose_matching_data",
+  "armstrong_gauntles_with_infinite_drops_standard_bspreset_C",
+  "armstrong_gauntlet_ptpreset_C",
+  "armstrong_mounted_synced_anim_controller_C",
+  "armstrong_player_collision_phat",
+  "b_bp_arms_00_loco_135L_mot",
+  "b_bp_arms_00_loco_135R_mot",
+  "b_bp_arms_00_loco_180L_mot",
+  "b_bp_arms_00_loco_180R_mot",
+  "b_bp_arms_00_loco_45L_mot",
+  "b_bp_arms_00_loco_45R_mot",
+  "b_bp_arms_00_loco_90L_mot",
+  "b_bp_arms_00_loco_90R_mot",
+  "b_bp_arms_00_loco_move_bwd_00_mot",
+  "b_bp_arms_00_loco_move_leap_00_mot",
+  "b_bp_arms_00_loco_move_leap_180_mot",
+  "b_bp_arms_00_loco_move_shortleap_00_mot",
+  "b_bp_arms_00_loco_move_shortleap_180_mot",
+  "body_part_bspreset_C",
+  "body_standard_ptpreset_C",
+  "head_extremely_fragile_ptpreset_C",
+  "kimchi_anim_bp_C",
+  "kimchi_bt",
+  "kimchi_generic_action_table_C",
+  "kimchi_normal_action_set_table",
+  "kimchi_normal_damage_table",
+  "kimchi_stagger_table_C",
+  "leg_fragile_highstagger_ptpreset_C",
+  "leg_super_fragile_ptpreset_C",
+  "player_mounting_creature_top_type",
+  "rage_eye_trails_p"
+ ],
+ "exports": {
+  "behemoth_aggro_bpc_GEN_VARIABLE": {
+   "type": "aggro_bpc_C",
+   "props": {
+    "EnterCombatRange": 20000.0,
+    "CanDeaggro": false
+   }
+  },
+  "behemoth_statemanager_bpc_GEN_VARIABLE": {
+   "type": "behemoth_statemanager_bpc_C",
+   "props": {
+    "StateInfos": [
+     {
+      "State": "behemoth_states_enum::ReadyToAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Combat",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         75.0
+        ],
+        "ConditionRequirements": []
+       },
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::End",
+        "ScalingDelay": [
+         70.0,
+         60.0,
+         50.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [
+       "behemoth_states_enum::ReadyToFlee",
+       "behemoth_states_enum::Injured/PrepToFlee",
+       "behemoth_states_enum::AtherCharged"
+      ],
+      "RequiredStates": [
+       "behemoth_states_enum::Combat"
+      ]
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToExitAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         99999.0,
+         37.5,
+         30.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [],
+      "RequiredStates": [
+       "behemoth_states_enum::AtherCharged"
+      ]
+     }
+    ]
+   }
+  },
+  "DamageComp_GEN_VARIABLE": {
+   "type": "DamageComponent",
+   "props": {
+    "DamageTable": "DataTable kimchi_normal_damage_table"
+   }
+  },
+  "elemental_health_updated_bpc_GEN_VARIABLE": {
+   "type": "elemental_health_updated_bpc_C",
+   "props": {
+    "DebuffsOnProc": [],
+    "ElementalHealthStageData": {
+     "StageData": [
+      {
+       "Key": "EArchonElementType::ElementType_FLAME",
+       "Value": {
+        "Health": 6000.0,
+        "RegenRate": 50.0,
+        "TimeBeforeRegenStarts": 15.0,
+        "PercentIncreasePerState": 0.25,
+        "PercentIncreasePerPlayer": [
+         0.0,
+         0.5,
+         1.0,
+         1.5
+        ]
+       }
+      }
+     ]
+    },
+    "bAutoActivate": true
+   }
+  },
+  "Default__kimchi_archetype_bp_C": {
+   "type": "kimchi_archetype_bp_C",
+   "props": {
+    "UberGraphFrame": {},
+    "L_BrokenPartsString": "False",
+    "BaseHealth": 41000.0,
+    "Rage Vfx": [
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "l_upper_eyelid_jnt",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     },
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "r_upper_eyelid_jnt",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     }
+    ],
+    "BehaviorTree": "BehaviorTree kimchi_bt",
+    "Behemoth Switch Group": "Behemoth_BP",
+    "Behemoth Name - Sounds": "Kimchi",
+    "Behemoth Name - Voice": "Kimchi",
+    "Soundbanks - Sounds": [
+     null
+    ],
+    "PivotAnimations": [
+     {
+      "Angle": 45.0,
+      "Left_Montage": "AnimMontage b_bp_arms_00_loco_45L_mot",
+      "Right_Montage": "AnimMontage b_bp_arms_00_loco_45R_mot"
+     },
+     {
+      "Angle": 90.0,
+      "Left_Montage": "AnimMontage b_bp_arms_00_loco_90L_mot",
+      "Right_Montage": "AnimMontage b_bp_arms_00_loco_90R_mot"
+     },
+     {
+      "Angle": 135.0,
+      "Left_Montage": "AnimMontage b_bp_arms_00_loco_135L_mot",
+      "Right_Montage": "AnimMontage b_bp_arms_00_loco_135R_mot"
+     },
+     {
+      "Angle": 180.0,
+      "Left_Montage": "AnimMontage b_bp_arms_00_loco_180L_mot",
+      "Right_Montage": "AnimMontage b_bp_arms_00_loco_180R_mot"
+     }
+    ],
+    "Behemoth Music": "Kimchi",
+    "ArchetypeName": "Kimchi",
+    "GenericActionLists": [
+     "BlueprintGeneratedClass kimchi_generic_action_table_C"
+    ],
+    "StaggerLists": [
+     "BlueprintGeneratedClass kimchi_stagger_table_C"
+    ],
+    "BehemothElementalResistAndPowerSet": "behemoth_resistset_type::FrostWeakToFlame",
+    "MetadataTableName": "kimchi_normal",
+    "ActionSetTable": "DataTable kimchi_normal_action_set_table",
+    "PrimaryOffenseElementType": "EArchonElementType::ElementType_FROST",
+    "RawElementalPower": 1.0,
+    "bIgnoreServerOptimization": true,
+    "GameplayActionComponent": "PhxGameplayActionComponent GameplayActionComponent",
+    "AlignmentComponent": "PhxAlignmentComponent AlignmentComponent",
+    "SyncedAnimationComponent": "PhxSyncedAnimationComponent SyncedAnimationComponent",
+    "EncounterThreatComponent": "EncounterThreatComponent EncounterThreatComponent",
+    "PartCollisionComponent": "ArchonPartCollisionComponent PartCollisionComponent",
+    "PhxGameplayPropertyOverrideComponent": "PhxGameplayPropertyOverrideComponent PhxGameplayPropertyOverrideComponent",
+    "CharacterEventDispatcherComponent": "ArchonCharacterEventDispatcherComponent CharacterEventDispatcherComponent",
+    "Mesh": "SkeletalMeshComponentBudgeted CharacterMesh0",
+    "CharacterMovement": "ArchonBehemothMovementComponent CharMoveComp",
+    "CapsuleComponent": "CapsuleComponent CollisionCylinder",
+    "RootComponent": "CapsuleComponent CollisionCylinder"
+   }
+  },
+  "ArmourLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass armstrong_gauntlet_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass armstrong_gauntles_with_infinite_drops_standard_bspreset_C",
+    "PhATBones": [
+     "l_gauntlet_01_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "l_gauntlet_01_jnt"
+    ]
+   }
+  },
+  "ArmourRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass armstrong_gauntlet_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass armstrong_gauntles_with_infinite_drops_standard_bspreset_C",
+    "PhATBones": [
+     "r_gauntlet_01_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "r_gauntlet_01_jnt"
+    ]
+   }
+  },
+  "BackLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_super_fragile_ptpreset_C",
+    "PhATBones": [
+     "l_thigh_jnt",
+     "l_knee_jnt",
+     "l_ankle_jnt",
+     "l_toe_index_01_jnt",
+     "l_toe_index_02_jnt",
+     "l_toe_middle_01_jnt",
+     "l_toe_middle_02_jnt",
+     "l_toe_ring_01_jnt",
+     "l_toe_ring_02_jnt",
+     "l_toe_pinky_01_jnt",
+     "l_toe_pinky_02_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "l_thigh_jnt",
+     "l_knee_jnt",
+     "l_ankle_jnt",
+     "l_toe_index_01_jnt",
+     "l_toe_index_02_jnt",
+     "l_toe_middle_01_jnt",
+     "l_toe_middle_02_jnt",
+     "l_toe_ring_01_jnt",
+     "l_toe_ring_02_jnt",
+     "l_toe_pinky_01_jnt",
+     "l_toe_pinky_02_jnt"
+    ]
+   }
+  },
+  "BackRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_super_fragile_ptpreset_C",
+    "PhATBones": [
+     "r_thigh_jnt",
+     "r_knee_jnt",
+     "r_ankle_jnt",
+     "r_toe_index_01_jnt",
+     "r_toe_index_02_jnt",
+     "r_toe_middle_01_jnt",
+     "r_toe_middle_02_jnt",
+     "r_toe_ring_01_jnt",
+     "r_toe_ring_02_jnt",
+     "r_toe_pinky_01_jnt",
+     "r_toe_pinky_02_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "r_thigh_jnt",
+     "r_knee_jnt",
+     "r_ankle_jnt",
+     "r_toe_index_01_jnt",
+     "r_toe_index_02_jnt",
+     "r_toe_middle_01_jnt",
+     "r_toe_middle_02_jnt",
+     "r_toe_ring_01_jnt",
+     "r_toe_ring_02_jnt",
+     "r_toe_pinky_01_jnt",
+     "r_toe_pinky_02_jnt"
+    ]
+   }
+  },
+  "Body_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass body_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass body_part_bspreset_C",
+    "PhATBones": [
+     "pelvis_jnt",
+     "spine_01_jnt",
+     "spine_02_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "pelvis_jnt",
+     "spine_01_jnt",
+     "spine_02_jnt"
+    ]
+   }
+  },
+  "FrontLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_fragile_highstagger_ptpreset_C",
+    "PhATBones": [
+     "l_clavicle_jnt",
+     "l_upper_arm_jnt",
+     "l_lower_arm_jnt",
+     "l_wrist_jnt",
+     "l_finger_thumb_00_jnt",
+     "l_finger_thumb_01_jnt",
+     "l_finger_thumb_02_jnt",
+     "l_finger_pinky_00_jnt",
+     "l_finger_pinky_01_jnt",
+     "l_finger_pinky_02_jnt",
+     "l_finger_middle_00_jnt",
+     "l_finger_middle_01_jnt",
+     "l_finger_middle_02_jnt",
+     "l_finger_index_00_jnt",
+     "l_finger_index_01_jnt",
+     "l_finger_index_02_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "l_clavicle_jnt",
+     "l_upper_arm_jnt",
+     "l_lower_arm_jnt",
+     "l_wrist_jnt",
+     "l_finger_thumb_00_jnt",
+     "l_finger_thumb_01_jnt",
+     "l_finger_thumb_02_jnt",
+     "l_finger_pinky_00_jnt",
+     "l_finger_pinky_01_jnt",
+     "l_finger_pinky_02_jnt",
+     "l_finger_middle_00_jnt",
+     "l_finger_middle_01_jnt",
+     "l_finger_middle_02_jnt",
+     "l_finger_index_00_jnt",
+     "l_finger_index_01_jnt",
+     "l_finger_index_02_jnt"
+    ]
+   }
+  },
+  "FrontRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass leg_fragile_highstagger_ptpreset_C",
+    "PhATBones": [
+     "r_clavicle_jnt",
+     "r_upper_arm_jnt",
+     "r_lower_arm_jnt",
+     "r_wrist_jnt",
+     "r_finger_thumb_00_jnt",
+     "r_finger_thumb_01_jnt",
+     "r_finger_thumb_02_jnt",
+     "r_finger_pinky_00_jnt",
+     "r_finger_pinky_01_jnt",
+     "r_finger_pinky_02_jnt",
+     "r_finger_middle_00_jnt",
+     "r_finger_middle_01_jnt",
+     "r_finger_middle_02_jnt",
+     "r_finger_index_00_jnt",
+     "r_finger_index_01_jnt",
+     "r_finger_index_02_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "r_clavicle_jnt",
+     "r_upper_arm_jnt",
+     "r_lower_arm_jnt",
+     "r_wrist_jnt",
+     "r_finger_thumb_00_jnt",
+     "r_finger_thumb_01_jnt",
+     "r_finger_thumb_02_jnt",
+     "r_finger_pinky_00_jnt",
+     "r_finger_pinky_01_jnt",
+     "r_finger_pinky_02_jnt",
+     "r_finger_middle_00_jnt",
+     "r_finger_middle_01_jnt",
+     "r_finger_middle_02_jnt",
+     "r_finger_index_00_jnt",
+     "r_finger_index_01_jnt",
+     "r_finger_index_02_jnt"
+    ]
+   }
+  },
+  "Head_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass head_extremely_fragile_ptpreset_C",
+    "PhATBones": [
+     "neck_02_jnt",
+     "neck_03_jnt",
+     "head_jnt",
+     "jaw_jnt",
+     "r_clavicle_jnt",
+     "neck_01_jnt",
+     "spine_03_jnt",
+     "l_clavicle_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset armstrong_player_collision_phat",
+    "MovementPhATBones": [
+     "neck_02_jnt",
+     "neck_03_jnt",
+     "head_jnt",
+     "jaw_jnt",
+     "r_clavicle_jnt",
+     "neck_01_jnt",
+     "spine_03_jnt",
+     "l_clavicle_jnt"
+    ]
+   }
+  },
+  "mountable_bpc_GEN_VARIABLE": {
+   "type": "mountable_bpc_C",
+   "props": {
+    "MountableSockets": [
+     {
+      "Description": {
+       "MountingType": "ArchonMountingType player_mounting_creature_top_type",
+       "SocketName": "mount_shoulder_socket"
+      },
+      "LocalOffsetRotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "LocalOffsetTranslation": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "bIsEnabled": true,
+      "MaxNumOccupants": 1
+     }
+    ],
+    "MountableData": [
+     {
+      "DefaultTargetingSocketName": "mount_shoulder_socket",
+      "MountingType": "ArchonMountingType player_mounting_creature_top_type",
+      "ControllerClass": "BlueprintGeneratedClass armstrong_mounted_synced_anim_controller_C"
+     }
+    ]
+   }
+  },
+  "PhxComboGameplayActionActorData_0": {
+   "type": "PhxComboGameplayActionActorData",
+   "props": {
+    "PoseMatchingData": "PhxPoseMatchingDataAsset armstrong_combo_pose_matching_data"
+   }
+  },
+  "GameplayActionComponent": {
+   "type": "PhxGameplayActionComponent",
+   "props": {
+    "GameplayActionData": [
+     "PhxComboGameplayActionActorData GameplayActionComponent.PhxComboGameplayActionActorData_0",
+     "PhxMoveAndDoGameplayActionActorData GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0"
+    ]
+   }
+  },
+  "PhxMoveAndDoGameplayActionActorData_0": {
+   "type": "PhxMoveAndDoGameplayActionActorData",
+   "props": {
+    "MovementMontages": [
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_135L_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_135R_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_180L_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_180R_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_45L_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_45R_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_90L_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_90R_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_move_bwd_00_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_move_leap_00_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_move_leap_180_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_move_shortleap_00_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     },
+     {
+      "Montage": "AnimMontage b_bp_arms_00_loco_move_shortleap_180_mot",
+      "PlayRate": 1.0,
+      "StartTime": 0.0,
+      "StartSection": "None"
+     }
+    ],
+    "MovementPathWaypointAcceptanceRadius": 300.0,
+    "PoseMatchingData": "PhxPoseMatchingDataAsset armstrong_combo_pose_matching_data"
+   }
+  },
+  "CharacterMesh0": {
+   "type": "SkeletalMeshComponentBudgeted",
+   "props": {
+    "AnimClass": "AnimBlueprintGeneratedClass kimchi_anim_bp_C",
+    "SkeletalMesh": "SkeletalMesh Kimchi_00",
+    "SkinnedAsset": "SkeletalMesh Kimchi_00",
+    "AttachParent": "CapsuleComponent CollisionCylinder",
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": -250.0
+    }
+   }
+  },
+  "staggerable_bpc_GEN_VARIABLE": {
+   "type": "staggerable_bpc_C",
+   "props": {
+    "StaggerData": [
+     {
+      "StaggerDamageRequired": 2500.0,
+      "StaggerRegenPerSecond": 15.0,
+      "StaggerPerHitArmor": 80.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 2000.0
+     },
+     {
+      "StaggerDamageRequired": 3000.0,
+      "StaggerRegenPerSecond": 15.0,
+      "StaggerPerHitArmor": 90.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 2500.0
+     },
+     {
+      "StaggerDamageRequired": 3500.0,
+      "StaggerRegenPerSecond": 20.0,
+      "StaggerPerHitArmor": 100.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 3000.0
+     },
+     {
+      "StaggerDamageRequired": 4000.0,
+      "StaggerRegenPerSecond": 20.0,
+      "StaggerPerHitArmor": 105.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 3500.0
+     },
+     {
+      "StaggerDamageRequired": 4500.0,
+      "StaggerRegenPerSecond": 25.0,
+      "StaggerPerHitArmor": 105.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 4000.0
+     },
+     {
+      "StaggerDamageRequired": 5000.0,
+      "StaggerRegenPerSecond": 30.0,
+      "StaggerPerHitArmor": 110.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 4500.0
+     },
+     {
+      "StaggerDamageRequired": 5500.0,
+      "StaggerRegenPerSecond": 35.0,
+      "StaggerPerHitArmor": 110.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 5000.0
+     },
+     {
+      "StaggerDamageRequired": 6000.0,
+      "StaggerRegenPerSecond": 40.0,
+      "StaggerPerHitArmor": 120.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 5500.0
+     }
+    ],
+    "VFX Offset": {
+     "X": 75.0,
+     "Y": 0.0,
+     "Z": 90.0
+    }
+   }
+  }
+ }
+}

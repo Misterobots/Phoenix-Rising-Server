@@ -1,0 +1,9 @@
+sub_burrow_to_point  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Do the teleport and face - requires NextControlPoint, sets MoveDestination"]
+  [root if comment_btdeco "Behemoth should probably be hidden at this point"]
+  Sequence "Do the teleport and face - requires CurrentControlPoint, sets MoveDestination"
+    1) teleport_bttask  (DestinationKeyName=NextPatrolPoint)
+    2) RunEQSQuery "Find spot near pos"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"}, BlackboardKey=bb.MoveDestination)
+    3) set_rotation_bttask  (LookAtTarget=bb.MoveDestination)

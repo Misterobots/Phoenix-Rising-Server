@@ -1,0 +1,292 @@
+{
+ "name": "ce_stacked_onnexthit_damage_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PowerMod",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Magnitude",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "StackMod",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TotalStacks",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EffectToRemove",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RepeatersLeftToRemove",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RepeatersRightToRemove",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AddPersistentVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_stacked_onnexthit_damage_buff_C.ExecuteUbergraph_ce_stacked_onnexthit_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_stacked_onnexthit_damage_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 98,
+   "reads": [
+    "EffectToRemove",
+    "Magnitude",
+    "PowerMod",
+    "StackMod",
+    "TotalStacks"
+   ],
+   "sets": [
+    "EffectToRemove",
+    "PowerMod",
+    "RepeatersLeftToRemove",
+    "RepeatersRightToRemove",
+    "StackMod"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetActiveGameplayEffectStackCount",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AddPersistentVFX",
+    "AkGameplayStatics.PostEvent",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "GetOwnedWeapon",
+    "K2_DestroyActor",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "MakeOutgoingSpec",
+    "PersistentWeaponMeshEffect",
+    "RemoveActiveGameplayEffect",
+    "SetActorParameter"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Gameplay_Buff_RawElemental_Player_OS_Short",
+    "BlueprintGeneratedClass damage_stacking_ico_ge_C",
+    "BlueprintGeneratedClass power_no_icon_ge_C",
+    "ParticleSystem paper_weapon_nature_buff_ac_p",
+    "ParticleSystem paper_weapon_nature_buff_p"
+   ]
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_stacked_onnexthit_damage_buff_C.ExecuteUbergraph_ce_stacked_onnexthit_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_stacked_onnexthit_damage_buff_C.ExecuteUbergraph_ce_stacked_onnexthit_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefillStacks",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_stacked_onnexthit_damage_buff_C.ExecuteUbergraph_ce_stacked_onnexthit_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveStack",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_stacked_onnexthit_damage_buff_C.ExecuteUbergraph_ce_stacked_onnexthit_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_stacked_onnexthit_damage_buff",
+ "pseudo_file": "pseudo/ce_stacked_onnexthit_damage_buff_C.txt",
+ "game_data": {}
+}

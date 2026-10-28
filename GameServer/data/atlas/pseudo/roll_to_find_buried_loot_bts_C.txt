@@ -1,0 +1,173 @@
+# roll_to_find_buried_loot_bts_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_roll_to_find_buried_loot_bts
+  [0] push @3059
+  [5] goto computed(EntryPoint)
+  [15] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyName = 'BuriedLoot'
+  [55] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyType = null
+  [75] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyID = 255
+  [104] K2Node_MakeStruct_BlackboardKeySelector.bNoneIsAllowedValue = false
+  [124] SetBlackboardValueAsObject(self, K2Node_MakeStruct_BlackboardKeySelector, self.GatherableLoot)
+  [153] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.FoundLoot, self.GatherableLoot)
+  [221] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyName = 'TempVector'
+  [261] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyType = null
+  [281] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyID = 255
+  [310] K2Node_MakeStruct_BlackboardKeySelector_2.bNoneIsAllowedValue = false
+  [330] SetBlackboardValueAsVector(self, K2Node_MakeStruct_BlackboardKeySelector_2, self.LootLocation)
+  [359] pop
+  [360] self.GatherableLoot.self.base_interactioncode_component.SetInteractionDisabled(self.PetAutoCollectsLoot)
+  [423] goto @15
+  [428] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyName = 'TempBool'
+  [468] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyType = null
+  [488] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyID = 255
+  [517] K2Node_MakeStruct_BlackboardKeySelector_1.bNoneIsAllowedValue = false
+  [537] SetBlackboardValueAsBool(self, K2Node_MakeStruct_BlackboardKeySelector_1, false)
+  [558] pop
+  [559] K2Node_MakeStruct_BlackboardKeySelector_3.SelectedKeyName = 'TempBool'
+  [599] K2Node_MakeStruct_BlackboardKeySelector_3.SelectedKeyType = null
+  [619] K2Node_MakeStruct_BlackboardKeySelector_3.SelectedKeyID = 255
+  [648] K2Node_MakeStruct_BlackboardKeySelector_3.bNoneIsAllowedValue = false
+  [668] SetBlackboardValueAsBool(self, K2Node_MakeStruct_BlackboardKeySelector_3, false)
+  [689] pop
+  [690] Temp_int_Loop_Counter_Variable = 0
+  [713] Temp_int_Array_Index_Variable = 0
+  [736] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.SuccessfulLootLocations)
+  [795] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [833] if !(CallFunc_Less_IntInt_ReturnValue) goto @1037
+  [847] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [874] push @1637
+  [879] Default__KismetArrayLibrary.Array_Get(self.SuccessfulLootLocations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [938] CallFunc_Vector_Distance_ReturnValue = Vector_Distance(CallFunc_Array_Get_Item, self.LootLocation)
+  [984] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Vector_Distance_ReturnValue, self.MinDistanceToPriorSuccessLocation)
+  [1022] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1711
+  [1036] pop
+  [1037] if !(self.InvalidLocation) goto @1056
+  [1051] goto @428
+  [1056] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.SuccessfulLootLocations, self.LootLocation)
+  [1124] self.ChanceToFindLoot = self.ChanceToFindLootBase
+  [1151] K2Node_MakeStruct_BlackboardKeySelector_4.SelectedKeyName = self.LootFoundBoolKey
+  [1187] K2Node_MakeStruct_BlackboardKeySelector_4.SelectedKeyType = null
+  [1207] K2Node_MakeStruct_BlackboardKeySelector_4.SelectedKeyID = 255
+  [1236] K2Node_MakeStruct_BlackboardKeySelector_4.bNoneIsAllowedValue = false
+  [1256] SetBlackboardValueAsBool(self, K2Node_MakeStruct_BlackboardKeySelector_4, true)
+  [1277] CallFunc_MakeTransform_ReturnValue = MakeTransform(self.LootLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.5, 'Y': 0.5, 'Z': 0.5}))
+  [1364] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, gatherable_item_pet_loot_bp_C, CallFunc_MakeTransform_ReturnValue, 1, null)
+  [1406] SetStringPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'GrantItemId', self.SpawnLootWithGrantItemId)
+  [1447] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.AsBPPlayerCharacter)
+  [1488] CallFunc_MakeTransform_ReturnValue = MakeTransform(self.LootLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.5, 'Y': 0.5, 'Z': 0.5}))
+  [1575] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [1613] self.GatherableLoot = CallFunc_FinishSpawningActor_ReturnValue
+  [1632] goto @360
+  [1637] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1679] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1706] goto @736
+  [1711] self.InvalidLocation = true
+  [1722] goto @428
+  [1727] self.ControlledPawn = K2Node_Event_ControlledPawn_1
+  [1746] CallFunc_GetComponentByClass_ReturnValue = self.ControlledPawn.GetComponentByClass(ArchonPetComponent)
+  [1797] CallFunc_Authority_GetPetTargetOfInterest_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.Authority_GetPetTargetOfInterest()
+  [1839] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_Authority_GetPetTargetOfInterest_ReturnValue)
+  [1875] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [1904] if !(K2Node_DynamicCast_bSuccess) pop
+  [1914] self.AsBPPlayerCharacter = K2Node_DynamicCast_AsBP_Player_Character
+  [1933] Default__KismetArrayLibrary.Array_Clear(self.SuccessfulLootLocations)
+  [1974] Default__KismetArrayLibrary.Array_Clear(self.FoundLoot)
+  [2015] self.ChanceToFindLoot = self.ChanceToFindLootBase
+  [2042] pop
+  [2043] pop
+  [2044] CallFunc_RandomBoolWithWeight_ReturnValue = RandomBoolWithWeight(self.ChanceToFindLoot)
+  [2073] if !(CallFunc_RandomBoolWithWeight_ReturnValue) goto @2398
+  [2087] CallFunc_GetActorForwardVector_ReturnValue = self.ControlledPawn.GetActorForwardVector()
+  [2137] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(CallFunc_GetActorForwardVector_ReturnValue, EX_VectorConst(Value={'X': 1000.0, 'Y': 1000.0, 'Z': 0.0}))
+  [2199] CallFunc_K2_GetActorLocation_ReturnValue = self.ControlledPawn.K2_GetActorLocation()
+  [2249] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Multiply_VectorVector_ReturnValue)
+  [2295] CallFunc_K2_GetRandomLocationInNavigableRadius_ReturnValue = K2_GetRandomLocationInNavigableRadius(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_K2_GetRandomLocationInNavigableRadius_RandomLocation, 1000.0, null, null)
+  [2341] self.LootLocation = CallFunc_K2_GetRandomLocationInNavigableRadius_RandomLocation
+  [2368] if !(CallFunc_K2_GetRandomLocationInNavigableRadius_ReturnValue) goto @559
+  [2382] self.InvalidLocation = false
+  [2393] goto @690
+  [2398] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.ChanceToFindLoot)
+  [2427] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.ChanceToFindLootIncrease)
+  [2456] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [2502] CallFunc_FClamp_Min_ImplicitCast = cast<CST_FloatToDouble>(self.ChanceToFindLootBase)
+  [2531] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_FClamp_Min_ImplicitCast, self.ChanceToFindLootMax)
+  [2586] K2Node_VariableSet_ChanceToFindLoot_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FClamp_ReturnValue)
+  [2615] self.ChanceToFindLoot = K2Node_VariableSet_ChanceToFindLoot_ImplicitCast
+  [2642] CallFunc_Conv_DoubleToString_InDouble_ImplicitCast = cast<CST_FloatToDouble>(self.ChanceToFindLoot)
+  [2671] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Conv_DoubleToString_InDouble_ImplicitCast)
+  [2708] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Chance to Find Loot: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [2768] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{0.979645, 1.0, 0.878076, 1.0}, 3.0, 'None')
+  [2842] goto @559
+  [2847] CallFunc_IsValid_ReturnValue = IsValid(self.AsBPPlayerCharacter)
+  [2876] if !(CallFunc_IsValid_ReturnValue) goto @559
+  [2890] FindExistingLootNearby(CallFunc_FindExistingLootNearby_FoundExistingLootNearby)
+  [2913] if !(CallFunc_FindExistingLootNearby_FoundExistingLootNearby) goto @2928
+  [2927] pop
+  [2928] if !(self.FoundLootOnly(NoRoll)) goto @2943
+  [2942] pop
+  [2943] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.SuccessfulLootLocations)
+  [3002] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(CallFunc_Array_Length_ReturnValue_1, self.MaxLootSuccesses)
+  [3040] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @559
+  [3054] goto @2044
+  [3059] return nothing
+  [3061] end
+
+=== FindExistingLootNearby
+  [0] array{}
+  [11] GetAllActorsOfClass(self, gatherable_item_pet_loot_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [40] CallFunc_K2_GetActorLocation_ReturnValue = self.ControlledPawn.K2_GetActorLocation()
+  [90] CallFunc_FindNearestActor_ReturnValue = FindNearestActor(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetAllActorsOfClass_OutActors, CallFunc_FindNearestActor_Distance)
+  [137] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindNearestActor_ReturnValue)
+  [166] if !(CallFunc_IsValid_ReturnValue) goto @1062
+  [180] CallFunc_K2_GetActorLocation_ReturnValue = self.ControlledPawn.K2_GetActorLocation()
+  [230] CallFunc_FindNearestActor_ReturnValue = FindNearestActor(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetAllActorsOfClass_OutActors, CallFunc_FindNearestActor_Distance)
+  [277] CallFunc_InRange_FloatFloat_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_FindNearestActor_Distance)
+  [306] CallFunc_InRange_FloatFloat_ReturnValue = InRange_FloatFloat(CallFunc_InRange_FloatFloat_Value_ImplicitCast, self.FoundLootMinDistance, self.FoundLootMaxDistance, true, true)
+  [355] if !(CallFunc_InRange_FloatFloat_ReturnValue) goto @1062
+  [369] CallFunc_K2_GetActorLocation_ReturnValue = self.ControlledPawn.K2_GetActorLocation()
+  [419] CallFunc_FindNearestActor_ReturnValue = FindNearestActor(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetAllActorsOfClass_OutActors, CallFunc_FindNearestActor_Distance)
+  [466] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_FindNearestActor_ReturnValue.K2_GetActorLocation()
+  [516] self.LootLocation = CallFunc_K2_GetActorLocation_ReturnValue_1
+  [543] CallFunc_K2_GetActorLocation_ReturnValue = self.ControlledPawn.K2_GetActorLocation()
+  [593] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyName = 'BuriedLoot'
+  [633] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyType = null
+  [653] K2Node_MakeStruct_BlackboardKeySelector_2.SelectedKeyID = 255
+  [682] K2Node_MakeStruct_BlackboardKeySelector_2.bNoneIsAllowedValue = false
+  [702] CallFunc_FindNearestActor_ReturnValue = FindNearestActor(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetAllActorsOfClass_OutActors, CallFunc_FindNearestActor_Distance)
+  [749] SetBlackboardValueAsObject(self, K2Node_MakeStruct_BlackboardKeySelector_2, CallFunc_FindNearestActor_ReturnValue)
+  [778] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyName = 'TempBool'
+  [818] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyType = null
+  [838] K2Node_MakeStruct_BlackboardKeySelector_1.SelectedKeyID = 255
+  [867] K2Node_MakeStruct_BlackboardKeySelector_1.bNoneIsAllowedValue = false
+  [887] SetBlackboardValueAsBool(self, K2Node_MakeStruct_BlackboardKeySelector_1, true)
+  [908] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyName = 'TempVector'
+  [948] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyType = null
+  [968] K2Node_MakeStruct_BlackboardKeySelector.SelectedKeyID = 255
+  [997] K2Node_MakeStruct_BlackboardKeySelector.bNoneIsAllowedValue = false
+  [1017] SetBlackboardValueAsVector(self, K2Node_MakeStruct_BlackboardKeySelector, self.LootLocation)
+  [1046] FoundExistingLootNearby = true
+  [1057] goto @1073
+  [1062] FoundExistingLootNearby = false
+  [1073] return nothing
+  [1075] end
+
+=== ReceiveActivationAI
+  [0] frame.K2Node_Event_OwnerController_1 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_1 = ControlledPawn
+  [36] ExecuteUbergraph_roll_to_find_buried_loot_bts(1727)
+  [51] return nothing
+  [53] end
+
+=== ReceiveDeactivationAI
+  [0] frame.K2Node_Event_OwnerController = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn = ControlledPawn
+  [36] ExecuteUbergraph_roll_to_find_buried_loot_bts(2043)
+  [51] return nothing
+  [53] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_OwnerActor = OwnerActor
+  [18] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [36] ExecuteUbergraph_roll_to_find_buried_loot_bts(2847)
+  [51] return nothing
+  [53] end

@@ -1,0 +1,208 @@
+# eb_special_spin_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CustomModifyDamageEventData
+  [0] CustomModifyDamageEventData(DamageEventData, DamagedActor, DamageTags, false, HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}, CallFunc_CustomModifyDamageEventData_ModifiedDamageEventData, CallFunc_CustomModifyDamageEventData_OverriddenDamageEventData, CallFunc_CustomModifyDamageEventData_ShouldOverrideDamageTags, CallFunc_CustomModifyDamageEventData_OverriddenDamageTags)
+  [453] CallFunc_HasTag_ReturnValue = HasTag(DamageTags, GameplayTag{'Combat.Sword.SpinFinisher'}, false)
+  [510] if !(CallFunc_HasTag_ReturnValue) goto @913
+  [524] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(self.TotalSpinHits, 20.0)
+  [570] self.Magnitude = CallFunc_Multiply_IntFloat_ReturnValue
+  [597] if !(self.TalentSp05Active) goto @730
+  [611] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.Magnitude, 0.2)
+  [657] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.Magnitude)
+  [703] self.Magnitude = CallFunc_Add_DoubleDouble_ReturnValue
+  [730] Default__cell_function_library_C.ModifyDamageEventdata(self.Magnitude, 4, DamageEventData, self, CallFunc_ModifyDamageEventdata_OverrodeDamageEventData_1, CallFunc_ModifyDamageEventdata_OverriddenDamageEventData_1)
+  [805] ModifiedDamageEventData = CallFunc_ModifyDamageEventdata_OverrodeDamageEventData_1
+  [824] OverriddenDamageEventData = CallFunc_ModifyDamageEventdata_OverriddenDamageEventData_1
+  [851] ShouldOverrideDamageTags = false
+  [862] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [908] goto @1202
+  [913] if !(self.TalentSp05Active) goto @1110
+  [927] Default__cell_function_library_C.ModifyDamageEventdata(1.2, 7, DamageEventData, self, CallFunc_ModifyDamageEventdata_OverrodeDamageEventData, CallFunc_ModifyDamageEventdata_OverriddenDamageEventData)
+  [1002] ModifiedDamageEventData = CallFunc_ModifyDamageEventdata_OverrodeDamageEventData
+  [1021] OverriddenDamageEventData = CallFunc_ModifyDamageEventdata_OverriddenDamageEventData
+  [1048] ShouldOverrideDamageTags = false
+  [1059] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [1105] goto @1202
+  [1110] ModifiedDamageEventData = CallFunc_CustomModifyDamageEventData_ModifiedDamageEventData
+  [1129] OverriddenDamageEventData = CallFunc_CustomModifyDamageEventData_OverriddenDamageEventData
+  [1156] ShouldOverrideDamageTags = CallFunc_CustomModifyDamageEventData_ShouldOverrideDamageTags
+  [1175] OverriddenDamageTags = CallFunc_CustomModifyDamageEventData_OverriddenDamageTags
+  [1202] return nothing
+  [1204] end
+
+=== ExecuteUbergraph_eb_special_spin_buff
+  [0] push @2426
+  [5] goto computed(EntryPoint)
+  [15] if !(self.TalentSp03Active) goto @103
+  [29] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [49] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetBuffOwner_ReturnValue, -2, 5, false, self)
+  [103] self.TotalSpinHits = 0
+  [126] if !(self.TalentSp01Active) goto @250
+  [140] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [160] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [189] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.StaggerproofHandle, -1)
+  [249] pop
+  [250] SetClientMovespeed(false)
+  [265] goto @140
+  [270] FlushNetDormancy()
+  [280] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwnedWeapon_Weapon.GetComponentByClass(DamageComponent)
+  [331] self.DamageComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [350] MarkPropertyDirtyFromRepIndex(self, 17, 'DamageComponent')
+  [379] CallFunc_GetItemId_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetItemId()
+  [429] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetItemId_ReturnValue)
+  [466] CallFunc_LookupPowerTableRow_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.LookupPowerTableRow(CallFunc_Conv_StringToName_ReturnValue, CallFunc_LookupPowerTableRow_OutPowerTableData)
+  [530] if !(CallFunc_LookupPowerTableRow_ReturnValue) pop
+  [540] K2Node_VariableSet_SuperDecayRate_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LookupPowerTableRow_OutPowerTableData.EBlade_SuperDecayRate)
+  [578] self.SuperDecayRate = K2Node_VariableSet_SuperDecayRate_ImplicitCast
+  [605] CallFunc_GetComponentByClass_ReturnValue = self.Weapon.GetComponentByClass(weapon_meter_bpc_C)
+  [656] self.MeterComponent = CallFunc_GetComponentByClass_ReturnValue
+  [675] pop
+  [676] if !(false) goto @794
+  [682] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.TotalSpinHits, 1)
+  [724] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, 0)
+  [766] self.TotalSpinHits = CallFunc_Min_ReturnValue
+  [793] pop
+  [794] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.TotalSpinHits, 1)
+  [836] self.TotalSpinHits = CallFunc_Add_IntInt_ReturnValue
+  [863] pop
+  [864] OnAdded()
+  [874] push @1466
+  [879] push @1323
+  [884] push @1037
+  [889] push @1180
+  [894] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [914] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [943] CallFunc_HasMatchingGameplayTag_ReturnValue_3 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp01'})
+  [1017] self.TalentSp01Active = CallFunc_HasMatchingGameplayTag_ReturnValue_3
+  [1036] pop
+  [1037] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1057] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [1086] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp03'})
+  [1160] self.TalentSp03Active = CallFunc_HasMatchingGameplayTag_ReturnValue_1
+  [1179] pop
+  [1180] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1200] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [1229] CallFunc_HasMatchingGameplayTag_ReturnValue_2 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp02'})
+  [1303] self.TalentSp02Active = CallFunc_HasMatchingGameplayTag_ReturnValue_2
+  [1322] pop
+  [1323] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1343] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_1)
+  [1372] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp05'})
+  [1446] self.TalentSp05Active = CallFunc_HasMatchingGameplayTag_ReturnValue
+  [1465] pop
+  [1466] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1486] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetOwner_ReturnValue)
+  [1522] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [1551] if !(K2Node_DynamicCast_bSuccess) goto @1635
+  [1565] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [1611] self.Weapon = CallFunc_GetOwnedWeapon_Weapon
+  [1630] goto @270
+  [1635] CallFunc_GetOwnedWeapon_Weapon = null
+  [1646] goto @1611
+  [1651] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(K2Node_Event_DamageInfo.Payload.Target)
+  [1705] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [1734] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1744] CallFunc_HasTag_ReturnValue = HasTag(K2Node_Event_DamageInfo.Payload.InstigatorTags, GameplayTag{'Combat.Sword.SpinAttack'}, false)
+  [1819] if !(CallFunc_HasTag_ReturnValue) pop
+  [1829] goto @676
+  [1834] OnTagRemoved(K2Node_Event_Tag_1)
+  [1853] CallFunc_EqualEqual_GameplayTag_ReturnValue = EqualEqual_GameplayTag(K2Node_Event_Tag_1, GameplayTag{'Combat.SpecialMove'})
+  [1909] if !(CallFunc_EqualEqual_GameplayTag_ReturnValue) pop
+  [1919] Delay(self, 1.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), 2103658643, 'ExecuteUbergraph_eb_special_spin_buff', self})
+  [1973] pop
+  [1974] OnTagAdded(K2Node_Event_Tag)
+  [1993] CallFunc_EqualEqual_GameplayTag_ReturnValue_1 = EqualEqual_GameplayTag(K2Node_Event_Tag, GameplayTag{'Combat.SpecialMove'})
+  [2049] if !(CallFunc_EqualEqual_GameplayTag_ReturnValue_1) pop
+  [2059] RefreshTalents()
+  [2073] push @2108
+  [2078] push @2295
+  [2083] if !(self.TalentSp02Active) pop
+  [2093] ShieldAllies()
+  [2107] pop
+  [2108] if !(self.TalentSp01Active) goto @2275
+  [2122] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2142] CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [2170] CallFunc_ApplyGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffect(CallFunc_GetBuffOwner_ReturnValue_1, eb_passive_special_staggerproof_ge_C, CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput)
+  [2247] self.StaggerproofHandle = CallFunc_ApplyGameplayEffect_ReturnValue
+  [2274] pop
+  [2275] SetClientMovespeed(true)
+  [2290] goto @2122
+  [2295] if !(self.TalentSp03Active) pop
+  [2305] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [2325] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetBuffOwner_ReturnValue_3, 2, 5, false, self)
+  [2379] pop
+  [2380] SetMaxDesiredLocoState(K2Node_CustomEvent_Enable, 1)
+  [2405] pop
+  [2406] push @1323
+  [2411] push @1037
+  [2416] push @1180
+  [2421] goto @894
+  [2426] return nothing
+  [2428] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_eb_special_spin_buff(864)
+  [15] return nothing
+  [17] end
+
+=== OnDamageGiven
+  [0] frame.K2Node_Event_DamageReceived = DamageReceived
+  [18] frame.K2Node_Event_DamageReceiver = DamageReceiver
+  [36] frame.K2Node_Event_DamageInfo = DamageInfo
+  [54] ExecuteUbergraph_eb_special_spin_buff(1651)
+  [69] return nothing
+  [71] end
+
+=== OnTagAdded
+  [0] frame.K2Node_Event_Tag = Tag
+  [18] ExecuteUbergraph_eb_special_spin_buff(1974)
+  [33] return nothing
+  [35] end
+
+=== OnTagRemoved
+  [0] frame.K2Node_Event_Tag_1 = Tag
+  [18] ExecuteUbergraph_eb_special_spin_buff(1834)
+  [33] return nothing
+  [35] end
+
+=== RefreshTalents
+  [0] ExecuteUbergraph_eb_special_spin_buff(2406)
+  [15] return nothing
+  [17] end
+
+=== SetClientMovespeed
+  [0] frame.K2Node_CustomEvent_Enable = Enable
+  [18] ExecuteUbergraph_eb_special_spin_buff(2380)
+  [33] return nothing
+  [35] end
+
+=== SetMaxDesiredLocoState
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(player_state_machine_bpc_C)
+  [71] CallFunc_GetComponentByClass_ReturnValue.SetMaxDesiredLocomotionState(Enable, MaxDesiredLocoState)
+  [125] return nothing
+  [127] end
+
+=== ShieldAllies
+  [0] push @731
+  [5] Default__archon_function_library_C.GetPlayerCharacters(true, true, self, CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [53] Temp_int_Loop_Counter_Variable = 0
+  [76] Temp_int_Array_Index_Variable = 0
+  [99] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [158] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [196] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [206] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [233] push @657
+  [238] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [258] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [317] Default__archon_function_library_C.ActorsWithinDistanceFast(CallFunc_Array_Get_Item, CallFunc_GetOwner_ReturnValue, 750.0, self, CallFunc_ActorsWithinDistanceFast_IsWithinDistance)
+  [390] if !(CallFunc_ActorsWithinDistanceFast_IsWithinDistance) pop
+  [400] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [459] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item.GetComponentByClass(shieldable_bpc_C)
+  [510] CallFunc_GetComponentByClass_ReturnValue.AddShield(200.0, 50.0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Shield.Source.SilverSwordTalentSp02'})}, 0.0, 600.0, false, CallFunc_AddShield_AddedShieldSuccessfully, CallFunc_AddShield_GUID)
+  [656] pop
+  [657] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [699] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [726] goto @99
+  [731] return nothing
+  [733] end

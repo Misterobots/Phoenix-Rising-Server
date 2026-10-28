@@ -1,0 +1,183 @@
+# foot_plant_detector_component_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_foot_plant_detector_component
+  [0] push @3899
+  [5] goto computed(EntryPoint)
+  [15] self.FootPlantState = 1
+  [35] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [64] self.LPlantStartTime = CallFunc_GetTimeSeconds_ReturnValue
+  [91] FootPlanted__DelegateSignature(self.LFilteredSpeed, self.JointName)
+  [128] pop
+  [129] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.FootPlantState, 0)
+  [160] if !(K2Node_SwitchEnum_CmpSuccess) goto @310
+  [174] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.FootPlantState, 1)
+  [205] if !(K2Node_SwitchEnum_CmpSuccess) goto @325
+  [219] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.FootPlantState, 2)
+  [250] if !(K2Node_SwitchEnum_CmpSuccess) goto @597
+  [264] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.FootPlantState, 3)
+  [295] if !(K2Node_SwitchEnum_CmpSuccess) goto @612
+  [309] pop
+  [310] if !(self.LFootPlantedThisFrame) pop
+  [320] goto @15
+  [325] if !(self.LFootPlantedThisFrame) goto @483
+  [339] CallFunc_GetTimeSeconds_ReturnValue_1 = GetTimeSeconds(self)
+  [368] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.LPlantStartTime, self.PlantTime)
+  [414] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue)
+  [452] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [462] self.FootPlantState = 2
+  [482] pop
+  [483] self.FootPlantState = 3
+  [503] CallFunc_GetTimeSeconds_ReturnValue_2 = GetTimeSeconds(self)
+  [532] self.LUnplantStartTime = CallFunc_GetTimeSeconds_ReturnValue_2
+  [559] FootUnplanted__DelegateSignature(self.LFootSpeed, self.JointName)
+  [596] pop
+  [597] if !(self.LFootPlantedThisFrame) goto @483
+  [611] pop
+  [612] if !(self.LFootPlantedThisFrame) goto @631
+  [626] goto @15
+  [631] CallFunc_GetTimeSeconds_ReturnValue_3 = GetTimeSeconds(self)
+  [660] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(self.LUnplantStartTime, self.UnplantTime)
+  [706] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue_3, CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [744] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [754] self.FootPlantState = 0
+  [774] pop
+  [775] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [795] LGetFootPlantState(CallFunc_GetOwner_ReturnValue, self.LHeightThreshold, self.LSpeedThreshold, CallFunc_LGetFootPlantState_Planted, CallFunc_LGetFootPlantState_FootHeight, CallFunc_LGetFootPlantState_FootSpeed)
+  [863] self.LFootPlantedThisFrame = CallFunc_LGetFootPlantState_Planted
+  [882] self.LFootHeight = CallFunc_LGetFootPlantState_FootHeight
+  [909] self.LFootSpeed = CallFunc_LGetFootPlantState_FootSpeed
+  [936] CallFunc_LowPassFilterFloat_Sample_ImplicitCast = cast<CST_DoubleToFloat>(self.LFootSpeed)
+  [965] CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast = cast<CST_DoubleToFloat>(self.LFilteredSpeed)
+  [994] CallFunc_LowPassFilterFloat_ReturnValue = LowPassFilterFloat(CallFunc_LowPassFilterFloat_Sample_ImplicitCast, CallFunc_LowPassFilterFloat_PreviousValue_ImplicitCast, 0.1, K2Node_Event_DeltaSeconds, -1.0)
+  [1059] K2Node_VariableSet_LFilteredSpeed_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LowPassFilterFloat_ReturnValue)
+  [1088] self.LFilteredSpeed = K2Node_VariableSet_LFilteredSpeed_ImplicitCast
+  [1115] goto @129
+  [1120] push @1420
+  [1125] Temp_byte_Variable_2 = self.FootPlantState
+  [1152] self.LHeightThreshold = switch(Temp_byte_Variable_2){0: self.PlantHeightThreshold, 1: self.UnplantHeightThreshold, 2: self.UnplantHeightThreshold, 3: self.PlantHeightThreshold, default: K2Node_Select_Default_2}
+  [1255] Temp_byte_Variable_1 = self.FootPlantState
+  [1282] self.LSpeedThreshold = switch(Temp_byte_Variable_1){0: self.PlantSpeedThreshold, 1: self.UnplantSpeedThreshold, 2: self.UnplantSpeedThreshold, 3: self.PlantSpeedThreshold, default: K2Node_Select_Default_1}
+  [1385] if !(self.Enabled) goto @1404
+  [1399] goto @775
+  [1404] self.LFootPlantedThisFrame = false
+  [1415] goto @882
+  [1420] if !(self.DrawDebug) pop
+  [1430] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1450] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(SkeletalMeshComponent)
+  [1501] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, self.JointName, 0)
+  [1549] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1595] Temp_byte_Variable = self.FootPlantState
+  [1622] CallFunc_MakeColor_ReturnValue = MakeColor(0.4, 0.4, 0.4, 1.0)
+  [1670] CallFunc_MakeColor_ReturnValue_1 = MakeColor(0.6, 0.2, 0.6, 1.0)
+  [1718] CallFunc_MakeColor_ReturnValue_2 = MakeColor(0.1, 1.0, 0.2, 1.0)
+  [1766] CallFunc_MakeColor_ReturnValue_3 = MakeColor(0.4, 0.4, 0.2, 1.0)
+  [1814] CallFunc_DrawDebugBox_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.DebugLifetime)
+  [1843] DrawDebugBox(self, CallFunc_BreakTransform_Location, EX_VectorConst(Value={'X': 50.0, 'Y': 50.0, 'Z': 50.0}), switch(Temp_byte_Variable){0: CallFunc_MakeColor_ReturnValue, 1: CallFunc_MakeColor_ReturnValue_1, 2: CallFunc_MakeColor_ReturnValue_2, 3: CallFunc_MakeColor_ReturnValue_3, default: K2Node_Select_Default}, CallFunc_BreakTransform_Rotation, CallFunc_DrawDebugBox_Duration_ImplicitCast, 0.0)
+  [1996] if !(self.Enabled) goto @2999
+  [2010] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2030] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(SkeletalMeshComponent)
+  [2081] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, self.JointName, 0)
+  [2129] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [2175] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_BreakTransform_Location, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 30.0}))
+  [2237] Temp_byte_Variable = self.FootPlantState
+  [2264] CallFunc_MakeColor_ReturnValue = MakeColor(0.4, 0.4, 0.4, 1.0)
+  [2312] CallFunc_MakeColor_ReturnValue_1 = MakeColor(0.6, 0.2, 0.6, 1.0)
+  [2360] CallFunc_MakeColor_ReturnValue_2 = MakeColor(0.1, 1.0, 0.2, 1.0)
+  [2408] CallFunc_MakeColor_ReturnValue_3 = MakeColor(0.4, 0.4, 0.2, 1.0)
+  [2456] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(FootPlantState, self.FootPlantState)
+  [2502] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(self.JointName)
+  [2539] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(CallFunc_Conv_NameToString_ReturnValue, ': ')
+  [2580] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [2626] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, ' h: ')
+  [2669] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(self.LFootHeight)
+  [2706] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(self.LFootSpeed)
+  [2743] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, CallFunc_Conv_DoubleToString_ReturnValue)
+  [2789] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ' v: ')
+  [2832] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [2878] DrawDebugString(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Concat_StrStr_ReturnValue_5, null, switch(Temp_byte_Variable){0: CallFunc_MakeColor_ReturnValue, 1: CallFunc_MakeColor_ReturnValue_1, 2: CallFunc_MakeColor_ReturnValue_2, 3: CallFunc_MakeColor_ReturnValue_3, default: K2Node_Select_Default}, 0.0)
+  [2998] pop
+  [2999] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3019] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(SkeletalMeshComponent)
+  [3070] CallFunc_GetBoneTransform_ReturnValue = GetBoneTransform(CallFunc_GetComponentByClass_ReturnValue, self.JointName, 0)
+  [3118] BreakTransform(CallFunc_GetBoneTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [3164] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_BreakTransform_Location, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 30.0}))
+  [3226] DrawDebugString(self, CallFunc_Add_VectorVector_ReturnValue, 'Disabled', null, LinearColor{1.0, 0.01, 0.01, 1.0}, 0.0)
+  [3296] pop
+  [3297] pop
+  [3298] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(self.CurveNameOverride, 'None')
+  [3340] Temp_bool_Variable = CallFunc_EqualEqual_NameName_ReturnValue
+  [3359] CallFunc_Conv_NameToString_ReturnValue_1 = Conv_NameToString(switch(Temp_bool_Variable){false: self.CurveNameOverride, true: self.JointName, default: K2Node_Select_Default_3})
+  [3440] CallFunc_Replace_ReturnValue = Replace(CallFunc_Conv_NameToString_ReturnValue_1, '_jnt', '', 1)
+  [3487] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Replace_ReturnValue, '_height')
+  [3533] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue_6)
+  [3570] self.HeighCurveName = CallFunc_Conv_StringToName_ReturnValue
+  [3597] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(self.CurveNameOverride, 'None')
+  [3639] Temp_bool_Variable = CallFunc_EqualEqual_NameName_ReturnValue
+  [3658] CallFunc_Conv_NameToString_ReturnValue_1 = Conv_NameToString(switch(Temp_bool_Variable){false: self.CurveNameOverride, true: self.JointName, default: K2Node_Select_Default_3})
+  [3739] CallFunc_Replace_ReturnValue = Replace(CallFunc_Conv_NameToString_ReturnValue_1, '_jnt', '', 1)
+  [3786] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Replace_ReturnValue, '_velocity')
+  [3834] CallFunc_Conv_StringToName_ReturnValue_1 = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue_7)
+  [3871] self.VelocityCurveName = CallFunc_Conv_StringToName_ReturnValue_1
+  [3898] pop
+  [3899] return nothing
+  [3901] end
+
+=== FootPlanted__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== FootUnplanted__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== GetFootPlantState
+  [0] FootPlantState = self.FootPlantState
+  [27] return nothing
+  [29] end
+
+=== LGetFootPlantState
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.AnimInstance)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @557
+  [43] CallFunc_GetCurveValueWithDefault_ReturnValue = self.AnimInstance.GetCurveValueWithDefault(self.VelocityCurveName, 9999.0, CallFunc_GetCurveValueWithDefault_OutValue)
+  [108] CallFunc_GetCurveValueWithDefault_ReturnValue_1 = self.AnimInstance.GetCurveValueWithDefault(self.HeighCurveName, 0.0, CallFunc_GetCurveValueWithDefault_OutValue_1)
+  [173] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetCurveValueWithDefault_ReturnValue_1, CallFunc_GetCurveValueWithDefault_ReturnValue)
+  [211] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurveValueWithDefault_OutValue)
+  [240] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, SpeedThreshold)
+  [278] CallFunc_Less_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetCurveValueWithDefault_OutValue_1)
+  [307] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast_1, HeightThreshold)
+  [345] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue_1)
+  [383] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_Less_DoubleDouble_ReturnValue)
+  [421] Planted = CallFunc_BooleanAND_ReturnValue_2
+  [440] K2Node_FunctionResult_FootHeight_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurveValueWithDefault_OutValue_1)
+  [469] FootHeight = K2Node_FunctionResult_FootHeight_ImplicitCast
+  [496] K2Node_FunctionResult_FootSpeed_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurveValueWithDefault_OutValue)
+  [525] FootSpeed = K2Node_FunctionResult_FootSpeed_ImplicitCast
+  [552] goto @674
+  [557] CallFunc_GetComponentByClass_ReturnValue = Target.GetComponentByClass(SkeletalMeshComponent)
+  [608] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetAnimInstance()
+  [650] self.AnimInstance = CallFunc_GetAnimInstance_ReturnValue
+  [669] goto @43
+  [674] return nothing
+  [676] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_foot_plant_detector_component(3298)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_foot_plant_detector_component(1120)
+  [33] return nothing
+  [35] end
+
+=== UpdateSpecialCaseSignificanceManagement
+  [0] frame.K2Node_Event_NewSignificance = NewSignificance
+  [18] ExecuteUbergraph_foot_plant_detector_component(3297)
+  [33] return nothing
+  [35] end
+
+=== UsesSpecialCaseSignificanceManagement
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

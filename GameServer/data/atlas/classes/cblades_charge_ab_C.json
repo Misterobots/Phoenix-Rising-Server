@@ -1,0 +1,268 @@
+{
+ "name": "cblades_charge_ab_C",
+ "kind": "blueprint",
+ "parents": [
+  "GameplayAbility",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationDebuggingEnabled",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AmmoComponent",
+   "type": "ObjectProperty<ammo_bpc_C>",
+   "bp_type": "ObjectProperty<ammo_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CachedWeapon",
+   "type": "ObjectProperty<cblades_weapon_bp_C>",
+   "bp_type": "ObjectProperty<cblades_weapon_bp_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "DebugOutputToLog",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Text",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.ArchonLogText",
+    "KismetMathLibrary.SelectString",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_cblades_charge_ab",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 68,
+   "reads": [
+    "AmmoComponent",
+    "MaxAmmoCount",
+    "OnChange",
+    "OnPostMitigationHitWithWeapon"
+   ],
+   "sets": [
+    "AmmoComponent",
+    "CachedWeapon"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilityTask_WaitAttributeChangeThreshold.WaitForAttributeChangeThreshold",
+    "Actor.GetComponentByClass",
+    "ArchonAbilitySystemBlueprintLibrary.GetBaseFloatAttributeFromAbilitySystemComponent",
+    "ArchonAmmoComponent.AdjustAmmo",
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "GameplayAbility.GetActorInfo",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GameplayTask.ReadyForActivation",
+    "GetOwnedWeapon",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ammo_bpc_C",
+    "BlueprintGeneratedClass determination_reset_ge_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "K2_ActivateAbility",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cblades_charge_ab_C.ExecuteUbergraph_cblades_charge_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnChange_188098F342CEA3DF8EFDFDB89C89F3EC",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "bMatchesComparison",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CurrentValue",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cblades_charge_ab_C.ExecuteUbergraph_cblades_charge_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitigationHitWithWeapon",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 81,
+   "reads": [
+    "AmmoComponent",
+    "CachedWeapon",
+    "MaxAmmoCount",
+    "MeterGainScale"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AnimInstance.Montage_IsPlaying",
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "CanProcOnDamageEffects",
+    "GameplayAbility.GetActorInfo",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GetOwnedWeapon",
+    "GetSkeletalMeshComponent",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.NotEqual_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid",
+    "MakeOutgoingSpec",
+    "SkeletalMeshComponent.GetAnimInstance"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_cb_melee_Y4_fwd_01_mot",
+    "BlueprintGeneratedClass determination_ge_C"
+   ]
+  }
+ ],
+ "tables": [],
+ "package": "/Game/game/abilities/weapons/CBlades/cblades_charge_ab",
+ "pseudo_file": "pseudo/cblades_charge_ab_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,464 @@
+{
+ "name": "combat_combo_counter_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bDebugInfo",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnComboIncremented",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentActionKey",
+   "type": "EnumProperty<EArchonAttackActionKey>",
+   "bp_type": "EnumProperty<EArchonAttackActionKey>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_CurrentActionKey",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 2
+  },
+  {
+   "name": "PreviousActionKey",
+   "type": "EnumProperty<EArchonAttackActionKey>",
+   "bp_type": "EnumProperty<EArchonAttackActionKey>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ResetCountOnDifferentActionKey",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActionKeyCount",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActionKeyMaxCount",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "DebugInfo",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Condition",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_Map_Keys_Keys",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 31,
+   "reads": [
+    "ActionKeyCount"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "ActorComponent.GetOwner",
+    "BlueprintMapLibrary.Map_Find",
+    "BlueprintMapLibrary.Map_Keys",
+    "IsLocallyControlled",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.SelectColor",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [
+    "IsLocallyControlled"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_combat_combo_counter_bpc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 25,
+   "reads": [
+    "ActionKeyCount",
+    "OnComboEnd",
+    "bDebugInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "ArchonFunctionalUtility.IsBuildDevelopment",
+    "BlueprintMapLibrary.Map_Clear",
+    "DebugInfo",
+    "KismetSystemLibrary.IsValid",
+    "Server_IncrementCombo Count",
+    "SetComponentTickEnabled",
+    "SetCurrentActionKey"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass weapon_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "IncrementComboCount",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AttackType",
+     "type": "EnumProperty<EArchonAttackActionKey>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "combat_combo_counter_bpc_C.ExecuteUbergraph_combat_combo_counter_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnComboIncremented__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AttackType",
+     "type": "EnumProperty<EArchonAttackActionKey>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnCurrentActionKeyChanged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CallFunc_Map_Keys_Keys",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_int_Variable_1",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 46,
+   "reads": [
+    "ActionKeyCount",
+    "ActionKeyMaxCount",
+    "CurrentActionKey",
+    "OnComboIncremented",
+    "PreviousActionKey",
+    "ResetCountOnDifferentActionKey"
+   ],
+   "sets": [
+    "PreviousActionKey"
+   ],
+   "calls": [
+    "BlueprintMapLibrary.Map_Add",
+    "BlueprintMapLibrary.Map_Find",
+    "BlueprintMapLibrary.Map_Keys",
+    "BlueprintMapLibrary.Map_Remove",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_CurrentActionKey",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "ActorComponent.GetOwner",
+    "IsLocallyControlled",
+    "OnCurrentActionKeyChanged"
+   ],
+   "authority": [
+    "IsLocallyControlled"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "combat_combo_counter_bpc_C.ExecuteUbergraph_combat_combo_counter_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "combat_combo_counter_bpc_C.ExecuteUbergraph_combat_combo_counter_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetComboCount",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "combat_combo_counter_bpc_C.ExecuteUbergraph_combat_combo_counter_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_IncrementCombo Count",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CurrentActionKey",
+     "type": "EnumProperty<EArchonAttackActionKey>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "server",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "combat_combo_counter_bpc_C.ExecuteUbergraph_combat_combo_counter_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetCurrentActionKey",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CurrentActionKey",
+     "type": "EnumProperty<EArchonAttackActionKey>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [],
+   "sets": [
+    "CurrentActionKey"
+   ],
+   "calls": [
+    "Actor.GetOwner",
+    "ActorComponent.GetOwner",
+    "IsLocallyControlled",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnCurrentActionKeyChanged",
+    "OnRep_CurrentActionKey"
+   ],
+   "authority": [
+    "IsLocallyControlled"
+   ],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Player/blueprints/Components/combat_combo_counter_bpc",
+ "pseudo_file": "pseudo/combat_combo_counter_bpc_C.txt",
+ "game_data": {}
+}

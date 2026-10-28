@@ -1,0 +1,115 @@
+# ms_passive_weaver_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ComboNextMove
+  [0] frame.K2Node_CustomEvent_WeaponComboData = WeaponComboData
+  [18] ExecuteUbergraph_ms_passive_weaver_buff(1460)
+  [33] return nothing
+  [35] end
+
+=== DebugPrint
+  [0] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(self.ComboCount)
+  [37] PrintString(self, CallFunc_Conv_IntToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [111] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(EArchonAttackActionKey, self.PreviousAttackType)
+  [157] PrintString(self, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [231] return nothing
+  [233] end
+
+=== ExecuteUbergraph_ms_passive_weaver_buff
+  [0] goto computed(EntryPoint)
+  [10] MulticastOnAdded()
+  [20] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [40] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [76] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [105] if !(K2Node_DynamicCast_bSuccess) goto @1680
+  [119] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [161] K2Node_DynamicCast_AsBp_Mspear_Weapon = cast<bp_mspear_weapon_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [197] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Mspear_Weapon)
+  [226] if !(K2Node_DynamicCast_bSuccess_1) goto @1680
+  [240] self.Weapon = K2Node_DynamicCast_AsBp_Mspear_Weapon
+  [259] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [279] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.GetComponentByClass(ArchonBuffableComponent)
+  [330] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(mspear_combo_weaving_buff_C, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, CallFunc_GetBuffOwner_ReturnValue_1, true)
+  [413] K2Node_DynamicCast_AsMspear_Combo_Weaving_Buff = cast<mspear_combo_weaving_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [449] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMspear_Combo_Weaving_Buff)
+  [478] if !(K2Node_DynamicCast_bSuccess_2) goto @1680
+  [492] self.WeaveBuff = K2Node_DynamicCast_AsMspear_Combo_Weaving_Buff
+  [511] K2Node_CreateDelegate_OutputDelegate = bind(self.OnComboEnd)
+  [534] K2Node_CreateDelegate_OutputDelegate += None
+  [597] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnComboIncremented)
+  [620] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [683] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.ComboNextMove)
+  [706] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [769] goto @1680
+  [774] self.WeaveBuff.RemoveBuff()
+  [810] self.ComboCount = 0
+  [833] self.FinalMoveStarted = false
+  [844] self.FinalMoveCompleted = false
+  [855] goto @1680
+  [860] if !(self.FinalMoveCompleted) goto @888
+  [874] OnComboEnd()
+  [888] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_CustomEvent_AttackType, 1)
+  [919] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(K2Node_CustomEvent_AttackType, 2)
+  [950] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_1)
+  [988] if !(CallFunc_BooleanOR_ReturnValue) goto @1680
+  [1002] if !(false) goto @1261
+  [1008] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.ComboCount, 1)
+  [1050] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, 0)
+  [1092] self.ComboCount = CallFunc_Min_ReturnValue
+  [1119] CallFunc_ShouldLevelDamage_ReturnValue = ShouldLevelDamage(K2Node_CustomEvent_AttackType)
+  [1152] if !(CallFunc_ShouldLevelDamage_ReturnValue) goto @1335
+  [1166] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_AttackType, 1)
+  [1197] if !(K2Node_SwitchEnum_CmpSuccess) goto @1367
+  [1211] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_AttackType, 2)
+  [1242] if !(K2Node_SwitchEnum_CmpSuccess) goto @1367
+  [1256] goto @1680
+  [1261] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.ComboCount, 1)
+  [1303] self.ComboCount = CallFunc_Add_IntInt_ReturnValue
+  [1330] goto @1119
+  [1335] self.PreviousAttackType = K2Node_CustomEvent_AttackType
+  [1362] goto @1680
+  [1367] self.WeaveBuff.IncrementDamageBuff()
+  [1403] self.PreviousAttackType = K2Node_CustomEvent_AttackType
+  [1430] if !(self.FinalMoveStarted) goto @1680
+  [1444] self.FinalMoveCompleted = true
+  [1455] goto @1680
+  [1460] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_CustomEvent_WeaponComboData.NextMontage, h_mr_ms_melee_Y3_fwd_01_mot)
+  [1507] CallFunc_EqualEqual_ObjectObject_ReturnValue_1 = EqualEqual_ObjectObject(K2Node_CustomEvent_WeaponComboData.NextMontage, h_mr_ms_melee_X5_held_fwd_01_mot)
+  [1554] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_EqualEqual_ObjectObject_ReturnValue_1, CallFunc_EqualEqual_ObjectObject_ReturnValue)
+  [1592] if !(CallFunc_BooleanOR_ReturnValue_1) goto @1680
+  [1606] self.FinalMoveStarted = true
+  [1617] goto @1680
+  [1622] ReceiveDestroyed()
+  [1632] CallFunc_IsValid_ReturnValue = IsValid(self.WeaveBuff)
+  [1661] if !(CallFunc_IsValid_ReturnValue) goto @1680
+  [1675] goto @774
+  [1680] return nothing
+  [1682] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ms_passive_weaver_buff(10)
+  [15] return nothing
+  [17] end
+
+=== OnComboEnd
+  [0] ExecuteUbergraph_ms_passive_weaver_buff(774)
+  [15] return nothing
+  [17] end
+
+=== OnComboIncremented
+  [0] frame.K2Node_CustomEvent_AttackType = AttackType
+  [18] ExecuteUbergraph_ms_passive_weaver_buff(860)
+  [33] return nothing
+  [35] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_ms_passive_weaver_buff(1622)
+  [15] return nothing
+  [17] end
+
+=== ShouldLevelDamage
+  [0] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(self.ComboCount, 1)
+  [34] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(AttackType, self.PreviousAttackType)
+  [72] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_NotEqual_ByteByte_ReturnValue, CallFunc_NotEqual_IntInt_ReturnValue)
+  [110] ReturnValue = CallFunc_BooleanAND_ReturnValue
+  [129] return ReturnValue
+  [139] end

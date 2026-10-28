@@ -1,0 +1,57 @@
+# escalation_on_behemoth_kill_damage_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_escalation_on_behemoth_kill_damage_buff
+  [0] push @1075
+  [5] goto computed(EntryPoint)
+  [15] push @480
+  [20] Default__KismetArrayLibrary.Array_Random(self.BuffTypeList, CallFunc_Array_Random_OutItem, CallFunc_Array_Random_OutIndex)
+  [79] self.RandomBuffType = CallFunc_Array_Random_OutItem
+  [106] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [126] Default__buff_function_library_C.GetBuffCurrentMaxStacks(self.RandomBuffType, CallFunc_GetBuffOwner_ReturnValue, self, CallFunc_GetBuffCurrentMaxStacks_CurrentMaxStacks)
+  [190] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [210] Default__buff_function_library_C.GetBuffCurrentStacks(self.RandomBuffType, CallFunc_GetBuffOwner_ReturnValue, self, CallFunc_GetBuffCurrentStacks_CurrentStacks)
+  [274] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetBuffCurrentMaxStacks_CurrentMaxStacks, 0)
+  [308] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetBuffCurrentStacks_CurrentStacks, CallFunc_GetBuffCurrentMaxStacks_CurrentMaxStacks)
+  [346] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_IntInt_ReturnValue, CallFunc_EqualEqual_IntInt_ReturnValue)
+  [384] if !(CallFunc_BooleanOR_ReturnValue) goto @662
+  [398] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [418] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetBuffOwner_ReturnValue_1, 1, self.RandomBuffType, false, self)
+  [479] pop
+  [480] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [522] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [549] GetCellEffectMagnitude(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude)
+  [572] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude)
+  [609] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_FTrunc_ReturnValue)
+  [647] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [657] goto @15
+  [662] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.BuffTypeList, self.RandomBuffType)
+  [722] if !(CallFunc_Array_RemoveItem_ReturnValue) pop
+  [732] goto @20
+  [737] MulticastOnAdded()
+  [747] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [768] K2Node_DynamicCast_AsBPGM_Archon_Prototype = cast<BPGM_Archon_Prototype_C>(CallFunc_GetGameMode_ReturnValue)
+  [804] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGM_Archon_Prototype)
+  [833] if !(K2Node_DynamicCast_bSuccess) pop
+  [843] K2Node_CreateDelegate_OutputDelegate = bind(self.OnBehemothDeath)
+  [866] K2Node_CreateDelegate_OutputDelegate += None
+  [907] pop
+  [908] CallFunc_HasMatchingGameplayTag_ReturnValue = K2Node_CustomEvent_Behemoth.HasMatchingGameplayTag(GameplayTag{'Clone'})
+  [982] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) goto @997
+  [996] pop
+  [997] array{0, 1, 2, 3, 4, 5}
+  [1020] self.BuffTypeList = K2Node_MakeArray_Array
+  [1047] Temp_int_Variable = 1
+  [1070] goto @549
+  [1075] return nothing
+  [1077] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_escalation_on_behemoth_kill_damage_buff(737)
+  [15] return nothing
+  [17] end
+
+=== OnBehemothDeath
+  [0] frame.K2Node_CustomEvent_Behemoth = Behemoth
+  [18] ExecuteUbergraph_escalation_on_behemoth_kill_damage_buff(908)
+  [33] return nothing
+  [35] end

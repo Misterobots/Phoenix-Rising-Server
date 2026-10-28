@@ -1,0 +1,158 @@
+# Weapon_Ice_Mines_BP_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== BndEvt__Sphere_K2Node_ComponentBoundEvent_1_ComponentBeginOverlapSignature__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_OverlappedComponent = OverlappedComponent
+  [18] frame.K2Node_ComponentBoundEvent_OtherActor = OtherActor
+  [36] frame.K2Node_ComponentBoundEvent_OtherComp = OtherComp
+  [54] frame.K2Node_ComponentBoundEvent_OtherBodyIndex = OtherBodyIndex
+  [72] frame.K2Node_ComponentBoundEvent_bFromSweep = bFromSweep
+  [90] frame.K2Node_ComponentBoundEvent_SweepResult = SweepResult
+  [108] ExecuteUbergraph_Weapon_Ice_Mines_BP(956)
+  [123] return nothing
+  [125] end
+
+=== DestroyActor_Multi
+  [0] ExecuteUbergraph_Weapon_Ice_Mines_BP(926)
+  [15] return nothing
+  [17] end
+
+=== DestroyActor_Server
+  [0] ExecuteUbergraph_Weapon_Ice_Mines_BP(941)
+  [15] return nothing
+  [17] end
+
+=== Detonate
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @639
+  [35] ExplosionVFXandSound()
+  [49] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [69] Default__legendary_ability_function_library_C.GetTalentStatusUE(CallFunc_GetInstigator_ReturnValue, self, CallFunc_GetTalentStatusUE_TalentUE01Active, CallFunc_GetTalentStatusUE_TalentUE02Active, CallFunc_GetTalentStatusUE_TalentUE03Active, CallFunc_GetTalentStatusUE_TalentUE04Active, CallFunc_GetTalentStatusUE_TalentUE05Active)
+  [160] if !(CallFunc_GetTalentStatusUE_TalentUE03Active) goto @607
+  [174] self.Single Hit Damage Multiplier = 1.2
+  [201] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [229] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [249] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [286] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, BP_AoE_SnowflakeWeapon_mine_C, CallFunc_Conv_VectorToTransform_ReturnValue, 0, CallFunc_GetInstigator_ReturnValue)
+  [336] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [356] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetInstigator_ReturnValue)
+  [397] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', self.Single Hit Damage Multiplier)
+  [438] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [458] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [499] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [527] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [564] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [602] goto @639
+  [607] self.Single Hit Damage Multiplier = 1.0
+  [634] goto @201
+  [639] return nothing
+  [641] end
+
+=== Detonate Audio
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.ExplosionSound)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @349
+  [43] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [71] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, self.ExplosionSound, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [161] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue)
+  [190] if !(CallFunc_IsValid_ReturnValue_1) goto @349
+  [204] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [272] CallFunc_PostAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAkEvent(Play_Generic_Elemental_Ice_Explosion_Large_Snowflake_Mine, 0, Temp_delegate_Variable_1)
+  [349] return nothing
+  [351] end
+
+=== ExecuteUbergraph_Weapon_Ice_Mines_BP
+  [0] push @1684
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [36] if !(CallFunc_IsDedicatedServer_ReturnValue_1) goto @124
+  [50] SpawnDeathVFX()
+  [64] DestroyActor_Multi()
+  [78] CallFunc_IsValid_ReturnValue_1 = IsValid(self)
+  [99] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [109] K2_DestroyActor()
+  [123] pop
+  [124] DestroyActor_Server()
+  [138] goto @78
+  [143] push @163
+  [148] if !(Temp_bool_Has_Been_Initd_Variable) goto @331
+  [162] pop
+  [163] if !(Temp_bool_IsClosed_Variable) goto @178
+  [177] pop
+  [178] Temp_bool_IsClosed_Variable = true
+  [189] Hide Mine Server()
+  [203] Detonate()
+  [217] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [238] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @312
+  [252] DestroyActor_Multi()
+  [266] CallFunc_IsValid_ReturnValue = IsValid(self)
+  [287] if !(CallFunc_IsValid_ReturnValue) pop
+  [297] K2_DestroyActor()
+  [311] pop
+  [312] DestroyActor_Server()
+  [326] goto @266
+  [331] Temp_bool_Has_Been_Initd_Variable = true
+  [342] if !(false) pop
+  [344] Temp_bool_IsClosed_Variable = true
+  [355] pop
+  [356] push @404
+  [361] push @871
+  [366] self.ice_caltrop_00.Activate(true)
+  [403] pop
+  [404] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [454] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, Skraev_wpn_icemine_spawn_p, CallFunc_K2_GetComponentLocation_ReturnValue_1, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [547] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [597] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, Play_wep_dp_mine_armed, CallFunc_K2_GetComponentLocation_ReturnValue_1, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [687] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue)
+  [716] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [726] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [746] Default__archon_function_library_C.AudioCreatedByLocal(CallFunc_GetInstigator_ReturnValue, null, CallFunc_SpawnAkComponentAtLocation_ReturnValue, self)
+  [802] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [870] pop
+  [871] Delay(self, 15.0, LatentActionInfo{EX_SkipOffsetConst(Value=15), 777231863, 'ExecuteUbergraph_Weapon_Ice_Mines_BP', self})
+  [925] pop
+  [926] K2_DestroyActor()
+  [940] pop
+  [941] K2_DestroyActor()
+  [955] pop
+  [956] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(K2Node_ComponentBoundEvent_OtherActor)
+  [992] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [1021] if !(K2Node_DynamicCast_bSuccess_1) goto @1040
+  [1035] goto @143
+  [1040] CallFunc_GetOwner_ReturnValue = K2Node_ComponentBoundEvent_OtherActor.GetOwner()
+  [1082] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [1118] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [1147] if !(K2Node_DynamicCast_bSuccess) pop
+  [1157] goto @143
+  [1162] CallFunc_K2_GetComponentLocation_ReturnValue = self.DefaultSceneRoot.K2_GetComponentLocation()
+  [1212] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, explosion_frost_md_p, CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1305] Detonate Audio()
+  [1319] pop
+  [1320] CallFunc_K2_GetComponentToWorld_ReturnValue = self.ice_caltrop_00.K2_GetComponentToWorld()
+  [1370] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1416] CallFunc_SpawnEmitterAtLocation_ReturnValue_2 = SpawnEmitterAtLocation(self, Skraev_wpn_icemine_spawn_p, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1493] CallFunc_K2_GetComponentToWorld_ReturnValue = self.ice_caltrop_00.K2_GetComponentToWorld()
+  [1543] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1589] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Ice_Destroy_Small, CallFunc_BreakTransform_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [1683] pop
+  [1684] return nothing
+  [1686] end
+
+=== ExplosionVFXandSound
+  [0] ExecuteUbergraph_Weapon_Ice_Mines_BP(1162)
+  [15] return nothing
+  [17] end
+
+=== Hide Mine Server
+  [0] self.ice_caltrop_00.SetHiddenInGame(true, false)
+  [34] Default__archon_function_library_C.TryDestroyComponent(self.ice_caltrop_00, self)
+  [80] return nothing
+  [82] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_Weapon_Ice_Mines_BP(356)
+  [15] return nothing
+  [17] end
+
+=== SpawnDeathVFX
+  [0] ExecuteUbergraph_Weapon_Ice_Mines_BP(1320)
+  [15] return nothing
+  [17] end

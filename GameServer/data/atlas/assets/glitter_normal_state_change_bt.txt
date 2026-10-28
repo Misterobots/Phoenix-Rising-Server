@@ -1,0 +1,33 @@
+glitter_normal_state_change_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector
+    1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_enter_arena_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+    [if Blackboard  (ReadyToExitRageState is Is Set)]
+    3) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_glitter_normal_state_aether_exit_mot)
+    [if Blackboard  (ReadyToExitRageState is Is Set)]
+    4) bttask_exit_rage_state  (Montage=AnimMontage b_glitter_normal_state_rage_exit_mot)
+    [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+    5) bttask_exit_aethercharge_state "Exit Aether Charge State"  (Montage=AnimMontage b_glitter_normal_state_aether_exit_mot)
+    [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+    6) Sequence
+      1) bttask_enter_aethercharge_state  (Montage=AnimMontage b_glitter_normal_state_aether_enter_start_mot)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree glit_teleport_bt)
+      3) BehemothAction  (Montage=AnimMontage b_glitter_normal_state_aether_enter_end_mot)
+    [if Blackboard  (ReadyForRageState is Is Set)]
+    7) Sequence "Rage Enter"
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=45)
+      2) bttask_enter_rage_state "Rage Enter - Manta"  (Montage=AnimMontage b_glitter_normal_state_rage_enter_mot)
+    [if archon_distance_check_btdeco  (Origin=bb.SelfPos, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, bShowPropertyDetails=false)]
+    [if current_target_is_valid_btdeco]
+    [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState, FlowAbortMode=LowerPriority)]
+    8) Sequence "Combat Enter"
+      1) try_set_behemoth_state_bttask  (State=Combat)
+      2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=35)
+    [if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+    9) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)

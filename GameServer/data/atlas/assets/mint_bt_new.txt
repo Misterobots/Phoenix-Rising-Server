@@ -1,0 +1,106 @@
+mint_bt_new  blackboard=BlackboardData mint_bb_new
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.IsAirborne, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    [if Blackboard "Has Not Entered Arena"  (HasEnteredArena is Is Not Set)]
+    2) Sequence
+      1) SimpleParallel
+        1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionClassChooser_0)
+        2) Sequence
+          1) Wait  (WaitTime=1)
+          2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindClosestPlayerToPatrolPoint", "QueryConfig": [{"ParamName": "Distance", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+          3) creature_enter_arena_synced_bttask "Trigger Synced Anim Enter Arena"
+          [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+          4) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+      2) set_blackboard_key_bttask "Set Has Entered Arena"  (ResultKey=bb.HasEnteredArena, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if current_target_is_valid_btdeco]
+    [if compare_health_btdeco  (CompareType=<, PercentValue(Decimal)=0.3)]
+    [if Cooldown  (CooldownTime=9999)]
+    3) Sequence
+      {service staggerproof_behemoth_bttask  (Interval=0.2, RandomDeviation=0)}
+      1) PhxPerformGameplayAction "(Phoenix) Perform Move and Do Perch Action"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    7) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    8) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if compare_health_btdeco  (CompareType=<, PercentValue(Decimal)=0.55)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_mint_aether_enter_edge_of_arena", "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TempLocation)
+        2) pivot_towards_target_bttask  (PivotTarget=bb.TempLocation)
+        3) perform_action_montage_bttask  (Montage=AnimMontage b_lq_mint_00_atk_snowplow_reposition_fwd_00_mot)
+        4) pivot_towards_target_bttask  (PivotTarget=bb.CurrentPatrolPoint, MinAngleToTriggerPivot=46)
+        5) bttask_enter_aethercharge_state  (Montage=AnimMontage b_lq_mint_00_state_aetherenter_fwd_00_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_lq_mint_00_state_rageexit_fwd_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      4) Sequence
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25, TimeInFutureToPredict=0.5)
+        2) bttask_enter_rage_state  (Montage=AnimMontage b_aq_mint_00_state_rageenter_fwd_00_mot, WhenInterrupted=CancelStateButStayReadyToTransition)
+    [if ArchonIsMounted]
+    [if btdeco_variablecooldown  (Cooldown_Min=6, Cooldown_Max=8)]
+    9) Sequence
+      1) Wait  (WaitTime=1, RandomDeviation=0.25)
+      2) PerformActionClass  (ActionClass=BlueprintGeneratedClass mint_thrash_atk_C, bShowPropertyDetails=false)
+    10) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    11) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      [if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if Cooldown  (CooldownTime=25)]
+    12) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery mint_combat_reposition_eqs"}, BlackboardKey=bb.TempLocation)
+      [if archon_distance_check_btdeco  (Origin=bb.SelfPos, Target=bb.TempLocation, MaxDistance={"ConstantFloat": 1500.0}, bShowPropertyDetails=false)]
+      2) PhxPerformGameplayAction "(Phoenix) Perform Move and Do Reposition Action"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+    [if current_target_is_valid_btdeco]
+    [if ticket_is_available_btdeco "Is Sync Attack Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttack"])]
+    [if ticket_is_available_btdeco "Is Sync Attack Entrance Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttackEntrance"])]
+    [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 3000.0, "Angle": 45.0, "ArcCenterAngle": -40.0, "CenterOffset": {"X": 0.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+    [if DistanceCheck "Is In Ideal Range?"  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1200, MaxDistance=2500, PredictTargetHorizFuturePosTime=0.5, ObservedKeyNames=["SelfActor", "AttackTarget"])]
+    13) Selector
+      [if behemoth_in_state_btdeco  (State=FinalForm)]
+      [if Cooldown  (CooldownTime=30)]
+      1) Selector
+        1) RunBehavior  (BehaviorAsset=BehaviorTree mint_playertoss_sync_bt)
+      [if Cooldown  (CooldownTime=60)]
+      2) Selector
+        1) RunBehavior  (BehaviorAsset=BehaviorTree mint_playertoss_sync_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    14) Selector
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      1) Selector
+        [if btdeco_variablecooldown  (Cooldown_Min=45, Cooldown_Max=60, StartTime=30)]
+        [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+        [if behemoth_in_state_btdeco  (State=FinalForm, StateRequirement=ExcludedByState)]
+        1) RunBehavior  (BehaviorAsset=BehaviorTree mint_pillar_sync_bt)
+        [if btdeco_variablecooldown  (Cooldown_Min=60, Cooldown_Max=80)]
+        [if behemoth_in_state_btdeco  (State=CustomState)]
+        2) BehemothAction  (Montage=AnimMontage b_lq_mint_00_atk_iciclerain_fwd_00_mot)
+        3) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    15) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    16) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+    [if btdeco_variablecooldown  (Cooldown_Min=45, Cooldown_Max=60, StartTime=30)]
+    17) Sequence
+      1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25)
+      [if ForceSuccess]
+      2) Selector
+        1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_lq_mint_00_pers_00_mot", "Chance": 0.5}, {"Montage": "AnimMontage b_lq_mint_00_pers_01_mot", "Chance": 1.0}])

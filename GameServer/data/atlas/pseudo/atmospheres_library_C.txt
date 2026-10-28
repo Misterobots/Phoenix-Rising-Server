@@ -1,0 +1,144 @@
+# atmospheres_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetAtmosphereSpawner
+  [0] push @731
+  [5] array{}
+  [16] GetAllActorsOfClass(GameMode, AtmosphereSpawner, CallFunc_GetAllActorsOfClass_OutActors)
+  [53] Temp_int_Loop_Counter_Variable = 0
+  [76] Temp_int_Array_Index_Variable = 0
+  [99] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [158] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [196] if !(CallFunc_Less_IntInt_ReturnValue) goto @432
+  [210] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [237] push @637
+  [242] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [301] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp = cast<atmosphere_spawner_bp_C>(CallFunc_Array_Get_Item)
+  [337] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp)
+  [366] if !(K2Node_DynamicCast_bSuccess) pop
+  [376] if !(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp.self.IsAirshipAtmosphere) goto @711
+  [412] ReturnValue_AirshipAtmosphereSpawner = K2Node_DynamicCast_AsAtmosphere_Spawner_Bp
+  [431] pop
+  [432] CallFunc_IsValid_ReturnValue = IsValid(ReturnValue_AtmosphereSpawner)
+  [461] if !(CallFunc_IsValid_ReturnValue) goto @518
+  [475] AtmosphereSpawner = ReturnValue_AtmosphereSpawner
+  [494] AirshipAtmosphereSpawner = ReturnValue_AirshipAtmosphereSpawner
+  [513] goto @731
+  [518] PrintString(null, 'No Valid Atmosphere Spawner Found in this Level', false, true, LinearColor{1.0, 0.0, 0.0, 1.0}, 2.0, 'None')
+  [632] goto @475
+  [637] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [679] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [706] goto @99
+  [711] ReturnValue_AtmosphereSpawner = K2Node_DynamicCast_AsAtmosphere_Spawner_Bp
+  [730] pop
+  [731] return nothing
+  [733] end
+
+=== GetCurrentAtmosphere
+  [0] array{}
+  [11] GetAllActorsOfClass(GameMode, atmospheres_base_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [48] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [107] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [141] if !(CallFunc_NotEqual_IntInt_ReturnValue) goto @234
+  [155] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, 0, CallFunc_Array_Get_Item)
+  [210] CurrentAtmosphere = CallFunc_Array_Get_Item
+  [229] goto @245
+  [234] CurrentAtmosphere = null
+  [245] return nothing
+  [247] end
+
+=== GetCurrentCloudConfiguration
+  [0] CallFunc_IsValid_ReturnValue = IsValid(AtmosphereSpawner)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @254
+  [43] array{}
+  [54] AtmosphereSpawner.GetAllChildActors(CallFunc_GetAllChildActors_ChildActors, true)
+  [96] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllChildActors_ChildActors, 1, CallFunc_Array_Get_Item)
+  [151] K2Node_DynamicCast_AsCloud_Configuration = cast<CloudConfiguration>(CallFunc_Array_Get_Item)
+  [187] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCloud_Configuration)
+  [216] if !(K2Node_DynamicCast_bSuccess) goto @254
+  [230] CurrentCloudConfiguration = K2Node_DynamicCast_AsCloud_Configuration
+  [249] goto @265
+  [254] CurrentCloudConfiguration = null
+  [265] return nothing
+  [267] end
+
+=== GetNextAtmosphereIndex
+  [0] CallFunc_IsValid_ReturnValue = IsValid(AtmosphereSpawner)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @298
+  [43] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CurrentIndex, 1)
+  [85] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [112] CurrentIndex = Temp_int_Variable
+  [139] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(AtmosphereSpawner.self.ValidAtmosphere)
+  [220] CallFunc_Percent_IntInt_ReturnValue = Percent_IntInt(Temp_int_Variable, CallFunc_Array_Length_ReturnValue)
+  [266] NewIndex = CallFunc_Percent_IntInt_ReturnValue
+  [293] goto @321
+  [298] NewIndex = 0
+  [321] return nothing
+  [323] end
+
+=== GetRandomAtmosphereIndex
+  [0] CallFunc_IsValid_ReturnValue = IsValid(AtmosphereSpawner)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @277
+  [43] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(AtmosphereSpawner.self.ValidAtmosphere)
+  [124] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [166] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(CallFunc_Subtract_IntInt_ReturnValue)
+  [203] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, CallFunc_MakeLiteralInt_ReturnValue)
+  [245] NewAtmosphereIndex = CallFunc_RandomIntegerInRange_ReturnValue
+  [272] goto @300
+  [277] NewAtmosphereIndex = 0
+  [300] return nothing
+  [302] end
+
+=== LoadAtmosphereHelper
+  [0] CallFunc_IsValid_ReturnValue = IsValid(AtmosphereSpawner)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @327
+  [43] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(AtmosphereSpawner.self.ValidAtmosphere)
+  [124] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(DesiredAtmosphereIndex, CallFunc_Array_Length_ReturnValue)
+  [162] if !(CallFunc_Less_IntInt_ReturnValue) goto @387
+  [176] Default__KismetArrayLibrary.Array_Get(AtmosphereSpawner.self.ValidAtmosphere, DesiredAtmosphereIndex, CallFunc_Array_Get_Item)
+  [257] ActiveAtmosphereIndex = DesiredAtmosphereIndex
+  [284] SelectedTODClass = CallFunc_Array_Get_Item
+  [311] AtmosphereValid = true
+  [322] goto @474
+  [327] ActiveAtmosphereIndex = 0
+  [350] SelectedTODClass = EX_SoftObjectConst(Value='')
+  [371] AtmosphereValid = false
+  [382] goto @474
+  [387] ActiveAtmosphereIndex = CurrentAtmosphereIndex
+  [414] SelectedTODClass = AtmosphereSpawner.self.CurrentAtmosphere
+  [463] AtmosphereValid = false
+  [474] return nothing
+  [476] end
+
+=== SpawnAtmosphereHelper
+  [0] CallFunc_IsValid_ReturnValue_1 = IsValid(OldCloudConfiguration)
+  [29] if !(CallFunc_IsValid_ReturnValue_1) goto @79
+  [43] OldCloudConfiguration.K2_DestroyActor()
+  [79] CallFunc_IsValid_ReturnValue = IsValid(OldAtmosphere)
+  [108] if !(CallFunc_IsValid_ReturnValue) goto @158
+  [122] OldAtmosphere.K2_DestroyActor()
+  [158] CallFunc_K2_GetRootComponent_ReturnValue_1 = Atmosphere Spawner.K2_GetRootComponent()
+  [200] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_K2_GetRootComponent_ReturnValue_1.K2_GetComponentLocation()
+  [250] CallFunc_K2_SetActorLocation_ReturnValue = NewAtmosphere.K2_SetActorLocation(CallFunc_K2_GetComponentLocation_ReturnValue, false, CallFunc_K2_SetActorLocation_SweepHitResult, false)
+  [312] CallFunc_K2_GetRootComponent_ReturnValue = Atmosphere Spawner.K2_GetRootComponent()
+  [354] NewAtmosphere.K2_AttachToComponent(CallFunc_K2_GetRootComponent_ReturnValue, 'None', 0, 0, 0, true)
+  [415] K2Node_DynamicCast_AsAtmospheres_Base_Bp = cast<atmospheres_base_bp_C>(NewAtmosphere)
+  [451] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAtmospheres_Base_Bp)
+  [480] if !(K2Node_DynamicCast_bSuccess) goto @600
+  [494] SpawnClouds = true
+  [505] CloudConfigurationClass = K2Node_DynamicCast_AsAtmospheres_Base_Bp.self.cloud_configuration
+  [546] CloudConfigurationTransform = K2Node_DynamicCast_AsAtmospheres_Base_Bp.self.cloud_configuration_transform
+  [595] goto @868
+  [600] CallFunc_K2_GetComponentsByClass_ReturnValue = Atmosphere Spawner.K2_GetComponentsByClass(ChildActorComponent)
+  [659] Default__KismetArrayLibrary.Array_Get(CallFunc_K2_GetComponentsByClass_ReturnValue, 1, CallFunc_Array_Get_Item)
+  [714] CallFunc_Array_Get_Item.SetChildActorClass(null)
+  [747] SpawnClouds = false
+  [758] CloudConfigurationClass = null
+  [769] CloudConfigurationTransform = EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})
+  [868] return nothing
+  [870] end
+
+=== SpawnCloudConfigurationHelper
+  [0] CallFunc_K2_GetRootComponent_ReturnValue = AtmosphereSpawner.K2_GetRootComponent()
+  [42] NewCloudConfiguration.K2_AttachToComponent(CallFunc_K2_GetRootComponent_ReturnValue, 'None', 0, 0, 0, true)
+  [103] return nothing
+  [105] end

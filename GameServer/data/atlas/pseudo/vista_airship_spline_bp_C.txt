@@ -1,0 +1,80 @@
+# vista_airship_spline_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_vista_airship_spline_bp
+  [0] goto computed(EntryPoint)
+  [10] goto @749
+  [15] CallFunc_LerpShipToWorldLocationAndRotation_Alpha_ImplicitCast = cast<CST_FloatToDouble>(self.ShipMover_Alpha_128CB47949A14A59BFF86EBFCC57B01C)
+  [44] LerpShipToWorldLocationAndRotation(CallFunc_LerpShipToWorldLocationAndRotation_Alpha_ImplicitCast)
+  [67] goto @749
+  [72] self.ShipMover.Play()
+  [104] goto @749
+  [109] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [130] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsServer_ReturnValue)
+  [159] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, self.ActiveShip)
+  [197] if !(CallFunc_BooleanAND_ReturnValue) goto @749
+  [211] MoveShip()
+  [225] goto @749
+  [230] CallFunc_GetSplineLength_ReturnValue = self.Spline.GetSplineLength()
+  [280] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSplineLength_ReturnValue)
+  [309] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.path_follow_speed, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [355] CallFunc_SetPlayRate_NewRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [384] self.ShipMover.SetPlayRate(CallFunc_SetPlayRate_NewRate_ImplicitCast)
+  [425] CallFunc_SetNewTime_NewTime_ImplicitCast = cast<CST_DoubleToFloat>(self.ShipStartOffset)
+  [454] self.ShipMover.SetNewTime(CallFunc_SetNewTime_NewTime_ImplicitCast)
+  [495] self.ShipMover.SetFloatCurve(self.ShipMoverCurve, 'Alpha')
+  [549] goto @72
+  [554] CallFunc_GetTimelineLength_ReturnValue = self.ShipMover.GetTimelineLength()
+  [604] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTimelineLength_ReturnValue)
+  [633] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(K2Node_CustomEvent_DistanceAlongSpline, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [679] CallFunc_SetNewTime_NewTime_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [708] self.ShipMover.SetNewTime(CallFunc_SetNewTime_NewTime_ImplicitCast_1)
+  [749] return nothing
+  [751] end
+
+=== LerpShipToWorldLocationAndRotation
+  [0] L_Distance = 0.0
+  [23] CallFunc_GetSplineLength_ReturnValue = self.Spline.GetSplineLength()
+  [73] CallFunc_Lerp_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSplineLength_ReturnValue)
+  [102] CallFunc_Lerp_ReturnValue = Lerp(0.0, CallFunc_Lerp_B_ImplicitCast, Alpha)
+  [157] K2Node_VariableSet_L_Distance_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Lerp_ReturnValue)
+  [186] L_Distance = K2Node_VariableSet_L_Distance_ImplicitCast
+  [213] CallFunc_GetLocationAtDistanceAlongSpline_ReturnValue = self.Spline.GetLocationAtDistanceAlongSpline(L_Distance, 1)
+  [274] CallFunc_GetRotationAtDistanceAlongSpline_ReturnValue = self.Spline.GetRotationAtDistanceAlongSpline(L_Distance, 1)
+  [335] self.AirShip.K2_SetWorldLocationAndRotation(CallFunc_GetLocationAtDistanceAlongSpline_ReturnValue, CallFunc_GetRotationAtDistanceAlongSpline_ReturnValue, false, CallFunc_K2_SetWorldLocationAndRotation_SweepHitResult, true)
+  [396] if !(self.SetForcedPerspective) goto @568
+  [410] CallFunc_Lerp_ReturnValue_1 = Lerp(self.ForcedPerspectiveStartScale, self.ForcedPerspectiveEndScale, Alpha)
+  [465] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), CallFunc_Lerp_ReturnValue_1)
+  [527] self.AirShip.SetWorldScale3D(CallFunc_Multiply_VectorFloat_ReturnValue)
+  [568] return nothing
+  [570] end
+
+=== MoveShip
+  [0] ExecuteUbergraph_vista_airship_spline_bp(230)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_vista_airship_spline_bp(109)
+  [15] return nothing
+  [17] end
+
+=== SetAirshipPosition
+  [0] frame.K2Node_CustomEvent_DistanceAlongSpline = DistanceAlongSpline
+  [18] ExecuteUbergraph_vista_airship_spline_bp(554)
+  [33] return nothing
+  [35] end
+
+=== ShipMover__FinishedFunc
+  [0] ExecuteUbergraph_vista_airship_spline_bp(10)
+  [15] return nothing
+  [17] end
+
+=== ShipMover__UpdateFunc
+  [0] ExecuteUbergraph_vista_airship_spline_bp(15)
+  [15] return nothing
+  [17] end
+
+=== UserConstructionScript
+  [0] self.Spline.SetClosedLoop(self.ClosedLoop, true)
+  [42] return nothing
+  [44] end

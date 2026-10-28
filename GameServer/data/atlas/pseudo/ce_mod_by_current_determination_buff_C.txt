@@ -1,0 +1,89 @@
+# ce_mod_by_current_determination_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthPullPercentOfDamage
+  [0] ExecuteUbergraph_ce_mod_by_current_determination_buff(794)
+  [15] return nothing
+  [17] end
+
+=== CreateMeterEffect
+  [0] push @1237
+  [5] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [25] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [61] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [90] if !(K2Node_DynamicCast_bSuccess) goto @929
+  [104] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [150] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwnedWeapon_Weapon)
+  [179] K2Node_DynamicCast_AsArchon_Ability_System_Component = cast<ArchonAbilitySystemComponent>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [215] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_System_Component)
+  [244] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [254] self.WeaponAbilitySystemComp = K2Node_DynamicCast_AsArchon_Ability_System_Component
+  [273] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.MeterGameplayEffect.Effect)
+  [311] if !(CallFunc_IsValidClass_ReturnValue) goto @945
+  [325] Temp_int_Loop_Counter_Variable = 0
+  [348] Temp_int_Array_Index_Variable = 0
+  [371] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.MeterGameplayEffect.Overrides)
+  [439] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [477] if !(CallFunc_Less_IntInt_ReturnValue) goto @961
+  [491] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [518] push @1163
+  [523] GetCellEffectMagnitude(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude)
+  [546] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude, self.CurrentMeter)
+  [592] Default__KismetArrayLibrary.Array_Get(self.MeterGameplayEffect.Overrides, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [660] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.Value)
+  [698] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [744] CallFunc_MakeOutgoingSpec_ReturnValue = self.WeaponAbilitySystemComp.MakeOutgoingSpec(self.MeterGameplayEffect.Effect, 0.0, GameplayEffectContextHandle{})
+  [835] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [864] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, CallFunc_Array_Get_Item.Name, CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [928] pop
+  [929] CallFunc_GetOwnedWeapon_Weapon = null
+  [940] goto @150
+  [945] Result = false
+  [956] goto @1237
+  [961] CallFunc_MakeOutgoingSpec_ReturnValue = self.WeaponAbilitySystemComp.MakeOutgoingSpec(self.MeterGameplayEffect.Effect, 0.0, GameplayEffectContextHandle{})
+  [1052] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = self.WeaponAbilitySystemComp.BP_ApplyGameplayEffectSpecToTarget(CallFunc_MakeOutgoingSpec_ReturnValue, self.WeaponAbilitySystemComp)
+  [1120] self.ActiveMeterGameplayEffect = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [1147] Result = true
+  [1158] goto @1237
+  [1163] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1205] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1232] goto @371
+  [1237] return nothing
+  [1239] end
+
+=== ExecuteUbergraph_ce_mod_by_current_determination_buff
+  [0] push @799
+  [5] goto computed(EntryPoint)
+  [15] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthPullPercentOfDamage)
+  [38] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.1, true, 0.0, 0.0)
+  [91] self.DeterminationPollTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [118] pop
+  [119] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [140] if !(CallFunc_IsServer_ReturnValue) pop
+  [150] push @722
+  [155] push @623
+  [160] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(self.WeaponAbilitySystemComp, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:DeterminationMax'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [282] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(self.WeaponAbilitySystemComp, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:Determination'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [401] Temp_bool_Variable = CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute
+  [420] Temp_real_Variable = 100.0
+  [447] K2Node_Select_Option_1_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [476] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [505] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, switch(Temp_bool_Variable){false: Temp_real_Variable, true: K2Node_Select_Option_1_ImplicitCast, default: K2Node_Select_Default})
+  [595] self.CurrentMeter = CallFunc_Divide_DoubleDouble_ReturnValue
+  [622] pop
+  [623] CallFunc_RemoveActiveGameplayEffect_ReturnValue = self.OwnerAbilitySystemComponent.RemoveActiveGameplayEffect(self.ActiveMeterGameplayEffect, 1)
+  [683] self.ActiveMeterGameplayEffect = ActiveGameplayEffectHandle{-1, false}
+  [721] pop
+  [722] CreateMeterEffect(CallFunc_CreateMeterEffect_Result_1)
+  [745] pop
+  [746] OnAdded()
+  [756] CreateMeterEffect(CallFunc_CreateMeterEffect_Result)
+  [779] if !(CallFunc_CreateMeterEffect_Result) pop
+  [789] goto @15
+  [794] goto @119
+  [799] return nothing
+  [801] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ce_mod_by_current_determination_buff(746)
+  [15] return nothing
+  [17] end

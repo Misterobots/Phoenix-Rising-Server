@@ -1,0 +1,22 @@
+host_radiant_rage_special_bt  blackboard=BlackboardData host_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_host_radiant_player_encased_objects", "QueryConfig": [{"ParamName": "InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1200.0, "BBKey": "bb.None"}, {"ParamName": "OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1200.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+    2) teleport_bttask  (FacingTargetKeyName=AttackTarget, OptionalMontage=AnimMontage b_tp_hst_rad_loco_teleport_fwd_mot, TeleportDelay=1.75, WaitForMontageToFinishToSucceed=true)
+    [if ForceSuccess]
+    [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartNamesToCheck": ["Tail"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+    3) Selector
+      [if btdeco_percentchance  (PercentChance=0.6)]
+      1) Sequence
+        1) perform_action_montage_bttask  (Montage=AnimMontage b_host_radiant_atk_tail_attack_l_mot)
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_host_radiant_atk_tail_attack_r_mot)
+      [if ForceSuccess]
+      2) Sequence
+        1) perform_action_montage_bttask  (Montage=AnimMontage b_host_radiant_atk_tail_attack_r_mot)
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_host_radiant_atk_tail_attack_l_mot)
+    [if ForceSuccess]
+    4) Sequence
+      1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+      [if Blackboard  (TargetActor is Is Set)]
+      2) perform_action_montage_bttask  (Montage=AnimMontage b_host_radiant_atk_aether_special_head_slam_mot)

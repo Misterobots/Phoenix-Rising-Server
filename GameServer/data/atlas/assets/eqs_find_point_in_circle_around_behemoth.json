@@ -1,0 +1,91 @@
+{
+ "name": "eqs_find_point_in_circle_around_behemoth",
+ "package": "Archon/Content/Monsters/_shared/eqs_queries/eqs_find_point_in_circle_around_behemoth",
+ "type": "EnvQuery",
+ "refs": [],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Dot.FloatValueMin"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Dot.FloatValueMax"
+   }
+  },
+  "eqs_find_point_in_circle_around_behemoth": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_random_point_around_behemoth_in_range1",
+    "Options": [
+     "@EnvQueryOption_3"
+    ]
+   }
+  },
+  "EnvQueryGenerator_OnCircle_0": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_3": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_0",
+    "Tests": [
+     "@EnvQueryTest_Distance_0",
+     "@EnvQueryTest_Dot_0"
+    ]
+   }
+  },
+  "EnvQueryTest_Distance_0": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "FloatValueMin": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Dot_0": {
+   "type": "EnvQueryTest_Dot",
+   "props": {
+    "TestMode": "EEnvTestDot::Dot2D",
+    "TestOrder": 1,
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "FloatValueMin": {
+     "DefaultValue": -1.0,
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

@@ -1,0 +1,106 @@
+# fulgar_umbral_gravity_projectile_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== EventExpireVFX
+  [0] ExecuteUbergraph_fulgar_umbral_gravity_projectile(1418)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_fulgar_umbral_gravity_projectile
+  [0] push @1748
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_wep_fulgar_umbral_blast_big_orb_explode, self, 0, Temp_delegate_Variable, false)
+  [90] pop
+  [91] push @524
+  [96] Default__archon_function_library_C.GetHorizPredictedMovement(self, self.PullDuration, self, CallFunc_GetHorizPredictedMovement_FutureLocation)
+  [152] Default__KismetArrayLibrary.Array_Get(CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [211] Default__movement_function_library_C.PullCharacter(CallFunc_GetHorizPredictedMovement_FutureLocation, CallFunc_Array_Get_Item, 1000.0, 200.0, 500.0, 400.0, self.PullDuration, base_jump_warp_buff_C, self.Instigator, self)
+  [329] Default__KismetArrayLibrary.Array_Get(CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [388] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item)
+  [424] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [453] if !(K2Node_DynamicCast_bSuccess) pop
+  [463] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.PotentialTargets, K2Node_DynamicCast_AsArchon_Character)
+  [523] pop
+  [524] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [566] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [593] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets)
+  [652] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [690] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [700] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [727] goto @91
+  [732] Temp_int_Array_Index_Variable = 0
+  [755] goto @593
+  [760] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.TryPullTargets)
+  [783] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 0.3, true, 0.0, 0.0)
+  [836] self.PullTargetsTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [863] array{}
+  [874] array{}
+  [885] GetPlayerStatesAndCharacters(self, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [915] self.PotentialTargets = CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters
+  [942] pop
+  [943] ReceiveBeginPlay()
+  [953] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [974] if !(CallFunc_IsServer_ReturnValue) pop
+  [984] push @994
+  [989] goto @760
+  [994] K2Node_CreateDelegate_OutputDelegate = bind(self.EventExpireVFX)
+  [1017] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, self.ExpireTime, false, 0.0, 0.0)
+  [1074] pop
+  [1075] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PotentialTargets)
+  [1134] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [1168] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1330
+  [1182] CallFunc_GetTransform_ReturnValue = GetTransform()
+  [1210] Default__archon_function_library_C.RunTargettingChecksOnTargetSet(self.TargettingData, self.Instigator, self.PotentialTargets, false, CallFunc_GetTransform_ReturnValue, 0.0, self, CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets)
+  [1302] Temp_int_Loop_Counter_Variable = 0
+  [1325] goto @732
+  [1330] K2_ClearAndInvalidateTimerHandle(self, self.PullTargetsTimer)
+  [1350] pop
+  [1351] ProjectileExploded(K2Node_Event_ExplosionLocation, K2Node_Event_ExplodeType)
+  [1379] if !(self.VFXHaveTriggered) goto @1394
+  [1393] pop
+  [1394] SpawnExplosionVFX(K2Node_Event_ExplosionLocation)
+  [1417] pop
+  [1418] CallFunc_K2_GetComponentLocation_ReturnValue = self.Colliding Body.K2_GetComponentLocation()
+  [1468] SpawnExpiredVFX(CallFunc_K2_GetComponentLocation_ReturnValue)
+  [1491] if !(self.VFXHaveTriggered) goto @1517
+  [1505] self.VFXHaveTriggered = true
+  [1516] pop
+  [1517] self.VFXHaveTriggered = false
+  [1528] pop
+  [1529] self.VFXHaveTriggered = true
+  [1540] pop
+  [1541] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, fulgar_umbral_gravity_aoe_p, K2Node_CustomEvent_Location_1, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1634] goto @1529
+  [1639] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, fulgar_umbral_gravity_aoe_p, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1732] self.VFXHaveTriggered = true
+  [1743] goto @15
+  [1748] return nothing
+  [1750] end
+
+=== ProjectileExploded
+  [0] frame.K2Node_Event_ExplosionLocation = ExplosionLocation
+  [18] frame.K2Node_Event_ExplodeType = ExplodeType
+  [36] ExecuteUbergraph_fulgar_umbral_gravity_projectile(1351)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_fulgar_umbral_gravity_projectile(943)
+  [15] return nothing
+  [17] end
+
+=== SpawnExpiredVFX
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] ExecuteUbergraph_fulgar_umbral_gravity_projectile(1639)
+  [33] return nothing
+  [35] end
+
+=== SpawnExplosionVFX
+  [0] frame.K2Node_CustomEvent_Location_1 = Location
+  [18] ExecuteUbergraph_fulgar_umbral_gravity_projectile(1541)
+  [33] return nothing
+  [35] end
+
+=== TryPullTargets
+  [0] ExecuteUbergraph_fulgar_umbral_gravity_projectile(1075)
+  [15] return nothing
+  [17] end

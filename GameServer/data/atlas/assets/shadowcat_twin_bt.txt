@@ -1,0 +1,42 @@
+shadowcat_twin_bt  blackboard=BlackboardData shadowcat_twin_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.TargetActor, Target_key=bb.TargetActor)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true, Interval=0.25)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+    [if current_target_is_valid_btdeco]
+    2) Sequence
+      1) set_blackboard_key_bttask "Set NextTelegraphTime"  (ResultKey=bb.NextTelegraphTime, DataType=Float, SourceData={"ConstantFloat": 1.0}, bShowPropertyDetails=false)
+      2) store_current_location_bttask
+      3) Selector
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_portal_pounce_setup", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 1250.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+        2) set_blackboard_key_bttask "PounceLocation = Temp Position (Fallback)"  (ResultKey=bb.PounceLocation, DataType=Vector, SourceData={"BlackboardKeyName": "TempLocation"}, bShowPropertyDetails=false)
+      4) call_specific_behemoth_function_bttask "Spawn Pounce Portal"  (SpecificFunction=SpawnPouncePortal, bShowPropertyDetails=false)
+      5) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=AttackTarget, BlendOutTime=0)
+      6) BehemothAction  (Montage=AnimMontage shadowcat_uninterruptable_portal_pounce)
+        {service hide_behemoth_bttask  (HideOnStart=false, ShowOnDeactivate=false, DisableCollisionDuringHide=false, ShowOnStart=true)}
+      7) try_set_behemoth_state_bttask  (State=Combat)
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    [if behemoth_in_state_btdeco "In Combat"  (State=Combat)]
+    3) Sequence
+      1) set_blackboard_key_bttask "CurrentAction = ChosenAttack"  (ResultKey=bb.CurrentAction, DataType=Object, SourceData={"BlackboardKeyName": "ChosenAttack"}, bShowPropertyDetails=false)
+      2) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    [if Blackboard  (TopScore Is Equal To 0.000000)]
+    [if set_behemoth_loco_mode_btdeco "Set Loco Mode Walk"  (LocoType=Run)]
+    4) Selector
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      [if target_is_accessible_btdeco  (SelectedTargetBlackboardName=AttackTarget, FlowAbortMode=Self)]
+      1) MoveTo  (AcceptableRadius=450, bReachTestIncludesAgentRadius=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      [if Cooldown  (CooldownTime=10)]
+      2) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=90)
+        2) generic_action_bttask  (ActionType=BackUp)
+    5) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior "Prowl"  (BehaviorAsset=BehaviorTree lerawr_prowl_alert_bt)
+      2) RunBehavior "Patrol"  (BehaviorAsset=BehaviorTree shared_patrol_bt)

@@ -1,0 +1,391 @@
+{
+ "name": "wolf_frost_state_change_bt",
+ "package": "Archon/Content/Monsters/aq/wolf_frost/ai/wolf_frost_state_change_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_leRawr_state_aether_exit_mot",
+  "b_wolf_frost_state_aether_enter_mot",
+  "b_wolf_frost_state_rage_enter_mot",
+  "lerawr_bb",
+  "shared_manage_target_lost_bt",
+  "wolf_frost_chillinghowl_atk_C"
+ ],
+ "exports": {
+  "archon_distance_check_btdeco_C_1": {
+   "type": "archon_distance_check_btdeco_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.AttackTarget",
+    "PredictTargetHorizFuturePosTime": 1.0,
+    "MaxDistance": {
+     "BlackboardKeyName": "EnterCombatRange"
+    },
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "wolf_frost_state_change_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_50",
+    "BlackboardAsset": "BlackboardData lerawr_bb"
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "FlowAbortMode": "EBTFlowAbortMode::LowerPriority",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "behemoth_in_state_btdeco_C_14": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "behemoth_in_state_btdeco_C_15": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "behemoth_in_state_btdeco_C_3": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "behemoth_in_state_btdeco_C_4": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTComposite_Selector_50": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_change_state_bttask_C_0",
+      "Decorators": [
+       "@BTDecorator_Blackboard_99"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_exit_aethercharge_state_C_3",
+      "Decorators": [
+       "@BTDecorator_Blackboard_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_enter_aethercharge_state_C_3",
+      "Decorators": [
+       "@BTDecorator_Blackboard_17"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_10"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [
+       "@archon_distance_check_btdeco_C_1",
+       "@current_target_is_valid_btdeco_C_2",
+       "@set_behemoth_loco_mode_btdeco_C_1",
+       "@behemoth_in_state_btdeco_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_34",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_49",
+      "ChildTask": null,
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_14",
+       "@behemoth_in_state_btdeco_C_15",
+       "@current_target_is_valid_btdeco_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_3",
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_3",
+       "@behemoth_in_state_btdeco_C_4",
+       "@current_target_is_valid_btdeco_C_4"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "StateChange",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_enter_rage_state_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@modify_attack_cooldown_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Rage Enter",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Combat Enter",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTComposite_Sequence_49": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Alerted",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToExitAetherCharge is Is Set",
+    "BlackboardKey": "bb.ReadyToExitAetherCharge",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_10": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyForRageState is Is Set",
+    "BlackboardKey": "bb.ReadyForRageState",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_17": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToEnterAetherCharge is Is Set",
+    "BlackboardKey": "bb.ReadyToEnterAetherCharge",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_99": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyForOverload is Is Set",
+    "BlackboardKey": "bb.ReadyForOverload",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "bttask_enter_aethercharge_state_C_3": {
+   "type": "bttask_enter_aethercharge_state_C",
+   "props": {
+    "Montage": "AnimMontage b_wolf_frost_state_aether_enter_mot",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "bttask_enter_rage_state_C_0": {
+   "type": "bttask_enter_rage_state_C",
+   "props": {
+    "Montage": "AnimMontage b_wolf_frost_state_rage_enter_mot",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "bttask_exit_aethercharge_state_C_3": {
+   "type": "bttask_exit_aethercharge_state_C",
+   "props": {
+    "Montage": "AnimMontage b_leRawr_state_aether_exit_mot",
+    "NodeName": "Exit Aether Charge State",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTTask_RunBehavior_34": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_manage_target_lost_bt",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "current_target_is_valid_btdeco_C_1": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "current_target_is_valid_btdeco_C_2": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "current_target_is_valid_btdeco_C_4": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "modify_attack_cooldown_bttask_C_0": {
+   "type": "modify_attack_cooldown_bttask_C",
+   "props": {
+    "ActionClass": "BlueprintGeneratedClass wolf_frost_chillinghowl_atk_C",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 45.0,
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_3": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_1": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Run",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "try_change_state_bttask_C_0": {
+   "type": "try_change_state_bttask_C",
+   "props": {
+    "StateChanges": [
+     {
+      "State": "behemoth_states_enum::Overloaded",
+      "StateChange": "behemoth_state_event::Begin"
+     }
+    ],
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_1": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_2": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Sequence_49"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_3": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "TreeAsset": "BehaviorTree wolf_frost_state_change_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  }
+ }
+}

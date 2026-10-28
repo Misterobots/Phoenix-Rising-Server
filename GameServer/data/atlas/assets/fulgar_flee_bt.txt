@@ -1,0 +1,24 @@
+fulgar_flee_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "Flee"
+    1) Sequence
+      [if set_state_btdeco  (State=ActivelyFleeing)]
+      1) Sequence
+        {service show_moveto_bts  (Target=["bb.MoveDestination"])}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_prep_bt)
+        2) call_specific_behemoth_function_bttask  (SpecificFunction=AuthUpdateFleePos, bShowPropertyDetails=false)
+        3) Selector
+          [if should_despawn_on_flee_btdeco]
+          1) Sequence
+            1) perform_action_montage_bttask  (Montage=AnimMontage fulgar_flee_despawn_mot)
+          2) Sequence
+            1) pivot_towards_target_bttask  (PivotTarget=bb.NextPatrolPoint)
+            2) teleport_bttask  (DestinationKeyName=NextPatrolPoint, OptionalMontage=AnimMontage fulgar_flee_mot, TeleportDelay=1.5)
+      [if set_state_btdeco  (State=behemoth_states_enum::Successfully Fled)]
+      2) Sequence
+        1) Selector
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_despawn_bt)
+          2) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, bUseBBKey=true, EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"}, BlackboardKey=bb.MoveDestination)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree sub_flee_arrive)
+    2) ResetFleeTimer "BTTask_ResetFleeTimer"

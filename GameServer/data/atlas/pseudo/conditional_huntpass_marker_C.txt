@@ -1,0 +1,157 @@
+# conditional_huntpass_marker_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Evaluate Marker Conditions
+  [0] frame.K2Node_Event_Player = Player
+  [18] ExecuteUbergraph_conditional_huntpass_marker(35)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_conditional_huntpass_marker
+  [0] push @1949
+  [5] goto computed(EntryPoint)
+  [15] OnConditionEvaluated__DelegateSignature()
+  [34] pop
+  [35] CallFunc_IsValid_ReturnValue = IsValid(K2Node_Event_Player)
+  [64] if !(CallFunc_IsValid_ReturnValue) pop
+  [74] CallFunc_IsFeatureEnabledWorldContext_ReturnValue = IsFeatureEnabledWorldContext(K2Node_Event_Player, ProgressionNetworkOptimizationsFeature, true)
+  [113] if !(CallFunc_IsFeatureEnabledWorldContext_ReturnValue) goto @519
+  [127] CallFunc_IsValid_ReturnValue_1 = IsValid(K2Node_Event_Player.self.HuntPassComponent)
+  [178] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [188] K2Node_CreateDelegate_OutputDelegate = bind(self.OnSelectedHuntPassDataChanged)
+  [211] K2Node_CreateDelegate_OutputDelegate += None
+  [274] CallFunc_IsComponentReady_ReturnValue = K2Node_Event_Player.self.HuntPassComponent.IsComponentReady()
+  [338] if !(CallFunc_IsComponentReady_ReturnValue) pop
+  [348] CallFunc_DoesSelectedHuntPassHaveUnclaimedRewards_ReturnValue = K2Node_Event_Player.self.HuntPassComponent.DoesSelectedHuntPassHaveUnclaimedRewards()
+  [412] self.bHasUnclaimedRewards = CallFunc_DoesSelectedHuntPassHaveUnclaimedRewards_ReturnValue
+  [431] CallFunc_IsSelectedPassActive_ReturnValue = K2Node_Event_Player.self.HuntPassComponent.IsSelectedPassActive()
+  [495] self.bHasHuntpass = CallFunc_IsSelectedPassActive_ReturnValue
+  [514] goto @15
+  [519] CallFunc_GetGameInstanceFrom_ReturnValue = GetGameInstanceFrom(K2Node_Event_Player)
+  [548] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstanceFrom_ReturnValue)
+  [584] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [613] if !(K2Node_DynamicCast_bSuccess) pop
+  [623] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(K2Node_Event_Player, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [683] self.bHasHuntpass = CallFunc_GetCurrentHuntPassSeasonData_ReturnValue
+  [702] if !(self.bHasHuntpass) pop
+  [712] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(K2Node_Event_Player, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [772] self.TrackId = CallFunc_GetCurrentHuntPassSeasonData_HuntPassData.ProgressionTrack
+  [808] push @1244
+  [813] push @1031
+  [818] CallFunc_GetProgressionComponent_ReturnValue = K2Node_Event_Player.GetProgressionComponent()
+  [860] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.On Progress Updated)
+  [883] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [924] CallFunc_GetProgressionComponent_ReturnValue = K2Node_Event_Player.GetProgressionComponent()
+  [966] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.On Progress Track Updated)
+  [989] K2Node_CreateDelegate_OutputDelegate_4 += None
+  [1030] pop
+  [1031] CallFunc_GetProgressionComponent_ReturnValue = K2Node_Event_Player.GetProgressionComponent()
+  [1073] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.On New Hunt Pass Started)
+  [1096] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [1137] CallFunc_GetProgressionComponent_ReturnValue = K2Node_Event_Player.GetProgressionComponent()
+  [1179] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.On Hunt Pass Ended)
+  [1202] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1243] pop
+  [1244] CallFunc_GetProgressionComponent_ReturnValue = K2Node_Event_Player.GetProgressionComponent()
+  [1286] CallFunc_HasRewardsToClaim_ReturnValue = CallFunc_GetProgressionComponent_ReturnValue.HasRewardsToClaim(self.TrackId)
+  [1337] self.bHasUnclaimedRewards = CallFunc_HasRewardsToClaim_ReturnValue
+  [1356] pop
+  [1357] CallFunc_HasUnclaimedRewards_ReturnValue = HasUnclaimedRewards(K2Node_CustomEvent_ProgressTracks)
+  [1390] self.bHasUnclaimedRewards = CallFunc_HasUnclaimedRewards_ReturnValue
+  [1409] OnConditionEvaluated__DelegateSignature()
+  [1428] pop
+  [1429] if !(K2Node_CustomEvent_Success) pop
+  [1439] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(K2Node_CustomEvent_Progress_2.TrackId, self.TrackId)
+  [1486] if !(CallFunc_EqualEqual_StriStri_ReturnValue) pop
+  [1496] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_CustomEvent_Progress_2.UnclaimedRewards)
+  [1564] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [1598] self.bHasUnclaimedRewards = CallFunc_Greater_IntInt_ReturnValue
+  [1617] OnConditionEvaluated__DelegateSignature()
+  [1636] pop
+  [1637] self.TrackId = K2Node_CustomEvent_Progress_1.TrackId
+  [1673] self.bHasHuntpass = true
+  [1684] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_CustomEvent_Progress_1.UnclaimedRewards)
+  [1752] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [1786] self.bHasUnclaimedRewards = CallFunc_Greater_IntInt_ReturnValue_1
+  [1805] OnConditionEvaluated__DelegateSignature()
+  [1824] pop
+  [1825] CallFunc_EqualEqual_StriStri_ReturnValue_1 = EqualEqual_StriStri(self.TrackId, K2Node_CustomEvent_Progress.TrackId)
+  [1872] if !(CallFunc_EqualEqual_StriStri_ReturnValue_1) pop
+  [1882] self.TrackId = ''
+  [1902] self.bHasHuntpass = false
+  [1913] self.bHasUnclaimedRewards = false
+  [1924] OnConditionEvaluated__DelegateSignature()
+  [1943] pop
+  [1944] goto @348
+  [1949] return nothing
+  [1951] end
+
+=== GetConditionalMarker
+  [0] if !(self.bHasHuntpass) goto @52
+  [14] if !(self.bHasUnclaimedRewards) goto @68
+  [28] Marker = huntpass_claim_items_marker_C
+  [47] goto @87
+  [52] Marker = null
+  [63] goto @87
+  [68] Marker = huntpass_marker_C
+  [87] return nothing
+  [89] end
+
+=== HasHighPriority
+  [0] ReturnValue = self.bHasUnclaimedRewards
+  [19] return ReturnValue
+  [29] end
+
+=== HasUnclaimedRewards
+  [0] push @585
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Array)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @495
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @511
+  [194] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(self.TrackId, CallFunc_Array_Get_Item.TrackId)
+  [300] if !(CallFunc_EqualEqual_StriStri_ReturnValue) pop
+  [310] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [369] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.UnclaimedRewards)
+  [437] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [471] ReturnValue = CallFunc_Greater_IntInt_ReturnValue
+  [490] goto @585
+  [495] ReturnValue = false
+  [506] goto @585
+  [511] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [553] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [580] goto @51
+  [585] return ReturnValue
+  [595] end
+
+=== On Hunt Pass Ended
+  [0] frame.K2Node_CustomEvent_Progress = Progress
+  [18] ExecuteUbergraph_conditional_huntpass_marker(1825)
+  [33] return nothing
+  [35] end
+
+=== On New Hunt Pass Started
+  [0] frame.K2Node_CustomEvent_Progress_1 = Progress
+  [18] ExecuteUbergraph_conditional_huntpass_marker(1637)
+  [33] return nothing
+  [35] end
+
+=== On Progress Track Updated
+  [0] frame.K2Node_CustomEvent_Success = Success
+  [18] frame.K2Node_CustomEvent_Progress_2 = Progress
+  [36] ExecuteUbergraph_conditional_huntpass_marker(1429)
+  [51] return nothing
+  [53] end
+
+=== On Progress Updated
+  [0] frame.K2Node_CustomEvent_ProgressTracks = ProgressTracks
+  [18] ExecuteUbergraph_conditional_huntpass_marker(1357)
+  [33] return nothing
+  [35] end
+
+=== OnSelectedHuntPassDataChanged
+  [0] ExecuteUbergraph_conditional_huntpass_marker(1944)
+  [15] return nothing
+  [17] end

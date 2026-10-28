@@ -1,0 +1,12 @@
+wolf_frost_rollout_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 4000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+    [if compare_targets_and_sides  (Radius=3000)]
+    2) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass wolf_frost_rollout_l_atk_C", "BlueprintGeneratedClass wolf_frost_rollout_r_atk_C"], ChosenActionKey=bb.ChosenAttack)
+    3) Selector
+      [if compare_targets_and_sides  (Radius=3000, CompareType=MoreOnLeft)]
+      1) BehemothAction "Rollout Left"  (Montage=AnimMontage b_wolf_frost_rollout_l_atk_mot, ActionClassToCooldown=BlueprintGeneratedClass wolf_frost_rollout_l_atk_C, bShowPropertyDetails=false)
+      [if compare_targets_and_sides  (Radius=3000, CompareType=MoreOnRight)]
+      2) BehemothAction "Rollout Right"  (Montage=AnimMontage b_wolf_frost_rollout_r_atk_mot, ActionClassToCooldown=BlueprintGeneratedClass wolf_frost_rollout_r_atk_C, bShowPropertyDetails=false)

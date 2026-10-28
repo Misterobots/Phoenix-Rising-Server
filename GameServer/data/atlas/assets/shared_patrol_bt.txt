@@ -1,0 +1,16 @@
+shared_patrol_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState, FlowAbortMode=Self)]
+  [root if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+  [root if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+  [root if is_island_gamemode_btdeco  (IslandGameMode=Trials, bInverseCondition=true)]
+  Sequence "No Enemy - Patrol"
+    1) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+    [if TimeLimit  (TimeLimit=10)]
+    2) Sequence
+      1) MoveTo  (bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+      2) Wait  (WaitTime=0.5)
+    3) generic_action_bttask  (ActionType=LookAround)
+    4) Wait  (WaitTime=1)

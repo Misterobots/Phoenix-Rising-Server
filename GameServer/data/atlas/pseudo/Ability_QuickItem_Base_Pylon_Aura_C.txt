@@ -1,0 +1,297 @@
+# Ability_QuickItem_Base_Pylon_Aura_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyGE
+  [0] push @643
+  [5] GetMagnitude(CallFunc_GetMagnitude_Magnitude)
+  [28] CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue = MakeOutgoingGameplayEffectSpec(self.GameplayEffect, 1.0)
+  [70] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetMagnitude_Magnitude)
+  [99] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue, self.EffectDataName, CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [154] CallFunc_AbilityTargetDataFromActor_ReturnValue = AbilityTargetDataFromActor(Target)
+  [191] CallFunc_K2_ApplyGameplayEffectSpecToTarget_ReturnValue = K2_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_AbilityTargetDataFromActor_ReturnValue)
+  [237] Temp_int_Loop_Counter_Variable = 0
+  [260] Temp_int_Array_Index_Variable = 0
+  [283] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_K2_ApplyGameplayEffectSpecToTarget_ReturnValue)
+  [342] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [380] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [390] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [417] push @569
+  [422] Default__KismetArrayLibrary.Array_Get(CallFunc_K2_ApplyGameplayEffectSpecToTarget_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [481] Default__BlueprintMapLibrary.Map_Add(self.CharsAndEffects, Target, CallFunc_Array_Get_Item)
+  [540] DecalBrighten(Target, 0)
+  [568] pop
+  [569] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [611] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [638] goto @283
+  [643] return nothing
+  [645] end
+
+=== ApplyNewBuffSystemBuff
+  [0] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [28] CallFunc_TryAddBuffWithDuration_ReturnValue = Target.self.ArchonBuffableComponent.TryAddBuffWithDuration(self.PylonBuffStackClass, 0.5, CallFunc_TryAddBuffWithDuration_BuffAdded, Temp_struct_Variable, CallFunc_GetActorInfo_ReturnValue.OwnerActor, false)
+  [147] K2Node_DynamicCast_AsHeld_Stacks_With_Duration_Buff = cast<held_stacks_with_duration_buff_C>(CallFunc_TryAddBuffWithDuration_ReturnValue)
+  [183] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsHeld_Stacks_With_Duration_Buff)
+  [212] if !(K2Node_DynamicCast_bSuccess) goto @388
+  [226] K2Node_DynamicCast_AsHeld_Stacks_With_Duration_Buff.self.HeldStackAmount = StackChange
+  [275] K2Node_DynamicCast_AsHeld_Stacks_With_Duration_Buff.self.MaxHeldStackAmount = StackChange
+  [324] K2Node_DynamicCast_AsHeld_Stacks_With_Duration_Buff.StartBuff()
+  [360] DecalBrighten(Target, 0)
+  [388] return nothing
+  [390] end
+
+=== AuraTick
+  [0] return nothing
+  [2] end
+
+=== BonusEffect
+  [0] return nothing
+  [2] end
+
+=== ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura
+  [0] push @6496
+  [5] goto computed(EntryPoint)
+  [15] array{null}
+  [27] self.PlayersIn = K2Node_MakeArray_Array_1
+  [54] Temp_int_Loop_Counter_Variable_2 = 0
+  [77] Temp_int_Array_Index_Variable = 0
+  [100] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ActivePylons)
+  [159] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_1)
+  [197] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1368
+  [211] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_2
+  [238] push @2557
+  [243] Default__KismetArrayLibrary.Array_Get(self.ActivePylons, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [302] AuraTick(CallFunc_Array_Get_Item)
+  [325] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [353] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetActorInfo_ReturnValue.OwnerActor, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:ConsumablePylonRangeMultiplier'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [498] Default__KismetArrayLibrary.Array_Get(self.ActivePylons, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [557] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetActorLocation()
+  [607] array{6}
+  [620] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [649] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.EffectRadius)
+  [695] CallFunc_SphereOverlapActors_SphereRadius_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [724] array{}
+  [735] CallFunc_SphereOverlapActors_ReturnValue = SphereOverlapActors(self, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_SphereOverlapActors_SphereRadius_ImplicitCast, K2Node_MakeArray_Array, ArchonCharacter, Temp_object_Variable, CallFunc_SphereOverlapActors_OutActors)
+  [810] Temp_int_Loop_Counter_Variable_5 = 0
+  [833] Temp_int_Array_Index_Variable_5 = 0
+  [856] CallFunc_Array_Length_ReturnValue_7 = Default__KismetArrayLibrary.Array_Length(CallFunc_SphereOverlapActors_OutActors)
+  [915] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_5, CallFunc_Array_Length_ReturnValue_7)
+  [953] if !(CallFunc_Less_IntInt_ReturnValue_4) goto @2631
+  [967] Temp_int_Array_Index_Variable_5 = Temp_int_Loop_Counter_Variable_5
+  [994] push @3116
+  [999] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_5)
+  [1058] DecalBrighten(CallFunc_Array_Get_Item_5, Temp_int_Array_Index_Variable)
+  [1090] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_5)
+  [1149] CallFunc_Array_AddUnique_ReturnValue = Default__KismetArrayLibrary.Array_AddUnique(self.PlayersIn, CallFunc_Array_Get_Item_5)
+  [1217] Default__KismetArrayLibrary.Array_Get(self.ActivePylons, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1276] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_5)
+  [1335] BonusEffect(CallFunc_Array_Get_Item_5, CallFunc_Array_Get_Item)
+  [1367] pop
+  [1368] CallFunc_EqualEqual_ClassClass_ReturnValue = EqualEqual_ClassClass(self.PylonClass, healing_pylon_big_01_bp_C)
+  [1406] CallFunc_EqualEqual_ClassClass_ReturnValue_1 = EqualEqual_ClassClass(self.PylonClass, frostbite_pylon_01_bp_C)
+  [1444] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ClassClass_ReturnValue, CallFunc_EqualEqual_ClassClass_ReturnValue_1)
+  [1482] if !(CallFunc_BooleanOR_ReturnValue) goto @2013
+  [1496] Temp_int_Loop_Counter_Variable = 0
+  [1519] Temp_int_Array_Index_Variable_1 = 0
+  [1542] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.AllPlayers)
+  [1601] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_3)
+  [1639] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @3190
+  [1653] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [1680] push @4122
+  [1685] array{}
+  [1696] Default__BlueprintMapLibrary.Map_Keys(self.CharsAndEffects, CallFunc_Map_Keys_Keys_1)
+  [1746] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [1805] CallFunc_Array_Contains_ReturnValue_1 = Default__KismetArrayLibrary.Array_Contains(CallFunc_Map_Keys_Keys_1, CallFunc_Array_Get_Item_2)
+  [1865] if !(CallFunc_Array_Contains_ReturnValue_1) goto @4196
+  [1879] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [1938] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(self.PlayersIn, CallFunc_Array_Get_Item_2)
+  [1998] if !(CallFunc_Array_Contains_ReturnValue) goto @4408
+  [2012] pop
+  [2013] Temp_int_Loop_Counter_Variable_3 = 0
+  [2036] Temp_int_Array_Index_Variable_2 = 0
+  [2059] CallFunc_Array_Length_ReturnValue_8 = Default__KismetArrayLibrary.Array_Length(self.AllPlayers)
+  [2118] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_8)
+  [2156] if !(CallFunc_Less_IntInt_ReturnValue_5) goto @3190
+  [2170] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_3
+  [2197] push @2483
+  [2202] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_6)
+  [2261] CallFunc_Array_Contains_ReturnValue_3 = Default__KismetArrayLibrary.Array_Contains(self.PlayersIn, CallFunc_Array_Get_Item_6)
+  [2321] if !(CallFunc_Array_Contains_ReturnValue_3) pop
+  [2331] GetMagnitude(CallFunc_GetMagnitude_Magnitude)
+  [2354] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_GetMagnitude_Magnitude)
+  [2391] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_6)
+  [2450] ApplyNewBuffSystemBuff(CallFunc_Array_Get_Item_6, CallFunc_FTrunc_ReturnValue)
+  [2482] pop
+  [2483] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [2525] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_2
+  [2552] goto @2059
+  [2557] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [2599] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_3
+  [2626] goto @100
+  [2631] Temp_int_Loop_Counter_Variable_4 = 0
+  [2654] Temp_int_Array_Index_Variable_3 = 0
+  [2677] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.AllPlayers)
+  [2736] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue_2)
+  [2774] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [2784] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_4
+  [2811] push @3042
+  [2816] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [2875] CallFunc_Array_Contains_ReturnValue_2 = Default__KismetArrayLibrary.Array_Contains(CallFunc_SphereOverlapActors_OutActors, CallFunc_Array_Get_Item_1)
+  [2935] if !(CallFunc_Array_Contains_ReturnValue_2) goto @2950
+  [2949] pop
+  [2950] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [3009] DecalDim(CallFunc_Array_Get_Item_1, Temp_int_Array_Index_Variable)
+  [3041] pop
+  [3042] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [3084] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_4
+  [3111] goto @2677
+  [3116] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_5, 1)
+  [3158] Temp_int_Loop_Counter_Variable_5 = CallFunc_Add_IntInt_ReturnValue_5
+  [3185] goto @856
+  [3190] if !(self.Debug) pop
+  [3200] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(self.ActiveDecals)
+  [3259] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(CallFunc_Array_Length_ReturnValue_5)
+  [3296] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Num Decals:', CallFunc_Conv_IntToString_ReturnValue)
+  [3346] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [3420] CallFunc_Array_Length_ReturnValue_6 = Default__KismetArrayLibrary.Array_Length(self.ActivePylons)
+  [3479] CallFunc_Conv_IntToString_ReturnValue_1 = Conv_IntToString(CallFunc_Array_Length_ReturnValue_6)
+  [3516] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Num Pylons:', CallFunc_Conv_IntToString_ReturnValue_1)
+  [3566] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [3640] Default__buff_function_library_C.GetBuffCurrentStacks(self.BuffType, null, self, CallFunc_GetBuffCurrentStacks_CurrentStacks)
+  [3696] Default__buff_function_library_C.GetBuffCurrentMaxStacks(self.BuffType, null, self, CallFunc_GetBuffCurrentMaxStacks_CurrentMaxStacks)
+  [3752] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(stat_buff_type, self.BuffType)
+  [3798] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_GetEnumeratorUserFriendlyName_ReturnValue, ': ')
+  [3839] CallFunc_Conv_IntToString_ReturnValue_2 = Conv_IntToString(CallFunc_GetBuffCurrentMaxStacks_CurrentMaxStacks)
+  [3876] CallFunc_Conv_IntToString_ReturnValue_3 = Conv_IntToString(CallFunc_GetBuffCurrentStacks_CurrentStacks)
+  [3913] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, CallFunc_Conv_IntToString_ReturnValue_3)
+  [3959] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ' / ')
+  [4001] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_IntToString_ReturnValue_2)
+  [4047] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{0.999881, 1.0, 0.972005, 1.0}, 3.0, 'None')
+  [4121] pop
+  [4122] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [4164] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [4191] goto @1542
+  [4196] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [4255] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(self.PlayersIn, CallFunc_Array_Get_Item_2)
+  [4315] if !(CallFunc_Array_Contains_ReturnValue) pop
+  [4325] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [4384] ApplyGE(CallFunc_Array_Get_Item_2)
+  [4407] pop
+  [4408] Default__KismetArrayLibrary.Array_Get(self.AllPlayers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_2)
+  [4467] RemoveGE(CallFunc_Array_Get_Item_2)
+  [4490] pop
+  [4491] Temp_bool_Variable = false
+  [4502] if !(Temp_bool_Variable) goto @4554
+  [4516] self.ShouldDrawDecal = false
+  [4527] self.EffectRadius = 99999.0
+  [4554] PylonActivate(K2Node_Event_PylonLocation, K2Node_Event_PylonReference)
+  [4582] Default__archon_function_library_C.GetPlayerCharacters(true, true, self, CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [4630] self.AllPlayers = CallFunc_GetPlayerCharacters_PlayerCharacters
+  [4657] CallFunc_GetActorInfo_ReturnValue_1 = GetActorInfo()
+  [4685] CallFunc_GetFloatAttribute_ReturnValue_1 = GetFloatAttribute(CallFunc_GetActorInfo_ReturnValue_1.OwnerActor, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:ConsumablePylonEffectivenessMultiplier'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute_1)
+  [4838] K2Node_VariableSet_SavedEffectiveness_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue_1)
+  [4867] self.SavedEffectiveness = K2Node_VariableSet_SavedEffectiveness_ImplicitCast
+  [4894] pop
+  [4895] CallFunc_GetActorInfo_ReturnValue_2 = GetActorInfo()
+  [4923] K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface = cast<GameplayTagAssetInterface>(CallFunc_GetActorInfo_ReturnValue_2.OwnerActor)
+  [4968] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface)
+  [4997] if !(K2Node_DynamicCast_bSuccess) goto @4491
+  [5011] CallFunc_HasMatchingGameplayTag_ReturnValue = K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface.HasMatchingGameplayTag(GameplayTag{'SetBonuses.PylonInfiniteRange'})
+  [5085] Temp_bool_Variable = CallFunc_HasMatchingGameplayTag_ReturnValue
+  [5104] goto @4502
+  [5109] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [5151] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [5178] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [5237] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [5275] if !(CallFunc_Less_IntInt_ReturnValue) goto @5532
+  [5289] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_1
+  [5316] push @5109
+  [5321] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_3)
+  [5380] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.CharsAndEffects, CallFunc_Array_Get_Item_3, CallFunc_Map_Find_Value)
+  [5449] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_Array_Get_Item_3.self.AbilitySystemComponent.RemoveActiveGameplayEffect(CallFunc_Map_Find_Value, -1)
+  [5531] pop
+  [5532] Default__BlueprintMapLibrary.Map_Clear(self.CharsAndEffects)
+  [5573] pop
+  [5574] Temp_int_Loop_Counter_Variable_1 = 0
+  [5597] Temp_int_Array_Index_Variable_4 = 0
+  [5620] goto @5178
+  [5625] if !(self.ThrottleAuraApplication) goto @15
+  [5639] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(self.TickRate)
+  [5668] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=15), 488252498, 'ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura', self})
+  [5726] pop
+  [5727] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(self.ActivePylons, K2Node_Event_PylonReference_1)
+  [5795] Default__KismetArrayLibrary.Array_Remove(self.ActiveDecals, CallFunc_Array_Find_ReturnValue)
+  [5845] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(self.ActivePylons, K2Node_Event_PylonReference_1)
+  [5913] RemoveDecal(CallFunc_Array_Find_ReturnValue)
+  [5936] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(self.ActivePylons, K2Node_Event_PylonReference_1)
+  [6004] Default__KismetArrayLibrary.Array_Remove(self.ActivePylons, CallFunc_Array_Find_ReturnValue)
+  [6054] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(self.ActivePylons)
+  [6113] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_Array_Length_ReturnValue_4, 0)
+  [6147] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [6157] array{}
+  [6168] Default__BlueprintMapLibrary.Map_Keys(self.CharsAndEffects, CallFunc_Map_Keys_Keys)
+  [6218] goto @5574
+  [6223] goto @4895
+  [6228] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.ActiveDecals, K2Node_CustomEvent_Index)
+  [6288] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.ShouldDrawDecal, CallFunc_Array_IsValidIndex_ReturnValue)
+  [6326] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [6336] Default__KismetArrayLibrary.Array_Get(self.ActiveDecals, K2Node_CustomEvent_Index, CallFunc_Array_Get_Item_4)
+  [6395] CallFunc_Array_Get_Item_4.SetScalarParameterValue('OpacityMult', 0.0)
+  [6445] Default__KismetArrayLibrary.Array_Remove(self.ActiveDecals, K2Node_CustomEvent_Index)
+  [6495] pop
+  [6496] return nothing
+  [6498] end
+
+=== GetMagnitude
+  [0] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.Magnitude, self.SavedEffectiveness)
+  [46] Magnitude = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [73] return nothing
+  [75] end
+
+=== GetNewBuffStackChange
+  [0] Magnitude = 0.0
+  [27] return nothing
+  [29] end
+
+=== PylonActivate
+  [0] frame.K2Node_Event_PylonLocation = PylonLocation
+  [18] frame.K2Node_Event_PylonReference = PylonReference
+  [36] ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura(6223)
+  [51] return nothing
+  [53] end
+
+=== PylonDeactivate
+  [0] frame.K2Node_Event_PylonReference_1 = PylonReference
+  [18] ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura(5727)
+  [33] return nothing
+  [35] end
+
+=== PylonTick
+  [0] frame.K2Node_Event_PylonLocation_1 = PylonLocation
+  [18] ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura(5625)
+  [33] return nothing
+  [35] end
+
+=== RemoveDecal
+  [0] frame.K2Node_CustomEvent_Index = Index
+  [18] ExecuteUbergraph_Ability_QuickItem_Base_Pylon_Aura(6228)
+  [33] return nothing
+  [35] end
+
+=== RemoveGE
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.CharsAndEffects, Target, CallFunc_Map_Find_Value)
+  [69] CallFunc_RemoveActiveGameplayEffect_ReturnValue = Target.self.AbilitySystemComponent.RemoveActiveGameplayEffect(CallFunc_Map_Find_Value, -1)
+  [151] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.CharsAndEffects, Target)
+  [211] DecalDim(Target, 0)
+  [239] return nothing
+  [241] end
+
+=== RemoveNewBuffSystemBuff
+  [0] CallFunc_GetPlayerName_ReturnValue = Target.self.PlayerState.GetPlayerName()
+  [72] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Removing from: ', CallFunc_GetPlayerName_ReturnValue)
+  [126] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ', buff class: ')
+  [179] CallFunc_GetClassDisplayName_ReturnValue = GetClassDisplayName(self.PylonBuffStackClass)
+  [216] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_GetClassDisplayName_ReturnValue)
+  [262] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [336] Target.self.ArchonBuffableComponent.RemoveBuffByClass(self.PylonBuffStackClass)
+  [403] DecalDim(Target, 0)
+  [431] return nothing
+  [433] end

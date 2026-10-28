@@ -1,0 +1,379 @@
+{
+ "name": "ga_determination_meter_base_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DegenPaused",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothTarget",
+   "type": "ObjectProperty<ArchonBehemoth>",
+   "bp_type": "ObjectProperty<ArchonBehemoth>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debug",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Tick Frequency",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "DebugPrint",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "String",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [
+    "Debug"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DegenMeter",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ga_determination_meter_base_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedBehemoths_Behemoths",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 99,
+   "reads": [
+    "AuthOnPostStateChanged",
+    "AuthOnStateChanged",
+    "DegenPaused",
+    "DeterminationEffectHandle",
+    "MaxDuration",
+    "OnPostMitigationDealtAnyDamage",
+    "Tick Frequency"
+   ],
+   "sets": [
+    "DegenPaused",
+    "DeterminationEffectHandle"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "ActorIsAlive",
+    "ApplySpecWithMagnitude",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.PauseExpireTimer",
+    "ArchonBuff.UnpauseExpireTimer",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "DebugPrint",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GetSpawnedBehemoths",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "NegateFloatPure",
+    "RemoveActiveGameplayEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_gamestate_bpc_C",
+    "BlueprintGeneratedClass ga_current_determination_meter_set_ge_C",
+    "BlueprintGeneratedClass ga_max_determination_meter_set_ge_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothStateChange",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "State",
+     "type": "ByteProperty<behemoth_states_enum>"
+    },
+    {
+     "name": "What Happened",
+     "type": "ByteProperty<behemoth_state_event>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnModeChange",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewState",
+     "type": "EnumProperty<EEscalationGameModeState>"
+    },
+    {
+     "name": "StateTransitionType",
+     "type": "EnumProperty<EStateTransitionType>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRefreshed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_meter_base_buff_C.ExecuteUbergraph_ga_determination_meter_base_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/game/abilities/weapons/AxeSpecials/ga_determination_meter_base_buff",
+ "pseudo_file": "pseudo/ga_determination_meter_base_buff_C.txt",
+ "game_data": {}
+}

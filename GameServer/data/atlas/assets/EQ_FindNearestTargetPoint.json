@@ -1,0 +1,64 @@
+{
+ "name": "EQ_FindNearestTargetPoint",
+ "package": "Archon/Content/Character/Monsters/BehemothBaseBPs/EQ_FindNearestTargetPoint",
+ "type": "EnvQuery",
+ "refs": [
+  "TargetPoint"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_3": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MinRange"
+   }
+  },
+  "EQ_FindNearestTargetPoint": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "EQ_FindNearestTargetPoint",
+    "Options": [
+     "@EnvQueryOption_21"
+    ]
+   }
+  },
+  "EnvQueryGenerator_ActorsOfClass_21": {
+   "type": "EnvQueryGenerator_ActorsOfClass",
+   "props": {
+    "SearchedActorClass": "Class TargetPoint",
+    "SearchRadius": {
+     "DefaultValue": 50000.0,
+     "DataField": "FloatValue"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_21": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_ActorsOfClass_21",
+    "Tests": [
+     "@EnvQueryTest_Pathfinding_17"
+    ]
+   }
+  },
+  "EnvQueryTest_Pathfinding_17": {
+   "type": "EnvQueryTest_Pathfinding",
+   "props": {
+    "TestMode": "EEnvTestPathfinding::PathLength",
+    "FilterType": "EEnvTestFilterType::Maximum",
+    "FloatValueMin": {
+     "DefaultValue": 5000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_3",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 50000.0,
+     "DataField": "FloatValue"
+    },
+    "ScoringEquation": "EEnvTestScoreEquation::Linear",
+    "bWorkOnFloatValues": true,
+    "VerNum": 2
+   }
+  }
+ }
+}

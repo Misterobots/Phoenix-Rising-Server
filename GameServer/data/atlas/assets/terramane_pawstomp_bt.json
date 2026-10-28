@@ -1,0 +1,180 @@
+{
+ "name": "terramane_pawstomp_bt",
+ "package": "Archon/Content/Monsters/aq/terramane/ai/terramane_pawstomp_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot",
+  "b_aq_terramane_atk_pawstomp_fwd_mot",
+  "eqs_get_some_space_reposition",
+  "lerawr_bb"
+ ],
+ "exports": {
+  "terramane_pawstomp_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_1",
+    "BlackboardAsset": "BlackboardData lerawr_bb"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_SimpleParallel_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt"
+   }
+  },
+  "BTComposite_SimpleParallel_0": {
+   "type": "BTComposite_SimpleParallel",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@wait_for_distance_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_0": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.PounceLocation",
+    "MinDistance": 800.0,
+    "MaxDistance": 99999.0,
+    "ObservedKeyNames": [
+     "SelfActor",
+     "PounceLocation"
+    ],
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_terramane_atk_pawstomp_fwd_mot",
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_BehemothAction_C_1": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot",
+    "NodeName": "run to landturn",
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 500.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_0"
+   }
+  },
+  "BTTask_RunEQSQuery_5": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_get_some_space_reposition",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 2000.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 3000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "LandAndTurn",
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "wait_for_distance_bttask_C_0": {
+   "type": "wait_for_distance_bttask_C",
+   "props": {
+    "TargetKey": "bb.PounceLocation",
+    "MinDistanceData": {
+     "ConstantFloat": 1500.0
+    },
+    "MaxDistanceData": {
+     "ConstantFloat": 6000.0
+    },
+    "BlackboardKeyNameToCheck": "CanTransitToNextAnim",
+    "RequiredBlackboardKeyType": "blackboard_comparable_key_type::Bool",
+    "BlackboardCompareData": {
+     "ConstantBool": true
+    },
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree terramane_pawstomp_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_0"
+   }
+  }
+ }
+}

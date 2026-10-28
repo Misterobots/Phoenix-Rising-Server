@@ -1,0 +1,772 @@
+# dp_exotic_bombs_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyBombModeLockoutEffect
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @256
+  [76] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.BombModeLockoutHandle)
+  [105] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @124
+  [119] goto @256
+  [124] CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [152] CallFunc_ApplyGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffect(self.ArchonCharacter, dp_y_ability_lockout_ge_C, CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput)
+  [229] self.BombModeLockoutHandle = CallFunc_ApplyGameplayEffect_ReturnValue
+  [256] return nothing
+  [258] end
+
+=== AuthSetBombMode
+  [0] push @1859
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] CallFunc_NotEqual_BoolBool_ReturnValue = NotEqual_BoolBool(NewState, self.InBombState)
+  [115] if !(CallFunc_NotEqual_BoolBool_ReturnValue) pop
+  [125] self.InBombState = NewState
+  [144] MarkPropertyDirtyFromRepIndex(self, 4, 'InBombState')
+  [173] OnRep_InBombState()
+  [187] OnBombStateChanged()
+  [201] if !(self.InBombState) goto @1133
+  [215] self.OriginalMaxAmmoCount = self.AmmoComponent.self.MaxAmmoCount
+  [264] self.AmmoComponent.AuthSetAmmoType(1)
+  [302] CallFunc_HasMatchingGameplayTag_ReturnValue_2 = self.ArchonCharacter.self.AbilitySystemComponent.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp02'})
+  [398] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_2) goto @458
+  [412] self.MaxBombModeAmmo = 12
+  [435] self.BombAmmoToLoad = 12
+  [458] self.AmmoComponent.SetNewMaxAmmo(self.MaxBombModeAmmo)
+  [503] self.AmmoComponent.SetAmmo(self.BombAmmoToLoad)
+  [544] K2Node_DynamicCast_AsDp_Weapon_Bpi_3 = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [580] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi_3)
+  [609] if !(K2Node_DynamicCast_bSuccess_3) goto @669
+  [623] K2Node_DynamicCast_AsDp_Weapon_Bpi_3.UpdateRateOfFire(0.2)
+  [669] CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [697] CallFunc_ApplyGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffect(self.ArchonCharacter, exotic_bombs_in_bomb_mode_ge_C, CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput)
+  [774] self.BombModeSpec = CallFunc_ApplyGameplayEffect_ReturnValue
+  [801] Default__BlueprintSetLibrary.Set_Clear(self.AlreadyHitActors)
+  [842] K2Node_DynamicCast_AsDp_Weapon_Bpi_1 = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [878] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi_1)
+  [907] if !(K2Node_DynamicCast_bSuccess_1) goto @967
+  [921] K2Node_DynamicCast_AsDp_Weapon_Bpi_1.OverrideEmpoweredBuff(dp_exotic_bombs_empowered_state_infinite_buff_C)
+  [967] push @1698
+  [972] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = self.ArchonCharacter.self.AbilitySystemComponent.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp03'})
+  [1068] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_1) pop
+  [1078] Default__buff_function_library_C.AdjustBuffTempStacks(self.ArchonCharacter, 1, 2, false, self)
+  [1132] pop
+  [1133] self.AmmoComponent.AuthSetAmmoType(0)
+  [1171] self.AmmoComponent.SetNewMaxAmmo(self.OriginalMaxAmmoCount)
+  [1216] self.AmmoComponent.SetAmmo(self.OriginalMaxAmmoCount)
+  [1257] K2Node_DynamicCast_AsDp_Weapon_Bpi_2 = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [1293] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi_2)
+  [1322] if !(K2Node_DynamicCast_bSuccess_2) goto @1382
+  [1336] K2Node_DynamicCast_AsDp_Weapon_Bpi_2.UpdateRateOfFire(2.0)
+  [1382] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [1411] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.BombModeSpec, -1)
+  [1471] self.BombModeSpec = ActiveGameplayEffectHandle{-1, false}
+  [1509] self.ArchonCharacter.self.ArchonBuffableComponent.RemoveBuffByClass(dp_exotic_bombs_empowered_state_infinite_buff_C)
+  [1576] K2Node_DynamicCast_AsDp_Weapon_Bpi = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [1612] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi)
+  [1641] if !(K2Node_DynamicCast_bSuccess) pop
+  [1651] K2Node_DynamicCast_AsDp_Weapon_Bpi.OverrideEmpoweredBuff(dp_exotic_bombs_empowered_state_buff_C)
+  [1697] pop
+  [1698] CallFunc_HasMatchingGameplayTag_ReturnValue = self.ArchonCharacter.self.AbilitySystemComponent.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp05'})
+  [1794] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) pop
+  [1804] Default__buff_function_library_C.AdjustBuffTempStacks(self.ArchonCharacter, 2, 3, false, self)
+  [1858] pop
+  [1859] return nothing
+  [1861] end
+
+=== BombMuzzleVFX
+  [0] frame.K2Node_CustomEvent_dp_weapon_hand = dp_weapon_hand
+  [18] ExecuteUbergraph_dp_exotic_bombs_bpc(11578)
+  [33] return nothing
+  [35] end
+
+=== CanResetBombTimer
+  [0] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.IsDetonating)
+  [29] CanResetBombTimer = CallFunc_Not_PreBool_ReturnValue
+  [48] return nothing
+  [50] end
+
+=== ClientCDReductionFX
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(4001)
+  [15] return nothing
+  [17] end
+
+=== DetonateOneBomb
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(8746)
+  [15] return nothing
+  [17] end
+
+=== DetonationStartFX
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(4875)
+  [15] return nothing
+  [17] end
+
+=== DoPDodgeShot
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(11402)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_dp_exotic_bombs_bpc
+  [0] push @12034
+  [5] goto computed(EntryPoint)
+  [15] AuthSetBombMode(false)
+  [30] pop
+  [31] MarkPropertyDirtyFromRepIndex(self, 6, 'IsDetonating')
+  [60] PrintString(self, 'Detonating starting', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [146] K2_ClearAndInvalidateTimerHandle(self, self.GlobalBombTimer)
+  [166] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.L_PreDetonateTime, 0.0)
+  [204] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @374
+  [218] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.StartDetonation)
+  [241] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 0.1, false, 0.0, 0.0)
+  [294] MulticastDetonationStart()
+  [308] CallFunc_RemoveGameplayEffect_ReturnValue_1 = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(self.ArchonCharacter, self.BombTimerIconEffectHandle, -1)
+  [373] pop
+  [374] StartDetonation()
+  [388] goto @294
+  [393] MarkPropertyDirtyFromRepIndex(self, 6, 'IsDetonating')
+  [422] pop
+  [423] MarkPropertyDirtyFromRepIndex(self, 6, 'IsDetonating')
+  [452] Temp_int_Loop_Counter_Variable = 0
+  [475] Temp_int_Array_Index_Variable_1 = 0
+  [498] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.StickyBombRefs)
+  [557] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [595] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @995
+  [609] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [636] push @1037
+  [641] Default__KismetArrayLibrary.Array_Get(self.StickyBombRefs, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [700] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_Array_Get_Item_3)
+  [729] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [739] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.GlobalBombTimer)
+  [777] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [806] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, 1.0)
+  [852] Default__KismetArrayLibrary.Array_Get(self.StickyBombRefs, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [911] CallFunc_AuthDetonateSoon_MinTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [940] CallFunc_Array_Get_Item_3.AuthDetonateSoon(CallFunc_AuthDetonateSoon_MinTime_ImplicitCast, CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [994] pop
+  [995] Default__KismetArrayLibrary.Array_Clear(self.StickyBombRefs)
+  [1036] pop
+  [1037] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1079] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1106] goto @498
+  [1111] MarkPropertyDirtyFromRepIndex(self, 4, 'InBombState')
+  [1140] OnRep_InBombState()
+  [1154] OnBombStateChanged()
+  [1168] pop
+  [1169] Temp_int_Variable = Temp_int_Array_Index_Variable
+  [1196] pop
+  [1197] Temp_int_Array_Index_Variable = 0
+  [1220] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_SphereOverlapActors_OutActors)
+  [1279] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1317] if !(CallFunc_Less_IntInt_ReturnValue) goto @2099
+  [1331] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1358] push @2025
+  [1363] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1422] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_Array_Get_Item_1)
+  [1451] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1461] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1520] CallFunc_K2_GetActorLocation_ReturnValue_3 = CallFunc_Array_Get_Item_1.K2_GetActorLocation()
+  [1570] CallFunc_K2_GetActorLocation_ReturnValue_4 = self.ArchonCharacter.K2_GetActorLocation()
+  [1620] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_K2_GetActorLocation_ReturnValue_4)
+  [1666] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [1703] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSizeSquared_ReturnValue, Temp_real_Variable)
+  [1741] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [1751] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1810] CallFunc_K2_GetActorLocation_ReturnValue_3 = CallFunc_Array_Get_Item_1.K2_GetActorLocation()
+  [1860] CallFunc_K2_GetActorLocation_ReturnValue_4 = self.ArchonCharacter.K2_GetActorLocation()
+  [1910] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_K2_GetActorLocation_ReturnValue_4)
+  [1956] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [1993] Temp_real_Variable = CallFunc_VSizeSquared_ReturnValue
+  [2020] goto @1169
+  [2025] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2067] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2094] goto @1220
+  [2099] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Variable, CallFunc_Array_Get_Item_2)
+  [2158] CallFunc_K2_GetActorLocation_ReturnValue_2 = CallFunc_Array_Get_Item_2.K2_GetActorLocation()
+  [2208] self.L_Target = CallFunc_K2_GetActorLocation_ReturnValue_2
+  [2235] if !(self.InBombState) goto @2477
+  [2249] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [2299] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [2361] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(self.L_Target, CallFunc_Add_VectorVector_ReturnValue)
+  [2407] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_Subtract_VectorVector_ReturnValue)
+  [2444] ServerShootBomb(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotFromX_ReturnValue)
+  [2476] pop
+  [2477] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [2527] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [2589] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(self.L_Target, CallFunc_Add_VectorVector_ReturnValue)
+  [2635] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_Subtract_VectorVector_ReturnValue)
+  [2672] CallFunc_MakeTransform_ReturnValue_1 = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotFromX_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2743] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1 = BeginDeferredActorSpawnFromClass(self, temp_exotic_bombs_pdodge_proj_C, CallFunc_MakeTransform_ReturnValue_1, 1, self.ArchonCharacter)
+  [2793] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, 'OwningPawn', self.ArchonCharacter)
+  [2834] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, 'Instigator', self.ArchonCharacter)
+  [2875] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [2925] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [2987] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(self.L_Target, CallFunc_Add_VectorVector_ReturnValue)
+  [3033] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_Subtract_VectorVector_ReturnValue)
+  [3070] CallFunc_MakeTransform_ReturnValue_1 = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotFromX_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [3141] CallFunc_FinishSpawningActor_ReturnValue_1 = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, CallFunc_MakeTransform_ReturnValue_1)
+  [3179] pop
+  [3180] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3200] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [3242] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [3252] K2Node_DynamicCast_AsDp_Weapon_Bpi = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [3288] K2Node_DynamicCast_bSuccess_6 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi)
+  [3317] if !(K2Node_DynamicCast_bSuccess_6) goto @3377
+  [3331] K2Node_DynamicCast_AsDp_Weapon_Bpi.OverrideEmpoweredBuff(dp_exotic_bombs_empowered_state_buff_C)
+  [3377] ApplyBombModeLockoutEffect()
+  [3391] pop
+  [3392] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3412] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [3454] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [3464] AuthSetBombMode(false)
+  [3479] RemoveBombModeLockoutEffect(false)
+  [3494] CallFunc_IsValid_ReturnValue_3 = IsValid(self.ArchonWeapon)
+  [3523] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [3533] K2Node_DynamicCast_AsDp_Weapon_Bpi_1 = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [3569] K2Node_DynamicCast_bSuccess_14 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi_1)
+  [3598] if !(K2Node_DynamicCast_bSuccess_14) pop
+  [3608] K2Node_DynamicCast_AsDp_Weapon_Bpi_1.ClearEmpoweredBuffOverride()
+  [3645] pop
+  [3646] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [3666] CallFunc_HasAuthority_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [3708] if !(CallFunc_HasAuthority_ReturnValue_2) pop
+  [3718] CallFunc_IsValid_ReturnValue_4 = IsValid(self.ArchonCharacter)
+  [3747] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [3757] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(self.ArchonCharacter, self.BombTimerIconEffectHandle, -1)
+  [3822] pop
+  [3823] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [3843] CallFunc_HasAuthority_ReturnValue_3 = CallFunc_GetOwner_ReturnValue_3.HasAuthority()
+  [3885] if !(CallFunc_HasAuthority_ReturnValue_3) pop
+  [3895] self.IsDetonating = false
+  [3906] goto @423
+  [3911] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [3932] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @3947
+  [3946] pop
+  [3947] if !(self.InBombState) pop
+  [3957] self.InBombState = false
+  [3968] goto @1111
+  [3973] Temp_int_Loop_Counter_Variable_1 = 0
+  [3996] goto @1197
+  [4001] pop
+  [4002] DetonationStartFX()
+  [4016] pop
+  [4017] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [4037] CallFunc_HasAuthority_ReturnValue_4 = CallFunc_GetOwner_ReturnValue_4.HasAuthority()
+  [4079] if !(CallFunc_HasAuthority_ReturnValue_4) pop
+  [4089] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [4139] Default__targeting_function_library_C.FindClosestBehemothToLocation(CallFunc_K2_GetActorLocation_ReturnValue, 2200.0, false, self, CallFunc_FindClosestBehemothToLocation_ClosestBehe)
+  [4204] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_FindClosestBehemothToLocation_ClosestBehe)
+  [4233] if !(CallFunc_IsValid_ReturnValue_1) goto @4329
+  [4247] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_FindClosestBehemothToLocation_ClosestBehe.K2_GetActorLocation()
+  [4297] self.L_Target = CallFunc_K2_GetActorLocation_ReturnValue_1
+  [4324] goto @2235
+  [4329] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [4379] array{8}
+  [4392] array{}
+  [4403] array{}
+  [4414] CallFunc_SphereOverlapActors_ReturnValue = SphereOverlapActors(self, CallFunc_K2_GetActorLocation_ReturnValue, 2200.0, K2Node_MakeArray_Array, null, K2Node_MakeArray_Array_1, CallFunc_SphereOverlapActors_OutActors)
+  [4477] if !(CallFunc_SphereOverlapActors_ReturnValue) goto @4523
+  [4491] Temp_real_Variable = 9999999827968.0
+  [4518] goto @3973
+  [4523] CallFunc_K2_GetActorLocation_ReturnValue = self.ArchonCharacter.K2_GetActorLocation()
+  [4573] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [4635] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 360.0)
+  [4681] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [4710] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(EX_VectorConst(Value={'X': 1000.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [4797] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, CallFunc_Add_VectorVector_ReturnValue)
+  [4843] self.L_Target = CallFunc_Add_VectorVector_ReturnValue_1
+  [4870] goto @2235
+  [4875] pop
+  [4876] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [4896] CallFunc_HasAuthority_ReturnValue_5 = CallFunc_GetOwner_ReturnValue_5.HasAuthority()
+  [4938] if !(CallFunc_HasAuthority_ReturnValue_5) pop
+  [4948] ManuallyDetonate()
+  [4962] AuthSetBombMode(false)
+  [4977] K2Node_DynamicCast_AsWeapon_Bpi_3 = cast<weapon_bpi_C>(self.ArchonWeapon)
+  [5013] K2Node_DynamicCast_bSuccess_11 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi_3)
+  [5042] if !(K2Node_DynamicCast_bSuccess_11) goto @5093
+  [5056] K2Node_DynamicCast_AsWeapon_Bpi_3.Reload()
+  [5093] K2Node_DynamicCast_AsDp_Weapon_Bp_3 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [5129] K2Node_DynamicCast_bSuccess_12 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_3)
+  [5158] if !(K2Node_DynamicCast_bSuccess_12) pop
+  [5168] K2Node_DynamicCast_AsDp_Weapon_Bp_3.AddReloadBuff()
+  [5204] pop
+  [5205] CallFunc_GetOwner_ReturnValue_11 = GetOwner()
+  [5225] CallFunc_HasAuthority_ReturnValue_8 = CallFunc_GetOwner_ReturnValue_11.HasAuthority()
+  [5267] if !(CallFunc_HasAuthority_ReturnValue_8) pop
+  [5277] CallFunc_MakeTransform_ReturnValue = MakeTransform(K2Node_CustomEvent_Location, K2Node_CustomEvent_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [5348] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, dp_exotic_bombs_stickybomb_bp_C, CallFunc_MakeTransform_ReturnValue, 0, self.ArchonCharacter)
+  [5398] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OwningPawn', self.ArchonCharacter)
+  [5439] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.ArchonCharacter)
+  [5480] CallFunc_MakeTransform_ReturnValue = MakeTransform(K2Node_CustomEvent_Location, K2Node_CustomEvent_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [5551] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [5589] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.StickyBombRefs, CallFunc_FinishSpawningActor_ReturnValue)
+  [5657] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnProjectileDestroyed)
+  [5680] K2Node_CreateDelegate_OutputDelegate_4 += None
+  [5721] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnProjectileAttached)
+  [5744] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [5785] pop
+  [5786] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [5806] CallFunc_HasAuthority_ReturnValue_6 = CallFunc_GetOwner_ReturnValue_6.HasAuthority()
+  [5848] if !(CallFunc_HasAuthority_ReturnValue_6) pop
+  [5858] K2Node_CreateDelegate_OutputDelegate_8 = bind(self.On Perfect X1 Dodge)
+  [5881] K2Node_CreateDelegate_OutputDelegate_8 += None
+  [5922] K2Node_CreateDelegate_OutputDelegate_9 = bind(self.OnPostMitigationHitWithWeapon_Event_0)
+  [5945] CallFunc_GetComponentByClass_ReturnValue_3 = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [5996] K2Node_CreateDelegate_OutputDelegate_9 += None
+  [6037] pop
+  [6038] self.L_DetonatingBomb.AuthDetonateStickyBomb()
+  [6074] self.L_DetonatingBomb = null
+  [6085] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(self.ConsecutiveBombCount, 1)
+  [6127] Temp_int_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [6154] self.ConsecutiveBombCount = Temp_int_Variable_2
+  [6181] pop
+  [6182] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_CustomEvent_OverrideAttackTag, 'Combat.Special.ExoticBombRepeaters.BombModeShot')
+  [6260] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @6275
+  [6274] pop
+  [6275] BreakRotator(K2Node_CustomEvent_Aim, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [6321] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [6350] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 10.0)
+  [6396] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [6425] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_BreakRotator_Yaw)
+  [6480] ServerShootBomb(K2Node_CustomEvent_SourceLocation, CallFunc_MakeRotator_ReturnValue)
+  [6512] self.AmmoComponent.AdjustAmmo(-1)
+  [6549] BombMuzzleVFX(K2Node_CustomEvent_GunHand_IfApplicable_)
+  [6572] pop
+  [6573] OnWeaponPartEquipped()
+  [6583] push @3180
+  [6588] push @5786
+  [6593] CallFunc_GetComponentByClass_ReturnValue = self.ArchonWeapon.GetComponentByClass(weapon_eventdispatcher_bpc_C)
+  [6644] K2Node_CreateDelegate_OutputDelegate_7 = bind(self.OnShootAttackOverridden)
+  [6667] K2Node_CreateDelegate_OutputDelegate_7 += None
+  [6708] CallFunc_GetComponentByClass_ReturnValue_2 = self.ArchonWeapon.GetComponentByClass(ammo_bpc_C)
+  [6759] self.AmmoComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [6778] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(generic_eventdispatcher_bpc_C)
+  [6829] self.WeaponGenericEventDispatcher = CallFunc_GetComponentByClass_ReturnValue_1
+  [6848] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.OnGenericEvent)
+  [6871] K2Node_CreateDelegate_OutputDelegate_5 += None
+  [6912] K2Node_CreateDelegate_OutputDelegate_6 = bind(self.GenericConditionCheck_Event_0)
+  [6935] K2Node_CreateDelegate_OutputDelegate_6 += None
+  [6976] pop
+  [6977] K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp = cast<dp_exotic_bombs_stickybomb_bp_C>(K2Node_CustomEvent_DestroyedActor)
+  [7013] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp)
+  [7042] if !(K2Node_DynamicCast_bSuccess) pop
+  [7052] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.StickyBombRefs, K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp)
+  [7112] pop
+  [7113] CallFunc_GetOwner_ReturnValue_10 = GetOwner()
+  [7133] CallFunc_HasAuthority_ReturnValue_7 = CallFunc_GetOwner_ReturnValue_10.HasAuthority()
+  [7175] if !(CallFunc_HasAuthority_ReturnValue_7) pop
+  [7185] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(K2Node_CustomEvent_AttachTarget)
+  [7221] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [7250] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [7260] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.GlobalBombTimer)
+  [7290] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @7725
+  [7304] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(K2Node_CustomEvent_AttachTarget)
+  [7340] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [7369] if !(K2Node_DynamicCast_bSuccess_2) goto @7709
+  [7383] K2Node_DynamicCast_AsBehemoth_Interface.GetMonsterpartByBoneName(K2Node_CustomEvent_BoneName, CallFunc_GetMonsterpartByBoneName_MonsterPart)
+  [7438] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetMonsterpartByBoneName_MonsterPart)
+  [7467] if !(CallFunc_IsValid_ReturnValue) goto @7932
+  [7481] CallFunc_Set_Contains_ReturnValue = Default__BlueprintSetLibrary.Set_Contains(self.AlreadyHitActors, CallFunc_GetMonsterpartByBoneName_MonsterPart.self.MonsterPartActor)
+  [7563] if !(CallFunc_Set_Contains_ReturnValue) goto @7948
+  [7577] self.L_HitUniqueTarget = false
+  [7588] K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp_1 = cast<dp_exotic_bombs_stickybomb_bp_C>(K2Node_CustomEvent_BombActor)
+  [7624] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp_1)
+  [7653] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [7663] K2Node_DynamicCast_AsDp_Exotic_Bombs_Stickybomb_Bp_1.AuthAttachResult(self.L_HitUniqueTarget)
+  [7708] pop
+  [7709] CallFunc_GetMonsterpartByBoneName_MonsterPart = null
+  [7720] goto @7438
+  [7725] ResetBombTimer(12.0, CallFunc_ResetBombTimer_Timer)
+  [7757] CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_ResetBombTimer_Timer)
+  [7786] CallFunc_ApplyGameplayEffectWithDuration_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [7814] CallFunc_ApplyGameplayEffectWithDuration_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDuration(self.ArchonCharacter, exotic_bombs_timer_ico_ge_C, CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast, CallFunc_ApplyGameplayEffectWithDuration_LifetimeOwner_CastInput)
+  [7900] self.BombTimerIconEffectHandle = CallFunc_ApplyGameplayEffectWithDuration_ReturnValue
+  [7927] goto @7304
+  [7932] self.L_HitUniqueTarget = true
+  [7943] goto @7588
+  [7948] Default__BlueprintSetLibrary.Set_Add(self.AlreadyHitActors, CallFunc_GetMonsterpartByBoneName_MonsterPart.self.MonsterPartActor)
+  [8020] goto @7932
+  [8025] self.L_PreDetonateTime = 0.10000000149011612
+  [8052] CallFunc_GetOwner_ReturnValue_7 = GetOwner()
+  [8072] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(CallFunc_GetOwner_ReturnValue_7)
+  [8108] K2Node_DynamicCast_bSuccess_8 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [8137] if !(K2Node_DynamicCast_bSuccess_8) goto @8190
+  [8151] K2Node_DynamicCast_AsWeapon_Bpi.StartReloadWindow(true, false)
+  [8190] AuthSetBombMode(false)
+  [8205] CallFunc_GetOwner_ReturnValue_9 = GetOwner()
+  [8225] K2Node_DynamicCast_AsWeapon_Bpi_2 = cast<weapon_bpi_C>(CallFunc_GetOwner_ReturnValue_9)
+  [8261] K2Node_DynamicCast_bSuccess_10 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi_2)
+  [8290] if !(K2Node_DynamicCast_bSuccess_10) goto @8341
+  [8304] K2Node_DynamicCast_AsWeapon_Bpi_2.Reload()
+  [8341] K2Node_DynamicCast_AsDp_Weapon_Bp_4 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [8377] K2Node_DynamicCast_bSuccess_13 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_4)
+  [8406] if !(K2Node_DynamicCast_bSuccess_13) pop
+  [8416] K2Node_DynamicCast_AsDp_Weapon_Bp_4.AddReloadBuff()
+  [8452] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [8472] K2Node_DynamicCast_AsWeapon_Bpi_1 = cast<weapon_bpi_C>(CallFunc_GetOwner_ReturnValue_8)
+  [8508] K2Node_DynamicCast_bSuccess_9 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi_1)
+  [8537] if !(K2Node_DynamicCast_bSuccess_9) goto @8588
+  [8551] K2Node_DynamicCast_AsWeapon_Bpi_1.EndReloadWindow()
+  [8588] if !(self.IsDetonating) goto @8603
+  [8602] pop
+  [8603] self.IsDetonating = true
+  [8614] goto @31
+  [8619] K2Node_CreateDelegate_OutputDelegate = bind(self.DetonateOneBomb)
+  [8642] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.1, true, 0.0, 0.0)
+  [8695] self.DetonateIndividualBombsTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [8722] self.ConsecutiveBombCount = 0
+  [8745] pop
+  [8746] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StickyBombRefs)
+  [8805] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [8839] if !(CallFunc_Greater_IntInt_ReturnValue) goto @8978
+  [8853] Default__KismetArrayLibrary.Array_Get(self.StickyBombRefs, 0, CallFunc_Array_Get_Item)
+  [8908] self.L_DetonatingBomb = CallFunc_Array_Get_Item
+  [8927] Default__KismetArrayLibrary.Array_Remove(self.StickyBombRefs, 0)
+  [8973] goto @6038
+  [8978] K2_ClearAndInvalidateTimerHandle(self, self.DetonateIndividualBombsTimer)
+  [8998] self.IsDetonating = false
+  [9009] goto @393
+  [9014] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [9050] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [9079] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [9089] K2Node_DynamicCast_AsDp_Weapon_Bp.ReduceYCooldown(self.YCooldownToReduceOnX1PDodge)
+  [9134] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(self.ArchonCharacter)
+  [9163] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [9173] ClientCDReductionFX()
+  [9187] pop
+  [9188] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.X1PdodgeSuccess')
+  [9269] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @9014
+  [9283] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.DetonateBombs')
+  [9362] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @4876
+  [9376] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.PreventAutoDetonate')
+  [9461] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @10003
+  [9475] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.AllowAutoDetonate')
+  [9558] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @9982
+  [9572] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.StartingDodge')
+  [9651] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @9966
+  [9665] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.StoppingDodge')
+  [9744] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @9950
+  [9758] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.StartPDodgeShots')
+  [9840] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @10038
+  [9854] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1 = NotEqual_TagTag(K2Node_CustomEvent_EventTag, 'Combat.Special.ExoticBombRepeaters.StopPdodgeShots')
+  [9935] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_1) goto @10434
+  [9949] pop
+  [9950] SetAimingMode(true)
+  [9965] pop
+  [9966] SetAimingMode(false)
+  [9981] pop
+  [9982] K2_UnPauseTimerHandle(self, self.GlobalBombTimer)
+  [10002] pop
+  [10003] DetonationStartFX()
+  [10017] K2_PauseTimerHandle(self, self.GlobalBombTimer)
+  [10037] pop
+  [10038] Temp_int_Variable_3 = 2
+  [10061] Temp_bool_Variable_2 = self.InBombState
+  [10080] self.PDodgeShotsRemaining = switch(Temp_bool_Variable_2){false: self.NumPDodgeShots, true: Temp_int_Variable_3, default: K2Node_Select_Default_3}
+  [10151] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.DoPDodgeShot)
+  [10174] Temp_real_Variable_1 = 0.10000000149011612
+  [10201] Temp_real_Variable_2 = 0.30000001192092896
+  [10228] Temp_bool_Variable_1 = self.InBombState
+  [10247] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_1){false: Temp_real_Variable_1, true: Temp_real_Variable_2, default: K2Node_Select_Default_2})
+  [10320] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [10377] self.PdodgeShotsTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_2
+  [10404] if !(self.InBombState) goto @10419
+  [10418] pop
+  [10419] DoPDodgeShot()
+  [10433] pop
+  [10434] K2_ClearAndInvalidateTimerHandle(self, self.PdodgeShotsTimer)
+  [10454] pop
+  [10455] CallFunc_HasMatchingGameplayTag_ReturnValue = self.ArchonCharacter.self.AbilitySystemComponent.HasMatchingGameplayTag(GameplayTag{'Combat.Special.ExoticBombRepeaters.InX1Dodge'})
+  [10551] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) pop
+  [10561] CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput = cast<GameplayModifierLifetimeOwnerInterface>(self)
+  [10589] CallFunc_ApplyGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffect(self.ArchonCharacter, dp_exotic_bombs_x1_pdodge_ge_C, CallFunc_ApplyGameplayEffect_LifetimeOwner_CastInput)
+  [10666] pop
+  [10667] push @10987
+  [10672] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'DamageType.Crit'}, false)
+  [10729] if !(CallFunc_HasTag_ReturnValue) pop
+  [10739] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.ArchonCharacter)
+  [10768] CallFunc_HasMatchingGameplayTag_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp04'})
+  [10842] if !(CallFunc_HasMatchingGameplayTag_ReturnValue_1) pop
+  [10852] K2Node_DynamicCast_AsDp_Weapon_Bp_1 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [10888] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_1)
+  [10917] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [10927] K2Node_DynamicCast_AsDp_Weapon_Bp_1.ReduceYCooldown(self.YCooldownToReduceOnCrit)
+  [10972] ClientCDReductionFX()
+  [10986] pop
+  [10987] Default__damage_function_library_C.IsCombatActor(K2Node_CustomEvent_DamagedActor, self, CallFunc_IsCombatActor_IsACombatActor)
+  [11042] if !(CallFunc_IsCombatActor_IsACombatActor) pop
+  [11052] RemoveBombModeLockoutEffect(true)
+  [11067] pop
+  [11068] self.L_PreDetonateTime = 0.0
+  [11095] goto @8588
+  [11100] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_2 = NotEqual_TagTag(K2Node_CustomEvent_FunctionCheckToPerform, 'Combat.Special.ExoticBombRepeaters.Conditions.InBombState')
+  [11188] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess_2) goto @11203
+  [11202] pop
+  [11203] Temp_struct_Variable = GameplayTag{'GenericConditions.GenericResult.Failure'}
+  [11248] Temp_struct_Variable_1 = GameplayTag{'GenericConditions.GenericResult.Success'}
+  [11293] Temp_bool_Variable = self.InBombState
+  [11312] self.WeaponGenericEventDispatcher.SetGenericConditionResult(switch(Temp_bool_Variable){false: Temp_struct_Variable, true: Temp_struct_Variable_1, default: K2Node_Select_Default})
+  [11401] pop
+  [11402] push @11481
+  [11407] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(self.PDodgeShotsRemaining, 0)
+  [11441] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @11460
+  [11455] goto @4017
+  [11460] K2_ClearAndInvalidateTimerHandle(self, self.PdodgeShotsTimer)
+  [11480] pop
+  [11481] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.PDodgeShotsRemaining, 1)
+  [11523] Temp_int_Variable_1 = CallFunc_Subtract_IntInt_ReturnValue
+  [11550] self.PDodgeShotsRemaining = Temp_int_Variable_1
+  [11577] pop
+  [11578] K2Node_DynamicCast_AsDp_Weapon_Bp_2 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [11614] K2Node_DynamicCast_bSuccess_7 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_2)
+  [11643] if !(K2Node_DynamicCast_bSuccess_7) pop
+  [11653] Temp_byte_Variable = K2Node_CustomEvent_dp_weapon_hand
+  [11680] CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue = GetSocketLocation_WeaponSeparation(switch(Temp_byte_Variable){0: K2Node_DynamicCast_AsDp_Weapon_Bp_2.self.Barrel_Secondary1, 1: K2Node_DynamicCast_AsDp_Weapon_Bp_2.self.Barrel1, default: K2Node_Select_Default_1}, 'barrel_tip_jnt')
+  [11820] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, dp_exotic_muzzle_flash_stickybomb_p, CallFunc_GetSocketLocation_WeaponSeparation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [11913] pop
+  [11914] OnWeaponPartUnequipped()
+  [11924] push @11949
+  [11929] push @3646
+  [11934] push @3823
+  [11939] push @3911
+  [11944] goto @3392
+  [11949] K2_ClearAndInvalidateTimerHandle(self, self.PdodgeShotsTimer)
+  [11969] K2_ClearAndInvalidateTimerHandle(self, self.GlobalBombTimer)
+  [11989] K2_ClearAndInvalidateTimerHandle(self, self.GlobalBombTimer)
+  [12009] pop
+  [12010] goto @10455
+  [12015] ManuallyDetonate()
+  [12029] goto @15
+  [12034] return nothing
+  [12036] end
+
+=== GenericConditionCheck_Event_0
+  [0] frame.K2Node_CustomEvent_FunctionCheckToPerform = FunctionCheckToPerform
+  [18] ExecuteUbergraph_dp_exotic_bombs_bpc(11100)
+  [33] return nothing
+  [35] end
+
+=== ManuallyDetonate
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(11068)
+  [15] return nothing
+  [17] end
+
+=== MulticastDetonationStart
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(4002)
+  [15] return nothing
+  [17] end
+
+=== On Perfect X1 Dodge
+  [0] frame.K2Node_CustomEvent_Source = Source
+  [18] frame.K2Node_CustomEvent_Params = Params
+  [36] frame.K2Node_CustomEvent_InvulnerabilityTags = InvulnerabilityTags
+  [54] ExecuteUbergraph_dp_exotic_bombs_bpc(12010)
+  [69] return nothing
+  [71] end
+
+=== OnBombStateChanged
+  [0] push @1665
+  [5] push @465
+  [10] push @83
+  [15] if !(self.InBombState) goto @669
+  [29] push @1270
+  [34] push @977
+  [39] CallFunc_IsValid_ReturnValue_3 = IsValid(self.BombStateVFX_Right)
+  [68] if !(CallFunc_IsValid_ReturnValue_3) goto @1416
+  [82] pop
+  [83] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(self.ArchonCharacter)
+  [112] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [122] if !(self.InBombState) goto @305
+  [136] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [156] K2Node_DynamicCast_AsDp_Weapon_Bpi_1 = cast<dp_weapon_bpi_C>(CallFunc_GetOwner_ReturnValue_4)
+  [192] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi_1)
+  [221] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [231] K2Node_DynamicCast_AsDp_Weapon_Bpi_1.ClientRequestShootOverride(GameplayTag{'Combat.Special.ExoticBombRepeaters.BombModeShot'}, 50.0)
+  [304] pop
+  [305] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [325] K2Node_DynamicCast_AsDp_Weapon_Bpi = cast<dp_weapon_bpi_C>(CallFunc_GetOwner_ReturnValue_4)
+  [361] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi)
+  [390] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [400] K2Node_DynamicCast_AsDp_Weapon_Bpi.ClientClearShootOverride(GameplayTag{'Combat.Special.ExoticBombRepeaters.BombModeShot'})
+  [464] pop
+  [465] Temp_struct_Variable = GameplayTag{'Combat.Special.ExoticBombRepeaters.OnLeftBombMode'}
+  [510] Temp_struct_Variable_1 = GameplayTag{'Combat.Special.ExoticBombRepeaters.EnteredBombMode'}
+  [555] Temp_bool_Variable = self.InBombState
+  [574] GenericEvent__DelegateSignature(switch(Temp_bool_Variable){false: Temp_struct_Variable, true: Temp_struct_Variable_1, default: K2Node_Select_Default})
+  [668] pop
+  [669] push @755
+  [674] push @901
+  [679] CallFunc_IsValid_ReturnValue_1 = IsValid(self.BombStateVFX_Right)
+  [708] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [718] self.BombStateVFX_Right.Deactivate()
+  [754] pop
+  [755] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [775] CallFunc_GetOwner_ReturnValue_2 = CallFunc_GetOwner_ReturnValue.GetOwner()
+  [817] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_wep_dp_exotic_stickybomb_persistent, CallFunc_GetOwner_ReturnValue_2, 0, Temp_delegate_Variable, false)
+  [900] pop
+  [901] CallFunc_IsValid_ReturnValue = IsValid(self.BombStateVFX_Left)
+  [930] if !(CallFunc_IsValid_ReturnValue) pop
+  [940] self.BombStateVFX_Left.Deactivate()
+  [976] pop
+  [977] CallFunc_IsValid_ReturnValue_2 = IsValid(self.BombStateVFX_Left)
+  [1006] if !(CallFunc_IsValid_ReturnValue_2) goto @1021
+  [1020] pop
+  [1021] K2Node_DynamicCast_AsDp_Weapon_Bp_1 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [1057] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_1)
+  [1086] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1096] CallFunc_SpawnEmitterAttached_ReturnValue_1 = SpawnEmitterAttached(dp_twinsuns_stickybomb_empowered_shock_p, K2Node_DynamicCast_AsDp_Weapon_Bp_1.self.Barrel_Secondary1, 'handle_jnt', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1250] self.BombStateVFX_Left = CallFunc_SpawnEmitterAttached_ReturnValue_1
+  [1269] pop
+  [1270] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1290] CallFunc_GetOwner_ReturnValue_3 = CallFunc_GetOwner_ReturnValue_1.GetOwner()
+  [1332] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_wep_dp_exotic_stickybomb_persistent, CallFunc_GetOwner_ReturnValue_3, 0, Temp_delegate_Variable_1, false)
+  [1415] pop
+  [1416] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [1452] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [1481] if !(K2Node_DynamicCast_bSuccess) pop
+  [1491] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(dp_twinsuns_stickybomb_empowered_shock_p, K2Node_DynamicCast_AsDp_Weapon_Bp.self.Barrel1, 'handle_jnt', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1645] self.BombStateVFX_Right = CallFunc_SpawnEmitterAttached_ReturnValue
+  [1664] pop
+  [1665] return nothing
+  [1667] end
+
+=== OnBombTimerExpired
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(8025)
+  [15] return nothing
+  [17] end
+
+=== OnGenericEvent
+  [0] frame.K2Node_CustomEvent_EventTag = EventTag
+  [18] ExecuteUbergraph_dp_exotic_bombs_bpc(9188)
+  [33] return nothing
+  [35] end
+
+=== OnPostMitigationHitWithWeapon_Event_0
+  [0] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [18] frame.K2Node_CustomEvent_DamageSummary = DamageSummary
+  [36] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_dp_exotic_bombs_bpc(10667)
+  [87] return nothing
+  [89] end
+
+=== OnProjectileAttached
+  [0] frame.K2Node_CustomEvent_AttachTarget = AttachTarget
+  [18] frame.K2Node_CustomEvent_AttachComponent = AttachComponent
+  [36] frame.K2Node_CustomEvent_BoneName = BoneName
+  [54] frame.K2Node_CustomEvent_BombActor = BombActor
+  [72] ExecuteUbergraph_dp_exotic_bombs_bpc(7113)
+  [87] return nothing
+  [89] end
+
+=== OnProjectileDestroyed
+  [0] frame.K2Node_CustomEvent_DestroyedActor = DestroyedActor
+  [18] ExecuteUbergraph_dp_exotic_bombs_bpc(6977)
+  [33] return nothing
+  [35] end
+
+=== OnRep_InBombState
+  [0] OnBombStateChanged()
+  [14] return nothing
+  [16] end
+
+=== OnShootAttackOverridden
+  [0] frame.K2Node_CustomEvent_OverrideAttackTag = OverrideAttackTag
+  [18] frame.K2Node_CustomEvent_SourceLocation = SourceLocation
+  [36] frame.K2Node_CustomEvent_Aim = Aim
+  [54] frame.K2Node_CustomEvent_GunHand_IfApplicable_ = GunHand(IfApplicable)
+  [72] ExecuteUbergraph_dp_exotic_bombs_bpc(6182)
+  [87] return nothing
+  [89] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(6573)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(11914)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponSwap
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(12015)
+  [15] return nothing
+  [17] end
+
+=== RemoveBombModeLockoutEffect
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @399
+  [76] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.BombModeLockoutHandle)
+  [105] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @399
+  [119] CallFunc_RemoveActiveGameplayEffect_ReturnValue = self.ArchonCharacter.self.AbilitySystemComponent.RemoveActiveGameplayEffect(self.BombModeLockoutHandle, -1)
+  [201] self.BombModeLockoutHandle = ActiveGameplayEffectHandle{-1, false}
+  [239] if !(Start Cooldown) goto @399
+  [253] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [318] if !(K2Node_DynamicCast_bSuccess) goto @399
+  [332] K2Node_DynamicCast_AsDp_Weapon_Bp.StartYCooldown(EX_ClassContext(ObjectExpression=dp_y_ability_exotic_bombs_ab_C,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'dp_y_ability_exotic_bombs_ab_C'", 'ObjectPath': '/Game/game/abilities/weapons/DP/exotics/bombcannon/dp_y_ability_exotic_bombs_ab.0'}, 'Property': {'Type': 'DoubleProperty', 'Name': 'AbilityCooldown', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 8, 'PropertyFlags': 'Edit | BlueprintVisible | DisableEditOnInstance'}},ContextExpression=AbilityCooldown))
+  [399] return nothing
+  [401] end
+
+=== ResetBombTimer
+  [0] CanResetBombTimer(CallFunc_CanResetBombTimer_CanResetBombTimer)
+  [23] if !(CallFunc_CanResetBombTimer_CanResetBombTimer) goto @312
+  [37] PrintString(self, 'Resetting Bomb Timer', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [124] K2_ClearAndInvalidateTimerHandle(self, self.GlobalBombTimer)
+  [144] K2Node_CreateDelegate_OutputDelegate = bind(self.OnBombTimerExpired)
+  [167] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [196] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [253] self.GlobalBombTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [280] Timer = Time
+  [307] goto @339
+  [312] Timer = 0.0
+  [339] return nothing
+  [341] end
+
+=== ServerShootBomb
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] frame.K2Node_CustomEvent_Rotation = Rotation
+  [36] ExecuteUbergraph_dp_exotic_bombs_bpc(5205)
+  [51] return nothing
+  [53] end
+
+=== SetAimingMode
+  [0] if !(AimingEnabled) goto @518
+  [14] K2Node_DynamicCast_AsDp_Weapon_Bpi = cast<dp_weapon_bpi_C>(self.ArchonWeapon)
+  [50] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDp_Weapon_Bpi)
+  [79] if !(K2Node_DynamicCast_bSuccess) goto @888
+  [93] K2Node_DynamicCast_AsDp_Weapon_Bpi.GetDefaultAimRequest(CallFunc_GetDefaultAimRequest_Default_Aim_Request)
+  [139] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [190] CallFunc_GetComponentByClass_ReturnValue_1.StartAiming(CallFunc_GetDefaultAimRequest_Default_Aim_Request)
+  [235] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_state_machine_bpc_C)
+  [286] CallFunc_GetComponentByClass_ReturnValue.StartStrafe()
+  [322] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [342] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [384] if !(CallFunc_HasAuthority_ReturnValue_1) goto @1143
+  [398] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [434] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [463] if !(K2Node_DynamicCast_bSuccess_1) goto @1143
+  [477] K2Node_DynamicCast_AsDp_Weapon_Bp.MulticastDisableAiming()
+  [513] goto @1143
+  [518] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [569] CallFunc_GetComponentByClass_ReturnValue_1.StopAiming()
+  [605] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_state_machine_bpc_C)
+  [656] CallFunc_GetComponentByClass_ReturnValue.EndStrafe()
+  [692] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [712] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [754] if !(CallFunc_HasAuthority_ReturnValue) goto @1143
+  [768] K2Node_DynamicCast_AsDp_Weapon_Bp_1 = cast<dp_weapon_bp_C>(self.ArchonWeapon)
+  [804] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp_1)
+  [833] if !(K2Node_DynamicCast_bSuccess_2) goto @1143
+  [847] K2Node_DynamicCast_AsDp_Weapon_Bp_1.MulticastEnableAiming()
+  [883] goto @1143
+  [888] CallFunc_GetDefaultAimRequest_Default_Aim_Request = player_aim_request{null, 2000.0, 'None', true, true, null, 0, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'player_aim_request'", 'ObjectPath': '/Game/_shared/blueprints/structs/player_aim_request.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'ObjectsToHit_31_C133382347A025C929CC888C0A3B2E98', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'ByteProperty', 'Name': 'ObjectsToHit_31_C133382347A025C929CC888C0A3B2E98', 'Flags': 'RF_Public', 'ElementSize': 1, 'Enum': {'ObjectName': "Class'EObjectTypeQuery'", 'ObjectPath': '/Script/Engine'}}}},Values=), EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'player_aim_request'", 'ObjectPath': '/Game/_shared/blueprints/structs/player_aim_request.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TestComplexCollisionClasses_36_C21F763C4257C73A287F24BB9FC6D8E1', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'ClassProperty', 'Name': 'TestComplexCollisionClasses_36_C21F763C4257C73A287F24BB9FC6D8E1', 'Flags': 'RF_Public', 'ElementSize': 8, 'PropertyClass': {'ObjectName': "Class'Class'", 'ObjectPath': '/Script/CoreUObject'}, 'MetaClass': {'ObjectName': "Class'Actor'", 'ObjectPath': '/Script/Engine'}}}},Values=), true, EX_MapConst(KeyProperty={'Owner': {'ObjectName': "UserDefinedStruct'player_aim_request'", 'ObjectPath': '/Game/_shared/blueprints/structs/player_aim_request.0'}, 'Property': {'Type': 'MapProperty', 'Name': 'LookAtAlphaOverride_46_41A47AD2469E0184C3DBBE840E316F70', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 80, 'PropertyFlags': 'Edit | BlueprintVisible', 'KeyProp': {'Type': 'StrProperty', 'Name': 'LookAtAlphaOverride_46_41A47AD2469E0184C3DBBE840E316F70', 'Flags': 'RF_Public', 'ElementSize': 16}, 'ValueProp': {'Type': 'FloatProperty', 'Name': 'LookAtAlphaOverride_46_41A47AD2469E0184C3DBBE840E316F70_Value', 'Flags': 'RF_Public', 'ElementSize': 4}}},ValueProperty={'Path': ['LookAtAlphaOverride_46_41A47AD2469E0184C3DBBE840E316F70_Value', 'LookAtAlphaOverride_46_41A47AD2469E0184C3DBBE840E316F70'], 'ResolvedOwner': {'ObjectName': "UserDefinedStruct'player_aim_request'", 'ObjectPath': '/Game/_shared/blueprints/structs/player_aim_request.0'}},Values={'Key': {'Token': 'EX_StringConst', 'Value': 'spine_02'}, 'Value': {'Token': 'EX_FloatConst', 'Value': 0.0}}, {'Key': {'Token': 'EX_StringConst', 'Value': 'spine_03'}, 'Value': {'Token': 'EX_FloatConst', 'Value': 0.0}}, {'Key': {'Token': 'EX_StringConst', 'Value': 'neck_01'}, 'Value': {'Token': 'EX_FloatConst', 'Value': 0.1}}, {'Key': {'Token': 'EX_StringConst', 'Value': 'neck_02'}, 'Value': {'Token': 'EX_FloatConst', 'Value': 0.2}}, {'Key': {'Token': 'EX_StringConst', 'Value': 'head'}, 'Value': {'Token': 'EX_FloatConst', 'Value': 1.0}}), 150.0, EX_VectorConst(Value={'X': 0.0, 'Y': 100.0, 'Z': 0.0}), 100.0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 175.0}), 17.5, null, null, false, null, 0.25}
+  [1138] goto @139
+  [1143] return nothing
+  [1145] end
+
+=== StartDetonation
+  [0] ExecuteUbergraph_dp_exotic_bombs_bpc(8619)
+  [15] return nothing
+  [17] end

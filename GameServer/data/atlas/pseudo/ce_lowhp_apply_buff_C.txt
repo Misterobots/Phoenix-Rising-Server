@@ -1,0 +1,86 @@
+# ce_lowhp_apply_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_ce_lowhp_apply_buff
+  [0] goto computed(EntryPoint)
+  [10] OnAdded()
+  [20] K2Node_CreateDelegate_OutputDelegate = bind(self.LowHP_Polling)
+  [43] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.2, true, 0.0, 0.0)
+  [96] goto @1717
+  [101] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.geEffectHandle)
+  [130] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @1717
+  [144] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(self.Character)
+  [173] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.RemoveActiveGameplayEffect(self.geEffectHandle, -1)
+  [233] goto @1717
+  [238] CallFunc_IsValid_ReturnValue_3 = IsValid(self.Character)
+  [267] if !(CallFunc_IsValid_ReturnValue_3) goto @1717
+  [281] Default__archon_function_library_C.ActorIsAlive(self.Character, self, CallFunc_ActorIsAlive_IsAlive)
+  [336] if !(CallFunc_ActorIsAlive_IsAlive) goto @1717
+  [350] CallFunc_GetMaxHealth_ReturnValue = self.Character.GetMaxHealth()
+  [400] CallFunc_GetHealth_ReturnValue = self.Character.GetHealth()
+  [450] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [479] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetMaxHealth_ReturnValue)
+  [508] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [554] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, self.HealthThreshold)
+  [592] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @654
+  [606] CallFunc_IsGameplayEffectActive_ReturnValue_1 = IsGameplayEffectActive(self.geEffectHandle)
+  [635] if !(CallFunc_IsGameplayEffectActive_ReturnValue_1) goto @748
+  [649] goto @1717
+  [654] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Character)
+  [683] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.geEffectHandle, -1)
+  [743] goto @1717
+  [748] GetCellEffectMagnitude(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude)
+  [771] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetCellEffectMagnitude_CellEffectMagnitude, self.ManualMagnitudeAdjustment)
+  [817] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Character)
+  [846] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(self.GameplayEffectClass, 0.0, GameplayEffectContextHandle{})
+  [928] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [957] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [1016] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self.Character)
+  [1045] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [1104] self.geEffectHandle = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [1131] MeshEmitVFX_Multi()
+  [1145] goto @1717
+  [1150] CallFunc_IsValid_ReturnValue_1 = IsValid(self.OnProcAudio)
+  [1179] if !(CallFunc_IsValid_ReturnValue_1) goto @1276
+  [1193] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(self.OnProcAudio, self.Character, 0, Temp_delegate_Variable, false)
+  [1276] CallFunc_IsValid_ReturnValue_2 = IsValid(self.OnProcEffect)
+  [1305] if !(CallFunc_IsValid_ReturnValue_2) goto @1717
+  [1319] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(self.OnProcEffect, self.Character.self.Mesh, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1473] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SpawnEmitterAttached_ReturnValue)
+  [1502] if !(CallFunc_IsValid_ReturnValue) goto @1717
+  [1516] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', self.Character)
+  [1574] goto @1717
+  [1579] MulticastOnAdded()
+  [1589] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1609] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [1645] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1674] if !(K2Node_DynamicCast_bSuccess) goto @1717
+  [1688] self.Character = K2Node_DynamicCast_AsArchon_Character
+  [1707] goto @1717
+  [1712] goto @101
+  [1717] return nothing
+  [1719] end
+
+=== LowHP_Polling
+  [0] ExecuteUbergraph_ce_lowhp_apply_buff(238)
+  [15] return nothing
+  [17] end
+
+=== MeshEmitVFX_Multi
+  [0] ExecuteUbergraph_ce_lowhp_apply_buff(1150)
+  [15] return nothing
+  [17] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ce_lowhp_apply_buff(1579)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ce_lowhp_apply_buff(10)
+  [15] return nothing
+  [17] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_ce_lowhp_apply_buff(1712)
+  [15] return nothing
+  [17] end

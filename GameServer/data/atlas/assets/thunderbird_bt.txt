@@ -1,0 +1,151 @@
+thunderbird_bt  blackboard=BlackboardData bugbear_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.IsAirborne, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    5) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    6) Selector "StateChange"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      1) bttask_exit_aethercharge_state  (Montage=AnimMontage b_lb_thunder_00_state_aetherexit_fwd_00_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage b_lb_thunder_00_state_aetherexit_fwd_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_lb_thunder_00_state_rageexit_fwd_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      4) bttask_enter_rage_state  (Montage=AnimMontage b_lb_thunder_00_state_rageenter_fwd_00_mot)
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      5) Sequence
+        1) bttask_enter_aethercharge_state  (Montage=AnimMontage b_lb_thunder_00_state_aetherenter_fwd_00_mot)
+        [if ForceSuccess]
+        2) Selector
+          [if btdeco_percentchance  (PercentChance=0.35)]
+          1) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_shockballs_aether_atk_C, bShowPropertyDetails=false)
+          2) Sequence
+            1) Sequence
+              [if ForceSuccess]
+              1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, TimeInFutureToPredict=0.5)
+              2) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thunderdash_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+            [if btdeco_percentchance  (PercentChance=0.75)]
+            2) Sequence
+              [if ForceSuccess]
+              1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor)
+              2) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thunderdash_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+            [if btdeco_percentchance  (PercentChance=0.5)]
+            3) Sequence
+              [if ForceSuccess]
+              1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, TimeInFutureToPredict=0.5)
+              2) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thunderdash_atk_C, bShowPropertyDetails=false)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    8) Selector
+      [if behemoth_in_state_btdeco  (State=Alerted)]
+      [if current_target_is_valid_btdeco]
+      [if behemoth_in_state_btdeco  (State=Flying)]
+      1) Sequence
+        1) RotateToFaceBBEntry  (BlackboardKey=bb.AttackTarget, bIgnoreRestartSelf=true)
+        2) BehemothAction "Combat Entry"  (Montage=AnimMontage b_lb_thunder_00_pers_combatenter_fwd_00_mot, StopMontageOnAbort=false)
+        3) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End, WhenInterruptedChangeState=Flying, InterruptedChangeStateEvent=End)
+      [if behemoth_in_state_btdeco  (State=Flying, StateRequirement=ExcludedByState)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      [if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    9) Selector
+      [if is_island_gamemode_btdeco  (IslandGameMode=Trials)]
+      [if current_target_is_valid_btdeco]
+      [if BTDeco_ArchonCooldown  (CooldownTime=30, StartTime=45, TimerGameTimeStart=bb.SpawnedAtTime)]
+      [if ticket_is_available_btdeco "Is Sync Attack Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttack"])]
+      [if ticket_is_available_btdeco "Is Sync Attack Entrance Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttackEntrance"])]
+      [if DistanceCheck "Is In Ideal Range?"  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1000, MaxDistance=3500, PredictTargetHorizFuturePosTime=0.5, ObservedKeyNames=["SelfActor", "AttackTarget"])]
+      [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 3500.0, "Angle": 60.0, "ArcCenterAngle": 0.0, "CenterOffset": {"X": 0.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+      1) Selector
+        1) Sequence
+          1) consume_ticket_bttask  (TicketCategory=SyncAttackEntrance)
+          [if ForceSuccess]
+          2) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor)
+          [if ForceSuccess]
+          3) perform_action_montage_bttask "Synced Dunk Entrance"  (Montage=AnimMontage b_lb_thunder_00_atk_dunkfail_fwd_00_mot)
+          [if PhxHasSyncedAnimation "Was Dunk Entrance Successful?"  (ControllerClass=BlueprintGeneratedClass thunderbird_dunk_synced_anim_controller_C)]
+          4) Sequence
+            1) consume_ticket_bttask  (TicketCategory=SyncAttack)
+            2) PhxWaitForSyncedAnimationCompletion "Wait for Synced Dunk Completion"  (ControllerClass=BlueprintGeneratedClass thunderbird_dunk_synced_anim_controller_C)
+          5) Wait  (WaitTime=1)
+      [if current_target_is_valid_btdeco]
+      [if Cooldown  (CooldownTime=30)]
+      [if ticket_is_available_btdeco "Is Sync Attack Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttack"])]
+      [if ticket_is_available_btdeco "Is Sync Attack Entrance Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttackEntrance"])]
+      [if DistanceCheck "Is In Ideal Range?"  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1000, MaxDistance=3500, PredictTargetHorizFuturePosTime=0.5, ObservedKeyNames=["SelfActor", "AttackTarget"])]
+      [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 3500.0, "Angle": 60.0, "ArcCenterAngle": 0.0, "CenterOffset": {"X": 0.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+      [if not is_island_gamemode_btdeco  (IslandGameMode=Trials, bInverseCondition=true)]
+      2) Selector
+        1) Sequence
+          1) consume_ticket_bttask  (TicketCategory=SyncAttackEntrance)
+          [if ForceSuccess]
+          2) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor)
+          [if ForceSuccess]
+          3) perform_action_montage_bttask "Synced Dunk Entrance"  (Montage=AnimMontage b_lb_thunder_00_atk_dunkfail_fwd_00_mot)
+          [if PhxHasSyncedAnimation "Was Dunk Entrance Successful?"  (ControllerClass=BlueprintGeneratedClass thunderbird_dunk_synced_anim_controller_C)]
+          4) Sequence
+            1) consume_ticket_bttask  (TicketCategory=SyncAttack)
+            2) PhxWaitForSyncedAnimationCompletion "Wait for Synced Dunk Completion"  (ControllerClass=BlueprintGeneratedClass thunderbird_dunk_synced_anim_controller_C)
+          5) Wait  (WaitTime=1)
+      3) Selector
+        [if Blackboard  (TopScore Is Greater Than 0.000000)]
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+        [if Cooldown]
+        [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 3500.0, "Angle": 60.0, "ArcCenterAngle": 0.0, "CenterOffset": {"X": -500.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+        2) Sequence
+          [if ForceSuccess]
+          1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=1)
+          [if navtest_btdeco  (Displacement=[{"X": -1000.0, "Y": 0.0, "Z": 0.0}])]
+          2) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_loco_fly_bwd_mot)
+    10) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    11) Selector
+      [if ArchonIsMounted]
+      [if btdeco_variablecooldown  (Cooldown_Min=3, Cooldown_Max=8)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Heroic"}, bShowPropertyDetails=false)]
+      1) Sequence
+        1) Wait  (WaitTime=0.75, RandomDeviation=0.25)
+        2) Selector
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thrash_left_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+          2) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thrash_right_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+        3) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_atk_dashrage_fwd_00_mot)
+      [if ArchonIsMounted]
+      [if btdeco_variablecooldown  (Cooldown_Min=8, Cooldown_Max=12)]
+      2) Sequence
+        1) Wait  (WaitTime=0.75, RandomDeviation=0.25)
+        2) Selector
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thrash_left_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+          2) PerformActionClass  (ActionClass=BlueprintGeneratedClass thunderbird_thrash_right_atk_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+        3) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_atk_dashrage_fwd_00_mot)
+    12) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      [if behemoth_in_state_btdeco  (State=Flying, StateRequirement=ExcludedByState)]
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_facetarget_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+    [if btdeco_variablecooldown  (Cooldown_Min=25, Cooldown_Max=40, StartTime=90)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    [if not ArchonIsMounted  (bInverseCondition=true)]
+    13) Selector
+      [if compare_health_btdeco  (CompareType=<, PercentValue(Decimal)=0.5)]
+      1) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_pers_roar_fwd_02_mot)
+      [if targetting_check_btdeco  (TargettingData=[{"TargettingType": "behemoth_targetting_type::Arc", "ArcData": {"Range": 2200.0, "Angle": 90.0, "ArcCenterAngle": 180.0, "CenterOffset": {"X": 0.0, "Y": 0.0, "Z": 0.0}}, "WhatToDoWithTargetsHit": "targetting_data_strategy::IncludeTargetsInArea"}])]
+      2) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_pers_fwd_00_mot)
+      3) perform_action_montage_bttask  (Montage=AnimMontage b_lb_thunder_00_pers_roar_fwd_00_mot)

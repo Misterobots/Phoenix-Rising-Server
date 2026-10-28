@@ -1,0 +1,1204 @@
+# projectile_base_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AllowBeamToPierce
+  [0] Pierce? = false
+  [11] return nothing
+  [13] end
+
+=== AudioIsSetLocal_BP
+  [0] ExecuteUbergraph_projectile_base_bp(12353)
+  [15] return nothing
+  [17] end
+
+=== AudioSetIsLocal
+  [0] CallFunc_GetOwner_ReturnValue = self.GetOwner()
+  [34] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [70] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [99] if !(K2Node_DynamicCast_bSuccess) goto @178
+  [113] K2Node_DynamicCast_AsPlayer_Interface.GetIsLocalPlayerAudioEnabled(CallFunc_GetIsLocalPlayerAudioEnabled_Out)
+  [159] self.IsLocalPlayerAudioEnabled = CallFunc_GetIsLocalPlayerAudioEnabled_Out
+  [178] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [215] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, self, 'Gameplay_Created_By_Player')
+  [276] return nothing
+  [278] end
+
+=== AuthBecomeLobbedProjectile
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @1364
+  [34] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(LateralSpeedAtMaxDistance, LateralSpeedAtMinDistance)
+  [72] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(LateralSpeedAtMaxDistance, 0.0)
+  [110] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(LateralSpeedAtMinDistance, 0.0)
+  [148] CallFunc_Less_DoubleDouble_ReturnValue_3 = Less_DoubleDouble(MaxDistanceForScaling, MinDistanceForScaling)
+  [186] CallFunc_Less_DoubleDouble_ReturnValue_4 = Less_DoubleDouble(MaxDistanceForScaling, 0.0)
+  [224] CallFunc_Less_DoubleDouble_ReturnValue_5 = Less_DoubleDouble(MinDistanceForScaling, 0.0)
+  [262] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_5, CallFunc_Less_DoubleDouble_ReturnValue_4)
+  [300] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue_3)
+  [338] CallFunc_BooleanOR_ReturnValue_2 = BooleanOR(CallFunc_BooleanOR_ReturnValue_1, CallFunc_Less_DoubleDouble_ReturnValue_2)
+  [376] CallFunc_BooleanOR_ReturnValue_3 = BooleanOR(CallFunc_BooleanOR_ReturnValue_2, CallFunc_Less_DoubleDouble_ReturnValue_1)
+  [414] CallFunc_BooleanOR_ReturnValue_4 = BooleanOR(CallFunc_BooleanOR_ReturnValue_3, CallFunc_Less_DoubleDouble_ReturnValue)
+  [452] if !(CallFunc_BooleanOR_ReturnValue_4) goto @584
+  [466] PrintString(self, 'Become Lobbed Projectile - Invalid parameters!', false, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [579] goto @1364
+  [584] self.ProjectileMovementType = 1
+  [604] FlushNetDormancy()
+  [614] self.LobbedProjectileTarget = TargetPos
+  [641] MarkPropertyDirtyFromRepIndex(self, 24, 'LobbedProjectileTarget')
+  [670] CallFunc_FMax_ReturnValue = FMax(PeakHeightAtMaxDistance, 1.0)
+  [716] CallFunc_FMax_ReturnValue_1 = FMax(PeakHeightAtMinDistance, 1.0)
+  [762] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [790] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(TargetPos, CallFunc_K2_GetActorLocation_ReturnValue)
+  [836] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [882] CallFunc_K2_GetActorLocation_ReturnValue_1 = K2_GetActorLocation()
+  [910] CallFunc_MakeVector2D_ReturnValue = MakeVector2D(CallFunc_BreakVector_X, CallFunc_BreakVector_Y)
+  [956] CallFunc_VSize2D_ReturnValue = VSize2D(CallFunc_MakeVector2D_ReturnValue)
+  [993] Default__archon_function_library_C.RescaleAndClamp(MinDistanceForScaling, MaxDistanceForScaling, CallFunc_FMax_ReturnValue_1, CallFunc_FMax_ReturnValue, CallFunc_VSize2D_ReturnValue, self, CallFunc_RescaleAndClamp_NewValue)
+  [1084] Default__archon_function_library_C.RescaleAndClamp(MinDistanceForScaling, MaxDistanceForScaling, LateralSpeedAtMinDistance, LateralSpeedAtMaxDistance, CallFunc_VSize2D_ReturnValue, self, CallFunc_RescaleAndClamp_NewValue_1)
+  [1175] Default__archon_function_library_C.FindLobbedProjectileAim(CallFunc_K2_GetActorLocation_ReturnValue_1, TargetPos, CallFunc_RescaleAndClamp_NewValue_1, CallFunc_RescaleAndClamp_NewValue, self, CallFunc_FindLobbedProjectileAim_Velocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [1266] FlushNetDormancy()
+  [1276] self.LobbedProjectileInitialVelocity = CallFunc_FindLobbedProjectileAim_Velocity
+  [1303] MarkPropertyDirtyFromRepIndex(self, 17, 'LobbedProjectileInitialVelocity')
+  [1332] MulticastVelocityAndGravityChanges(self.LobbedProjectileInitialVelocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [1364] return nothing
+  [1366] end
+
+=== AuthCreateDamageGUID
+  [0] ExecuteUbergraph_projectile_base_bp(12348)
+  [15] return nothing
+  [17] end
+
+=== AuthLobProjectile
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @337
+  [34] self.ProjectileMovementType = 1
+  [54] FlushNetDormancy()
+  [64] self.LobbedProjectileTarget = TargetPos
+  [91] MarkPropertyDirtyFromRepIndex(self, 24, 'LobbedProjectileTarget')
+  [120] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [148] Default__archon_function_library_C.FindLobbedProjectileAim(CallFunc_K2_GetActorLocation_ReturnValue, TargetPos, LateralSpeed, PeakHeight, self, CallFunc_FindLobbedProjectileAim_Velocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [239] FlushNetDormancy()
+  [249] self.LobbedProjectileInitialVelocity = CallFunc_FindLobbedProjectileAim_Velocity
+  [276] MarkPropertyDirtyFromRepIndex(self, 17, 'LobbedProjectileInitialVelocity')
+  [305] MulticastVelocityAndGravityChanges(self.LobbedProjectileInitialVelocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [337] return nothing
+  [339] end
+
+=== AuthOnProjectileDamageOverlap
+  [0] frame.K2Node_Event_OtherActor = OtherActor
+  [18] frame.K2Node_Event_OtherComponent = OtherComponent
+  [36] frame.K2Node_Event_SweepResult = SweepResult
+  [54] ExecuteUbergraph_projectile_base_bp(12457)
+  [69] return nothing
+  [71] end
+
+=== AuthSweepHitEvent
+  [0] ExecuteUbergraph_projectile_base_bp(12285)
+  [15] return nothing
+  [17] end
+
+=== BeginPlayFromPool
+  [0] ExecuteUbergraph_projectile_base_bp(13088)
+  [15] return nothing
+  [17] end
+
+=== BndEvt__ProjectileMovement_K2Node_ComponentBoundEvent_0_OnProjectileStopDelegate__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_ImpactResult = ImpactResult
+  [18] ExecuteUbergraph_projectile_base_bp(9298)
+  [33] return nothing
+  [35] end
+
+=== CalculateDamageRow
+  [0] push @3647
+  [5] L_DamageScale = 1.0
+  [32] K2Node_DynamicCast_AsDamage_Interface = cast<damage_interface_C>(self.Instigator)
+  [68] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDamage_Interface)
+  [97] if !(K2Node_DynamicCast_bSuccess) goto @647
+  [111] K2Node_DynamicCast_AsDamage_Interface.GetDamageRow(self.DamageKey, CallFunc_GetDamageRow_DamageRow, CallFunc_GetDamageRow_DamageScale, CallFunc_GetDamageRow_RowFound)
+  [184] if !(CallFunc_GetDamageRow_RowFound) goto @829
+  [198] L_DamageRow = CallFunc_GetDamageRow_DamageRow
+  [225] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_GetDamageRow_DamageScale, L_DamageScale)
+  [271] L_DamageScale = CallFunc_Multiply_DoubleDouble_ReturnValue_1
+  [298] push @3363
+  [303] push @1011
+  [308] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [328] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetInstigator_ReturnValue)
+  [357] if !(CallFunc_IsValid_ReturnValue_2) goto @3433
+  [371] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [391] L_OwningActor = CallFunc_GetInstigator_ReturnValue
+  [410] CallFunc_IsValid_ReturnValue_1 = IsValid(L_OwningActor)
+  [439] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [449] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(TargetActor, behemoth_interface_C)
+  [487] CallFunc_DoesImplementInterface_ReturnValue_1 = DoesImplementInterface(L_OwningActor, behemoth_interface_C)
+  [525] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_DoesImplementInterface_ReturnValue_1, CallFunc_DoesImplementInterface_ReturnValue)
+  [563] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [573] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(L_DamageScale, self.BehemothVsBehemothDamageScale)
+  [619] L_DamageScale = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [646] pop
+  [647] CallFunc_GetDamageRow_DamageRow = DamageTableData{0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, null, null, EX_ArrayConst(InnerProperty={'Path': ['RemoveBuffStacksList', 'RemoveBuffStacksList'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AssetTags', 'AssetTags'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=)}
+  [786] CallFunc_GetDamageRow_DamageScale = 0.0
+  [813] CallFunc_GetDamageRow_RowFound = false
+  [824] goto @184
+  [829] FinalDamageRow = DamageTableData{0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, null, null, EX_ArrayConst(InnerProperty={'Path': ['RemoveBuffStacksList', 'RemoveBuffStacksList'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AssetTags', 'AssetTags'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=)}
+  [968] DamageScale = 0.0
+  [995] Succeeded = false
+  [1006] goto @3647
+  [1011] Temp_int_Loop_Counter_Variable = 0
+  [1034] Temp_int_Array_Index_Variable_1 = 0
+  [1057] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AdditionalDamageRows)
+  [1116] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [1154] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1164] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [1191] push @3289
+  [1196] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [1225] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [1254] if !(CallFunc_IsValid_ReturnValue) goto @3135
+  [1268] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [1297] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1356] CallFunc_HasAllMatchingGameplayTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasAllMatchingGameplayTags(CallFunc_Array_Get_Item.RequireTagsToAddThisRow)
+  [1421] if !(CallFunc_HasAllMatchingGameplayTags_ReturnValue) pop
+  [1431] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [1460] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1519] CallFunc_HasAnyMatchingGameplayTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasAnyMatchingGameplayTags(CallFunc_Array_Get_Item.ExcludeThisRowIfAnyArePresent)
+  [1584] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasAnyMatchingGameplayTags_ReturnValue)
+  [1613] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [1623] L_OptionalDmgScale = 1.0
+  [1650] Temp_int_Loop_Counter_Variable_1 = 0
+  [1673] Temp_int_Array_Index_Variable = 0
+  [1696] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1755] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.ScaleDamageWithTheseAttributes)
+  [1823] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1861] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @2442
+  [1875] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1902] push @3477
+  [1907] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [1936] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1995] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.ScaleDamageWithTheseAttributes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [2063] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, CallFunc_Array_Get_Item_1, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [2118] if !(CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute) pop
+  [2128] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [2157] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2216] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.ScaleDamageWithTheseAttributes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [2284] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, CallFunc_Array_Get_Item_1, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [2339] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [2368] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(L_OptionalDmgScale, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [2414] L_OptionalDmgScale = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [2441] pop
+  [2442] K2Node_DynamicCast_AsDamage_Interface_1 = cast<damage_interface_C>(self.Instigator)
+  [2478] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDamage_Interface_1)
+  [2507] if !(K2Node_DynamicCast_bSuccess_1) goto @2953
+  [2521] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2580] K2Node_DynamicCast_AsDamage_Interface_1.GetDamageRow(CallFunc_Array_Get_Item.DamageRowName, CallFunc_GetDamageRow_DamageRow_1, CallFunc_GetDamageRow_DamageScale_1, CallFunc_GetDamageRow_RowFound_1)
+  [2662] if !(CallFunc_GetDamageRow_RowFound_1) pop
+  [2672] CallFunc_NotEqual_DoubleDouble_ReturnValue = NotEqual_DoubleDouble(L_OptionalDmgScale, 1.0)
+  [2710] if !(CallFunc_NotEqual_DoubleDouble_ReturnValue) goto @3551
+  [2724] Default__damage_function_library_C.ScaleDamageRow(CallFunc_GetDamageRow_DamageRow_1, L_OptionalDmgScale, self, CallFunc_ScaleDamageRow_ScaledDamageTableData)
+  [2788] Default__damage_function_library_C.CombineDamageTableRows(L_DamageRow, CallFunc_ScaleDamageRow_ScaledDamageTableData, self, CallFunc_CombineDamageTableRows_CombinedDamageTableData_1)
+  [2852] L_DamageRow = CallFunc_CombineDamageTableRows_CombinedDamageTableData_1
+  [2879] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(L_DamageScale, CallFunc_GetDamageRow_DamageScale_1)
+  [2925] L_DamageScale = CallFunc_Multiply_DoubleDouble_ReturnValue_3
+  [2952] pop
+  [2953] CallFunc_GetDamageRow_DamageRow_1 = DamageTableData{0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, null, null, EX_ArrayConst(InnerProperty={'Path': ['RemoveBuffStacksList', 'RemoveBuffStacksList'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AssetTags', 'AssetTags'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=)}
+  [3092] CallFunc_GetDamageRow_DamageScale_1 = 0.0
+  [3119] CallFunc_GetDamageRow_RowFound_1 = false
+  [3130] goto @2662
+  [3135] Default__KismetArrayLibrary.Array_Get(self.AdditionalDamageRows, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [3194] CallFunc_GetNumGameplayTagsInContainer_ReturnValue = GetNumGameplayTagsInContainer(CallFunc_Array_Get_Item.RequireTagsToAddThisRow)
+  [3240] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetNumGameplayTagsInContainer_ReturnValue, 0)
+  [3274] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [3284] goto @1623
+  [3289] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [3331] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [3358] goto @1057
+  [3363] FinalDamageRow = L_DamageRow
+  [3390] DamageScale = L_DamageScale
+  [3417] Succeeded = true
+  [3428] goto @3647
+  [3433] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3453] L_OwningActor = CallFunc_GetOwner_ReturnValue
+  [3472] goto @410
+  [3477] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [3519] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [3546] goto @1696
+  [3551] Default__damage_function_library_C.CombineDamageTableRows(L_DamageRow, CallFunc_GetDamageRow_DamageRow_1, self, CallFunc_CombineDamageTableRows_CombinedDamageTableData)
+  [3615] L_DamageRow = CallFunc_CombineDamageTableRows_CombinedDamageTableData
+  [3642] goto @2879
+  [3647] return nothing
+  [3649] end
+
+=== CalculateHoming
+  [0] frame.K2Node_CustomEvent_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_projectile_base_bp(4759)
+  [33] return nothing
+  [35] end
+
+=== CanDamageThisTarget
+  [0] Can = true
+  [11] return nothing
+  [13] end
+
+=== CanExplodeOnThisTarget
+  [0] Can = true
+  [11] return nothing
+  [13] end
+
+=== CanGainMeterLifestealAndLanternFromHittingThis
+  [0] CanGainTheseEffects = self.CanGainMeterLifestealAndLanternByDamagingThis
+  [19] return nothing
+  [21] end
+
+=== CanHitCBPushPullTarget
+  [0] Hits? = false
+  [11] return nothing
+  [13] end
+
+=== CanHitThisTarget
+  [0] CallFunc_CanHitThisTarget_ReturnValue = CanHitThisTarget(TargetActor)
+  [37] ReturnValue = CallFunc_CanHitThisTarget_ReturnValue
+  [64] return ReturnValue
+  [74] end
+
+=== ClearLockOnCameraTarget
+  [0] ExecuteUbergraph_projectile_base_bp(3320)
+  [15] return nothing
+  [17] end
+
+=== DebugMulticastDrawProjectileSphere
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] frame.K2Node_CustomEvent_Duration = Duration
+  [36] frame.K2Node_CustomEvent_Thickness = Thickness
+  [54] frame.K2Node_CustomEvent_Color = Color
+  [72] ExecuteUbergraph_projectile_base_bp(11901)
+  [87] return nothing
+  [89] end
+
+=== DelayedExpireEvent
+  [0] ExecuteUbergraph_projectile_base_bp(13446)
+  [15] return nothing
+  [17] end
+
+=== EndPlayFromPool
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_projectile_base_bp(13117)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_projectile_base_bp
+  [0] push @13452
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_Divide_DoubleDouble_ReturnValue_5 = Divide_DoubleDouble(1.0, self.ExplodeOnTerrainDecalFadeoutTime)
+  [61] CallFunc_SetPlayRate_NewRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue_5)
+  [90] self.ExplodeOnTerrainDecalFadeTimeline.SetPlayRate(CallFunc_SetPlayRate_NewRate_ImplicitCast)
+  [131] self.ExplodeOnTerrainDecalFadeTimeline.PlayFromStart()
+  [163] pop
+  [164] Temp_int_Array_Index_Variable = 0
+  [187] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnExplode)
+  [246] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_2)
+  [284] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [294] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [321] push @479
+  [326] Default__KismetArrayLibrary.Array_Get(self.ImpulsesToSpawnOnExplode, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [385] CallFunc_K2_GetRootComponent_ReturnValue_4 = K2_GetRootComponent()
+  [405] Default__archon_function_library_C.SpawnImpulse(CallFunc_Array_Get_Item, CallFunc_K2_GetRootComponent_ReturnValue_4, self, CallFunc_SpawnImpulse_ParticleRefIfSpawned_4, CallFunc_SpawnImpulse_UsedAkComponentRef_4)
+  [478] pop
+  [479] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [521] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [548] goto @187
+  [553] Temp_int_Array_Index_Variable_1 = 0
+  [576] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnHit)
+  [635] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_4)
+  [673] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [683] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [710] push @868
+  [715] CallFunc_K2_GetRootComponent_ReturnValue_2 = K2_GetRootComponent()
+  [735] Default__KismetArrayLibrary.Array_Get(self.ImpulsesToSpawnOnHit, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [794] Default__archon_function_library_C.SpawnImpulse(CallFunc_Array_Get_Item_3, CallFunc_K2_GetRootComponent_ReturnValue_2, self, CallFunc_SpawnImpulse_ParticleRefIfSpawned_1, CallFunc_SpawnImpulse_UsedAkComponentRef_1)
+  [867] pop
+  [868] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [910] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [937] goto @576
+  [942] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [963] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @978
+  [977] pop
+  [978] Temp_int_Loop_Counter_Variable = 0
+  [1001] Temp_int_Array_Index_Variable_2 = 0
+  [1024] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnStop)
+  [1083] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_5)
+  [1121] if !(CallFunc_Less_IntInt_ReturnValue_4) pop
+  [1131] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable
+  [1158] push @1316
+  [1163] CallFunc_K2_GetRootComponent_ReturnValue_3 = K2_GetRootComponent()
+  [1183] Default__KismetArrayLibrary.Array_Get(self.ImpulsesToSpawnOnStop, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_5)
+  [1242] Default__archon_function_library_C.SpawnImpulse(CallFunc_Array_Get_Item_5, CallFunc_K2_GetRootComponent_ReturnValue_3, self, CallFunc_SpawnImpulse_ParticleRefIfSpawned_3, CallFunc_SpawnImpulse_UsedAkComponentRef_3)
+  [1315] pop
+  [1316] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1358] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1385] goto @1024
+  [1390] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.LocalSpeed2d)
+  [1419] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [1457] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [1467] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.HomingTarget.K2_GetActorLocation()
+  [1517] CallFunc_K2_GetActorLocation_ReturnValue_2 = K2_GetActorLocation()
+  [1545] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [1613] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [1659] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [1705] CallFunc_MakeVector_ReturnValue_3 = MakeVector(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, 0.0)
+  [1760] CallFunc_Divide_VectorFloat_B_ImplicitCast = cast<CST_FloatToDouble>(self.LocalSpeed2d)
+  [1789] CallFunc_Divide_VectorFloat_ReturnValue_2 = Divide_VectorFloat(CallFunc_MakeVector_ReturnValue_3, CallFunc_Divide_VectorFloat_B_ImplicitCast)
+  [1835] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_6, CallFunc_BreakVector_Y_6, CallFunc_BreakVector_Z_6)
+  [1903] Temp_byte_Variable = self.HomingType
+  [1930] Temp_byte_Variable_1 = self.HomingType
+  [1957] Temp_real_Variable = 0.0
+  [1984] Temp_byte_Variable_2 = self.HomingType
+  [2011] CallFunc_MakeVector_ReturnValue_4 = MakeVector(switch(Temp_byte_Variable){0: CallFunc_BreakVector_X_3, 1: CallFunc_BreakVector_X_2, 2: CallFunc_BreakVector_X_3, default: K2Node_Select_Default}, switch(Temp_byte_Variable_1){0: CallFunc_BreakVector_Y_3, 1: CallFunc_BreakVector_Y_2, 2: CallFunc_BreakVector_Y_3, default: K2Node_Select_Default_1}, switch(Temp_byte_Variable_2){0: Temp_real_Variable, 1: CallFunc_BreakVector_Z_3, 2: CallFunc_BreakVector_Z_3, default: K2Node_Select_Default_2})
+  [2249] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_MakeVector_ReturnValue_4, 0.0001)
+  [2291] CallFunc_VInterpTo_Constant_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_DeltaSeconds)
+  [2320] CallFunc_VInterpTo_Constant_ReturnValue = VInterpTo_Constant(CallFunc_Divide_VectorFloat_ReturnValue_2, CallFunc_Normal_ReturnValue_1, CallFunc_VInterpTo_Constant_DeltaTime_ImplicitCast, self.HomingAccel)
+  [2384] CallFunc_Normal_ReturnValue_2 = Normal(CallFunc_VInterpTo_Constant_ReturnValue, 0.0001)
+  [2426] CallFunc_Multiply_VectorFloat_B_ImplicitCast = cast<CST_FloatToDouble>(self.LocalSpeed2d)
+  [2455] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_Normal_ReturnValue_2, CallFunc_Multiply_VectorFloat_B_ImplicitCast)
+  [2501] BreakVector(CallFunc_Multiply_VectorFloat_ReturnValue_2, CallFunc_BreakVector_X_8, CallFunc_BreakVector_Y_8, CallFunc_BreakVector_Z_8)
+  [2547] CallFunc_MakeVector_ReturnValue_6 = MakeVector(CallFunc_BreakVector_X_8, CallFunc_BreakVector_Y_8, CallFunc_BreakVector_Z_6)
+  [2602] self.ProjectileMovement.self.Velocity = CallFunc_MakeVector_ReturnValue_6
+  [2651] pop
+  [2652] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [2673] if !(CallFunc_IsDedicatedServer_ReturnValue_1) goto @2688
+  [2687] pop
+  [2688] CallFunc_IsValid_ReturnValue_7 = IsValid(self.ExplodeOnTerrainDecal)
+  [2717] if !(CallFunc_IsValid_ReturnValue_7) pop
+  [2727] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_Event_ExplodeType, 1)
+  [2758] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @2773
+  [2772] pop
+  [2773] CallFunc_SpawnDecalAtLocation_LifeSpan_ImplicitCast = cast<CST_DoubleToFloat>(self.ExplodeOnTerrainDecalLifeSpan)
+  [2802] CallFunc_SpawnDecalAtLocation_ReturnValue = Default__GameplayStatics.SpawnDecalAtLocation(self, self.ExplodeOnTerrainDecal, self.ExplodeOnTerrainDecalSize, K2Node_Event_ExplosionLocation, self.ExplodeOnTerrainDecalRotation, CallFunc_SpawnDecalAtLocation_LifeSpan_ImplicitCast)
+  [2890] CallFunc_CreateDynamicMaterialInstance_ReturnValue = CallFunc_SpawnDecalAtLocation_ReturnValue.CreateDynamicMaterialInstance()
+  [2936] self.ExplodeOnTerrainDecalMaterialRef = CallFunc_CreateDynamicMaterialInstance_ReturnValue
+  [2955] CallFunc_Greater_DoubleDouble_A_ImplicitCast_3 = cast<CST_FloatToDouble>(self.PostExplodeLifeSpan)
+  [2984] CallFunc_Greater_DoubleDouble_ReturnValue_5 = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast_3, 0.0)
+  [3022] CallFunc_Greater_DoubleDouble_ReturnValue_6 = Greater_DoubleDouble(self.ExplodeOnTerrainDecalFadeoutTime, 0.0)
+  [3060] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue_5, CallFunc_Greater_DoubleDouble_ReturnValue_6)
+  [3098] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [3108] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.PostExplodeLifeSpan)
+  [3137] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.ExplodeOnTerrainDecalFadeoutTime)
+  [3183] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0010000000474974513)
+  [3229] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [3258] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=15), 461420197, 'ExecuteUbergraph_projectile_base_bp', self})
+  [3316] pop
+  [3317] pop
+  [3318] pop
+  [3319] pop
+  [3320] pop
+  [3321] if !(K2Node_Event_Params.bApplyBuffsOnHit) pop
+  [3340] CallFunc_IsValid_ReturnValue = IsValid(K2Node_Event_DamagedActor)
+  [3369] if !(CallFunc_IsValid_ReturnValue) pop
+  [3379] CallFunc_GetComponentByClass_ReturnValue = K2Node_Event_DamagedActor.GetComponentByClass(ArchonBuffableComponent)
+  [3430] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [3459] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3469] Temp_int_Loop_Counter_Variable_3 = 0
+  [3492] Temp_int_Array_Index_Variable_3 = 0
+  [3515] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.BuffsToApplyOnHit)
+  [3574] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue)
+  [3612] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [3622] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_3
+  [3649] push @4196
+  [3654] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [3674] Default__KismetArrayLibrary.Array_Get(self.BuffsToApplyOnHit, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [3733] Default__gameplay_helpers_fl_C.ApplyBuffs-UseBuffApplierIfPossible(CallFunc_GetInstigator_ReturnValue, CallFunc_Array_Get_Item_1, K2Node_Event_DamagedActor, HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}, true, self, CallFunc_ApplyBuffs_UseBuffApplierIfPossible_BuffRef, CallFunc_ApplyBuffs_UseBuffApplierIfPossible_BuffWasReplacedByOverrides)
+  [4195] pop
+  [4196] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [4238] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [4265] goto @3515
+  [4270] self.ProjectileMovement.self.Velocity = K2Node_CustomEvent_NewVel
+  [4319] self.ProjectileMovement.self.ProjectileGravityScale = 1.0
+  [4364] CallFunc_GetGravityZ_ReturnValue = self.ProjectileMovement.GetGravityZ()
+  [4418] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGravityZ_ReturnValue)
+  [4447] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.ProjectileMovement.self.ProjectileGravityScale)
+  [4498] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [4544] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(K2Node_CustomEvent_NewGravity, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [4590] K2Node_VariableSet_ProjectileGravityScale_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue_1)
+  [4619] self.ProjectileMovement.self.ProjectileGravityScale = K2Node_VariableSet_ProjectileGravityScale_ImplicitCast
+  [4668] self.ProjectileMovement.self.MaxSpeed = 0.0
+  [4713] self.ProjectileMovement.self.InitialSpeed = 0.0
+  [4758] pop
+  [4759] CallFunc_IsValid_ReturnValue_2 = IsValid(self.HomingTarget)
+  [4788] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [4798] CallFunc_Greater_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(self.HomingAccel)
+  [4827] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast_1, 0.0)
+  [4865] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [4875] CallFunc_K2_GetActorLocation_ReturnValue_3 = K2_GetActorLocation()
+  [4903] CallFunc_DrawDebugHorizontalAngle_Angle_ImplicitCast = cast<CST_FloatToDouble>(self.HomingLockOnAngle)
+  [4932] Default__archon_function_library_C.DrawDebugHorizontalAngle(CallFunc_K2_GetActorLocation_ReturnValue_3, self.ProjectileMovement.self.Velocity, CallFunc_DrawDebugHorizontalAngle_Angle_ImplicitCast, 1000.0, LinearColor{0.0, 1.0, 0.0, 0.0}, LinearColor{0.0, 1.0, 0.0, 0.0}, LinearColor{0.0, 0.1, 0.0, 0.0}, 0.0, false, self)
+  [5139] CallFunc_Normal_ReturnValue = Normal(self.ProjectileMovement.self.Velocity, 0.0001)
+  [5203] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Normal_ReturnValue, 1000.0)
+  [5249] CallFunc_K2_GetActorLocation_ReturnValue_3 = K2_GetActorLocation()
+  [5277] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_3)
+  [5323] DrawDebugArrow(self, CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_Add_VectorVector_ReturnValue, 2500.0, LinearColor{1.0, 0.858483, 0.0, 1.0}, 0.1, 25.0)
+  [5401] CallFunc_K2_GetActorLocation_ReturnValue = self.HomingTarget.K2_GetActorLocation()
+  [5451] CallFunc_K2_GetActorLocation_ReturnValue_3 = K2_GetActorLocation()
+  [5479] CallFunc_Divide_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(self.HomingLockOnAngle)
+  [5508] CallFunc_Divide_DoubleDouble_ReturnValue_2 = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast_1, 2.0)
+  [5554] Default__archon_function_library_C.GetTopdownAngleBetweenPoints(CallFunc_K2_GetActorLocation_ReturnValue_3, self.ProjectileMovement.self.Velocity, CallFunc_K2_GetActorLocation_ReturnValue, self, CallFunc_GetTopdownAngleBetweenPoints_Angle)
+  [5649] CallFunc_Abs_ReturnValue = Abs(CallFunc_GetTopdownAngleBetweenPoints_Angle)
+  [5686] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Abs_ReturnValue, CallFunc_Divide_DoubleDouble_ReturnValue_2)
+  [5724] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [5734] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.ProjectileMovementType, 0)
+  [5765] if !(K2Node_SwitchEnum_CmpSuccess) goto @5825
+  [5779] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.ProjectileMovementType, 1)
+  [5810] if !(K2Node_SwitchEnum_CmpSuccess) goto @6046
+  [5824] pop
+  [5825] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [5893] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, 0.0)
+  [5948] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_MakeVector_ReturnValue_1)
+  [5985] K2Node_VariableSet_LocalSpeed2d_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_VSize_ReturnValue_1)
+  [6014] self.LocalSpeed2d = K2Node_VariableSet_LocalSpeed2d_ImplicitCast_1
+  [6041] goto @1390
+  [6046] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [6114] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [6169] CallFunc_VSize_ReturnValue = VSize(CallFunc_MakeVector_ReturnValue)
+  [6206] K2Node_VariableSet_LocalSpeed2d_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_VSize_ReturnValue)
+  [6235] self.LocalSpeed2d = K2Node_VariableSet_LocalSpeed2d_ImplicitCast
+  [6262] BreakVector(self.LobbedProjectileInitialVelocity, CallFunc_BreakVector_X_4, CallFunc_BreakVector_Y_4, CallFunc_BreakVector_Z_4)
+  [6308] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_5, CallFunc_BreakVector_Y_5, CallFunc_BreakVector_Z_5)
+  [6376] CallFunc_GetGravityZ_ReturnValue_1 = self.ProjectileMovement.GetGravityZ()
+  [6430] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z_5, CallFunc_BreakVector_Z_4)
+  [6476] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGravityZ_ReturnValue_1)
+  [6505] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, -1.0)
+  [6551] CallFunc_Divide_DoubleDouble_ReturnValue_3 = Divide_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [6597] self.L_EstimatedTimeToGround = CallFunc_Divide_DoubleDouble_ReturnValue_3
+  [6624] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.HomingTarget.K2_GetActorLocation()
+  [6674] CallFunc_K2_GetActorLocation_ReturnValue_2 = K2_GetActorLocation()
+  [6702] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [6748] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [6794] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, 0.0)
+  [6849] CallFunc_VSize_ReturnValue_2 = VSize(CallFunc_MakeVector_ReturnValue_2)
+  [6886] CallFunc_Divide_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(self.LocalSpeed2d)
+  [6915] CallFunc_Divide_DoubleDouble_ReturnValue_4 = Divide_DoubleDouble(CallFunc_VSize_ReturnValue_2, CallFunc_Divide_DoubleDouble_B_ImplicitCast_1)
+  [6961] self.L_EstimatedTimeToTarget = CallFunc_Divide_DoubleDouble_ReturnValue_4
+  [6988] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.L_EstimatedTimeToTarget, self.L_EstimatedTimeToGround)
+  [7034] Default__archon_function_library_C.RescaleAndClamp(-0.5, 0.5, -1.0, 1.0, CallFunc_Subtract_DoubleDouble_ReturnValue, self, CallFunc_RescaleAndClamp_NewValue)
+  [7125] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_RescaleAndClamp_NewValue)
+  [7162] PrintString(self, CallFunc_Conv_DoubleToString_ReturnValue, true, true, LinearColor{1.0, 0.264129, 0.0, 1.0}, 0.001, 'None')
+  [7236] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.HomingTarget.K2_GetActorLocation()
+  [7286] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [7354] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [7422] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [7477] CallFunc_VSize_ReturnValue = VSize(CallFunc_MakeVector_ReturnValue)
+  [7514] CallFunc_Divide_VectorFloat_ReturnValue = Divide_VectorFloat(CallFunc_MakeVector_ReturnValue, CallFunc_VSize_ReturnValue)
+  [7560] CallFunc_K2_GetActorLocation_ReturnValue_2 = K2_GetActorLocation()
+  [7588] BreakVector(self.ProjectileMovement.self.Velocity, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [7656] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [7702] BreakVector(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [7748] CallFunc_MakeVector_ReturnValue_2 = MakeVector(CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, 0.0)
+  [7803] CallFunc_VSize_ReturnValue_2 = VSize(CallFunc_MakeVector_ReturnValue_2)
+  [7840] CallFunc_Divide_VectorFloat_ReturnValue_1 = Divide_VectorFloat(CallFunc_MakeVector_ReturnValue_2, CallFunc_VSize_ReturnValue_2)
+  [7886] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.L_EstimatedTimeToTarget, self.L_EstimatedTimeToGround)
+  [7932] Default__archon_function_library_C.RescaleAndClamp(-0.5, 0.5, -1.0, 1.0, CallFunc_Subtract_DoubleDouble_ReturnValue, self, CallFunc_RescaleAndClamp_NewValue)
+  [8023] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_RescaleAndClamp_NewValue, 10000.0)
+  [8069] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, K2Node_CustomEvent_DeltaSeconds)
+  [8115] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Divide_VectorFloat_ReturnValue_1, CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [8161] Temp_byte_Variable = self.HomingType
+  [8188] Temp_byte_Variable_1 = self.HomingType
+  [8215] Temp_real_Variable = 0.0
+  [8242] Temp_byte_Variable_2 = self.HomingType
+  [8269] CallFunc_MakeVector_ReturnValue_4 = MakeVector(switch(Temp_byte_Variable){0: CallFunc_BreakVector_X_3, 1: CallFunc_BreakVector_X_2, 2: CallFunc_BreakVector_X_3, default: K2Node_Select_Default}, switch(Temp_byte_Variable_1){0: CallFunc_BreakVector_Y_3, 1: CallFunc_BreakVector_Y_2, 2: CallFunc_BreakVector_Y_3, default: K2Node_Select_Default_1}, switch(Temp_byte_Variable_2){0: Temp_real_Variable, 1: CallFunc_BreakVector_Z_3, 2: CallFunc_BreakVector_Z_3, default: K2Node_Select_Default_2})
+  [8507] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_MakeVector_ReturnValue_4, 0.0001)
+  [8549] CallFunc_VInterpTo_Constant_DeltaTime_ImplicitCast_1 = cast<CST_DoubleToFloat>(K2Node_CustomEvent_DeltaSeconds)
+  [8578] CallFunc_VInterpTo_Constant_ReturnValue_1 = VInterpTo_Constant(CallFunc_Divide_VectorFloat_ReturnValue, CallFunc_Normal_ReturnValue_1, CallFunc_VInterpTo_Constant_DeltaTime_ImplicitCast_1, self.HomingAccel)
+  [8642] BreakVector(CallFunc_VInterpTo_Constant_ReturnValue_1, CallFunc_BreakVector_X_7, CallFunc_BreakVector_Y_7, CallFunc_BreakVector_Z_7)
+  [8688] CallFunc_MakeVector_ReturnValue_5 = MakeVector(CallFunc_BreakVector_X_7, CallFunc_BreakVector_Y_7, 0.0)
+  [8743] CallFunc_Normal_ReturnValue_3 = Normal(CallFunc_MakeVector_ReturnValue_5, 0.0001)
+  [8785] CallFunc_Multiply_VectorFloat_B_ImplicitCast_1 = cast<CST_FloatToDouble>(self.LocalSpeed2d)
+  [8814] CallFunc_Multiply_VectorFloat_ReturnValue_3 = Multiply_VectorFloat(CallFunc_Normal_ReturnValue_3, CallFunc_Multiply_VectorFloat_B_ImplicitCast_1)
+  [8860] BreakVector(CallFunc_Multiply_VectorFloat_ReturnValue_3, CallFunc_BreakVector_X_9, CallFunc_BreakVector_Y_9, CallFunc_BreakVector_Z_9)
+  [8906] CallFunc_MakeVector_ReturnValue_7 = MakeVector(CallFunc_BreakVector_X_9, CallFunc_BreakVector_Y_9, CallFunc_BreakVector_Z)
+  [8961] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue_1, CallFunc_MakeVector_ReturnValue_7)
+  [9007] self.ProjectileMovement.self.Velocity = CallFunc_Add_VectorVector_ReturnValue_1
+  [9056] pop
+  [9057] CallFunc_VSize_ReturnValue_3 = VSize(K2Node_CustomEvent_NewVelocity)
+  [9094] K2Node_VariableSet_LocalSpeed2d_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_VSize_ReturnValue_3)
+  [9123] self.LocalSpeed2d = K2Node_VariableSet_LocalSpeed2d_ImplicitCast_2
+  [9150] self.ProjectileMovement.self.Velocity = K2Node_CustomEvent_NewVelocity
+  [9199] self.ProjectileMovement.self.MaxSpeed = self.LocalSpeed2d
+  [9248] self.ProjectileMovement.self.InitialSpeed = self.LocalSpeed2d
+  [9297] pop
+  [9298] OnProjectileStopped()
+  [9312] pop
+  [9313] CallFunc_K2_GetComponentLocation_ReturnValue = self.Colliding Body.K2_GetComponentLocation()
+  [9363] self.L_ExplosionLoc = CallFunc_K2_GetComponentLocation_ReturnValue
+  [9390] if !(self.ExplodeOnHit) goto @9490
+  [9404] CanExplodeOnThisTarget(K2Node_Event_OtherActor, K2Node_Event_OtherComponent, CallFunc_CanExplodeOnThisTarget_Can)
+  [9445] if !(CallFunc_CanExplodeOnThisTarget_Can) pop
+  [9455] Multi_Explode(self.L_ExplosionLoc, CallFunc_K2_LineTraceComponent_HitNormal, 3)
+  [9489] pop
+  [9490] Multi_Hit()
+  [9504] pop
+  [9505] push @9734
+  [9510] push @9756
+  [9515] OnProjectileStopped_Dispatcher__DelegateSignature(self)
+  [9535] if !(self.ExplodeOnStop) pop
+  [9545] CallFunc_Greater_DoubleDouble_ReturnValue_2 = Greater_DoubleDouble(self.ExplodeDelayOnTerrain, 0.0)
+  [9583] if !(CallFunc_Greater_DoubleDouble_ReturnValue_2) goto @10300
+  [9597] K2Node_CreateDelegate_OutputDelegate = bind(self.ExplodeDelayOnTerrainComplete)
+  [9620] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.ExplodeDelayOnTerrain)
+  [9649] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [9706] self.ExplodeDelayOnTerrainTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [9733] pop
+  [9734] if !(self.DisableCollisionOnStop) pop
+  [9744] SetActorEnableCollision(false)
+  [9755] pop
+  [9756] CallFunc_K2_GetActorLocation_ReturnValue_7 = K2_GetActorLocation()
+  [9784] CallFunc_Vector_IsZero_ReturnValue_1 = Vector_IsZero(CallFunc_K2_GetActorLocation_ReturnValue_7)
+  [9813] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_Vector_IsZero_ReturnValue_1)
+  [9842] if !(CallFunc_Not_PreBool_ReturnValue_1) pop
+  [9852] CallFunc_IsDedicatedServer_ReturnValue_2 = IsDedicatedServer(self)
+  [9873] if !(CallFunc_IsDedicatedServer_ReturnValue_2) goto @9888
+  [9887] pop
+  [9888] Temp_int_Loop_Counter_Variable_5 = 0
+  [9911] Temp_int_Array_Index_Variable_5 = 0
+  [9934] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnStop)
+  [9993] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_5, CallFunc_Array_Length_ReturnValue_1)
+  [10031] if !(CallFunc_Less_IntInt_ReturnValue_5) pop
+  [10041] Temp_int_Array_Index_Variable_5 = Temp_int_Loop_Counter_Variable_5
+  [10068] push @10226
+  [10073] CallFunc_K2_GetRootComponent_ReturnValue = K2_GetRootComponent()
+  [10093] Default__KismetArrayLibrary.Array_Get(self.ImpulsesToSpawnOnStop, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [10152] Default__archon_function_library_C.SpawnImpulse(CallFunc_Array_Get_Item_4, CallFunc_K2_GetRootComponent_ReturnValue, self, CallFunc_SpawnImpulse_ParticleRefIfSpawned_2, CallFunc_SpawnImpulse_UsedAkComponentRef_2)
+  [10225] pop
+  [10226] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_5, 1)
+  [10268] Temp_int_Loop_Counter_Variable_5 = CallFunc_Add_IntInt_ReturnValue_5
+  [10295] goto @9934
+  [10300] CallFunc_K2_GetActorLocation_ReturnValue_4 = K2_GetActorLocation()
+  [10328] ProjectileExploded(CallFunc_K2_GetActorLocation_ReturnValue_4, 1)
+  [10353] pop
+  [10354] Temp_int_Loop_Counter_Variable_1 = 0
+  [10377] goto @164
+  [10382] Temp_int_Array_Index_Variable_4 = 0
+  [10405] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnStart)
+  [10464] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue_3)
+  [10502] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [10512] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_4
+  [10539] push @10697
+  [10544] CallFunc_K2_GetRootComponent_ReturnValue_1 = K2_GetRootComponent()
+  [10564] Default__KismetArrayLibrary.Array_Get(self.ImpulsesToSpawnOnStart, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_2)
+  [10623] Default__archon_function_library_C.SpawnImpulse(CallFunc_Array_Get_Item_2, CallFunc_K2_GetRootComponent_ReturnValue_1, self, CallFunc_SpawnImpulse_ParticleRefIfSpawned, CallFunc_SpawnImpulse_UsedAkComponentRef)
+  [10696] pop
+  [10697] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [10739] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_4
+  [10766] goto @10405
+  [10771] Temp_int_Loop_Counter_Variable_2 = 0
+  [10794] goto @553
+  [10799] if !(self.ExplodeOnExpire) goto @10867
+  [10813] CallFunc_K2_GetActorLocation_ReturnValue_5 = K2_GetActorLocation()
+  [10841] ProjectileExploded(CallFunc_K2_GetActorLocation_ReturnValue_5, 2)
+  [10866] pop
+  [10867] push @942
+  [10872] CallFunc_Greater_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(self.PostExplodeLifeSpan)
+  [10901] CallFunc_Greater_DoubleDouble_ReturnValue_3 = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast_2, 0.0)
+  [10939] if !(CallFunc_Greater_DoubleDouble_ReturnValue_3) goto @10977
+  [10953] SetLifeSpan(self.PostExplodeLifeSpan)
+  [10976] pop
+  [10977] SetLifeSpan(0.0001)
+  [10996] pop
+  [10997] self.ProjectileMovement.StopMovementImmediately()
+  [11033] self.ProjectileMovement.self.ProjectileGravityScale = 0.0
+  [11078] pop
+  [11079] CallFunc_IsValid_ReturnValue_3 = IsValid(self.ParticleSystem)
+  [11108] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [11118] self.ParticleSystem.Deactivate()
+  [11154] pop
+  [11155] SetActorEnableCollision(false)
+  [11166] goto @10799
+  [11171] push @11155
+  [11176] push @11196
+  [11181] if !(self.StopProjectileOnExpire) pop
+  [11191] goto @10997
+  [11196] if !(self.DisableParticleOnExpire) pop
+  [11206] goto @11079
+  [11211] CallFunc_K2_GetRootComponent_ReturnValue_2 = K2_GetRootComponent()
+  [11231] CallFunc_K2_GetComponentLocation_ReturnValue_1 = CallFunc_K2_GetRootComponent_ReturnValue_2.K2_GetComponentLocation()
+  [11281] CallFunc_Vector_IsZero_ReturnValue = Vector_IsZero(CallFunc_K2_GetComponentLocation_ReturnValue_1)
+  [11310] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_Vector_IsZero_ReturnValue)
+  [11339] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [11349] goto @10771
+  [11354] push @11383
+  [11359] RecordProjectileHit(K2Node_Event_OtherActor)
+  [11382] pop
+  [11383] CanDamageThisTarget(K2Node_Event_OtherActor, K2Node_Event_OtherComponent, CallFunc_CanDamageThisTarget_Can)
+  [11424] if !(CallFunc_CanDamageThisTarget_Can) goto @11479
+  [11438] Server - Apply Damage(K2Node_Event_OtherActor, K2Node_Event_SweepResult, K2Node_Event_OtherComponent)
+  [11479] CallFunc_IsValid_ReturnValue_4 = IsValid(K2Node_Event_OtherActor)
+  [11508] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [11518] CallFunc_K2_GetComponentLocation_ReturnValue = self.Colliding Body.K2_GetComponentLocation()
+  [11568] CallFunc_K2_GetActorLocation_ReturnValue_6 = K2Node_Event_OtherActor.K2_GetActorLocation()
+  [11618] CallFunc_K2_LineTraceComponent_ReturnValue = K2Node_Event_OtherComponent.K2_LineTraceComponent(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_6, true, false, false, CallFunc_K2_LineTraceComponent_HitLocation, CallFunc_K2_LineTraceComponent_HitNormal, CallFunc_K2_LineTraceComponent_BoneName, CallFunc_K2_LineTraceComponent_OutHit)
+  [11717] if !(CallFunc_K2_LineTraceComponent_ReturnValue) goto @9313
+  [11731] self.L_ExplosionLoc = CallFunc_K2_LineTraceComponent_HitLocation
+  [11758] goto @9390
+  [11763] if !(Temp_bool_IsClosed_Variable) goto @11778
+  [11777] pop
+  [11778] Temp_bool_IsClosed_Variable = true
+  [11789] push @2652
+  [11794] ProjectileExploded(K2Node_Event_ExplosionLocation, K2Node_Event_ExplodeType)
+  [11822] pop
+  [11823] Temp_bool_IsClosed_Variable = true
+  [11834] pop
+  [11835] Temp_bool_IsClosed_Variable = false
+  [11846] Temp_bool_Has_Been_Initd_Variable = true
+  [11857] pop
+  [11858] Temp_int_Loop_Counter_Variable_4 = 0
+  [11881] goto @10382
+  [11886] K2_DestroyActor()
+  [11900] pop
+  [11901] CallFunc_DrawDebugCapsule_Duration_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_Duration)
+  [11930] CallFunc_DrawDebugCapsule_Thickness_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_Thickness)
+  [11959] DrawDebugCapsule(self, K2Node_CustomEvent_Location, self.Colliding Body.self.CapsuleHalfHeight, self.Colliding Body.self.CapsuleRadius, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), K2Node_CustomEvent_Color, CallFunc_DrawDebugCapsule_Duration_ImplicitCast, CallFunc_DrawDebugCapsule_Thickness_ImplicitCast)
+  [12093] pop
+  [12094] ProjectileExploded(K2Node_CustomEvent_HitLocation, K2Node_CustomEvent_ExplodeType)
+  [12126] pop
+  [12127] goto @11211
+  [12132] goto @9298
+  [12137] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [12157] Default__archon_function_library_C.AuthGetNewOrExistingGUID(CallFunc_GetOwner_ReturnValue, self.SharedDamageGUIDName, self, CallFunc_AuthGetNewOrExistingGUID_NewOrExistingGUID)
+  [12221] self.DamageGUID = CallFunc_AuthGetNewOrExistingGUID_NewOrExistingGUID
+  [12248] pop
+  [12249] OnProjectileExploded__DelegateSignature(self)
+  [12269] pop
+  [12270] AudioSetIsLocal()
+  [12284] pop
+  [12285] CallFunc_IsValid_ReturnValue_6 = IsValid(self.Colliding Body)
+  [12314] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [12324] AuthSweepHit(self.Colliding Body)
+  [12347] pop
+  [12348] goto @12137
+  [12353] goto @12270
+  [12358] goto @11858
+  [12363] goto @978
+  [12368] goto @10354
+  [12373] goto @12249
+  [12378] InvulnerableTarget(K2Node_Event_AbilityActor, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'State.InvulnerableDodge'})})
+  [12456] pop
+  [12457] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.MaxNumberOfHits, 0)
+  [12491] CallFunc_Greater_DoubleDouble_ReturnValue_4 = Greater_DoubleDouble(self.HitCooldown, 0.0)
+  [12529] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [12558] GetLastHitTimeForActor(K2Node_Event_OtherActor, CallFunc_GetLastHitTimeForActor_LastHitTime)
+  [12590] GetNumRecordedHitsForActor(K2Node_Event_OtherActor, CallFunc_GetNumRecordedHitsForActor_NumHits)
+  [12622] GetNumRecordedHits(CallFunc_GetNumRecordedHits_NumHits)
+  [12645] Temp_bool_Variable_1 = self.bPerActorHitsAndCooldown
+  [12664] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(switch(Temp_bool_Variable_1){false: CallFunc_GetNumRecordedHits_NumHits, true: CallFunc_GetNumRecordedHitsForActor_NumHits, default: K2Node_Select_Default_3}, self.MaxNumberOfHits)
+  [12746] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_GreaterEqual_IntInt_ReturnValue)
+  [12784] Temp_bool_Variable = self.bPerActorHitsAndCooldown
+  [12803] GetLastHitTime(CallFunc_GetLastHitTime_LastHitTime)
+  [12826] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, switch(Temp_bool_Variable){false: CallFunc_GetLastHitTime_LastHitTime, true: CallFunc_GetLastHitTimeForActor_LastHitTime, default: K2Node_Select_Default_4})
+  [12916] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_2, self.HitCooldown)
+  [12954] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue_4, CallFunc_Less_DoubleDouble_ReturnValue)
+  [12992] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue_1, CallFunc_BooleanAND_ReturnValue_2)
+  [13030] if !(CallFunc_BooleanOR_ReturnValue) goto @11354
+  [13044] pop
+  [13045] push @11763
+  [13050] if !(Temp_bool_Has_Been_Initd_Variable) goto @13065
+  [13064] pop
+  [13065] Temp_bool_Has_Been_Initd_Variable = true
+  [13076] if !(false) pop
+  [13078] goto @11823
+  [13083] goto @10300
+  [13088] ResetProjectileMovementComponent()
+  [13102] BeginPlayFromPool()
+  [13112] goto @11835
+  [13117] EndPlayFromPool(K2Node_Event_EndPlayReason)
+  [13136] CallFunc_GetComponentByClass_ReturnValue_1 = GetComponentByClass(AkComponent)
+  [13165] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [13194] if !(CallFunc_IsValid_ReturnValue_5) goto @13270
+  [13208] CallFunc_GetComponentByClass_ReturnValue_1 = GetComponentByClass(AkComponent)
+  [13237] CallFunc_GetComponentByClass_ReturnValue_1.K2_DestroyComponent(self)
+  [13270] K2_ClearAndInvalidateTimerHandle(self, self.ExplodeDelayOnTerrainTimer)
+  [13290] K2_ClearAndInvalidateTimerHandle(self, self.DelayHandle)
+  [13310] Default__KismetArrayLibrary.Array_Clear(self.AdditionalDamageRows)
+  [13351] pop
+  [13352] CallFunc_IsValid_ReturnValue_8 = IsValid(self.ExplodeOnTerrainDecalMaterialRef)
+  [13381] if !(CallFunc_IsValid_ReturnValue_8) pop
+  [13391] self.ExplodeOnTerrainDecalMaterialRef.SetScalarParameterValue('Decal Lifetime Opacity', self.ExplodeOnTerrainDecalFadeTimeline_Fadeout_1B39E2174052A01EEE0E66ADC3D27576)
+  [13445] pop
+  [13446] goto @11171
+  [13451] pop
+  [13452] return nothing
+  [13454] end
+
+=== ExplodeDelayOnTerrainComplete
+  [0] ExecuteUbergraph_projectile_base_bp(13083)
+  [15] return nothing
+  [17] end
+
+=== ExplodeOnTerrainDecalFadeTimeline__FinishedFunc
+  [0] ExecuteUbergraph_projectile_base_bp(13451)
+  [15] return nothing
+  [17] end
+
+=== ExplodeOnTerrainDecalFadeTimeline__UpdateFunc
+  [0] ExecuteUbergraph_projectile_base_bp(13352)
+  [15] return nothing
+  [17] end
+
+=== GetDamageTags
+  [0] L_Tags = DamageTableData.AssetTags
+  [36] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(DamageTableData.PhysicalTypeOverride, 3)
+  [76] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @204
+  [90] CallFunc_GetTagForPhysicalType_ReturnValue = GetTagForPhysicalType(DamageTableData.PhysicalTypeOverride)
+  [136] CallFunc_Array_AddUnique_ReturnValue = Default__KismetArrayLibrary.Array_AddUnique(L_Tags, CallFunc_GetTagForPhysicalType_ReturnValue)
+  [204] Temp_struct_Variable = GameplayTag{'DamageType.Projectile'}
+  [249] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Tags, Temp_struct_Variable)
+  [317] Tags = L_Tags
+  [344] return nothing
+  [346] end
+
+=== GetDefaultElementalAttackType
+  [0] DefaultElementalAttackType = 0
+  [20] return nothing
+  [22] end
+
+=== GetFallbackProjectileSpawnOffset
+  [0] Offset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] return nothing
+  [45] end
+
+=== GetLastHitTime
+  [0] push @521
+  [5] L_LastHitTime = -10000.0
+  [32] array{}
+  [43] Default__BlueprintMapLibrary.Map_Values(self.LastHitTimePerActor, CallFunc_Map_Values_Values)
+  [93] Temp_int_Loop_Counter_Variable = 0
+  [116] Temp_int_Array_Index_Variable = 0
+  [139] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Values_Values)
+  [198] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [236] if !(CallFunc_Less_IntInt_ReturnValue) goto @415
+  [250] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [277] push @447
+  [282] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [341] CallFunc_FMax_ReturnValue = FMax(CallFunc_Array_Get_Item, L_LastHitTime)
+  [387] L_LastHitTime = CallFunc_FMax_ReturnValue
+  [414] pop
+  [415] LastHitTime = L_LastHitTime
+  [442] goto @521
+  [447] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [489] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [516] goto @139
+  [521] return nothing
+  [523] end
+
+=== GetLastHitTimeForActor
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.LastHitTimePerActor, HitActor, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @184
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.LastHitTimePerActor, HitActor, CallFunc_Map_Find_Value)
+  [152] LastHitTime = CallFunc_Map_Find_Value
+  [179] goto @211
+  [184] LastHitTime = -10000.0
+  [211] return nothing
+  [213] end
+
+=== GetLockOnSockets
+  [0] SocketNames = EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "Function'projectile_base_bp_C:GetLockOnSockets'", 'ObjectPath': '/Game/_shared/blueprints/projectile_base_bp.35'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'SocketNames', 'Flags': 'RF_Public', 'ElementSize': 16, 'PropertyFlags': 'Parm | OutParm', 'Inner': {'Type': 'NameProperty', 'Name': 'SocketNames', 'Flags': 'RF_Public', 'ElementSize': 12}}},Values=)
+  [32] return nothing
+  [34] end
+
+=== GetLookAtAlpha
+  [0] LookAtAlpha = 0.0
+  [27] return nothing
+  [29] end
+
+=== GetLookAtVector
+  [0] LookAtVector = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] return nothing
+  [45] end
+
+=== GetMesh
+  [0] SkeletalMesh = null
+  [11] return nothing
+  [13] end
+
+=== GetMeterGainScale
+  [0] Scale = 0.0
+  [27] return nothing
+  [29] end
+
+=== GetNumRecordedHits
+  [0] push @494
+  [5] array{}
+  [16] Default__BlueprintMapLibrary.Map_Values(self.NumHitsPerActor, CallFunc_Map_Values_Values)
+  [66] Temp_int_Loop_Counter_Variable = 0
+  [89] Temp_int_Array_Index_Variable = 0
+  [112] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Values_Values)
+  [171] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [209] if !(CallFunc_Less_IntInt_ReturnValue) goto @388
+  [223] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [250] push @420
+  [255] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [314] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(L_NumHits, CallFunc_Array_Get_Item)
+  [360] L_NumHits = CallFunc_Add_IntInt_ReturnValue_1
+  [387] pop
+  [388] NumHits = L_NumHits
+  [415] goto @494
+  [420] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [462] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [489] goto @112
+  [494] return nothing
+  [496] end
+
+=== GetNumRecordedHitsForActor
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.NumHitsPerActor, HitActor, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @184
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.NumHitsPerActor, HitActor, CallFunc_Map_Find_Value)
+  [152] NumHits = CallFunc_Map_Find_Value
+  [179] goto @207
+  [184] NumHits = 0
+  [207] return nothing
+  [209] end
+
+=== HandleHit_Client
+  [0] frame.K2Node_Event_Damager_1 = Damager
+  [18] frame.K2Node_Event_DamagedActor_1 = DamagedActor
+  [36] frame.K2Node_Event_Params_1 = Params
+  [54] frame.K2Node_Event_bHitWouldHaveSucceededOnServer = bHitWouldHaveSucceededOnServer
+  [72] ExecuteUbergraph_projectile_base_bp(3317)
+  [87] return nothing
+  [89] end
+
+=== HandleHit_Server
+  [0] frame.K2Node_Event_Damager = Damager
+  [18] frame.K2Node_Event_DamagedActor = DamagedActor
+  [36] frame.K2Node_Event_Params = Params
+  [54] ExecuteUbergraph_projectile_base_bp(3321)
+  [69] return nothing
+  [71] end
+
+=== IgnoreEQSCharacterCapsuleAdjust
+  [0] IgnoreEQSCharacterCapsuleAdjust = false
+  [11] return nothing
+  [13] end
+
+=== InitializePoolable
+  [0] self.SpawnCollisionHandlingMethod = CollisionHandlingOverride
+  [27] SetOwner(Owner)
+  [50] FlushNetDormancy()
+  [60] self.OwningPawn = OwningPawn
+  [79] MarkPropertyDirtyFromRepIndex(self, 19, 'OwningPawn')
+  [108] FlushNetDormancy()
+  [118] self.OwningPawn_Native = self.OwningPawn
+  [137] MarkPropertyDirtyFromRepIndex(self, 18, 'OwningPawn_Native')
+  [166] self.DamageKey = DamageKey
+  [193] self.DamageGUID = DamageGUID
+  [220] FlushNetDormancy()
+  [230] self.OptionalEQSSpawnTimeOffset = OptionalEQSSpawnTimeOffset
+  [257] MarkPropertyDirtyFromRepIndex(self, 25, 'OptionalEQSSpawnTimeOffset')
+  [286] FlushNetDormancy()
+  [296] self.OptionalProjectileIndex = OptionalProjectileIndex
+  [323] MarkPropertyDirtyFromRepIndex(self, 26, 'OptionalProjectileIndex')
+  [352] self.SharedDamageGUIDName = SharedDamageGUIDName
+  [379] FlushNetDormancy()
+  [389] self.Instigator = Instigator
+  [408] MarkPropertyDirtyFromRepIndex(self, 9, 'Instigator')
+  [437] return nothing
+  [439] end
+
+=== InvulnerableTarget
+  [0] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(InputPin)
+  [29] CallFunc_GetAbilitySystemComponent_ReturnValue.GetOwnedGameplayTags(CallFunc_GetOwnedGameplayTags_TagContainer)
+  [75] array{GameplayTag{'State.InvulnerableDodge'}}
+  [113] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue_1 = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [150] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(CallFunc_GetOwnedGameplayTags_TagContainer, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue_1, true)
+  [189] if !(CallFunc_HasAnyTags_ReturnValue) goto @1030
+  [203] CalculateDamageRow(InputPin, CallFunc_CalculateDamageRow_FinalDamageRow, CallFunc_CalculateDamageRow_DamageScale, CallFunc_CalculateDamageRow_Succeeded)
+  [253] Default__damage_function_library_C.ScaleDamageRow(CallFunc_CalculateDamageRow_FinalDamageRow, CallFunc_CalculateDamageRow_DamageScale, self, CallFunc_ScaleDamageRow_ScaledDamageTableData)
+  [317] GetDamageTags(CallFunc_ScaleDamageRow_ScaledDamageTableData, CallFunc_GetDamageTags_Tags)
+  [349] K2Node_DynamicCast_AsArchon_Ability_Character = cast<ArchonAbilityCharacter>(InputPin)
+  [385] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_Character)
+  [414] if !(K2Node_DynamicCast_bSuccess) goto @1030
+  [428] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(CallFunc_GetDamageTags_Tags)
+  [465] K2Node_MakeStruct_ArchonHitEventParams.InstigatorTags = CallFunc_MakeGameplayTagContainerFromArray_ReturnValue
+  [501] K2Node_MakeStruct_ArchonHitEventParams.SourceActor = self
+  [521] K2Node_MakeStruct_ArchonHitEventParams.HitDirection = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [573] K2Node_MakeStruct_ArchonHitEventParams.HitInfo = HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}
+  [979] K2Node_DynamicCast_AsArchon_Ability_Character.HandleReceiveHitWhileInvulnerable(K2Node_MakeStruct_ArchonHitEventParams, InvulnerabilityTags, true)
+  [1030] return nothing
+  [1032] end
+
+=== Multi_Explode
+  [0] frame.K2Node_CustomEvent_HitLocation = HitLocation
+  [18] frame.K2Node_CustomEvent_HitNormal = HitNormal
+  [36] frame.K2Node_CustomEvent_ExplodeType = ExplodeType
+  [54] ExecuteUbergraph_projectile_base_bp(12094)
+  [69] return nothing
+  [71] end
+
+=== Multi_Hit
+  [0] ExecuteUbergraph_projectile_base_bp(12127)
+  [15] return nothing
+  [17] end
+
+=== Multi_ProjectileStopped
+  [0] ExecuteUbergraph_projectile_base_bp(12132)
+  [15] return nothing
+  [17] end
+
+=== MulticastVelocity
+  [0] frame.K2Node_CustomEvent_NewVelocity = NewVelocity
+  [18] ExecuteUbergraph_projectile_base_bp(9057)
+  [33] return nothing
+  [35] end
+
+=== MulticastVelocityAndGravityChanges
+  [0] frame.K2Node_CustomEvent_NewVel = NewVel
+  [18] frame.K2Node_CustomEvent_NewGravity = NewGravity
+  [36] ExecuteUbergraph_projectile_base_bp(4270)
+  [51] return nothing
+  [53] end
+
+=== OnProjectileExploded_DelegateCall_BP
+  [0] ExecuteUbergraph_projectile_base_bp(12373)
+  [15] return nothing
+  [17] end
+
+=== OnProjectileExploded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnProjectileStopped
+  [0] ExecuteUbergraph_projectile_base_bp(9505)
+  [15] return nothing
+  [17] end
+
+=== OnProjectileStopped_Dispatcher__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ProjectileExploded
+  [0] frame.K2Node_Event_ExplosionLocation = ExplosionLocation
+  [18] frame.K2Node_Event_ExplodeType = ExplodeType
+  [36] ExecuteUbergraph_projectile_base_bp(13045)
+  [51] return nothing
+  [53] end
+
+=== RecordProjectileHit
+  [0] Temp_int_Variable = 0
+  [23] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.NumHitsPerActor, HitActor, CallFunc_Map_Find_Value)
+  [92] Temp_bool_Variable = CallFunc_Map_Find_ReturnValue
+  [111] CallFunc_Max_ReturnValue = Max(switch(Temp_bool_Variable){false: Temp_int_Variable, true: CallFunc_Map_Find_Value, default: K2Node_Select_Default}, 0)
+  [197] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Max_ReturnValue, 1)
+  [239] Default__BlueprintMapLibrary.Map_Add(self.NumHitsPerActor, HitActor, CallFunc_Add_IntInt_ReturnValue)
+  [298] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [327] Default__BlueprintMapLibrary.Map_Add(self.LastHitTimePerActor, HitActor, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [386] return nothing
+  [388] end
+
+=== ResetProjectileMovementComponent
+  [0] self.ProjectileMovement.self.Velocity = self.StartVelocity
+  [49] self.ProjectileMovement.self.InitialSpeed = self.StartInitialSpeed
+  [98] self.ProjectileMovement.self.MaxSpeed = self.StartMaxSpeed
+  [147] return nothing
+  [149] end
+
+=== Server - Apply Damage
+  [0] push @3008
+  [5] L_DamageScale = 1.0
+  [32] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [52] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [62] push @1424
+  [67] push @787
+  [72] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [92] CallFunc_NotEqual_ObjectObject_ReturnValue = NotEqual_ObjectObject(CallFunc_GetInstigator_ReturnValue, Target Actor)
+  [130] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_NotEqual_ObjectObject_ReturnValue, self.BuffOnHitCanApplyToSelf)
+  [168] L_ShouldApplyOnHitBuffs = CallFunc_BooleanOR_ReturnValue
+  [187] CalculateDamageRow(Target Actor, CallFunc_CalculateDamageRow_FinalDamageRow, CallFunc_CalculateDamageRow_DamageScale, CallFunc_CalculateDamageRow_Succeeded)
+  [237] L_FoundDamageRow = CallFunc_CalculateDamageRow_Succeeded
+  [256] if !(L_FoundDamageRow) pop
+  [266] L_DamageRow = CallFunc_CalculateDamageRow_FinalDamageRow
+  [293] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_CalculateDamageRow_DamageScale, self.CustomProjectileDamageScale)
+  [339] L_DamageScale = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [366] CallFunc_Normal_ReturnValue = Normal(self.ProjectileMovement.self.Velocity, 0.0001)
+  [430] L_HitDirection = CallFunc_Normal_ReturnValue
+  [457] CallFunc_IsValid_ReturnValue = IsValid(self.OwningPawn)
+  [486] if !(CallFunc_IsValid_ReturnValue) goto @561
+  [500] CallFunc_GetController_ReturnValue = self.OwningPawn.GetController()
+  [542] L_InstigatorController = CallFunc_GetController_ReturnValue
+  [561] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(self.SharedDamageGUIDName, 'None')
+  [603] CallFunc_BooleanOR_ReturnValue_2 = BooleanOR(self.SharedDamageGUID, CallFunc_NotEqual_NameName_ReturnValue)
+  [641] if !(CallFunc_BooleanOR_ReturnValue_2) goto @1850
+  [655] GetDamageTags(L_DamageRow, CallFunc_GetDamageTags_Tags)
+  [687] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = self.DamageGUID
+  [723] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = CallFunc_GetDamageTags_Tags
+  [759] L_ExtendedDamageInfo = K2Node_MakeStruct_ArchonExtendedDamageInfo
+  [786] pop
+  [787] BP_ShouldUseClientAuthoritativeHitFlow(Target Actor, CallFunc_BP_ShouldUseClientAuthoritativeHitFlow_TargetHittable, CallFunc_BP_ShouldUseClientAuthoritativeHitFlow_Result)
+  [824] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_BP_ShouldUseClientAuthoritativeHitFlow_Result, 0)
+  [855] if !(K2Node_SwitchEnum_CmpSuccess) goto @915
+  [869] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_BP_ShouldUseClientAuthoritativeHitFlow_Result, 1)
+  [900] if !(K2Node_SwitchEnum_CmpSuccess) goto @1910
+  [914] pop
+  [915] L_TargetHittable = CallFunc_BP_ShouldUseClientAuthoritativeHitFlow_TargetHittable
+  [934] CallFunc_HasAuthority_ReturnValue_1 = HasAuthority()
+  [954] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [964] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [984] CallFunc_NotEqual_ObjectObject_ReturnValue_1 = NotEqual_ObjectObject(Target Actor, CallFunc_GetInstigator_ReturnValue_1)
+  [1022] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_NotEqual_ObjectObject_ReturnValue_1, self.BuffOnHitCanApplyToSelf)
+  [1060] K2Node_MakeStruct_ArchonCombatHitParams.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [1115] K2Node_MakeStruct_ArchonCombatHitParams.SourceActor = self
+  [1135] K2Node_MakeStruct_ArchonCombatHitParams.HitDirection = L_HitDirection
+  [1171] K2Node_MakeStruct_ArchonCombatHitParams.HitInfo = Hit Info
+  [1207] K2Node_MakeStruct_ArchonCombatHitParams.DamageRow = L_DamageRow
+  [1243] K2Node_MakeStruct_DamageScale_ImplicitCast = cast<CST_DoubleToFloat>(L_DamageScale)
+  [1272] K2Node_MakeStruct_ArchonCombatHitParams.DamageScale = K2Node_MakeStruct_DamageScale_ImplicitCast
+  [1308] K2Node_MakeStruct_ArchonCombatHitParams.bApplyBuffsOnHit = CallFunc_BooleanOR_ReturnValue_1
+  [1336] L_TargetHittable.BP_TryHit(self.OwningPawn, K2Node_MakeStruct_ArchonCombatHitParams, L_InstigatorController, self, DamageType_Cutting_C, L_ExtendedDamageInfo, OtherComponent)
+  [1423] pop
+  [1424] if !(self.DebugProjectile) pop
+  [1434] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(OtherComponent)
+  [1471] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(null)
+  [1500] CallFunc_GetDisplayName_ReturnValue_2 = GetDisplayName(self)
+  [1529] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Projectile ', CallFunc_GetDisplayName_ReturnValue_2)
+  [1579] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' hit actor ')
+  [1629] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_GetDisplayName_ReturnValue_1)
+  [1675] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' and component ')
+  [1729] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_GetDisplayName_ReturnValue)
+  [1775] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1849] pop
+  [1850] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [1878] self.DamageGUID = CallFunc_NewGuid_ReturnValue
+  [1905] goto @655
+  [1910] if !(L_FoundDamageRow) goto @2068
+  [1924] CallFunc_ApplyArchonPointDamageFromTable_DamageScale_ImplicitCast = cast<CST_DoubleToFloat>(L_DamageScale)
+  [1953] Default__ArchonGameplayStatics.ApplyArchonPointDamageFromTable(Target Actor, L_DamageRow, L_HitDirection, Hit Info, L_InstigatorController, self, DamageType_Cutting_C, L_ExtendedDamageInfo, OtherComponent, CallFunc_ApplyArchonPointDamageFromTable_DamageScale_ImplicitCast, null)
+  [2068] if !(L_ShouldApplyOnHitBuffs) pop
+  [2078] CallFunc_IsValid_ReturnValue_1 = IsValid(Target Actor)
+  [2107] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2117] CallFunc_GetComponentByClass_ReturnValue = Target Actor.GetComponentByClass(ArchonBuffableComponent)
+  [2168] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [2197] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2207] Temp_int_Loop_Counter_Variable = 0
+  [2230] Temp_int_Array_Index_Variable = 0
+  [2253] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.BuffsToApplyOnHit)
+  [2312] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [2350] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2360] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [2387] push @2934
+  [2392] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [2412] Default__KismetArrayLibrary.Array_Get(self.BuffsToApplyOnHit, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2471] Default__gameplay_helpers_fl_C.ApplyBuffs-UseBuffApplierIfPossible(CallFunc_GetInstigator_ReturnValue_2, CallFunc_Array_Get_Item, Target Actor, HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}, true, self, CallFunc_ApplyBuffs_UseBuffApplierIfPossible_BuffRef, CallFunc_ApplyBuffs_UseBuffApplierIfPossible_BuffWasReplacedByOverrides)
+  [2933] pop
+  [2934] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2976] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [3003] goto @2253
+  [3008] return nothing
+  [3010] end
+
+=== SetCameraLockOnTargetSocket
+  [0] frame.K2Node_Event_TargetSocket = TargetSocket
+  [18] ExecuteUbergraph_projectile_base_bp(3319)
+  [33] return nothing
+  [35] end
+
+=== SetProjectileMovementType
+  [0] frame.K2Node_Event_NewMovementType = NewMovementType
+  [18] ExecuteUbergraph_projectile_base_bp(3318)
+  [33] return nothing
+  [35] end
+
+=== ShouldPlayMonsterHitSounds
+  [0] ShouldPlayMonsterHitSounds = false
+  [11] return nothing
+  [13] end
+
+=== SpawnImpulsesOnBeginPlay
+  [0] ExecuteUbergraph_projectile_base_bp(12358)
+  [15] return nothing
+  [17] end
+
+=== SpawnImpulsesOnExplode
+  [0] frame.K2Node_Event_ExplodeType_1 = ExplodeType
+  [18] ExecuteUbergraph_projectile_base_bp(12368)
+  [33] return nothing
+  [35] end
+
+=== SpawnedActor_Cleanup
+  [0] ExecuteUbergraph_projectile_base_bp(11886)
+  [15] return nothing
+  [17] end
+
+=== StopImpulsesAtEnd
+  [0] ExecuteUbergraph_projectile_base_bp(12363)
+  [15] return nothing
+  [17] end
+
+=== TargetIsInvulnerable
+  [0] frame.K2Node_Event_AbilityActor = AbilityActor
+  [18] frame.K2Node_Event_InvulnerabilityTags = InvulnerabilityTags
+  [36] ExecuteUbergraph_projectile_base_bp(12378)
+  [51] return nothing
+  [53] end
+
+=== UpdateDrivenProjectileLocationAndRotation
+  [0] return nothing
+  [2] end
+
+=== UpdateParticlePosition
+  [0] Position = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] Rotation = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [86] return nothing
+  [88] end
+
+=== UpdateParticlePosition_BP
+  [0] K2Node_DynamicCast_AsProjectile_Base_Bp = cast<projectile_base_bp_C>(Actor)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsProjectile_Base_Bp)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @410
+  [79] K2Node_DynamicCast_AsProjectile_Bpi = cast<projectile_bpi_C>(self.ActorComponent)
+  [115] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsProjectile_Bpi)
+  [144] if !(K2Node_DynamicCast_bSuccess_1) goto @319
+  [158] CallFunc_UpdateParticlePosition_DeltaSeconds_ImplicitCast = cast<CST_FloatToDouble>(DeltaSeconds)
+  [187] K2Node_DynamicCast_AsProjectile_Bpi.UpdateParticlePosition(CallFunc_UpdateParticlePosition_DeltaSeconds_ImplicitCast, K2Node_DynamicCast_AsProjectile_Base_Bp, CallFunc_UpdateParticlePosition_Position, CallFunc_UpdateParticlePosition_Rotation)
+  [260] OutputPosition = CallFunc_UpdateParticlePosition_Position
+  [287] OutputRotation = CallFunc_UpdateParticlePosition_Rotation
+  [314] goto @410
+  [319] CallFunc_UpdateParticlePosition_Position = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [362] CallFunc_UpdateParticlePosition_Rotation = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [405] goto @260
+  [410] return nothing
+  [412] end
+
+=== UserConstructionScript
+  [0] Default__archon_function_library_C.GetComponentImplementingInterface(self, projectile_bpi_C, self, CallFunc_GetComponentImplementingInterface_Component)
+  [56] self.ActorComponent = CallFunc_GetComponentImplementingInterface_Component
+  [75] self.ProjectileMovement_Native = self.ProjectileMovement
+  [94] self.HomingType_Native = self.HomingType
+  [121] self.ProjectileMovementType_Native = self.ProjectileMovementType
+  [148] FlushNetDormancy()
+  [158] K2Node_VariableSet_VerticalHeightOffset_Native_ImplicitCast = cast<CST_DoubleToFloat>(self.Vertical Height Offset)
+  [187] self.VerticalHeightOffset_Native = K2Node_VariableSet_VerticalHeightOffset_Native_ImplicitCast
+  [214] MarkPropertyDirtyFromRepIndex(self, 10, 'VerticalHeightOffset_Native')
+  [243] K2Node_VariableSet_MaxDistanceBeforeFall_Native_ImplicitCast = cast<CST_DoubleToFloat>(self.Max Distance Before Fall)
+  [272] self.MaxDistanceBeforeFall_Native = K2Node_VariableSet_MaxDistanceBeforeFall_Native_ImplicitCast
+  [299] FlushNetDormancy()
+  [309] K2Node_VariableSet_VerticalFallRate_Native_ImplicitCast = cast<CST_DoubleToFloat>(self.Vertical Fall Rate)
+  [338] self.VerticalFallRate_Native = K2Node_VariableSet_VerticalFallRate_Native_ImplicitCast
+  [365] MarkPropertyDirtyFromRepIndex(self, 11, 'VerticalFallRate_Native')
+  [394] FlushNetDormancy()
+  [404] self.UseFallRate_Native = self.Use Fall Rate
+  [423] MarkPropertyDirtyFromRepIndex(self, 12, 'UseFallRate_Native')
+  [452] FlushNetDormancy()
+  [462] K2Node_VariableSet_SnapToGroundOffset_Native_ImplicitCast = cast<CST_DoubleToFloat>(self.Snap to Ground Offset)
+  [491] self.SnapToGroundOffset_Native = K2Node_VariableSet_SnapToGroundOffset_Native_ImplicitCast
+  [518] MarkPropertyDirtyFromRepIndex(self, 13, 'SnapToGroundOffset_Native')
+  [547] self.ObjectTypesOnHitSweep_Native = self.ObjectTypesOnHitSweep_Native
+  [574] self.CollidingBody_Native = self.Colliding Body
+  [593] self.DisableParticleOnExplode_Native = self.DisableParticleOnExplode
+  [612] FlushNetDormancy()
+  [622] self.OwningPawn_Native = self.OwningPawn
+  [641] MarkPropertyDirtyFromRepIndex(self, 18, 'OwningPawn_Native')
+  [670] self.ParticleSystem_Native = self.ParticleSystem
+  [689] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnStart)
+  [748] self.ImpulsesToSpawnOnStartCount = CallFunc_Array_Length_ReturnValue_3
+  [775] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnExplode)
+  [834] self.ImpulsesToSpawnOnExplodeCount = CallFunc_Array_Length_ReturnValue_2
+  [861] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnHit)
+  [920] self.ImpulsesToSpawnOnHitCount = CallFunc_Array_Length_ReturnValue_1
+  [947] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ImpulsesToSpawnOnStop)
+  [1006] self.ImpulsesToSpawnOnStopCount = CallFunc_Array_Length_ReturnValue
+  [1033] self.StartVelocity = self.ProjectileMovement.self.Velocity
+  [1082] self.StartInitialSpeed = self.ProjectileMovement.self.InitialSpeed
+  [1131] self.StartMaxSpeed = self.ProjectileMovement.self.MaxSpeed
+  [1180] return nothing
+  [1182] end

@@ -1,0 +1,222 @@
+# ai_warp_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthClearTranslateWarp
+  [0] self.TranslateWarpOverrideType = 0
+  [20] MarkPropertyDirtyFromRepIndex(self, 4, 'TranslateWarpOverrideType')
+  [49] self.TranslateWarpOverrideName = 'None'
+  [80] MarkPropertyDirtyFromRepIndex(self, 5, 'TranslateWarpOverrideName')
+  [109] return nothing
+  [111] end
+
+=== AuthClearTurnWarp
+  [0] self.TurnWarpOverrideName = 'None'
+  [31] MarkPropertyDirtyFromRepIndex(self, 3, 'TurnWarpOverrideName')
+  [60] self.TurnWarpOverrideType = 0
+  [80] MarkPropertyDirtyFromRepIndex(self, 2, 'TurnWarpOverrideType')
+  [109] return nothing
+  [111] end
+
+=== AuthInitializeComponent
+  [0] ExecuteUbergraph_ai_warp_bpc(402)
+  [15] return nothing
+  [17] end
+
+=== AuthSetCurrentTurnWarp
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @188
+  [76] self.TurnWarpOverrideType = TurnWarpType
+  [103] MarkPropertyDirtyFromRepIndex(self, 2, 'TurnWarpOverrideType')
+  [132] self.TurnWarpOverrideName = TurnWarpBlackboardTarget
+  [159] MarkPropertyDirtyFromRepIndex(self, 3, 'TurnWarpOverrideName')
+  [188] return nothing
+  [190] end
+
+=== AuthSetDefaultWarpTarget
+  [0] CallFunc_IsValid_ReturnValue = IsValid(DefaultWarpTarget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @107
+  [43] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnDefaultTurnWarpTargetDestroyed)
+  [66] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [107] self.DefaultTurnWarpTarget = DefaultWarpTarget
+  [126] CallFunc_IsValid_ReturnValue_1 = IsValid(self.DefaultTurnWarpTarget)
+  [155] if !(CallFunc_IsValid_ReturnValue_1) goto @233
+  [169] K2Node_CreateDelegate_OutputDelegate = bind(self.OnDefaultTurnWarpTargetDestroyed)
+  [192] K2Node_CreateDelegate_OutputDelegate += None
+  [233] return nothing
+  [235] end
+
+=== AuthSetTranslateWarp
+  [0] self.TranslateWarpOverrideType = TranslateWarpType
+  [27] MarkPropertyDirtyFromRepIndex(self, 4, 'TranslateWarpOverrideType')
+  [56] self.TranslateWarpOverrideName = TranslateWarpTargetBBKey
+  [83] MarkPropertyDirtyFromRepIndex(self, 5, 'TranslateWarpOverrideName')
+  [112] return nothing
+  [114] end
+
+=== ExecuteUbergraph_ai_warp_bpc
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [30] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [72] if !(CallFunc_HasAuthority_ReturnValue) goto @494
+  [86] CallFunc_IsValid_ReturnValue = IsValid(self.OwningController)
+  [115] if !(CallFunc_IsValid_ReturnValue) goto @494
+  [129] TickTurnWarping()
+  [143] TickTranslateWarping()
+  [157] goto @494
+  [162] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [182] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue_1)
+  [218] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [247] if !(K2Node_DynamicCast_bSuccess) goto @494
+  [261] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [303] self.OwningController = CallFunc_GetController_ReturnValue
+  [322] CallFunc_GetComponentByClass_ReturnValue = K2Node_DynamicCast_AsPawn.GetComponentByClass(ArchonWarpComponent)
+  [373] self.ArchonWarp = CallFunc_GetComponentByClass_ReturnValue
+  [392] goto @494
+  [397] goto @10
+  [402] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [422] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [464] if !(CallFunc_HasAuthority_ReturnValue_1) goto @494
+  [478] goto @162
+  [483] self.DefaultTurnWarpTarget = null
+  [494] return nothing
+  [496] end
+
+=== OnDefaultTurnWarpTargetDestroyed
+  [0] frame.K2Node_CustomEvent_Actor = Actor
+  [18] ExecuteUbergraph_ai_warp_bpc(483)
+  [33] return nothing
+  [35] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ai_warp_bpc(397)
+  [33] return nothing
+  [35] end
+
+=== TickTranslateWarping
+  [0] push @1057
+  [5] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] push @591
+  [82] push @185
+  [87] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [107] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [157] L_TranslateWarpLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [184] pop
+  [185] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self.OwningController)
+  [214] CallFunc_GetLocationFromEntry_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(self.TranslateWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation)
+  [274] if !(CallFunc_GetLocationFromEntry_ReturnValue) pop
+  [284] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TranslateWarpOverrideType, 1)
+  [315] if !(K2Node_SwitchEnum_CmpSuccess) goto @375
+  [329] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TranslateWarpOverrideType, 2)
+  [360] if !(K2Node_SwitchEnum_CmpSuccess) goto @633
+  [374] pop
+  [375] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [404] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TranslateWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [464] if !(CallFunc_GetLocationFromEntry_ReturnValue_1) pop
+  [474] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [503] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TranslateWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [563] L_TranslateWarpLocation = CallFunc_GetLocationFromEntry_ResultLocation_1
+  [590] pop
+  [591] self.ArchonWarp.UpdateTranslateWarpTarget(L_TranslateWarpLocation)
+  [632] pop
+  [633] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [662] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TranslateWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [722] if !(CallFunc_GetLocationFromEntry_ReturnValue_1) pop
+  [732] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [752] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [781] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.K2_GetActorLocation()
+  [831] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TranslateWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [891] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetLocationFromEntry_ResultLocation_1, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [937] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Subtract_VectorVector_ReturnValue, -99999.0)
+  [983] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [1029] L_TranslateWarpLocation = CallFunc_Add_VectorVector_ReturnValue
+  [1056] pop
+  [1057] return nothing
+  [1059] end
+
+=== TickTurnWarping
+  [0] push @2572
+  [5] CallFunc_IsValid_ReturnValue_1 = IsValid(self.ArchonWarp)
+  [34] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [44] CallFunc_IsValid_ReturnValue_2 = IsValid(self.OwningController)
+  [73] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [83] push @777
+  [88] push @214
+  [93] CallFunc_IsValid_ReturnValue = IsValid(self.DefaultTurnWarpTarget)
+  [122] if !(CallFunc_IsValid_ReturnValue) goto @1138
+  [136] CallFunc_K2_GetActorLocation_ReturnValue = self.DefaultTurnWarpTarget.K2_GetActorLocation()
+  [186] L_TurnWarpLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [213] pop
+  [214] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(self.TurnWarpOverrideName, 'None')
+  [256] if !(CallFunc_NotEqual_NameName_ReturnValue) pop
+  [266] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TurnWarpOverrideType, 1)
+  [297] if !(K2Node_SwitchEnum_CmpSuccess) goto @402
+  [311] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TurnWarpOverrideType, 2)
+  [342] if !(K2Node_SwitchEnum_CmpSuccess) goto @1378
+  [356] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TurnWarpOverrideType, 3)
+  [387] if !(K2Node_SwitchEnum_CmpSuccess) goto @1982
+  [401] pop
+  [402] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [431] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TurnWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [491] if !(CallFunc_GetLocationFromEntry_ReturnValue_1) pop
+  [501] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self.OwningController)
+  [530] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(self.TurnWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [590] L_TurnWarpLocation = CallFunc_GetLocationFromEntry_ResultLocation_1
+  [617] CallFunc_Conv_NameToString_ReturnValue_2 = Conv_NameToString(self.TurnWarpOverrideName)
+  [654] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('Override - Turn to ', CallFunc_Conv_NameToString_ReturnValue_2)
+  [712] CallFunc_Conv_StringToName_ReturnValue_1 = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue_2)
+  [749] self.TurnWarpDebugName = CallFunc_Conv_StringToName_ReturnValue_1
+  [776] pop
+  [777] self.ArchonWarp.UpdateTurnWarpTarget(L_TurnWarpLocation)
+  [818] if !(self.DebugTurnWarp) pop
+  [828] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [848] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [898] DrawDebugArrow(self, CallFunc_K2_GetActorLocation_ReturnValue_1, L_TurnWarpLocation, 2000.0, LinearColor{0.685, 0.0, 0.478532, 1.0}, 0.1, 25.0)
+  [976] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(self.TurnWarpDebugName)
+  [1013] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Turn Warp: ', CallFunc_Conv_NameToString_ReturnValue)
+  [1063] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{1.0, 0.0, 0.666894, 1.0}, 0.01, 'None')
+  [1137] pop
+  [1138] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1158] CallFunc_GetActorForwardVector_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetActorForwardVector()
+  [1208] CallFunc_K2_GetActorLocation_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_1.K2_GetActorLocation()
+  [1258] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetActorForwardVector_ReturnValue, 1000.0)
+  [1304] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_2, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1350] L_TurnWarpLocation = CallFunc_Add_VectorVector_ReturnValue
+  [1377] pop
+  [1378] CallFunc_GetBlackboard_ReturnValue_2 = GetBlackboard(self.OwningController)
+  [1407] CallFunc_GetValueAsObject_ReturnValue = CallFunc_GetBlackboard_ReturnValue_2.GetValueAsObject(self.TurnWarpOverrideName)
+  [1458] K2Node_DynamicCast_AsActor = cast<Actor>(CallFunc_GetValueAsObject_ReturnValue)
+  [1494] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsActor)
+  [1523] if !(K2Node_DynamicCast_bSuccess) pop
+  [1533] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1553] CallFunc_K2_GetActorLocation_ReturnValue_3 = CallFunc_GetOwner_ReturnValue_2.K2_GetActorLocation()
+  [1603] CallFunc_K2_GetActorRotation_ReturnValue = K2Node_DynamicCast_AsActor.K2_GetActorRotation()
+  [1653] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_K2_GetActorRotation_ReturnValue)
+  [1690] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, 1000.0)
+  [1736] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_Multiply_VectorFloat_ReturnValue_2)
+  [1782] L_TurnWarpLocation = CallFunc_Add_VectorVector_ReturnValue_2
+  [1809] CallFunc_Conv_NameToString_ReturnValue_3 = Conv_NameToString(self.TurnWarpOverrideName)
+  [1846] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('Override - Match orientation of ', CallFunc_Conv_NameToString_ReturnValue_3)
+  [1917] CallFunc_Conv_StringToName_ReturnValue_2 = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue_3)
+  [1954] self.TurnWarpDebugName = CallFunc_Conv_StringToName_ReturnValue_2
+  [1981] pop
+  [1982] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self.OwningController)
+  [2011] CallFunc_GetLocationFromEntry_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(self.TurnWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation)
+  [2071] if !(CallFunc_GetLocationFromEntry_ReturnValue) pop
+  [2081] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [2101] CallFunc_K2_GetActorLocation_ReturnValue_4 = CallFunc_GetOwner_ReturnValue_3.K2_GetActorLocation()
+  [2151] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self.OwningController)
+  [2180] CallFunc_GetLocationFromEntry_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(self.TurnWarpOverrideName, CallFunc_GetLocationFromEntry_ResultLocation)
+  [2240] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetLocationFromEntry_ResultLocation, CallFunc_K2_GetActorLocation_ReturnValue_4)
+  [2286] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Subtract_VectorVector_ReturnValue, -1.0)
+  [2332] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue_4)
+  [2378] L_TurnWarpLocation = CallFunc_Add_VectorVector_ReturnValue_1
+  [2405] CallFunc_Conv_NameToString_ReturnValue_1 = Conv_NameToString(self.TurnWarpOverrideName)
+  [2442] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Override - Turn away from ', CallFunc_Conv_NameToString_ReturnValue_1)
+  [2507] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Concat_StrStr_ReturnValue_1)
+  [2544] self.TurnWarpDebugName = CallFunc_Conv_StringToName_ReturnValue
+  [2571] pop
+  [2572] return nothing
+  [2574] end

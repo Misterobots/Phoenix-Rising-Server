@@ -1,0 +1,226 @@
+# cinematic_overlay_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CancelSkipFill
+  [0] self.pending_skip = false
+  [11] self.skip_callout.HideSkipFillProgress()
+  [47] return nothing
+  [49] end
+
+=== ConfigureForCinematics
+  [0] frame.K2Node_CustomEvent_Activating = Activating
+  [18] ExecuteUbergraph_cinematic_overlay_bpw(10)
+  [33] return nothing
+  [35] end
+
+=== Construct
+  [0] ExecuteUbergraph_cinematic_overlay_bpw(1382)
+  [15] return nothing
+  [17] end
+
+=== CreateSubtitleWidget
+  [0] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [24] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, lantern_radio_prototype_bpw_C, CallFunc_GetOwningPlayer_ReturnValue)
+  [85] self.subtitle = CallFunc_Create_ReturnValue
+  [104] CallFunc_AddChildToOverlay_ReturnValue = self.Overlay_187.AddChildToOverlay(self.subtitle)
+  [155] CallFunc_AddChildToOverlay_ReturnValue.SetHorizontalAlignment(0)
+  [189] CallFunc_AddChildToOverlay_ReturnValue.SetVerticalAlignment(0)
+  [223] return nothing
+  [225] end
+
+=== DestroySubtitleWidget
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.subtitle)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @90
+  [43] self.subtitle.RemoveFromParent()
+  [79] self.subtitle = null
+  [90] return nothing
+  [92] end
+
+=== ExecuteUbergraph_cinematic_overlay_bpw
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [31] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [67] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [96] if !(K2Node_DynamicCast_bSuccess) goto @2006
+  [110] if !(K2Node_CustomEvent_Activating) goto @207
+  [124] CreateSubtitleWidget()
+  [138] K2Node_CreateDelegate_OutputDelegate = bind(self.Update Subtitle)
+  [161] K2Node_CreateDelegate_OutputDelegate += None
+  [202] goto @2006
+  [207] DestroySubtitleWidget()
+  [221] K2Node_CreateDelegate_OutputDelegate = bind(self.Update Subtitle)
+  [244] K2Node_CreateDelegate_OutputDelegate -= None
+  [285] goto @2006
+  [290] self.subtitle.UpdatePlayerInstructionText(EX_TextConst(Value={'SourceString': ''}))
+  [328] self.subtitle.SetVisibility(1)
+  [366] goto @2006
+  [371] self.subtitle.SetVisibility(3)
+  [409] self.subtitle.UpdatePlayerInstructionText(K2Node_CustomEvent_SubtitleText)
+  [454] goto @2006
+  [459] CallFunc_IsValid_ReturnValue = IsValid(self.subtitle)
+  [488] if !(CallFunc_IsValid_ReturnValue) goto @2006
+  [502] if !(K2Node_CustomEvent_Show) goto @290
+  [516] goto @371
+  [521] if !(self.pending_skip) goto @1061
+  [535] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [564] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, self.skip_start_time)
+  [610] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.skip_hold_time)
+  [648] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.skip_in_progress)
+  [677] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.pending_skip, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [715] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [753] if !(CallFunc_BooleanAND_ReturnValue_1) goto @2006
+  [767] self.skip_in_progress = true
+  [778] CallFunc_GetArchonLocalPlayerController_ReturnValue = GetArchonLocalPlayerController(self)
+  [799] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetArchonLocalPlayerController_ReturnValue)
+  [828] if !(CallFunc_IsValid_ReturnValue_1) goto @979
+  [842] CallFunc_GetArchonLocalPlayerController_ReturnValue = GetArchonLocalPlayerController(self)
+  [863] K2Node_DynamicCast_AsPlayer_Controller_Interface = cast<player_controller_interface_C>(CallFunc_GetArchonLocalPlayerController_ReturnValue)
+  [899] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface)
+  [928] if !(K2Node_DynamicCast_bSuccess_1) goto @979
+  [942] K2Node_DynamicCast_AsPlayer_Controller_Interface.SkipCinematic()
+  [979] OnCinematicSkipped__DelegateSignature()
+  [998] self.skip_callout.self.button_hold_hint.Stop Interaction Feedback()
+  [1056] goto @2006
+  [1061] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_InDeltaTime)
+  [1090] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.fade_time)
+  [1136] CallFunc_GetRenderOpacity_ReturnValue = self.skip_callout.GetRenderOpacity()
+  [1186] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetRenderOpacity_ReturnValue)
+  [1215] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [1261] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0)
+  [1307] CallFunc_SetRenderOpacity_InOpacity_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [1336] self.skip_callout.SetRenderOpacity(CallFunc_SetRenderOpacity_InOpacity_ImplicitCast)
+  [1377] goto @535
+  [1382] self.bHideChat = true
+  [1393] CallFunc_IsPlatformPS4_ReturnValue = IsPlatformPS4()
+  [1413] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, test_safezones_bpff_C, true)
+  [1444] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsPlatformPS4_ReturnValue, CallFunc_IsFeatureEnabled_ReturnValue)
+  [1482] self.CineSafeZone.SetSidesToPad(CallFunc_BooleanOR_ReturnValue, CallFunc_BooleanOR_ReturnValue, CallFunc_BooleanOR_ReturnValue, CallFunc_BooleanOR_ReturnValue)
+  [1550] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [1574] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwningPlayer_ReturnValue)
+  [1610] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [1639] if !(K2Node_DynamicCast_bSuccess_2) goto @2006
+  [1653] CallFunc_GetHUDVisibilityFromToggleCheat_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetHUDVisibilityFromToggleCheat()
+  [1695] if !(CallFunc_GetHUDVisibilityFromToggleCheat_ReturnValue) goto @1714
+  [1709] goto @2006
+  [1714] self.team_display.SetVisibility(1)
+  [1752] goto @2006
+  [1757] GetIsSkippable(CallFunc_GetIsSkippable_IsSkippable)
+  [1780] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_GetIsSkippable_IsSkippable, K2Node_CustomEvent_skipping_enabled)
+  [1818] self.skip_callout.SetIsEnabled(CallFunc_BooleanAND_ReturnValue_2)
+  [1863] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_GetIsSkippable_IsSkippable, K2Node_CustomEvent_skipping_enabled)
+  [1901] if !(CallFunc_BooleanAND_ReturnValue_2) goto @1920
+  [1915] goto @2006
+  [1920] self.skip_initiator_key = Key{'('}
+  [1965] goto @2006
+  [1970] self.skip_callout.RefreshButtonHint()
+  [2006] return nothing
+  [2008] end
+
+=== GetDefaultFocusedWidget
+  [0] CallFunc_GetDefaultFocusedWidget_ReturnValue = GetDefaultFocusedWidget()
+  [20] ReturnValue = self
+  [31] return ReturnValue
+  [41] end
+
+=== GetIsSkippable
+  [0] CallFunc_IsPlatformSwitch_ReturnValue = IsPlatformSwitch()
+  [20] if !(CallFunc_IsPlatformSwitch_ReturnValue) goto @158
+  [34] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, SkippableCinematicSwitchFeature, true)
+  [65] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, skip_cinematic_feature_bpff_C, true)
+  [96] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsFeatureEnabled_ReturnValue, CallFunc_IsFeatureEnabled_ReturnValue_1)
+  [134] IsSkippable = CallFunc_BooleanAND_ReturnValue
+  [153] goto @208
+  [158] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, skip_cinematic_feature_bpff_C, true)
+  [189] IsSkippable = CallFunc_IsFeatureEnabled_ReturnValue_1
+  [208] return nothing
+  [210] end
+
+=== OnCinematicSkipped__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnInputSwap
+  [0] frame.K2Node_Event_bUsingGamepad = bUsingGamepad
+  [18] ExecuteUbergraph_cinematic_overlay_bpw(1970)
+  [33] return nothing
+  [35] end
+
+=== OnKeyDown
+  [0] CallFunc_GetInputEventFromKeyEvent_ReturnValue = GetInputEventFromKeyEvent(InKeyEvent)
+  [37] CallFunc_GetIsEnabled_ReturnValue = self.skip_callout.GetIsEnabled()
+  [79] CallFunc_InputEvent_IsRepeat_ReturnValue = InputEvent_IsRepeat(CallFunc_GetInputEventFromKeyEvent_ReturnValue)
+  [108] CallFunc_GetKey_ReturnValue = GetKey(InKeyEvent)
+  [145] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_InputEvent_IsRepeat_ReturnValue)
+  [174] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(self.skip_in_progress)
+  [203] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(self.skip_input_keys, CallFunc_GetKey_ReturnValue)
+  [271] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Array_Find_ReturnValue, 0)
+  [305] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [343] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue_1)
+  [381] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_GetIsEnabled_ReturnValue)
+  [419] if !(CallFunc_BooleanAND_ReturnValue_2) goto @562
+  [433] CallFunc_GetKey_ReturnValue = GetKey(InKeyEvent)
+  [470] StartSkipFill(CallFunc_GetKey_ReturnValue, CallFunc_StartSkipFill_Result)
+  [502] CallFunc_Handled_ReturnValue = Handled()
+  [530] ReturnValue = CallFunc_Handled_ReturnValue
+  [557] goto @617
+  [562] CallFunc_Unhandled_ReturnValue = Unhandled()
+  [590] ReturnValue = CallFunc_Unhandled_ReturnValue
+  [617] return ReturnValue
+  [627] end
+
+=== OnKeyUp
+  [0] CallFunc_GetKey_ReturnValue = GetKey(InKeyEvent)
+  [37] CallFunc_EqualEqual_KeyKey_ReturnValue = EqualEqual_KeyKey(CallFunc_GetKey_ReturnValue, self.skip_initiator_key)
+  [75] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.skip_in_progress)
+  [104] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_KeyKey_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [142] if !(CallFunc_BooleanAND_ReturnValue) goto @230
+  [156] CancelSkipFill()
+  [170] CallFunc_Handled_ReturnValue = Handled()
+  [198] ReturnValue = CallFunc_Handled_ReturnValue
+  [225] goto @285
+  [230] CallFunc_Unhandled_ReturnValue = Unhandled()
+  [258] ReturnValue = CallFunc_Unhandled_ReturnValue
+  [285] return ReturnValue
+  [295] end
+
+=== SetEnableSkipping
+  [0] frame.K2Node_CustomEvent_skipping_enabled = skipping_enabled
+  [18] ExecuteUbergraph_cinematic_overlay_bpw(1757)
+  [33] return nothing
+  [35] end
+
+=== ShowTeamDisplay
+  [0] Temp_bool_Variable = bShow
+  [19] Temp_byte_Variable = 4
+  [39] Temp_byte_Variable_1 = 1
+  [59] self.team_display.SetVisibility(switch(Temp_bool_Variable){false: Temp_byte_Variable_1, true: Temp_byte_Variable, default: K2Node_Select_Default})
+  [148] return nothing
+  [150] end
+
+=== StartSkipFill
+  [0] CallFunc_BooleanOR_ReturnValue = BooleanOR(self.skip_in_progress, self.pending_skip)
+  [38] if !(CallFunc_BooleanOR_ReturnValue) goto @68
+  [52] Result = false
+  [63] goto @264
+  [68] self.skip_callout.StartSkipFillProgress(Initiator Key, self.skip_hold_time)
+  [122] self.skip_callout.SetRenderOpacity(1.0)
+  [159] self.skip_initiator_key = Initiator Key
+  [186] self.pending_skip = true
+  [197] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [226] self.skip_start_time = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [253] Result = true
+  [264] return nothing
+  [266] end
+
+=== Tick
+  [0] frame.K2Node_Event_MyGeometry = MyGeometry
+  [18] frame.K2Node_Event_InDeltaTime = InDeltaTime
+  [36] ExecuteUbergraph_cinematic_overlay_bpw(521)
+  [51] return nothing
+  [53] end
+
+=== Update Subtitle
+  [0] frame.K2Node_CustomEvent_SubtitleText = SubtitleText
+  [18] frame.K2Node_CustomEvent_Show = Show
+  [36] ExecuteUbergraph_cinematic_overlay_bpw(459)
+  [51] return nothing
+  [53] end

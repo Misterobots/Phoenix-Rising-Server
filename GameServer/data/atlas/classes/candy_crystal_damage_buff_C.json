@@ -1,0 +1,288 @@
+{
+ "name": "candy_crystal_damage_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageAmount",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageRow",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_candy_crystal_damage_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 65,
+   "reads": [
+    "DamageRow",
+    "OnPostMitigationHitWithWeapon",
+    "OnStatusWorthHUDNotifyingOccured",
+    "OwnerAbilitySystemComponent"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.EffectContextGetHitResult",
+    "AbilitySystemComponent.GetGameplayEffectCount",
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "Actor.K2_GetActorLocation",
+    "ApplyDamageFromRow_Flexible",
+    "ArchonAbilitySystemBlueprintLibrary.EffectContextGetHitDirection",
+    "ArchonBuff.GetBuffOwner",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GameplayStatics.BreakHitResult",
+    "GetDamageScaleWithRangeIfApplicable",
+    "K2_DestroyActor",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Conv_IntToInt64",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetSystemLibrary.IsServer",
+    "KismetTextLibrary.Format",
+    "None",
+    "Pawn.GetController",
+    "RemoveActiveGameplayEffectBySourceEffect",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [
+    "FeatureFlaggedCompositeDataTable DamageTable_composite"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass crystal_candy_mod_damage_stack_ge_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "Texture2D hud_statuseffect_icon_increasedamage_00"
+   ]
+  },
+  {
+   "name": "Initialize",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagePerStack",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "NumStacks",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 35,
+   "reads": [
+    "DamageAmount"
+   ],
+   "sets": [
+    "DamageAmount"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectToSelf",
+    "ArchonBuff.GetBuffOwner",
+    "GameplayStatics.GetGameMode",
+    "GetConnectedPlayerCount",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "MultiAnnounceBuff",
+    "StartBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass crystal_candy_mod_damage_stack_ge_C"
+   ]
+  },
+  {
+   "name": "MultiAnnounceBuff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NumStacks",
+     "type": "IntProperty"
+    },
+    {
+     "name": "NumPlayers",
+     "type": "IntProperty"
+    },
+    {
+     "name": "flat_damage",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "candy_crystal_damage_buff_C.ExecuteUbergraph_candy_crystal_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "candy_crystal_damage_buff_C.ExecuteUbergraph_candy_crystal_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitigationHitWithWeapon_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "candy_crystal_damage_buff_C.ExecuteUbergraph_candy_crystal_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "candy_crystal_damage_buff_C.ExecuteUbergraph_candy_crystal_damage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "FeatureFlaggedCompositeDataTable DamageTable_composite"
+ ],
+ "package": "/Game/candy_crystal_damage_buff",
+ "pseudo_file": "pseudo/candy_crystal_damage_buff_C.txt",
+ "game_data": {}
+}

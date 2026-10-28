@@ -1,0 +1,304 @@
+{
+ "name": "ce_sturdy_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "apply_effects_on_cooldown_bpc",
+   "type": "ObjectProperty<apply_effects_on_cooldown_bpc_C>",
+   "bp_type": "ObjectProperty<apply_effects_on_cooldown_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "apply_effects_on_cooldown_bpc",
+   "class": "apply_effects_on_cooldown_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "Client_CooldownReadyFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "client",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_sturdy_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "K2Node_Event_Payload",
+     "type": "StructProperty<GameplayEventData>"
+    },
+    {
+     "name": "K2Node_CustomEvent_Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 65,
+   "reads": [
+    "CellEffectMagnitude",
+    "On Enter Active",
+    "ReceiveHitDelegate",
+    "apply_effects_on_cooldown_bpc"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "Actor.HasAuthority",
+    "AddVFX",
+    "AkGameplayStatics.PostEvent",
+    "ArchonBuff.GetBuffOwner",
+    "AreEffectsActive",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.MakeLiteralGameplayTagContainer",
+    "EnterCooldown",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "IsAegisInactive",
+    "KismetMathLibrary.BooleanAND",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "NiagaraFunctionLibrary.SpawnSystemAttached",
+    "PostEventTemp",
+    "ResistStaggerFX",
+    "SkinnedMeshComponent.GetSocketBoneName",
+    "Start"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Gameplay_Super_Armour_Activate",
+    "AkAudioEvent Play_ui_hud_dp_x_ability_full",
+    "BlueprintGeneratedClass vfx_bpc_C",
+    "NiagaraSystem Perk_Sturdy_broken_ns",
+    "NiagaraSystem perk_sturdy_ready_ns"
+   ]
+  },
+  {
+   "name": "IsAegisInactive",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "IsAegisActive",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.GetGameplayEffectCount",
+    "ArchonBuff.GetBuffOwner",
+    "KismetMathLibrary.EqualEqual_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_aegis_active_ge_C"
+   ]
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "On Received Hit",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Source",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnGameplayEventTriggered",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Payload",
+     "type": "StructProperty<GameplayEventData>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResistStaggerFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_sturdy_buff_C.ExecuteUbergraph_ce_sturdy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Content/Sturdy/ce_sturdy_buff",
+ "pseudo_file": "pseudo/ce_sturdy_buff_C.txt",
+ "game_data": {}
+}

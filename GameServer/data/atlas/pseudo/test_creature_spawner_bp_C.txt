@@ -1,0 +1,180 @@
+# test_creature_spawner_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== EQSActorSpawned
+  [0] frame.K2Node_Event_Actor = Actor
+  [18] frame.K2Node_Event_GUID_1 = GUID
+  [36] ExecuteUbergraph_test_creature_spawner_bp(16)
+  [51] return nothing
+  [53] end
+
+=== EQSArchonProjectileSpawned
+  [0] frame.K2Node_Event_Projectile = Projectile
+  [18] frame.K2Node_Event_ProjectileTarget = ProjectileTarget
+  [36] frame.K2Node_Event_GUID = GUID
+  [54] ExecuteUbergraph_test_creature_spawner_bp(17)
+  [69] return nothing
+  [71] end
+
+=== EQSProjectileSpawned
+  [0] frame.K2Node_Event_Projectile_1 = Projectile
+  [18] frame.K2Node_Event_ProjectileTarget_1 = ProjectileTarget
+  [36] frame.K2Node_Event_GUID_2 = GUID
+  [54] ExecuteUbergraph_test_creature_spawner_bp(15)
+  [69] return nothing
+  [71] end
+
+=== ExecuteUbergraph_test_creature_spawner_bp
+  [0] push @2076
+  [5] goto computed(EntryPoint)
+  [15] pop
+  [16] pop
+  [17] pop
+  [18] ReceiveBeginPlay()
+  [28] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [49] if !(CallFunc_IsServer_ReturnValue) pop
+  [59] SetActorTickEnabled(true)
+  [70] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName('None', self.EventID)
+  [112] if !(CallFunc_EqualEqual_NameName_ReturnValue) goto @358
+  [126] if !(self.RequireExplorationMode) goto @240
+  [140] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [161] K2Node_DynamicCast_AsBPGM_Archon_Exploration = cast<BPGM_ArchonExploration_C>(CallFunc_GetGameMode_ReturnValue)
+  [197] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGM_Archon_Exploration)
+  [226] if !(K2Node_DynamicCast_bSuccess) goto @444
+  [240] self.L_ActorToSpawn = self.ActorToSpawn
+  [267] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnLoaded_3DB45CAD4FFFD9088F99D99D4E46DBA6)
+  [290] LoadAssetClass(self, self.L_ActorToSpawn, K2Node_CreateDelegate_OutputDelegate_2, LatentActionInfo{-1, -1502829151, 'ExecuteUbergraph_test_creature_spawner_bp', self})
+  [357] pop
+  [358] CallFunc_UtcNow_ReturnValue = UtcNow()
+  [386] CallFunc_IsScheduledItemActive_ReturnValue = IsScheduledItemActive(self, self.EventID, CallFunc_UtcNow_ReturnValue)
+  [425] if !(CallFunc_IsScheduledItemActive_ReturnValue) goto @444
+  [439] goto @126
+  [444] SetActorHiddenInGame(true)
+  [459] pop
+  [460] self.eqs_gameplay_bpc.AuthSpawnGameplay(self.SpawnQuery, CallFunc_AuthSpawnGameplay_Succeeded, CallFunc_AuthSpawnGameplay_GameplayRequestGUID, CallFunc_AuthSpawnGameplay_Result)
+  [532] pop
+  [533] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.TotalNumSpawned, 1)
+  [575] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [602] self.TotalNumSpawned = Temp_int_Variable
+  [629] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.NumActiveSpawns, 1)
+  [671] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [698] self.NumActiveSpawns = Temp_int_Variable_1
+  [725] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnSpawnedActorDestroyed)
+  [748] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [789] pop
+  [790] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnSpawnedActor)
+  [813] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [854] TryResetSpawnTimer()
+  [868] pop
+  [869] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.NumActiveSpawns, 1)
+  [911] Temp_int_Variable_2 = CallFunc_Subtract_IntInt_ReturnValue
+  [938] self.NumActiveSpawns = Temp_int_Variable_2
+  [965] TryResetSpawnTimer()
+  [979] pop
+  [980] if !(self.SpawnsAllowed) pop
+  [990] K2_ClearAndInvalidateTimerHandle(self, self.L_SpawnTimer)
+  [1010] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.SpawnLimit, self.TotalNumSpawned)
+  [1048] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(self.SpawnLimit, 0)
+  [1082] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_LessEqual_IntInt_ReturnValue, CallFunc_GreaterEqual_IntInt_ReturnValue)
+  [1120] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [1130] K2Node_CreateDelegate_OutputDelegate = bind(self.SpawnAdds)
+  [1153] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.SpawnTimeVariance, -1.0)
+  [1199] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(CallFunc_Multiply_DoubleDouble_ReturnValue, self.SpawnTimeVariance)
+  [1245] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.SpawnTime, CallFunc_RandomFloatInRange_ReturnValue)
+  [1291] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [1320] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [1377] self.L_SpawnTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1404] pop
+  [1405] push @2032
+  [1410] K2Node_ClassDynamicCast_AsActor = cast<Actor>(Temp_class_Variable)
+  [1446] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsActor)
+  [1475] if !(K2Node_ClassDynamicCast_bSuccess) pop
+  [1485] self.SpawnQuery.ActorInfo.EQSGameplayData.SpawnOffset = self.OffsetToSpawnPos
+  [1539] self.SpawnQuery.ActorInfo.EQSGameplayData.MaxTargetsToConsider = self.NumToSpawnPerInterval
+  [1593] self.SpawnQuery.ActorInfo.ActorClass = K2Node_ClassDynamicCast_AsActor
+  [1630] self.SpawnQuery.ActorInfo.EQSGameplayData = self.SpawnQuery.ActorInfo.EQSGameplayData
+  [1693] self.SpawnQuery.ActorInfo = self.SpawnQuery.ActorInfo
+  [1738] Default__KismetArrayLibrary.Array_Clear(self.spawnedactor_manager_bpc.self.ActorData)
+  [1801] array{}
+  [1812] K2Node_MakeStruct_spawnedactor_manager_info.ActorClass = K2Node_ClassDynamicCast_AsActor
+  [1840] K2Node_MakeStruct_spawnedactor_manager_info.MaxAllowedAmount = self.MaxAllowed
+  [1876] K2Node_MakeStruct_spawnedactor_manager_info.WhatToDoIfOverMaxAllowed = 1
+  [1905] K2Node_MakeStruct_spawnedactor_manager_info.SpawnPoolsThisIsRestrictedBy = K2Node_MakeArray_Array
+  [1941] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.spawnedactor_manager_bpc.self.ActorData, K2Node_MakeStruct_spawnedactor_manager_info)
+  [2031] pop
+  [2032] SetActorHiddenInGame(false)
+  [2047] goto @790
+  [2052] Temp_class_Variable = K2Node_CustomEvent_Loaded
+  [2071] goto @1405
+  [2076] return nothing
+  [2078] end
+
+=== ModifyEQSGameplayData
+  [0] NewEQSSpawnQuery = eqs_spawn_query{null, null, 0, eqs_lobbed_projectile_data{null, eqs_gameplay_data{'None', false, 0, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}), arc_distribution_info{25.0, 150.0, 180.0, 0.0, 100.0}, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 1, true, 0, 'None', 'None', 1, 1, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'eqs_gameplay_data'", 'ObjectPath': '/Game/_shared/blueprints/eqs_gameplay_data.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public', 'ElementSize': 20, 'Struct': {'ObjectName': "UserDefinedStruct'projectile_target_modifier'", 'ObjectPath': '/Game/_shared/blueprints/projectile_target_modifier.0'}}}},Values=), 'None', false, 0.0, 0, 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, null, 0, 0}}, eqs_aimed_projectile_data{null, eqs_gameplay_data{'None', false, 0, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}), arc_distribution_info{25.0, 150.0, 180.0, 0.0, 100.0}, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 1, false, 0, 'None', 'None', 1, 1, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'eqs_gameplay_data'", 'ObjectPath': '/Game/_shared/blueprints/eqs_gameplay_data.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public', 'ElementSize': 20, 'Struct': {'ObjectName': "UserDefinedStruct'projectile_target_modifier'", 'ObjectPath': '/Game/_shared/blueprints/projectile_target_modifier.0'}}}},Values=), 'None', false, 0.0, 1, 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, null, 0, 0}}, eqs_actor_data{null, eqs_gameplay_data{'None', false, 0, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}), arc_distribution_info{25.0, 150.0, 180.0, 0.0, 100.0}, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 1, true, 0, 'None', 'None', 1, 1, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'eqs_gameplay_data'", 'ObjectPath': '/Game/_shared/blueprints/eqs_gameplay_data.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'TargetModifiers_56_64C5F25F4A1273176B2B63B31D0BA415', 'Flags': 'RF_Public', 'ElementSize': 20, 'Struct': {'ObjectName': "UserDefinedStruct'projectile_target_modifier'", 'ObjectPath': '/Game/_shared/blueprints/projectile_target_modifier.0'}}}},Values=), 'None', false, 0.0, 0, 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, null, 0, 0}, true, true}, Guid{0, 0, 0, 0}, 0.0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}}
+  [1017] ModifiedData = false
+  [1028] return nothing
+  [1030] end
+
+=== ModifyEQSGameplaySpawnPosPostCalc
+  [0] NewPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] ModifiedPosition = false
+  [54] return nothing
+  [56] end
+
+=== ModifyEQSGameplaySpawnPosPreCalc
+  [0] NewStartPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] ModifiedPosition = false
+  [54] return nothing
+  [56] end
+
+=== ModifySpawnArchonProjectileQuery
+  [0] ModifiedData = false
+  [11] ModifiedSpawnArchonQuery = SpawnArchonProjectileQuery{null, SpawnProjectileInfo{null, 'None', false, 0, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}), ProjectileArcDistributionInfo{25.0, 150.0, 180.0, 0.0, 100.0}, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 1, true, 0, 'None', 'None', 1, 1, EX_ArrayConst(InnerProperty={'Path': ['TargetModifiers', 'TargetModifiers'], 'ResolvedOwner': {'ObjectName': "Class'SpawnProjectileInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 'None', false, 0.0, 1, 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, null, 0, 0, 0, false, 0.0, false}, EX_ArrayConst(InnerProperty={'Path': ['OverrideBehaviors', 'OverrideBehaviors'], 'ResolvedOwner': {'ObjectName': "Class'SpawnArchonProjectileQuery'", 'ObjectPath': '/Script/Archon'}},Values=), Guid{0, 0, 0, 0}, 0.0, 0.0}
+  [401] return nothing
+  [403] end
+
+=== ModifySpawnArchonProjectileQueryPosPostCalc
+  [0] NewPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] ModifiedPosition = false
+  [54] return nothing
+  [56] end
+
+=== ModifySpawnArchonProjectileQueryPosPreCalc
+  [0] NewStartPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] ModifiedPosition = false
+  [54] return nothing
+  [56] end
+
+=== OnLoaded_3DB45CAD4FFFD9088F99D99D4E46DBA6
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_test_creature_spawner_bp(2052)
+  [33] return nothing
+  [35] end
+
+=== OnSpawnedActor
+  [0] frame.K2Node_CustomEvent_SpawnedActor = SpawnedActor
+  [18] frame.K2Node_CustomEvent_GUID = GUID
+  [36] frame.K2Node_CustomEvent_QueryTags = QueryTags
+  [54] ExecuteUbergraph_test_creature_spawner_bp(533)
+  [69] return nothing
+  [71] end
+
+=== OnSpawnedActorDestroyed
+  [0] frame.K2Node_CustomEvent_DestroyedActor = DestroyedActor
+  [18] ExecuteUbergraph_test_creature_spawner_bp(869)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_test_creature_spawner_bp(18)
+  [15] return nothing
+  [17] end
+
+=== SpawnAdds
+  [0] ExecuteUbergraph_test_creature_spawner_bp(460)
+  [15] return nothing
+  [17] end
+
+=== TryResetSpawnTimer
+  [0] ExecuteUbergraph_test_creature_spawner_bp(980)
+  [15] return nothing
+  [17] end

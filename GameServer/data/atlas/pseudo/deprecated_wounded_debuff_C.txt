@@ -1,0 +1,216 @@
+# deprecated_wounded_debuff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthCheckMovement
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(2870)
+  [15] return nothing
+  [17] end
+
+=== CheckMovementOverTime
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @504
+  [99] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [119] CallFunc_GetCurrentMontage_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentMontage()
+  [161] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetCurrentMontage_ReturnValue)
+  [190] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [240] CallFunc_NotEqual_VectorVector_ReturnValue = NotEqual_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, self.PreviousLocation, 50.0)
+  [283] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsValid_ReturnValue, CallFunc_NotEqual_VectorVector_ReturnValue)
+  [321] if !(CallFunc_BooleanOR_ReturnValue) goto @520
+  [335] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [355] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [405] self.PreviousLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [432] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [461] self.TimeOfLastMovement = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [488] HasMoved = true
+  [499] goto @674
+  [504] HasMoved = false
+  [515] goto @674
+  [520] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [549] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue_1, self.TimeOfLastMovement)
+  [595] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.TimeSinceMovementMaximum)
+  [633] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @663
+  [647] HasMoved = false
+  [658] goto @674
+  [663] HasMoved = true
+  [674] return nothing
+  [676] end
+
+=== ExecuteUbergraph_deprecated_wounded_debuff
+  [0] push @3243
+  [5] goto computed(EntryPoint)
+  [15] K2_DestroyActor()
+  [29] pop
+  [30] FlushNetDormancy()
+  [40] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetInitialMitigatedDuration_duration)
+  [69] self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [96] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxDuration')
+  [125] UpdateExpireTime(self.MaxDuration, true)
+  [145] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [165] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [194] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(EX_ArrayGetByRef(ArrayVariable=self.GameplayEffects,ArrayIndex=0).Effect, 0.0, GameplayEffectContextHandle{})
+  [291] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', self.MaxDuration)
+  [350] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [370] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [399] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [458] InitializeMovementCheckArray()
+  [472] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthCheckMovement)
+  [495] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.1, true, 0.0, 0.0)
+  [548] CallFunc_GetBuffOwner_ReturnValue_7 = GetBuffOwner()
+  [568] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_7.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [619] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [648] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [658] CallFunc_GetBuffOwner_ReturnValue_7 = GetBuffOwner()
+  [678] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_7.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [729] OnStatusWorthHUDNotifyingOccured__DelegateSignature(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Wounded'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '092B1CDD4E1083218DEF1FAFDC7D7597'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}), hud_statuseffect_icon_wounded_00, 'None', false, false)
+  [841] pop
+  [842] push @957
+  [847] Default__KismetArrayLibrary.Array_Get(CallFunc_GetBodyMaterials_MaterialInstances_1, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [906] CallFunc_Array_Get_Item.SetScalarParameterValue('BleedoutMult', 0.0)
+  [956] pop
+  [957] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [999] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1026] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetBodyMaterials_MaterialInstances_1)
+  [1085] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [1123] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1133] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1160] goto @842
+  [1165] Temp_int_Loop_Counter_Variable = 0
+  [1188] Temp_int_Array_Index_Variable = 0
+  [1211] goto @1026
+  [1216] CallFunc_MatchesTag_ReturnValue = MatchesTag(GameplayTag{'Abilities.OnHealed'}, K2Node_Event_Payload.EventTag, false)
+  [1282] if !(CallFunc_MatchesTag_ReturnValue) pop
+  [1292] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [1312] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_4)
+  [1341] CallFunc_GetAbilitySystemComponent_ReturnValue_1.RemoveActiveGameplayEffectBySourceEffect(EX_ArrayGetByRef(ArrayVariable=self.GameplayEffects,ArrayIndex=0).Effect, CallFunc_GetAbilitySystemComponent_ReturnValue_1, -1)
+  [1415] pop
+  [1416] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1436] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_VO_Exrtn_Player_Pain_Med, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [1519] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1539] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Player_Hit_Wounded, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1622] push @2098
+  [1627] push @1810
+  [1632] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1652] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1688] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1717] if !(K2Node_DynamicCast_bSuccess) goto @2364
+  [1731] K2Node_DynamicCast_AsPlayer_Interface.GetBodyMaterials(CallFunc_GetBodyMaterials_MaterialInstances)
+  [1777] self.Timeline_0.PlayFromStart()
+  [1809] pop
+  [1810] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [1830] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetBuffOwner_ReturnValue_3)
+  [1859] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [1869] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [1895] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, BPW_Wounded_Flash_C, CallFunc_GetPlayerController_ReturnValue)
+  [1956] self.WoundedUIFlash = CallFunc_Create_ReturnValue
+  [1975] CallFunc_IsValid_ReturnValue = IsValid(self.WoundedUIFlash)
+  [2004] if !(CallFunc_IsValid_ReturnValue) pop
+  [2014] CallFunc_AddToPlayerScreen_ReturnValue = self.WoundedUIFlash.AddToPlayerScreen(0)
+  [2061] self.WoundedUIFlash.BleedAnim()
+  [2097] pop
+  [2098] CallFunc_GetBuffOwner_ReturnValue_8 = GetBuffOwner()
+  [2118] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(CallFunc_GetBuffOwner_ReturnValue_8)
+  [2147] if !(CallFunc_IsLocalCharacter_ReturnValue_1) pop
+  [2157] CallFunc_GetBuffOwner_ReturnValue_8 = GetBuffOwner()
+  [2177] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_8.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [2228] OnStatusWorthHUDNotifyingOccured__DelegateSignature(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Stamina depleted while Wounded'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': 'E6AD1A81418DA59F5EF3EBBFCFD38B69'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}), hud_statuseffect_icon_wounded_00, 'None', false, false)
+  [2363] pop
+  [2364] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetBodyMaterials_MaterialInstances)
+  [2405] goto @1777
+  [2410] MulticastPlayWoundedEffects()
+  [2424] pop
+  [2425] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetBodyMaterials_MaterialInstances)
+  [2484] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [2522] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2532] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [2559] push @2678
+  [2564] Default__KismetArrayLibrary.Array_Get(CallFunc_GetBodyMaterials_MaterialInstances, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2623] CallFunc_Array_Get_Item_1.SetScalarParameterValue('BleedoutMult', self.Timeline_0_NewTrack_0_BA351A2748A397FBBB5BD6B878C02B6D)
+  [2677] pop
+  [2678] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2720] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2747] goto @2425
+  [2752] Temp_int_Loop_Counter_Variable_1 = 0
+  [2775] Temp_int_Array_Index_Variable_1 = 0
+  [2798] goto @2425
+  [2803] OnAdded()
+  [2813] GetInitialMitigatedDuration(CallFunc_GetInitialMitigatedDuration_duration)
+  [2836] goto @30
+  [2841] if !(self.Healed) goto @2410
+  [2855] K2_DestroyActor()
+  [2869] pop
+  [2870] CheckMovementOverTime(CallFunc_CheckMovementOverTime_HasMoved)
+  [2893] if !(CallFunc_CheckMovementOverTime_HasMoved) goto @2908
+  [2907] pop
+  [2908] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [2928] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_5)
+  [2957] CallFunc_GetAbilitySystemComponent_ReturnValue_2.RemoveActiveGameplayEffectBySourceEffect(EX_ArrayGetByRef(ArrayVariable=self.GameplayEffects,ArrayIndex=0).Effect, CallFunc_GetAbilitySystemComponent_ReturnValue_2, -1)
+  [3031] pop
+  [3032] ReceiveDestroyed()
+  [3042] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [3062] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue_6)
+  [3098] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [3127] if !(K2Node_DynamicCast_bSuccess_1) goto @3192
+  [3141] K2Node_DynamicCast_AsPlayer_Interface_1.GetBodyMaterials(CallFunc_GetBodyMaterials_MaterialInstances_1)
+  [3187] goto @1165
+  [3192] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetBodyMaterials_MaterialInstances_1)
+  [3233] goto @1165
+  [3238] goto @2752
+  [3243] return nothing
+  [3245] end
+
+=== GetInitialMitigatedDuration
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [49] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:StatusWoundedEffectivenessMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [191] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [220] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [249] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [295] duration = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [322] return nothing
+  [324] end
+
+=== InitializeMovementCheckArray
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [70] self.PreviousLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [97] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [126] self.TimeOfLastMovement = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [153] return nothing
+  [155] end
+
+=== MulticastPlayWoundedEffects
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(1416)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(2803)
+  [15] return nothing
+  [17] end
+
+=== OnGameplayEffectRemoved
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(2841)
+  [15] return nothing
+  [17] end
+
+=== OnGameplayEventTriggered
+  [0] frame.K2Node_Event_Payload = Payload
+  [18] ExecuteUbergraph_deprecated_wounded_debuff(1216)
+  [33] return nothing
+  [35] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(3032)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__FinishedFunc
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(15)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__UpdateFunc
+  [0] ExecuteUbergraph_deprecated_wounded_debuff(3238)
+  [15] return nothing
+  [17] end

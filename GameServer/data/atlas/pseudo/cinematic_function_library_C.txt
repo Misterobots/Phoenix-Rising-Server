@@ -1,0 +1,46 @@
+# cinematic_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AlignCamera
+  [0] BreakTransform(Transform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [46] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(__WorldContext, 0)
+  [80] BreakRotator(CallFunc_BreakTransform_Rotation, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [126] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 355.0, CallFunc_BreakRotator_Yaw)
+  [173] CallFunc_GetPlayerController_ReturnValue.SetControlRotation(CallFunc_MakeRotator_ReturnValue)
+  [218] return nothing
+  [220] end
+
+=== Start Island Gameplay for Local Player
+  [0] push @1145
+  [5] push @559
+  [10] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(__WorldContext, 0)
+  [44] K2Node_DynamicCast_AsArchon_Player_State = cast<ArchonPlayerState>(CallFunc_GetPlayerController_ReturnValue.self.PlayerState)
+  [102] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_State)
+  [131] CallFunc_GetCurrentGameModePlayerStartForPlayer_ReturnValue = GetCurrentGameModePlayerStartForPlayer(K2Node_DynamicCast_AsArchon_Player_State)
+  [160] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetCurrentGameModePlayerStartForPlayer_ReturnValue)
+  [189] if !(CallFunc_IsValid_ReturnValue) goto @842
+  [203] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(__WorldContext, 0)
+  [237] CallFunc_K2_GetPawn_ReturnValue_1 = CallFunc_GetPlayerController_ReturnValue.K2_GetPawn()
+  [279] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_K2_GetPawn_ReturnValue_1)
+  [315] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [344] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetCurrentGameModePlayerStartForPlayer_ReturnValue.K2_GetActorLocation()
+  [394] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetCurrentGameModePlayerStartForPlayer_ReturnValue.K2_GetActorRotation()
+  [444] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorRotation_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [515] K2Node_DynamicCast_AsArchon_Character.SetGameplayActiveForPlayer(true, true, CallFunc_MakeTransform_ReturnValue)
+  [558] pop
+  [559] CallFunc_GetArchonLocalPlayerController_ReturnValue = GetArchonLocalPlayerController(__WorldContext)
+  [588] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetArchonLocalPlayerController_ReturnValue.K2_GetPawn()
+  [630] CallFunc_GetArchonLocalPlayerController_ReturnValue.SetViewTargetWithBlend(CallFunc_K2_GetPawn_ReturnValue, 0.0, 0, 0.0, true)
+  [688] CallFunc_GetArchonLocalPlayerController_ReturnValue = GetArchonLocalPlayerController(__WorldContext)
+  [717] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetArchonLocalPlayerController_ReturnValue.K2_GetPawn()
+  [759] CallFunc_GetTransform_ReturnValue = CallFunc_K2_GetPawn_ReturnValue.GetTransform()
+  [809] AlignCamera(CallFunc_GetTransform_ReturnValue, CallFunc_GetArchonLocalPlayerController_ReturnValue)
+  [841] pop
+  [842] ArchonLogError('Unable to find Island PlayerStart!')
+  [888] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(__WorldContext, 0)
+  [922] CallFunc_K2_GetPawn_ReturnValue_1 = CallFunc_GetPlayerController_ReturnValue.K2_GetPawn()
+  [964] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_K2_GetPawn_ReturnValue_1)
+  [1000] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1029] K2Node_DynamicCast_AsArchon_Character.SetGameplayActiveForPlayer(true, false, EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True}))
+  [1144] pop
+  [1145] return nothing
+  [1147] end

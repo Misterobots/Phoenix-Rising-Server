@@ -1,0 +1,400 @@
+{
+ "name": "ce_perfectshield_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_input_revive_other_C",
+  "base_conditional_benefit_buff_C",
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RezzedPlayer",
+   "type": "ObjectProperty<Actor>",
+   "bp_type": "ObjectProperty<Actor>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActivateMainAbility",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Cooldown",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Cooldown Timer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Buff Icon",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthSpawnBuffAtMontageEnd",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Montage",
+     "type": "ObjectProperty<AnimMontage>"
+    },
+    {
+     "name": "bInterrupted",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanReplaceBleedout",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [
+    "ActivateMainAbility"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_perfectshield_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_TryAddBuffs_AppliedBuffs",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetParticipantsForEncounter_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 83,
+   "reads": [
+    "BPOnBehemothDeath",
+    "Buff Icon",
+    "Cooldown",
+    "Cooldown Timer",
+    "RezzedPlayer"
+   ],
+   "sets": [
+    "Buff Icon",
+    "Cooldown Timer",
+    "RezzedPlayer"
+   ],
+   "calls": [
+    "AnimInstance.Montage_SetEndDelegate",
+    "ArchonBleedoutComponentStatics.RegisterBleedoutReplacementEffect",
+    "ArchonBleedoutComponentStatics.UnregisterBleedoutReplacementEffect",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.CurrentGameModeHasTag",
+    "EncounterTrackingSystem.GetParticipantsForEncounter",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffect",
+    "GameplayModifierFunctionLibrary.RemoveGameplayEffect",
+    "GameplayStatics.GetGameMode",
+    "GetMesh",
+    "HasMatchingGameplayTag",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "PlayNetworkedMontage",
+    "Refresh Cooldown",
+    "SkeletalMeshComponent.GetAnimInstance",
+    "SubsystemBlueprintLibrary.GetWorldSubsystem",
+    "Try Activate Effect",
+    "TryAddBuffs",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_ua_bleedout_getup_fwd_01_mot",
+    "BlueprintGeneratedClass ge_perfectshield_icon_C",
+    "BlueprintGeneratedClass radiant_shield_buff_C"
+   ]
+  },
+  {
+   "name": "GetPriority",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "EnumProperty<EArchonBleedoutReplacementEffectPriority>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothKilled",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRevivedOtherPlayer_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OtherPlayer",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReplaceBleedout",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetAbility",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_perfectshield_buff_C.ExecuteUbergraph_ce_perfectshield_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_perfectshield_buff",
+ "pseudo_file": "pseudo/ce_perfectshield_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,264 @@
+# base_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyGameplayIconEffect
+  [0] Temp_real_Variable = 99999.0
+  [27] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [56] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [94] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [114] Temp_bool_Variable = CallFunc_Greater_DoubleDouble_ReturnValue
+  [133] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [162] K2Node_Select_Option_1_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [191] CallFunc_MakeEffectContext_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeEffectContext()
+  [245] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(self.IconGameplayEffect, 0.0, CallFunc_MakeEffectContext_ReturnValue)
+  [322] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: Temp_real_Variable, true: K2Node_Select_Option_1_ImplicitCast, default: K2Node_Select_Default})
+  [395] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [454] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [474] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [503] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [571] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.IconGameplayEffectHandles, CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue)
+  [639] return nothing
+  [641] end
+
+=== ApplyMagnitude_BP
+  [0] frame.K2Node_Event_NewMagnitude = NewMagnitude
+  [18] ExecuteUbergraph_base_buff(1042)
+  [33] return nothing
+  [35] end
+
+=== CustomModifyDamageEventData
+  [0] ModifiedDamageEventData = false
+  [11] OverriddenDamageEventData = DamageEventData
+  [38] ShouldOverrideDamageTags = false
+  [49] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [95] return nothing
+  [97] end
+
+=== ExecuteUbergraph_base_buff
+  [0] push @1047
+  [5] goto computed(EntryPoint)
+  [15] push @354
+  [20] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.IconGameplayEffect)
+  [49] Default__KismetArrayLibrary.Array_Get(self.IconGameplayEffectHandles, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [108] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(CallFunc_Array_Get_Item)
+  [137] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValidClass_ReturnValue, CallFunc_IsGameplayEffectActive_ReturnValue)
+  [175] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [185] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [205] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [234] Default__KismetArrayLibrary.Array_Get(self.IconGameplayEffectHandles, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [293] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(CallFunc_Array_Get_Item, 1)
+  [353] pop
+  [354] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [396] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [423] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.IconGameplayEffectHandles)
+  [482] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [520] if !(CallFunc_Less_IntInt_ReturnValue) goto @566
+  [534] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [561] goto @15
+  [566] Default__KismetArrayLibrary.Array_Clear(self.IconGameplayEffectHandles)
+  [607] pop
+  [608] K2Node_DynamicCast_AsBpi_Cell_Buff = cast<bpi_cell_buff_C>(self)
+  [636] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Cell_Buff)
+  [665] if !(K2Node_DynamicCast_bSuccess) pop
+  [675] CallFunc_SetMagnitudeFromCell_NewMagnitude_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_NewMagnitude)
+  [704] K2Node_DynamicCast_AsBpi_Cell_Buff.SetMagnitudeFromCell(CallFunc_SetMagnitudeFromCell_NewMagnitude_ImplicitCast)
+  [750] pop
+  [751] Temp_int_Array_Index_Variable = 0
+  [774] goto @423
+  [779] Temp_int_Loop_Counter_Variable = 0
+  [802] goto @751
+  [807] push @877
+  [812] CallFunc_NotEqual_ClassClass_ReturnValue = NotEqual_ClassClass(self.IconGameplayEffect, null)
+  [842] if !(CallFunc_NotEqual_ClassClass_ReturnValue) pop
+  [852] if !(self.AddIconStackOnAdded) pop
+  [862] ApplyGameplayIconEffect()
+  [876] pop
+  [877] RegisterDamageModifiers()
+  [891] pop
+  [892] OnRemoved()
+  [902] push @932
+  [907] push @917
+  [912] goto @779
+  [917] UnregisterDamageModifiers()
+  [931] pop
+  [932] OnBuffRemoved__DelegateSignature()
+  [951] pop
+  [952] ReceiveDestroyed()
+  [962] goto @902
+  [967] MulticastOnRefreshed()
+  [977] CallFunc_NotEqual_ClassClass_ReturnValue_1 = NotEqual_ClassClass(self.IconGameplayEffect, null)
+  [1007] if !(CallFunc_NotEqual_ClassClass_ReturnValue_1) pop
+  [1017] if !(self.AddIconStackOnRefresh) pop
+  [1027] ApplyGameplayIconEffect()
+  [1041] pop
+  [1042] goto @608
+  [1047] return nothing
+  [1049] end
+
+=== GetModifyDamageEventPriority
+  [0] Priority = self.ModifyDamageEventPriority
+  [27] return nothing
+  [29] end
+
+=== GetPlayerEventDispatcher
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [49] if !(CallFunc_IsValid_ReturnValue_1) goto @504
+  [63] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [83] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [112] if !(CallFunc_IsValid_ReturnValue_1) goto @520
+  [126] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [146] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [182] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [211] if !(K2Node_DynamicCast_bSuccess) goto @891
+  [225] CallFunc_GetObjectName_ReturnValue = GetObjectName(self)
+  [254] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Warning: ', CallFunc_GetObjectName_ReturnValue)
+  [302] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' is being granted to a behemoth, but might assume this should be a player')
+  [414] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, false, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [488] Player Event Dispatcher = null
+  [499] goto @1471
+  [504] Player Event Dispatcher = null
+  [515] goto @1471
+  [520] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [540] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [577] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [627] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, '}: ')
+  [669] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, "Error: Buff owner doesn't have a playereventdispatcher!")
+  [763] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [837] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [857] if !(CallFunc_IsShipping_ReturnValue) goto @876
+  [871] goto @504
+  [876] StackTrace()
+  [886] goto @504
+  [891] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [911] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [962] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [991] if !(CallFunc_IsValid_ReturnValue) goto @1100
+  [1005] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1025] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1076] Player Event Dispatcher = CallFunc_GetComponentByClass_ReturnValue
+  [1095] goto @1471
+  [1100] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1120] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [1157] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue_1)
+  [1207] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, '}: ')
+  [1249] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, "Error: Buff owner doesn't have a playereventdispatcher!")
+  [1343] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_7, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [1417] CallFunc_IsShipping_ReturnValue_1 = IsShipping()
+  [1437] if !(CallFunc_IsShipping_ReturnValue_1) goto @1456
+  [1451] goto @1005
+  [1456] StackTrace()
+  [1466] goto @1005
+  [1471] return nothing
+  [1473] end
+
+=== GetVFXAttachPoint
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess_1) goto @145
+  [99] AttachComponent = K2Node_DynamicCast_AsArchon_Character.self.Mesh
+  [140] goto @450
+  [145] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [165] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetBuffOwner_ReturnValue)
+  [201] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [230] if !(K2Node_DynamicCast_bSuccess) goto @290
+  [244] AttachComponent = K2Node_DynamicCast_AsArchon_Behemoth.self.Mesh
+  [285] goto @450
+  [290] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [310] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBuffOwner_ReturnValue)
+  [339] if !(CallFunc_IsValid_ReturnValue) goto @439
+  [353] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [373] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetRootComponent()
+  [415] AttachComponent = CallFunc_K2_GetRootComponent_ReturnValue
+  [434] goto @450
+  [439] AttachComponent = null
+  [450] return nothing
+  [452] end
+
+=== MulticastOnRefreshed
+  [0] ExecuteUbergraph_base_buff(967)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_base_buff(807)
+  [15] return nothing
+  [17] end
+
+=== OnBuffRemoved__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_base_buff(892)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_base_buff(952)
+  [15] return nothing
+  [17] end
+
+=== RegisterDamageModifiers
+  [0] push @913
+  [5] CallFunc_BooleanNAND_ReturnValue = BooleanNAND(self.RespondToAnyOutgoingDamagePremit, self.RespondToOutgoingWeaponDamagePreMitigation)
+  [43] if !(CallFunc_BooleanNAND_ReturnValue) goto @236
+  [57] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [80] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [109] if !(CallFunc_IsValid_ReturnValue) pop
+  [119] push @806
+  [124] push @699
+  [129] if !(self.RespondToAnyIncomingDamagePremit) pop
+  [139] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [162] CallFunc_RegisterToModifyAnyIncomingDamagePremit_DamageModifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [190] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.RegisterToModifyAnyIncomingDamagePremit(CallFunc_RegisterToModifyAnyIncomingDamagePremit_DamageModifier_CastInput)
+  [235] pop
+  [236] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [265] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [315] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [344] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [386] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_GetDisplayName_ReturnValue_1, ' will respond to both AnyOutgoingDamage and OutgoingWeaponDamage, which will cause it respond twice.')
+  [525] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Concat_StrStr_ReturnValue_2)
+  [571] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_3, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [645] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [665] if !(CallFunc_IsShipping_ReturnValue) goto @684
+  [679] goto @57
+  [684] StackTrace()
+  [694] goto @57
+  [699] if !(self.RespondToOutgoingWeaponDamagePreMitigation) pop
+  [709] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [732] CallFunc_RegisterToModifyOutgoingWeaponDamagePreMitigation_DamageEventModifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [760] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.RegisterToModifyOutgoingWeaponDamagePreMitigation(CallFunc_RegisterToModifyOutgoingWeaponDamagePreMitigation_DamageEventModifier_CastInput)
+  [805] pop
+  [806] if !(self.RespondToAnyOutgoingDamagePremit) pop
+  [816] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [839] CallFunc_RegisterToModifyAnyOutgoingDamagePremit_DamageModifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [867] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.RegisterToModifyAnyOutgoingDamagePremit(CallFunc_RegisterToModifyAnyOutgoingDamagePremit_DamageModifier_CastInput)
+  [912] pop
+  [913] return nothing
+  [915] end
+
+=== UnregisterDamageModifiers
+  [0] push @398
+  [5] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [28] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [57] if !(CallFunc_IsValid_ReturnValue) pop
+  [67] push @291
+  [72] push @184
+  [77] if !(self.RespondToAnyIncomingDamagePremit) pop
+  [87] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [110] CallFunc_UnregisterToModifyAnyIncomingDamagePremit_Modifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [138] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.UnregisterToModifyAnyIncomingDamagePremit(CallFunc_UnregisterToModifyAnyIncomingDamagePremit_Modifier_CastInput)
+  [183] pop
+  [184] if !(self.RespondToOutgoingWeaponDamagePreMitigation) pop
+  [194] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [217] CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [245] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.UnregisterToModifyOutgoingWeaponDamagePreMitigation(CallFunc_UnregisterToModifyOutgoingWeaponDamagePreMitigation_Modifier_CastInput)
+  [290] pop
+  [291] if !(self.RespondToAnyOutgoingDamagePremit) pop
+  [301] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [324] CallFunc_UnregisterToModifyAnyOutgoingDamagePremit_Modifier_CastInput = cast<bpi_damageevent_modifier_C>(self)
+  [352] CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher.UnregisterToModifyAnyOutgoingDamagePremit(CallFunc_UnregisterToModifyAnyOutgoingDamagePremit_Modifier_CastInput)
+  [397] pop
+  [398] return nothing
+  [400] end

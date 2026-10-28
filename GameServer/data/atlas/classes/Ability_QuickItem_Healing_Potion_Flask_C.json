@@ -1,0 +1,649 @@
+{
+ "name": "Ability_QuickItem_Healing_Potion_Flask_C",
+ "kind": "blueprint",
+ "parents": [
+  "Ability_QuickItem_Base_C",
+  "ArchonQuickItem",
+  "GameplayAbility",
+  "Object"
+ ],
+ "size": 1192,
+ "sdk_header": "Ability_QuickItem_Healing_Potion_Flask_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Heal Amount",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HoTTime",
+   "type": "double",
+   "offset": "0x470",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "HoTBonus",
+   "type": "double",
+   "offset": "0x478",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "HealOverTimeBuff",
+   "type": "Aheal_over_time_buff_C*",
+   "offset": "0x480",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<heal_over_time_buff_C>"
+  },
+  {
+   "name": "PotionBurstParticle",
+   "type": "UParticleSystem*",
+   "offset": "0x488",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystem>"
+  },
+  {
+   "name": "SpawnedWarmupParticle",
+   "type": "UParticleSystemComponent*",
+   "offset": "0x490",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "PotionWarmupParticle",
+   "type": "UParticleSystem*",
+   "offset": "0x498",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystem>"
+  },
+  {
+   "name": "HealOthers",
+   "type": "bool",
+   "offset": "0x4A0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "SpawnedWarmupParticle",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyEffect",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 97,
+   "reads": [
+    "ArchonBuffableComponent",
+    "HealOthers",
+    "HoTTime"
+   ],
+   "sets": [
+    "HealOthers",
+    "HealOverTimeBuff",
+    "HealthRestoredPerSecond",
+    "MaxDuration"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.FlushNetDormancy",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray",
+    "GameplayAbility.GetActorInfo",
+    "GetHealAmount",
+    "GetPlayerCharacters",
+    "HasAnyMatchingGameplayTags",
+    "HealTarget",
+    "K2_CommitAbility",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "StartBuff",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass heal_over_time_buff_C"
+   ]
+  },
+  {
+   "name": "CustomCanActivateAbility",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActorInfoOwnerActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "ActorInfoAvatarActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "ActorInfoPlayerController",
+     "type": "APlayerController*"
+    },
+    {
+     "name": "ActorInfoAbilitySystemComponent",
+     "type": "UAbilitySystemComponent*"
+    },
+    {
+     "name": "ActorInfoAnimInstance",
+     "type": "UAnimInstance*"
+    },
+    {
+     "name": "ActorInfoMovementComponent",
+     "type": "UMovementComponent*"
+    },
+    {
+     "name": "CanUse",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 10,
+   "reads": [
+    "HealOverTimeBuff"
+   ],
+   "sets": [],
+   "calls": [
+    "GetAmountThisActorCanBeHealed",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EndWarmupVFXPlayAbilityVFX",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 122,
+   "reads": [
+    "OnBlendOut",
+    "OnCancelled",
+    "OnCompleted",
+    "OnConsumableUsed",
+    "OnFlaskUsed",
+    "OnInterrupted",
+    "OnNotifyBegin",
+    "OnNotifyEnd",
+    "PotionBurstParticle",
+    "PotionWarmupParticle",
+    "SpawnedWarmupParticle"
+   ],
+   "sets": [
+    "SpawnedWarmupParticle"
+   ],
+   "calls": [
+    "Ability_QuickItem_Base_C.K2_ActivateAbility",
+    "Actor.GetComponentByClass",
+    "ApplyEffect",
+    "ArchonAbilityTask_PlayMontageAndWaitNotifyName.PlayMontageAndWaitNotifyName",
+    "Deactivate",
+    "EndWarmupVFXPlayAbilityVFX",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "GameplayAbility.GetActorInfo",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GameplayTask.ReadyForActivation",
+    "GetActionsAnimset",
+    "GetIsSheathed",
+    "GetMesh",
+    "GetOwnedWeapon",
+    "HasEnoughToApplyEffect",
+    "K2_EndAbility",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "LogHasAmountFailedToTelemetry",
+    "None",
+    "SceneComponent.K2_AddLocalOffset",
+    "SpawnWarmupVFX"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_ua_consume_potion_fwd_01_mot",
+    "AnimMontage h_mr_ua_drink_potion_mot",
+    "BlueprintGeneratedClass new_potion_drink_bpff_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "GetHealAmount",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Amount",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 26,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonLoadout.GetInventoryQuickItemFromAbility",
+    "GameplayAbility.GetActorInfo",
+    "GameplayStatics.GetObjectClass",
+    "GetHealAmount",
+    "GetLoadout",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_ActivateAbility",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBlendOut_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnCancelled_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnCompleted_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnInterrupted_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnNotifyBegin_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnNotifyEnd_06029CF74F6357D225967A869924061C",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NotifyName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnWarmupVFX",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Ability_QuickItem_Healing_Potion_Flask_C.ExecuteUbergraph_Ability_QuickItem_Healing_Potion_Flask"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/InventoryItems/Abilities/Ability_QuickItem_Healing_Potion_Flask",
+ "pseudo_file": "pseudo/Ability_QuickItem_Healing_Potion_Flask_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 6
+ }
+}

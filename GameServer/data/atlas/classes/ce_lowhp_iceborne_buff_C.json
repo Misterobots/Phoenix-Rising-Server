@@ -1,0 +1,474 @@
+{
+ "name": "ce_lowhp_iceborne_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WhereShouldMagnitudeBeApplied",
+   "type": "ByteProperty<cell_damage_modification>",
+   "bp_type": "ByteProperty<cell_damage_modification>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifestealGEEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentMagnitude",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifestealEffectClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Character",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcEffect",
+   "type": "ObjectProperty<ParticleSystem>",
+   "bp_type": "ObjectProperty<ParticleSystem>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcAudio",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ManualMagnitudeAdjustment",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LowHPTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DmgReductionGEEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DmgReductionEffectClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IncreasedMaxHealthGEHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CanReduceCooldown",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurMissingHealthStacks",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PrevMissingHealthStacks",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_ce_lowhp_iceborne_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "K2Node_CustomEvent_DamageType",
+     "type": "ObjectProperty<DamageType>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 115,
+   "reads": [
+    "CanReduceCooldown",
+    "Character",
+    "CurMissingHealthStacks",
+    "CurrentMagnitude",
+    "LifestealEffectClass",
+    "LifestealGEEffectHandle",
+    "Mesh",
+    "OnProcAudio",
+    "OnProcEffect",
+    "OnTakeAnyDamage",
+    "OwnerAbilitySystemComponent",
+    "PlayerRole",
+    "PrevMissingHealthStacks"
+   ],
+   "sets": [
+    "CanReduceCooldown",
+    "Character",
+    "CurMissingHealthStacks",
+    "CurrentMagnitude",
+    "LifestealGEEffectHandle",
+    "PrevMissingHealthStacks"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "ActorIsAlive",
+    "AddAbilityCharge",
+    "AdjustBuffHeldStacks",
+    "AkGameplayStatics.PostEvent",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonCharacter.GetHealth",
+    "ArchonCharacter.GetMaxHealth",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetCellEffectMagnitude",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.FFloor",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetMathLibrary.Multiply_IntInt",
+    "KismetMathLibrary.NotEqual_DoubleDouble",
+    "KismetMathLibrary.SafeDivide",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MakeOutgoingSpec",
+    "MeshEmitVFX_Multi",
+    "RemoveActiveGameplayEffect",
+    "SetActorParameter",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LowHP_Polling",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MeshEmitVFX_Multi",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamaged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Damage",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshCanReduceCooldown",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_lowhp_iceborne_buff_C.ExecuteUbergraph_ce_lowhp_iceborne_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/playerroles/iceborne/ce_lowhp_iceborne_buff",
+ "pseudo_file": "pseudo/ce_lowhp_iceborne_buff_C.txt",
+ "game_data": {}
+}

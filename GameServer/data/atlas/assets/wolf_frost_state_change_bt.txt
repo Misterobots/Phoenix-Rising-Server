@@ -1,0 +1,32 @@
+wolf_frost_state_change_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "StateChange"
+    [if Blackboard  (ReadyForOverload is Is Set)]
+    1) try_change_state_bttask  (StateChanges=[{"State": "behemoth_states_enum::Overloaded", "StateChange": "behemoth_state_event::Begin"}])
+    [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+    2) bttask_exit_aethercharge_state "Exit Aether Charge State"  (Montage=AnimMontage b_leRawr_state_aether_exit_mot)
+    [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+    3) bttask_enter_aethercharge_state  (Montage=AnimMontage b_wolf_frost_state_aether_enter_mot)
+    [if Blackboard  (ReadyForRageState is Is Set)]
+    4) Sequence "Rage Enter"
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=45)
+      2) bttask_enter_rage_state  (Montage=AnimMontage b_wolf_frost_state_rage_enter_mot)
+      3) modify_attack_cooldown_bttask  (ActionClass=BlueprintGeneratedClass wolf_frost_chillinghowl_atk_C)
+    [if archon_distance_check_btdeco  (Origin=bb.SelfPos, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, bShowPropertyDetails=false)]
+    [if current_target_is_valid_btdeco]
+    [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState, FlowAbortMode=LowerPriority)]
+    5) Sequence "Combat Enter"
+      1) try_set_behemoth_state_bttask  (State=Combat)
+      2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=35)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+    [if current_target_is_valid_btdeco]
+    7) Sequence "Alerted"
+      1) try_set_behemoth_state_bttask  (State=Alerted)
+    [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+    [if current_target_is_valid_btdeco]
+    8) try_set_behemoth_state_bttask  (State=Alerted)

@@ -1,0 +1,45 @@
+# ga_passive_charge_aoe_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_ga_passive_charge_aoe_buff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [80] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [167] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, ga_passive_charge_aoe_bp_C, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetBuffOwner_ReturnValue)
+  [217] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', 400.0)
+  [258] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [278] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [328] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [415] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [453] goto @886
+  [458] MulticastOnAdded()
+  [468] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [488] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [524] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [553] if !(K2Node_DynamicCast_bSuccess) goto @886
+  [567] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [609] K2Node_DynamicCast_AsBP_Axe_Weapon = cast<BP_Axe_Weapon_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [645] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Axe_Weapon)
+  [674] if !(K2Node_DynamicCast_bSuccess_1) goto @886
+  [688] K2Node_CreateDelegate_OutputDelegate = bind(self.OnChargeLevelChanged)
+  [711] K2Node_CreateDelegate_OutputDelegate += None
+  [752] goto @886
+  [757] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(K2Node_CustomEvent_NewChargeLevel, 4)
+  [791] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(K2Node_CustomEvent_PreviousChargeLevel, K2Node_CustomEvent_NewChargeLevel)
+  [829] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_IntInt_ReturnValue, CallFunc_NotEqual_IntInt_ReturnValue)
+  [867] if !(CallFunc_BooleanAND_ReturnValue) goto @886
+  [881] goto @10
+  [886] return nothing
+  [888] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ga_passive_charge_aoe_buff(458)
+  [15] return nothing
+  [17] end
+
+=== OnChargeLevelChanged
+  [0] frame.K2Node_CustomEvent_PreviousChargeLevel = PreviousChargeLevel
+  [18] frame.K2Node_CustomEvent_NewChargeLevel = NewChargeLevel
+  [36] ExecuteUbergraph_ga_passive_charge_aoe_buff(757)
+  [51] return nothing
+  [53] end

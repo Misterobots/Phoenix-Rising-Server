@@ -1,0 +1,23 @@
+wolf_frost_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service distance_from_target_service  (Distance_key=bb.DistanceFromAttackTarget, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      1) BehemothAction "DIE!!!"  (Montage=AnimMontage b_lerawr_stagger_death_fwd_01_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_enter_arena_fly_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree aq_flee_fly_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_deaggro_bt)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_state_change_bt)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree wolf_frost_combat_bt)
+    9) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_prowl_alert_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

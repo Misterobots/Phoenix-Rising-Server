@@ -1,0 +1,1559 @@
+{
+ "name": "BP_MusicSystem_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonMusicSystem",
+  "Actor",
+  "Object"
+ ],
+ "size": 1000,
+ "sdk_header": "BP_MusicSystem_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0x2E0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "type": "USceneComponent*",
+   "offset": "0x2E8",
+   "size": 8,
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<SceneComponent>"
+  },
+  {
+   "name": "BehemothsState",
+   "type": "Ebehemoth_states_enum",
+   "offset": "0x2F0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_BehemothsState",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ByteProperty<behemoth_states_enum>",
+   "rep_index": 10,
+   "schema_rep_index": 10
+  },
+  {
+   "name": "MatchState",
+   "type": "FName",
+   "offset": "0x2F4",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_MatchState",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "NameProperty",
+   "rep_index": 11,
+   "schema_rep_index": 11
+  },
+  {
+   "name": "MusicState",
+   "type": "FName",
+   "offset": "0x2FC",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_MusicState",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "NameProperty",
+   "rep_index": 12,
+   "schema_rep_index": 12
+  },
+  {
+   "name": "CurrentMusicState",
+   "type": "FName",
+   "offset": "0x304",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "NameProperty"
+  },
+  {
+   "name": "FightStarted",
+   "type": "bool",
+   "offset": "0x30C",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "MaxDangerActive",
+   "type": "bool",
+   "offset": "0x30D",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_MaxDangerActive",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "BoolProperty",
+   "rep_index": 13,
+   "schema_rep_index": 13
+  },
+  {
+   "name": "RenderMusicState",
+   "type": "bool",
+   "offset": "0x30E",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "IsInIntroCinematic",
+   "type": "bool",
+   "offset": "0x30F",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "IntroCinematicMusicState",
+   "type": "int32",
+   "offset": "0x310",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "MusicOverrideStatesStack",
+   "type": "TArray<FName>",
+   "offset": "0x318",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_MusicOverrideStatesStack",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ArrayProperty",
+   "rep_index": 14,
+   "schema_rep_index": 14
+  },
+  {
+   "name": "ShowClosestBehemothDistance",
+   "type": "bool",
+   "offset": "0x328",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "IslandExploreMusicStates",
+   "type": "TMap<FName, FName>",
+   "offset": "0x330",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MapProperty"
+  },
+  {
+   "name": "SnowBallEventIsActive",
+   "type": "bool",
+   "offset": "0x380",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "Participant",
+   "type": "UEncounterParticipantComponent*",
+   "offset": "0x388",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<EncounterParticipantComponent>"
+  },
+  {
+   "name": "EscalationHighestThreatBehemoth",
+   "type": "AArchonBehemoth*",
+   "offset": "0x390",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ArchonBehemoth>"
+  },
+  {
+   "name": "Spawned Behemoths",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PublicEventBehemoths",
+   "type": "TArray<AArchonCreatureBase*>",
+   "offset": "0x3A8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "LocalPlayer",
+   "type": "AArchonCharacter*",
+   "offset": "0x3B8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ArchonCharacter>"
+  },
+  {
+   "name": "LocalPlayerEncounter",
+   "type": "UEncounterLocationComponent*",
+   "offset": "0x3C0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<EncounterLocationComponent>"
+  },
+  {
+   "name": "_EncCompAttemps",
+   "type": "int32",
+   "offset": "0x3C8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "adventure_destroyed_ramsgate_00",
+   "type": "FString",
+   "offset": "0x3D0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StrProperty"
+  },
+  {
+   "name": "FrostfallHuntIsActive",
+   "type": "bool",
+   "offset": "0x3E0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "USceneComponent",
+   "source": "property"
+  },
+  {
+   "name": "Participant",
+   "class": "UEncounterParticipantComponent",
+   "source": "property"
+  },
+  {
+   "name": "LocalPlayerEncounter",
+   "class": "UEncounterLocationComponent",
+   "source": "property"
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "Adv_Debug",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 29,
+   "reads": [
+    "CurrentPublicPhaseTag",
+    "LocalPlayer",
+    "PublicEventStarted"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetActorTickInterval",
+    "BlueprintGameplayTagLibrary.GetDebugStringFromGameplayTag",
+    "EncounterLocationComponent.GetCurrentPhaseTag",
+    "EncounterTrackingSystem.GetEncounterForActor",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_BoolToString",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "SubsystemBlueprintLibrary.GetWorldSubsystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AdventureProcessMusicStates",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AdventureSubscribeEvents",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthAddMusicOverride",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StateName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 9,
+   "reads": [
+    "MusicOverrideStatesStack"
+   ],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State",
+    "KismetArrayLibrary.Array_Insert",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsServer"
+   ],
+   "authority": [
+    "IsDedicatedServer",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthRemoveMusicOverride",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StateToRemove",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 9,
+   "reads": [
+    "MusicOverrideStatesStack"
+   ],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsServer"
+   ],
+   "authority": [
+    "IsDedicatedServer",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EncounterStateChanged",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Participant",
+     "type": "UEncounterParticipantComponent*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Evaluate Music State",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CallFunc_GetSpawnedBehemoths_SpawnedBehemoths",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 130,
+   "reads": [
+    "BehemothsState",
+    "FightStarted",
+    "FrostfallHuntIsActive",
+    "IntroCinematicMusicState",
+    "IsInIntroCinematic",
+    "MatchState",
+    "MaxDangerActive",
+    "MusicOverrideStatesStack",
+    "MusicState"
+   ],
+   "sets": [
+    "FightStarted",
+    "IntroCinematicMusicState",
+    "MusicState"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "ActorIsAlive",
+    "ArchonGameplayStatics.CurrentGameModeHasTags",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromTag",
+    "GetSpawnedBehemoths",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_MusicState",
+    "ServerSetMusicState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Evaluate_Music_State",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "ExecuteUbergraph_BP_MusicSystem",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 326,
+   "reads": [
+    "BehemothMusicName",
+    "BehemothsState",
+    "CurrentPublicPhaseTag",
+    "EscalationHighestThreatBehemoth",
+    "FightStarted",
+    "FrostfallHuntIsActive",
+    "IslandExploreMusicStates",
+    "LocalPlayer",
+    "MatchState",
+    "MatchmakerHuntID",
+    "MusicState",
+    "OnLocalPlayerEncounterStateChanged",
+    "OnLocalPlayerPublicEventPhaseEnded",
+    "OnLocalPlayerPublicEventPhaseStarted",
+    "PublicEventStarted",
+    "RenderMusicState",
+    "ShowClosestBehemothDistance",
+    "SnowBallEventIsActive",
+    "Spawned Behemoths",
+    "_EncCompAttemps",
+    "adventure_destroyed_ramsgate_00"
+   ],
+   "sets": [
+    "CurrentPublicPhaseTag",
+    "EscalationHighestThreatBehemoth",
+    "FightStarted",
+    "FrostfallHuntIsActive",
+    "LocalPlayer",
+    "MusicState",
+    "NextPublicPhaseTag",
+    "Participant",
+    "PublicEventStarted",
+    "Spawned Behemoths",
+    "_EncCompAttemps"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "Actor.SetActorTickInterval",
+    "AdventureProcessMusicStates",
+    "AdventureSubscribeEvents",
+    "AkGameplayStatics.PostEvent",
+    "AkGameplayStatics.SetRTPCValue",
+    "AkGameplayStatics.SetState",
+    "ArchonBehemoth.GetCurrentHealth",
+    "ArchonGameplayStatics.CurrentGameModeHasTag",
+    "ArchonGameplayStatics.CurrentGameModeHasTags",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "ArchonGameplayStatics.GetLocalArchonCharacter",
+    "ArchonMusicSystem.ClearTrackedBehemoth",
+    "ArchonMusicSystem.GetHighestActiveThreat",
+    "ArchonMusicSystem.TrackBehemoth",
+    "ArchonMusicSystem.UpdateBehemothState",
+    "BlueprintGameplayTagLibrary.GetDebugStringFromGameplayTag",
+    "BlueprintGameplayTagLibrary.IsGameplayTagValid",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromTag",
+    "BlueprintGameplayTagLibrary.MatchesTag",
+    "BlueprintMapLibrary.Map_Find",
+    "EncounterLocationComponent.GetCurrentPhaseTag",
+    "EncounterLocationComponent.GetNextPhaseTag",
+    "EncounterLocationComponent.IsIslandMetaEvent",
+    "EncounterLocationComponent.IsPublicEvent",
+    "EncounterTrackingSystem.GetEncounterForActor",
+    "EncounterTrackingSystem.GetHighestRatedActiveThreatForPlayer",
+    "EncounterTrackingSystem.IsPlayerInCombat",
+    "FrostfallHuntEvent",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.GetCurrentLevelName",
+    "GameplayStatics.GetPlayerController",
+    "GetClosestBehemothDistance",
+    "GetSpawnedBehemoths",
+    "HandleEscalationAudioStates",
+    "IsPublicEventActive",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetStringLibrary.EqualEqual_StrStr",
+    "KismetStringLibrary.NotEqual_StriStri",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetTextLibrary.Conv_NameToText",
+    "KismetTextLibrary.Conv_StringToText",
+    "KismetTextLibrary.Conv_TextToString",
+    "KismetTextLibrary.Format",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_MusicState",
+    "SetSpawnedBehemoths",
+    "SetupAdventureExploreStates",
+    "SubsystemBlueprintLibrary.GetWorldSubsystem",
+    "TickPublicEventBehemothState",
+    "UpdatePublicMusicStates"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Music_ADV_Isles",
+    "UserDefinedEnum behemoth_states_enum"
+   ]
+  },
+  {
+   "name": "FrostfallHuntEvent",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetClosestBehemothDistance",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ClosestDistance",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 36,
+   "reads": [
+    "LocalPlayer"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetDistanceTo",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "GetSpawnedBehemoths",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleEscalationAudioStates",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsPublicEventActive",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsActive",
+     "type": "bool"
+    },
+    {
+     "name": "Encounter",
+     "type": "UEncounterLocationComponent*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 22,
+   "reads": [
+    "LocalPlayer",
+    "Participant"
+   ],
+   "sets": [],
+   "calls": [
+    "EncounterLocationComponent.IsIslandMetaEvent",
+    "EncounterLocationComponent.IsPublicEvent",
+    "EncounterParticipantComponent.GetCurrentStatus",
+    "EncounterTrackingSystem.GetEncounterForActor",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetSystemLibrary.IsValid",
+    "SubsystemBlueprintLibrary.GetWorldSubsystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "NotifyIntroCinematicCompleted",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Success",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [
+    "IsInIntroCinematic"
+   ],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "NotifyIntroCinematicStarted",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Success",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [
+    "IsInIntroCinematic"
+   ],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_BehemothsState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_MatchState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_MaxDangerActive",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_MusicOverrideStatesStack",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Evaluate Music State"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_MusicState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "CurrentMusicState",
+    "MusicState"
+   ],
+   "sets": [
+    "CurrentMusicState"
+   ],
+   "calls": [
+    "AkGameplayStatics.SetState",
+    "KismetMathLibrary.NotEqual_NameName"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PublicEventPhaseEnded",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Encounter",
+     "type": "UEncounterLocationComponent*"
+    },
+    {
+     "name": "PhaseTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "NextTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PublicEventPhaseStarted",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Encounter",
+     "type": "UEncounterLocationComponent*"
+    },
+    {
+     "name": "PhaseTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "NextTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerSetMusicState",
+   "flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetBehemothState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "State",
+     "type": "Ebehemoth_states_enum"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [
+    "BehemothsState"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_BehemothsState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetPublicEventActive",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsActive",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [
+    "SnowBallEventIsActive"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetSpawnedBehemoths",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HighestRatedThreat",
+     "type": "AArchonCreatureBase*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 29,
+   "reads": [
+    "LocalPlayer",
+    "PublicEventBehemoths",
+    "Spawned Behemoths"
+   ],
+   "sets": [
+    "PublicEventBehemoths"
+   ],
+   "calls": [
+    "AkGameplayStatics.SetState",
+    "ArchonMusicSystem.SortAndSetBehemothCombatStates",
+    "EncounterTrackingSystem.GetActiveThreatsForPlayer",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "SubsystemBlueprintLibrary.GetWorldSubsystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetupAdventureExploreStates",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TickPublicEventBehemothState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ToggleDebugMusicSystem",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Success",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "RenderMusicState"
+   ],
+   "sets": [
+    "RenderMusicState"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdatePublicMusicStates",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "BP_MusicSystem_C.ExecuteUbergraph_BP_MusicSystem"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Audio/Music/BP_MusicSystem",
+ "pseudo_file": "pseudo/BP_MusicSystem_C.txt",
+ "game_data": {}
+}

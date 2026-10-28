@@ -1,0 +1,46 @@
+snowflake_normal_new_bt  blackboard=BlackboardData moonface_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_fly_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_mf_deaggro_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    6) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_fly_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      1) bttask_enter_rage_state  (Montage=AnimMontage b_mf_01_state_ragealpha_enter_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      2) bttask_exit_rage_state  (Montage=AnimMontage moonface_exit_rage_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      3) bttask_enter_tired_state  (Montage=AnimMontage moonface_enter_tired)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    9) Selector "StateGate"
+      1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    10) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 25.0}, MaxCooldown={"ConstantFloat": 35.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"])]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    11) Sequence
+      1) RotateTowardsTarget  (Target=bb.AttackTarget)
+      [if ForceSuccess]
+      2) Sequence
+        1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage moonface_loco_personality_04_mot", "Chance": 0.15}, {"Montage": "AnimMontage moonface_loco_personality_05_mot", "Chance": 0.4}, {"Montage": "AnimMontage moonface_loco_personality_02_mot", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_03_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage moonface_loco_personality_02_mot", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_04_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mf_state_tired_personality_03_mot", "Chance": 0.5}, {"Montage": "AnimMontage moonface_personality_tired", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_05_mot", "Chance": 1.0}])
+    12) RunBehavior  (BehaviorAsset=BehaviorTree mf_genus_combat_repo_with_strafing_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    13) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

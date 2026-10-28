@@ -1,0 +1,1130 @@
+# BP_BehemothAction_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActionSpecifcTests
+  [0] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [50] EvaluateActionAtTransform(CallFunc_GetTransform_ReturnValue, CallFunc_EvaluateActionAtTransform_Score, CallFunc_EvaluateActionAtTransform_ActionHitsTargets, CallFunc_EvaluateActionAtTransform_ActionTargetLocation)
+  [100] TestsPassed = CallFunc_EvaluateActionAtTransform_ActionHitsTargets
+  [119] return nothing
+  [121] end
+
+=== AddToCooldown
+  [0] self.InProgress = false
+  [11] self.OnCooldown = true
+  [22] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.CooldownTimer)
+  [52] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @234
+  [66] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.CooldownTimer)
+  [104] K2Node_VariableSet_L_NewCooldown_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [133] L_NewCooldown = K2Node_VariableSet_L_NewCooldown_ImplicitCast
+  [160] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(L_NewCooldown, TimeToAdd)
+  [206] INTERNAL_SetCooldown(CallFunc_Add_DoubleDouble_ReturnValue)
+  [229] goto @266
+  [234] L_NewCooldown = 0.0
+  [261] goto @160
+  [266] return nothing
+  [268] end
+
+=== AuthModifyCurrentCooldowntime
+  [0] L_NewTimeRemaining = 0.0
+  [27] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [48] if !(CallFunc_IsServer_ReturnValue) goto @493
+  [62] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.CooldownTimer)
+  [92] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @493
+  [106] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.CooldownTimer)
+  [144] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [173] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(Delta, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [219] L_NewTimeRemaining = CallFunc_Add_DoubleDouble_ReturnValue
+  [246] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(L_NewTimeRemaining, 0.0)
+  [284] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @337
+  [298] EndCooldown()
+  [312] K2_ClearAndInvalidateTimerHandle(self, self.CooldownTimer)
+  [332] goto @493
+  [337] K2_ClearAndInvalidateTimerHandle(self, self.CooldownTimer)
+  [357] K2Node_CreateDelegate_OutputDelegate = bind(self.EndCooldown)
+  [380] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(L_NewTimeRemaining)
+  [409] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [466] self.CooldownTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [493] return nothing
+  [495] end
+
+=== AuthSetNewCooldown
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @475
+  [34] OldCooldown = self.Cooldown
+  [61] self.Cooldown = NewCooldown
+  [88] CallFunc_K2_TimerExistsHandle_ReturnValue = K2_TimerExistsHandle(self, self.CooldownTimer)
+  [118] if !(CallFunc_K2_TimerExistsHandle_ReturnValue) goto @475
+  [132] K2_ClearAndInvalidateTimerHandle(self, self.CooldownTimer)
+  [152] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.Cooldown, OldCooldown)
+  [198] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.CooldownTimer)
+  [236] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [265] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [311] CallFunc_FMax_ReturnValue = FMax(CallFunc_Add_DoubleDouble_ReturnValue, 0.0010000000474974513)
+  [357] CallFunc_K2_SetTimer_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [386] CallFunc_K2_SetTimer_ReturnValue = K2_SetTimer(self, 'EndCooldown', CallFunc_K2_SetTimer_Time_ImplicitCast, false, 0.0, 0.0)
+  [448] self.CooldownTimer = CallFunc_K2_SetTimer_ReturnValue
+  [475] return nothing
+  [477] end
+
+=== ChooseMontageToPlay
+  [0] push @1810
+  [5] LocalMontage = self.ActionMontage
+  [24] push @1590
+  [29] Temp_bool_True_if_break_was_hit_Variable_1 = false
+  [40] Temp_int_Loop_Counter_Variable = 0
+  [63] Temp_int_Array_Index_Variable_1 = 0
+  [86] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable_1)
+  [115] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AlternateAttacks)
+  [174] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [212] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue_1, CallFunc_Less_IntInt_ReturnValue)
+  [250] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [260] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [287] push @1614
+  [292] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [328] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [357] if !(K2Node_DynamicCast_bSuccess) goto @1688
+  [371] Default__KismetArrayLibrary.Array_Get(self.AlternateAttacks, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [430] K2Node_MakeStruct_behemoth_requirement_struct.ServerBlackboardKey = CallFunc_Array_Get_Item.Comparison.LeftSideBlackboardVarName
+  [484] K2Node_MakeStruct_behemoth_requirement_struct.ServerBlackboardKeyCompareOperator = CallFunc_Array_Get_Item.Comparison.Operator
+  [538] K2Node_MakeStruct_behemoth_requirement_struct.ServerBlackboardKeyCompareType = CallFunc_Array_Get_Item.Comparison.Type
+  [592] K2Node_MakeStruct_behemoth_requirement_struct.ServerBlackboardKeyComparerValue = CallFunc_Array_Get_Item.Comparison.RightSideData
+  [646] K2Node_DynamicCast_AsBehemoth_Interface.BehemothStateMeetsRequirements(K2Node_MakeStruct_behemoth_requirement_struct, CallFunc_BehemothStateMeetsRequirements_PassesRequirements, CallFunc_BehemothStateMeetsRequirements_Result)
+  [710] if !(CallFunc_BehemothStateMeetsRequirements_PassesRequirements) pop
+  [720] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [748] LocalProbability = CallFunc_RandomFloat_ReturnValue
+  [775] BuildUpProb = 0.0
+  [802] Temp_bool_True_if_break_was_hit_Variable = false
+  [813] Temp_int_Loop_Counter_Variable_1 = 0
+  [836] Temp_int_Array_Index_Variable = 0
+  [859] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [888] Default__KismetArrayLibrary.Array_Get(self.AlternateAttacks, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [947] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.AlternateAttacks)
+  [1015] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1053] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue_1)
+  [1091] if !(CallFunc_BooleanAND_ReturnValue_1) goto @1724
+  [1105] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1132] push @1736
+  [1137] Default__KismetArrayLibrary.Array_Get(self.AlternateAttacks, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1196] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.AlternateAttacks, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1264] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.PercentChance)
+  [1302] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(BuildUpProb, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1348] BuildUpProb = CallFunc_Add_DoubleDouble_ReturnValue
+  [1375] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(LocalProbability, BuildUpProb)
+  [1413] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [1423] Default__KismetArrayLibrary.Array_Get(self.AlternateAttacks, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1482] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.AlternateAttacks, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1550] LocalMontage = CallFunc_Array_Get_Item_1.Montage
+  [1578] Temp_bool_True_if_break_was_hit_Variable = true
+  [1589] pop
+  [1590] Montage = LocalMontage
+  [1609] goto @1810
+  [1614] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1656] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1683] goto @86
+  [1688] CallFunc_BehemothStateMeetsRequirements_PassesRequirements = false
+  [1699] CallFunc_BehemothStateMeetsRequirements_Result = 0
+  [1719] goto @710
+  [1724] Temp_bool_True_if_break_was_hit_Variable_1 = true
+  [1735] pop
+  [1736] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1778] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1805] goto @859
+  [1810] return nothing
+  [1812] end
+
+=== ClearDebugDraw
+  [0] ExecuteUbergraph_BP_BehemothAction(3617)
+  [15] return nothing
+  [17] end
+
+=== ClosestPointToLine
+  [0] BreakVector(LineStart, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [46] BreakVector(point, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [92] BreakVector(LineEnd, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [138] K2Node_MathExpression_ReturnValue = Divide_DoubleDouble(Abs(Subtract_DoubleDouble(Add_DoubleDouble(Subtract_DoubleDouble(Multiply_DoubleDouble(Subtract_DoubleDouble(CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Y), CallFunc_BreakVector_X_1), Multiply_DoubleDouble(Subtract_DoubleDouble(CallFunc_BreakVector_X_2, CallFunc_BreakVector_X), CallFunc_BreakVector_Y_1)), Multiply_DoubleDouble(CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y)), Multiply_DoubleDouble(CallFunc_BreakVector_Y_2, CallFunc_BreakVector_X))), Sqrt(Add_DoubleDouble(MultiplyMultiply_FloatFloat(Subtract_DoubleDouble(CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Y), 2.0), MultiplyMultiply_FloatFloat(Subtract_DoubleDouble(CallFunc_BreakVector_X_2, CallFunc_BreakVector_X), 2.0))))
+  [470] distance = K2Node_MathExpression_ReturnValue
+  [497] return nothing
+  [499] end
+
+=== DebugDrawSimple
+  [0] push @1170
+  [5] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TargettingType, 0)
+  [36] if !(K2Node_SwitchEnum_CmpSuccess) goto @96
+  [50] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TargettingType, 1)
+  [81] if !(K2Node_SwitchEnum_CmpSuccess) goto @787
+  [95] pop
+  [96] Temp_int_Loop_Counter_Variable_1 = 0
+  [119] Temp_int_Array_Index_Variable = 0
+  [142] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.HitAreaBoxes)
+  [201] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [239] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [249] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [276] push @713
+  [281] BreakTransform(Transform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [327] BreakRotator(CallFunc_BreakTransform_Rotation, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [373] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [428] Default__KismetArrayLibrary.Array_Get(self.HitAreaBoxes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [487] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(CallFunc_Array_Get_Item.Extent, CallFunc_BreakTransform_Scale)
+  [542] CallFunc_TransformLocation_ReturnValue = TransformLocation(Transform, CallFunc_Array_Get_Item.Offset)
+  [597] CallFunc_DrawDebugBox_Duration_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [626] DrawDebugBox(self, CallFunc_TransformLocation_ReturnValue, CallFunc_Multiply_VectorVector_ReturnValue, LinearColor{0.251931, 0.73, 0.0, 1.0}, CallFunc_MakeRotator_ReturnValue, CallFunc_DrawDebugBox_Duration_ImplicitCast, 11.0)
+  [712] pop
+  [713] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [755] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [782] goto @142
+  [787] Temp_int_Loop_Counter_Variable = 0
+  [810] Temp_int_Array_Index_Variable_1 = 0
+  [833] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.TargettingData)
+  [892] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [930] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [940] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [967] push @1096
+  [972] Default__KismetArrayLibrary.Array_Get(self.TargettingData, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [1031] Default__targeting_function_library_C.DebugDrawTargetting(CallFunc_Array_Get_Item_1, Transform, Duration, self)
+  [1095] pop
+  [1096] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1138] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1165] goto @833
+  [1170] return nothing
+  [1172] end
+
+=== DisplayVectors
+  [0] ExecuteUbergraph_BP_BehemothAction(2090)
+  [15] return nothing
+  [17] end
+
+=== EndCooldown
+  [0] self.OnCooldown = false
+  [11] self.UsesLeft = self.UsageCount_Base
+  [38] return nothing
+  [40] end
+
+=== Evaluate
+  [0] L_TargetLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [43] self.ActionScore = 0.0
+  [70] if !(SkipCooldownAndActionConditions) goto @1127
+  [84] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.SimplfiedAttackVectors1)
+  [143] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [177] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.SimplifiedAttackVectors2)
+  [236] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [270] CallFunc_PathHitsNavMesh_ReturnValue = PathHitsNavMesh('', self, self.SimplifiedAttackVectors2, false, CallFunc_PathHitsNavMesh_OutHitPoint, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit, CallFunc_PathHitsNavMesh_OutFoundNavMesh, self.OwningArchonBehemoth, L_LocalCurrentTarget, null, NavFilter_ExcludeBehemoth_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, self.DebugDrawNavMeshHit, 0.1)
+  [415] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit)
+  [444] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, 0.8999999761581421)
+  [482] CallFunc_PathHitsNavMesh_ReturnValue_1 = PathHitsNavMesh('', self, self.SimplfiedAttackVectors1, false, CallFunc_PathHitsNavMesh_OutHitPoint_1, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_1, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_1, CallFunc_PathHitsNavMesh_OutFoundNavMesh_1, self.OwningArchonBehemoth, L_LocalCurrentTarget, null, NavFilter_ExcludeBehemoth_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, self.DebugDrawNavMeshHit, 0.1)
+  [627] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue, CallFunc_PathHitsNavMesh_ReturnValue)
+  [665] CallFunc_Less_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_1)
+  [694] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast_1, 0.8999999761581421)
+  [732] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_1, CallFunc_BooleanAND_ReturnValue)
+  [770] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_PathHitsNavMesh_ReturnValue_1)
+  [808] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_BooleanAND_ReturnValue_2)
+  [846] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue_3, CallFunc_BooleanAND_ReturnValue_1)
+  [884] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_BooleanOR_ReturnValue)
+  [913] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @1606
+  [927] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [977] EvaluateActionAtTransform(CallFunc_GetTransform_ReturnValue, CallFunc_EvaluateActionAtTransform_Score, CallFunc_EvaluateActionAtTransform_ActionHitsTargets, CallFunc_EvaluateActionAtTransform_ActionTargetLocation)
+  [1027] if !(CallFunc_EvaluateActionAtTransform_ActionHitsTargets) goto @1606
+  [1041] self.ActionScore = CallFunc_EvaluateActionAtTransform_Score
+  [1068] self.ActionTargetPosition = CallFunc_EvaluateActionAtTransform_ActionTargetLocation
+  [1095] Score = self.ActionScore
+  [1122] goto @4909
+  [1127] CallFunc_HasTag_ReturnValue = HasTag(self.ActionTags, GameplayTag{'BehemothAction.Base.IgnoreInActionEvaluate'}, false)
+  [1184] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasTag_ReturnValue)
+  [1213] if !(CallFunc_Not_PreBool_ReturnValue) goto @1574
+  [1227] IsActionAvailable(CallFunc_IsActionAvailable_IsActionAvailable)
+  [1250] if !(CallFunc_IsActionAvailable_IsActionAvailable) goto @1574
+  [1264] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [1296] self.SimplifiedAttackVectors2 = CallFunc_GetScaledSimplifiedAttackVectors_Vectors2
+  [1323] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [1355] self.SimplfiedAttackVectors1 = CallFunc_GetScaledSimplifiedAttackVectors_Vectors1
+  [1382] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [1418] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [1447] if !(K2Node_DynamicCast_bSuccess) goto @4866
+  [1461] K2Node_DynamicCast_AsBehemoth_Interface.GetCurrentTarget_interface(CallFunc_GetCurrentTarget_interface_CurrentTarget)
+  [1507] L_LocalCurrentTarget = CallFunc_GetCurrentTarget_interface_CurrentTarget
+  [1526] CallFunc_IsValid_ReturnValue_1 = IsValid(L_LocalCurrentTarget)
+  [1555] if !(CallFunc_IsValid_ReturnValue_1) goto @4882
+  [1569] goto @84
+  [1574] Score = 0.0
+  [1601] goto @4909
+  [1606] if !(self.CreateHelper) goto @4834
+  [1620] CallFunc_IsValid_ReturnValue_2 = IsValid(self.HelperActor)
+  [1649] if !(CallFunc_IsValid_ReturnValue_2) goto @4834
+  [1663] K2Node_DynamicCast_AsBehemoth_Interface_1 = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [1699] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface_1)
+  [1728] if !(K2Node_DynamicCast_bSuccess_1) goto @4818
+  [1742] K2Node_DynamicCast_AsBehemoth_Interface_1.GetCurrentTarget_interface(CallFunc_GetCurrentTarget_interface_CurrentTarget_1)
+  [1788] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetCurrentTarget_interface_CurrentTarget_1)
+  [1817] if !(CallFunc_IsValid_ReturnValue) goto @4834
+  [1831] CallFunc_K2_GetActorLocation_ReturnValue_2 = CallFunc_GetCurrentTarget_interface_CurrentTarget_1.K2_GetActorLocation()
+  [1881] L_TargetLocation = CallFunc_K2_GetActorLocation_ReturnValue_2
+  [1908] CallFunc_K2_GetActorLocation_ReturnValue_3 = self.OwningArchonBehemoth.K2_GetActorLocation()
+  [1958] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, L_TargetLocation)
+  [2004] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [2046] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor)
+  [2069] BreakVector(CallFunc_GetScalingFactor_ScalingFactor, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [2115] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 1.0)
+  [2170] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(self.OptimalHitArea.Offset, CallFunc_MakeVector_ReturnValue)
+  [2225] CallFunc_VSize_ReturnValue = VSize(CallFunc_Multiply_VectorVector_ReturnValue)
+  [2262] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Normal_ReturnValue, CallFunc_VSize_ReturnValue)
+  [2308] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, L_TargetLocation)
+  [2354] CallFunc_K2_SetActorLocation_ReturnValue = K2_SetActorLocation(CallFunc_Add_VectorVector_ReturnValue_1, false, CallFunc_K2_SetActorLocation_SweepHitResult, false)
+  [2394] CallFunc_K2_GetActorLocation_ReturnValue = self.OwningArchonBehemoth.K2_GetActorLocation()
+  [2444] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetActorLocation_ReturnValue, L_TargetLocation)
+  [2490] BreakRotator(CallFunc_FindLookAtRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [2536] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [2565] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.OptimalHitArea.HitAreaYaw)
+  [2603] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [2649] CallFunc_MakeRotator_Yaw_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [2678] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast_1)
+  [2725] CallFunc_K2_SetActorRotation_ReturnValue = K2_SetActorRotation(CallFunc_MakeRotator_ReturnValue_1, false)
+  [2755] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor)
+  [2778] BreakVector(CallFunc_GetScalingFactor_ScalingFactor, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [2824] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 1.0)
+  [2879] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(self.OptimalHitArea.Offset, CallFunc_MakeVector_ReturnValue)
+  [2934] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_Multiply_VectorVector_ReturnValue, 0.0001)
+  [2976] BreakVector(CallFunc_Normal_ReturnValue_1, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [3022] CallFunc_DegAtan2_ReturnValue = DegAtan2(CallFunc_BreakVector_Y_1, CallFunc_BreakVector_X_1)
+  [3068] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_DegAtan2_ReturnValue, -1.0)
+  [3114] CallFunc_MakeRotator_Yaw_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3143] CallFunc_MakeRotator_ReturnValue_2 = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast_2)
+  [3190] K2_AddActorWorldRotation(CallFunc_MakeRotator_ReturnValue_2, false, CallFunc_K2_AddActorWorldRotation_SweepHitResult, false)
+  [3220] CallFunc_K2_GetActorLocation_ReturnValue_1 = self.OwningArchonBehemoth.K2_GetActorLocation()
+  [3270] CallFunc_GetClosestPointOnCollision_ReturnValue = self.OptimArea.GetClosestPointOnCollision(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_GetClosestPointOnCollision_OutPointOnBody, 'None')
+  [3351] self.OptimalLocationToStandAt = CallFunc_GetClosestPointOnCollision_OutPointOnBody
+  [3378] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(self.OptimalLocationToStandAt, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 5000.0}))
+  [3440] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(self.OptimalLocationToStandAt, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 5000.0}))
+  [3502] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue_1, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [3638] if !(CallFunc_LineTraceSingle_ReturnValue) goto @4194
+  [3652] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [3833] self.OptimalLocationToStandAt = CallFunc_BreakHitResult_ImpactPoint
+  [3860] CallFunc_K2_GetActorRotation_ReturnValue = K2_GetActorRotation()
+  [3888] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [3934] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [3963] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.OptimalHitArea.HitAreaYaw)
+  [4001] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [4047] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [4076] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [4123] CallFunc_K2_SetActorLocationAndRotation_ReturnValue = self.HelperActor.K2_SetActorLocationAndRotation(self.OptimalLocationToStandAt, CallFunc_MakeRotator_ReturnValue, true, CallFunc_K2_SetActorLocationAndRotation_SweepHitResult, false)
+  [4194] CallFunc_PathHitsNavMesh_ReturnValue_2 = PathHitsNavMesh('', self, self.SimplifiedAttackVectors2, false, CallFunc_PathHitsNavMesh_OutHitPoint_2, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_2, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_2, CallFunc_PathHitsNavMesh_OutFoundNavMesh_2, self.HelperActor, L_LocalCurrentTarget, null, NavFilter_ExcludeBehemoth_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, false, 0.1)
+  [4331] CallFunc_Less_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_2)
+  [4360] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast_2, 0.8999999761581421)
+  [4398] CallFunc_PathHitsNavMesh_ReturnValue_3 = PathHitsNavMesh('', self, self.SimplfiedAttackVectors1, false, CallFunc_PathHitsNavMesh_OutHitPoint_3, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_3, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_3, CallFunc_PathHitsNavMesh_OutFoundNavMesh_3, self.HelperActor, L_LocalCurrentTarget, null, NavFilter_ExcludeBehemoth_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, false, 0.1)
+  [4535] CallFunc_BooleanAND_ReturnValue_4 = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue_2, CallFunc_PathHitsNavMesh_ReturnValue_2)
+  [4573] CallFunc_Less_DoubleDouble_A_ImplicitCast_3 = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_3)
+  [4602] CallFunc_Less_DoubleDouble_ReturnValue_3 = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast_3, 0.8999999761581421)
+  [4640] CallFunc_BooleanAND_ReturnValue_5 = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue_3, CallFunc_PathHitsNavMesh_ReturnValue_3)
+  [4678] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanAND_ReturnValue_5, CallFunc_BooleanAND_ReturnValue_4)
+  [4716] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_BooleanOR_ReturnValue_1)
+  [4745] self.HelperActor.self.PredictivePathTestPassed = CallFunc_Not_PreBool_ReturnValue_2
+  [4786] Score = 0.0
+  [4813] goto @4909
+  [4818] CallFunc_GetCurrentTarget_interface_CurrentTarget_1 = null
+  [4829] goto @1788
+  [4834] Score = 0.0
+  [4861] goto @4909
+  [4866] CallFunc_GetCurrentTarget_interface_CurrentTarget = null
+  [4877] goto @1507
+  [4882] Score = 0.0
+  [4909] return nothing
+  [4911] end
+
+=== EvaluateActionAtTransform
+  [0] push @1094
+  [5] L_PredictTime = 0.0
+  [32] push @756
+  [37] Default__KismetArrayLibrary.Array_Clear(self.CharactersInHitAreas)
+  [78] Default__archon_function_library_C.GetLivePlayerCharacters(self, true, self, CallFunc_GetLivePlayerCharacters_LiveCharacters)
+  [126] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(self.PredictTargetPositionsTimeMin, self.PredictTargetPositionsTimeMax)
+  [172] L_PredictTime = CallFunc_RandomFloatInRange_ReturnValue
+  [199] array{ArchonCharacter}
+  [219] Default__targetting_function_library_C.GetTargetsFromActionData(self.TargettingType, self.HitAreaComponents, self.TargettingData, self.OwningArchonBehemoth, self.RequiresNavTrace, self.DistanceTargetCanBeOffNavMesh, K2Node_MakeArray_Array, CallFunc_GetLivePlayerCharacters_LiveCharacters, self.ScaleHitAreaToBehemothSize, Transform, L_PredictTime, self, CallFunc_GetTargetsFromActionData_Targets)
+  [364] Temp_int_Loop_Counter_Variable = 0
+  [387] Temp_int_Array_Index_Variable = 0
+  [410] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetTargetsFromActionData_Targets)
+  [469] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [507] if !(CallFunc_Less_IntInt_ReturnValue) goto @854
+  [521] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [548] push @1020
+  [553] Default__KismetArrayLibrary.Array_Get(CallFunc_GetTargetsFromActionData_Targets, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [612] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item)
+  [648] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [677] if !(K2Node_DynamicCast_bSuccess) pop
+  [687] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.CharactersInHitAreas, K2Node_DynamicCast_AsArchon_Character)
+  [755] pop
+  [756] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [784] Score = 0.0
+  [811] ActionHitsTargets = false
+  [822] ActionTargetLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [849] goto @1094
+  [854] GetIdealTargetForAction(self.CharactersInHitAreas, L_PredictTime, CallFunc_GetIdealTargetForAction_Target, CallFunc_GetIdealTargetForAction_ScoreIfActionExecutedAtTargetPosition, CallFunc_GetIdealTargetForAction_AnyPossibleTargetsFound)
+  [913] if !(CallFunc_GetIdealTargetForAction_AnyPossibleTargetsFound) pop
+  [923] L_ActionScore = CallFunc_GetIdealTargetForAction_ScoreIfActionExecutedAtTargetPosition
+  [950] Score = L_ActionScore
+  [977] ActionHitsTargets = true
+  [988] ActionTargetLocation = CallFunc_GetIdealTargetForAction_Target
+  [1015] goto @1094
+  [1020] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1062] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1089] goto @410
+  [1094] return nothing
+  [1096] end
+
+=== ExecuteUbergraph_BP_BehemothAction
+  [0] push @3905
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [118] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, BP_ActionHelper_C, CallFunc_MakeTransform_ReturnValue, 1, null)
+  [160] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [189] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetDisplayName_ReturnValue_1)
+  [226] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'attack', CallFunc_Conv_StringToName_ReturnValue)
+  [267] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Action', self)
+  [300] Default__KismetArrayLibrary.SetArrayPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'HitAreas', self.HitAreaBoxes)
+  [363] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OwningArchonBehemoth', self.OwningArchonBehemoth)
+  [404] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.OwningArchonBehemoth)
+  [445] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [548] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [586] self.HelperActor = CallFunc_FinishSpawningActor_ReturnValue
+  [605] CallFunc_IsValid_ReturnValue_1 = IsValid(self.HelperActor.self.TextRender)
+  [656] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [666] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [695] CallFunc_Conv_StringToText_ReturnValue = Conv_StringToText(CallFunc_GetDisplayName_ReturnValue)
+  [732] self.HelperActor.self.TextRender.K2_SetText(CallFunc_Conv_StringToText_ReturnValue)
+  [795] if !(self.ShowHitAreaTest) pop
+  [805] self.OptimArea.SetHiddenInGame(false, false)
+  [839] pop
+  [840] pop
+  [841] CallFunc_GetComponentByClass_ReturnValue = self.OwningArchonBehemoth.GetComponentByClass(threat_tracking_bpc_C)
+  [892] self.ThreatTrackingComponent = CallFunc_GetComponentByClass_ReturnValue
+  [911] Temp_int_Loop_Counter_Variable_1 = 0
+  [934] Temp_int_Array_Index_Variable = 0
+  [957] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.HitAreaBoxes)
+  [1016] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1054] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1643
+  [1068] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1095] push @1879
+  [1100] Default__KismetArrayLibrary.Array_Get(self.HitAreaBoxes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1159] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_Array_Get_Item.HitAreaYaw)
+  [1215] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor_1)
+  [1238] CallFunc_Multiply_VectorVector_ReturnValue_1 = Multiply_VectorVector(CallFunc_GetScalingFactor_ScalingFactor_1, CallFunc_Array_Get_Item.Offset)
+  [1293] CallFunc_MakeTransform_ReturnValue_1 = MakeTransform(CallFunc_Multiply_VectorVector_ReturnValue_1, CallFunc_MakeRotator_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [1364] CallFunc_AddComponent_ReturnValue = self.OwningArchonBehemoth.AddComponent('NODE_AddBoxComponent-0', false, CallFunc_MakeTransform_ReturnValue_1, self, false)
+  [1431] Default__KismetArrayLibrary.Array_Get(self.HitAreaBoxes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1490] CallFunc_AddComponent_ReturnValue.SetBoxExtent(CallFunc_Array_Get_Item.Extent, true)
+  [1541] CallFunc_AddComponent_ReturnValue.self.bForceSkipUpdateOverlaps = true
+  [1574] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.HitAreaComponents, CallFunc_AddComponent_ReturnValue)
+  [1642] pop
+  [1643] if !(self.CreateHelper) pop
+  [1653] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor)
+  [1676] BreakVector(CallFunc_GetScalingFactor_ScalingFactor, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1722] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 1.0)
+  [1777] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(self.OptimalHitArea.Extent, CallFunc_MakeVector_ReturnValue)
+  [1832] self.OptimArea.SetBoxExtent(CallFunc_Multiply_VectorVector_ReturnValue, false)
+  [1874] goto @15
+  [1879] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1921] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [1948] goto @957
+  [1953] SimplifyVectors(self.AttackVectors1, 100.0, CallFunc_SimplifyVectors_SimplifiedVectors)
+  [1994] self.AttackVectors1_Simple = CallFunc_SimplifyVectors_SimplifiedVectors
+  [2021] SimplifyVectors(self.AttackVectors2, 100.0, CallFunc_SimplifyVectors_SimplifiedVectors_1)
+  [2062] self.AttackVectors2_Simple = CallFunc_SimplifyVectors_SimplifiedVectors_1
+  [2089] pop
+  [2090] FlushPersistentDebugLines(self)
+  [2101] Temp_int_Loop_Counter_Variable = 0
+  [2124] Temp_int_Array_Index_Variable_1 = 0
+  [2147] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AttackVectors1)
+  [2206] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [2244] if !(CallFunc_Less_IntInt_ReturnValue) goto @2775
+  [2258] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [2285] push @2701
+  [2290] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(Temp_int_Array_Index_Variable_1, 0)
+  [2324] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [2334] Default__KismetArrayLibrary.Array_Get(self.AttackVectors1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2393] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Array_Index_Variable_1, 1)
+  [2435] Default__KismetArrayLibrary.Array_Get(self.AttackVectors1, CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2)
+  [2494] DrawDebugLine(self, CallFunc_Array_Get_Item_2, CallFunc_Array_Get_Item_1, LinearColor{1.0, 0.0, 0.0, 1.0}, 9999.0, 10.0)
+  [2567] Default__KismetArrayLibrary.Array_Get(self.AttackVectors1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2626] DrawDebugSphere(self, CallFunc_Array_Get_Item_1, 20.0, 12, LinearColor{1.0, 0.0, 0.0, 1.0}, 9999.0, 0.0)
+  [2700] pop
+  [2701] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2743] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [2770] goto @2147
+  [2775] Temp_int_Loop_Counter_Variable_2 = 0
+  [2798] Temp_int_Array_Index_Variable_2 = 0
+  [2821] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [2853] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1)
+  [2912] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [2950] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [2960] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_2
+  [2987] push @3467
+  [2992] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(Temp_int_Array_Index_Variable_2, 0)
+  [3026] if !(CallFunc_Greater_IntInt_ReturnValue_1) pop
+  [3036] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [3068] Default__KismetArrayLibrary.Array_Get(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_3)
+  [3127] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(Temp_int_Array_Index_Variable_2, 1)
+  [3169] Default__KismetArrayLibrary.Array_Get(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_Subtract_IntInt_ReturnValue_1, CallFunc_Array_Get_Item_4)
+  [3228] DrawDebugLine(self, CallFunc_Array_Get_Item_4, CallFunc_Array_Get_Item_3, LinearColor{0.123003, 1.0, 0.0, 1.0}, 9999.0, 10.0)
+  [3301] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [3333] Default__KismetArrayLibrary.Array_Get(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_3)
+  [3392] DrawDebugSphere(self, CallFunc_Array_Get_Item_3, 20.0, 12, LinearColor{0.093726, 1.0, 0.0, 1.0}, 9999.0, 0.0)
+  [3466] pop
+  [3467] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [3509] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [3536] goto @2821
+  [3541] CallFunc_IsValid_ReturnValue = IsValid(self.HelperActor)
+  [3570] if !(CallFunc_IsValid_ReturnValue) pop
+  [3580] self.HelperActor.K2_DestroyActor()
+  [3616] pop
+  [3617] FlushPersistentDebugLines(self)
+  [3628] pop
+  [3629] CallFunc_IsValidSoftObjectReference_ReturnValue = IsValidSoftObjectReference(self.SubtreeForActionToLoad)
+  [3658] if !(CallFunc_IsValidSoftObjectReference_ReturnValue) goto @3763
+  [3672] K2Node_CreateDelegate_OutputDelegate = bind(self.OnLoaded_1C6A0B0847EC0BA6BB8DF3B464465265)
+  [3695] LoadAsset(self, self.SubtreeForActionToLoad, K2Node_CreateDelegate_OutputDelegate, LatentActionInfo{-1, 1829698558, 'ExecuteUbergraph_BP_BehemothAction', self})
+  [3762] pop
+  [3763] self.ActionLoaded = true
+  [3774] pop
+  [3775] self.ActionLoaded = true
+  [3786] K2Node_DynamicCast_AsBehavior_Tree = cast<BehaviorTree>(Temp_object_Variable)
+  [3822] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBehavior_Tree)
+  [3851] if !(K2Node_DynamicCast_bSuccess) pop
+  [3861] self.SubtreeForAction = K2Node_DynamicCast_AsBehavior_Tree
+  [3880] pop
+  [3881] Temp_object_Variable = K2Node_CustomEvent_Loaded
+  [3900] goto @3775
+  [3905] return nothing
+  [3907] end
+
+=== GetAvgProximityToIdealArea
+  [0] push @963
+  [5] L_TotalDist = 0.0
+  [32] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(TargetArray)
+  [91] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [125] if !(CallFunc_Greater_IntInt_ReturnValue) goto @654
+  [139] Temp_int_Loop_Counter_Variable = 0
+  [162] Temp_int_Array_Index_Variable = 0
+  [185] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(TargetArray)
+  [244] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [282] if !(CallFunc_Less_IntInt_ReturnValue) goto @686
+  [296] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [323] push @889
+  [328] Default__KismetArrayLibrary.Array_Get(TargetArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [387] Default__archon_function_library_C.GetHorizPredictedMovement(CallFunc_Array_Get_Item, PredictionTime, self, CallFunc_GetHorizPredictedMovement_FutureLocation)
+  [451] CallFunc_TransformLocation_ReturnValue = TransformLocation(CandidateTransform, self.EffectAreaOfAttack-TargetPlayerIdealOffset)
+  [497] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetHorizPredictedMovement_FutureLocation, CallFunc_TransformLocation_ReturnValue)
+  [543] CallFunc_VSizeXY_ReturnValue = VSizeXY(CallFunc_Subtract_VectorVector_ReturnValue)
+  [580] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_VSizeXY_ReturnValue, L_TotalDist)
+  [626] L_TotalDist = CallFunc_Add_DoubleDouble_ReturnValue
+  [653] pop
+  [654] AvgProximityToIdealLocation = -1.0
+  [681] goto @963
+  [686] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(TargetArray)
+  [745] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue_1)
+  [782] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [811] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(L_TotalDist, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [857] AvgProximityToIdealLocation = CallFunc_Divide_DoubleDouble_ReturnValue
+  [884] goto @963
+  [889] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [931] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [958] goto @185
+  [963] return nothing
+  [965] end
+
+=== GetBestPositionForEffectAreaForTarget
+  [0] push @2504
+  [5] L_BestScore = 0.0
+  [32] L_BestAvgProximityToIdealPosition = 100000000.0
+  [59] L_AngleSweep = 10.0
+  [86] L_TestLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [129] L_OffsetToTestLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [172] Default__archon_function_library_C.GetHorizPredictedMovement(Target, PredictionTime, self, CallFunc_GetHorizPredictedMovement_FutureLocation)
+  [236] CallFunc_GetTransform_ReturnValue_1 = self.OwningArchonBehemoth.GetTransform()
+  [286] BreakTransform(CallFunc_GetTransform_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [332] CallFunc_Subtract_VectorVector_ReturnValue_3 = Subtract_VectorVector(CallFunc_GetHorizPredictedMovement_FutureLocation, CallFunc_BreakTransform_Location_1)
+  [378] CallFunc_Conv_VectorToRotator_ReturnValue_1 = Conv_VectorToRotator(CallFunc_Subtract_VectorVector_ReturnValue_3)
+  [415] BreakRotator(CallFunc_Conv_VectorToRotator_ReturnValue_1, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [461] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw_1)
+  [508] L_CandidateRotation = CallFunc_MakeRotator_ReturnValue_1
+  [535] CallFunc_GreaterGreater_VectorRotator_ReturnValue = GreaterGreater_VectorRotator(self.EffectAreaOfAttack-TargetPlayerIdealOffset, L_CandidateRotation)
+  [581] CallFunc_Subtract_VectorVector_ReturnValue_2 = Subtract_VectorVector(CallFunc_GetHorizPredictedMovement_FutureLocation, CallFunc_GreaterGreater_VectorRotator_ReturnValue)
+  [627] L_TestLocation = CallFunc_Subtract_VectorVector_ReturnValue_2
+  [654] CallFunc_K2_GetActorLocation_ReturnValue = self.OwningArchonBehemoth.K2_GetActorLocation()
+  [704] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(L_TestLocation, CallFunc_K2_GetActorLocation_ReturnValue)
+  [750] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue, self, CallFunc_XY_Out)
+  [805] L_OffsetToTestLocation = CallFunc_XY_Out
+  [832] Temp_int_Variable = 0
+  [855] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, 4)
+  [889] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @2371
+  [903] push @2430
+  [908] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [958] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1004] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Variable, 2)
+  [1046] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Subtract_IntInt_ReturnValue, L_AngleSweep)
+  [1092] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_IntFloat_ReturnValue)
+  [1121] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(L_OffsetToTestLocation, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [1192] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, CallFunc_BreakTransform_Location)
+  [1238] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, CallFunc_BreakTransform_Location)
+  [1284] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [1321] BreakRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [1367] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [1414] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotator_ReturnValue, CallFunc_BreakTransform_Scale)
+  [1469] GetScoreForEffectArea(TargetSet, CallFunc_MakeTransform_ReturnValue, PredictionTime, CallFunc_GetScoreForEffectArea_Score, CallFunc_GetScoreForEffectArea_AvgDistanceToIdealLocation)
+  [1528] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_GetScoreForEffectArea_AvgDistanceToIdealLocation, L_BestAvgProximityToIdealPosition)
+  [1566] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetScoreForEffectArea_Score, L_BestScore)
+  [1604] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(CallFunc_GetScoreForEffectArea_Score, L_BestScore)
+  [1642] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_DoubleDouble_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue)
+  [1680] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [1718] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [1728] L_BestAvgProximityToIdealPosition = CallFunc_GetScoreForEffectArea_AvgDistanceToIdealLocation
+  [1755] L_BestScore = CallFunc_GetScoreForEffectArea_Score
+  [1782] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [1832] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1878] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Variable, 2)
+  [1920] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Subtract_IntInt_ReturnValue, L_AngleSweep)
+  [1966] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_IntFloat_ReturnValue)
+  [1995] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(L_OffsetToTestLocation, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [2066] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, CallFunc_BreakTransform_Location)
+  [2112] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_RotateAngleAxis_ReturnValue, CallFunc_BreakTransform_Location)
+  [2158] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [2195] BreakRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [2241] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_BreakRotator_Yaw)
+  [2288] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotator_ReturnValue, CallFunc_BreakTransform_Scale)
+  [2343] L_BestTransform = CallFunc_MakeTransform_ReturnValue
+  [2370] pop
+  [2371] BestTransform = L_BestTransform
+  [2398] Score = L_BestScore
+  [2425] goto @2504
+  [2430] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [2472] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2499] goto @855
+  [2504] return nothing
+  [2506] end
+
+=== GetHitAreaPositionWS
+  [0] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [50] CallFunc_EqualEqual_VectorVector_ReturnValue = EqualEqual_VectorVector(HitArea.Offset, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0001)
+  [118] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [164] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor)
+  [187] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(HitArea.Offset, CallFunc_GetScalingFactor_ScalingFactor)
+  [242] CallFunc_SelectVector_ReturnValue = SelectVector(EX_VectorConst(Value={'X': 1.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_Multiply_VectorVector_ReturnValue, CallFunc_EqualEqual_VectorVector_ReturnValue)
+  [313] CallFunc_GreaterGreater_VectorRotator_ReturnValue = GreaterGreater_VectorRotator(CallFunc_SelectVector_ReturnValue, CallFunc_BreakTransform_Rotation)
+  [359] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_GreaterGreater_VectorRotator_ReturnValue, CallFunc_BreakTransform_Location)
+  [405] NewParam = CallFunc_Add_VectorVector_ReturnValue
+  [432] return nothing
+  [434] end
+
+=== GetIdealTargetForAction
+  [0] push @1946
+  [5] L_BestScore = -99999.0
+  [32] L_CandidateRotation = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [75] push @648
+  [80] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.EffectAreaOfAttack)
+  [139] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_2, 0)
+  [173] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @734
+  [187] Temp_int_Loop_Counter_Variable = 0
+  [210] Temp_int_Array_Index_Variable_1 = 0
+  [233] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Targets)
+  [292] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [330] if !(CallFunc_Less_IntInt_ReturnValue) goto @987
+  [344] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [371] push @1872
+  [376] Default__KismetArrayLibrary.Array_Get(Targets, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [435] GetBestPositionForEffectAreaForTarget(CallFunc_Array_Get_Item, PredictionTime, Targets, CallFunc_GetBestPositionForEffectAreaForTarget_BestTransform, CallFunc_GetBestPositionForEffectAreaForTarget_Score)
+  [494] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetBestPositionForEffectAreaForTarget_Score, 0.0)
+  [532] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [542] BreakTransform(CallFunc_GetBestPositionForEffectAreaForTarget_BestTransform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [588] Default__BlueprintMapLibrary.Map_Add(L_TargetPosScoreMap, CallFunc_BreakTransform_Location, CallFunc_GetBestPositionForEffectAreaForTarget_Score)
+  [647] pop
+  [648] Target = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [691] ScoreIfActionExecutedAtTargetPosition = 0.0
+  [718] AnyPossibleTargetsFound = false
+  [729] goto @1946
+  [734] ScoreTargetArray(Targets, CallFunc_ScoreTargetArray_Score)
+  [766] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(Targets)
+  [825] CallFunc_K2_GetActorLocation_ReturnValue = self.OwningArchonBehemoth.K2_GetActorLocation()
+  [875] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [909] Target = CallFunc_K2_GetActorLocation_ReturnValue
+  [936] ScoreIfActionExecutedAtTargetPosition = CallFunc_ScoreTargetArray_Score
+  [963] AnyPossibleTargetsFound = CallFunc_Greater_IntInt_ReturnValue
+  [982] goto @1946
+  [987] array{}
+  [998] Default__BlueprintMapLibrary.Map_Keys(L_TargetPosScoreMap, CallFunc_Map_Keys_Keys)
+  [1048] array{}
+  [1059] Default__BlueprintMapLibrary.Map_Values(L_TargetPosScoreMap, CallFunc_Map_Values_Values)
+  [1109] push @1756
+  [1114] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [1173] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_4, 0)
+  [1207] if !(CallFunc_Greater_IntInt_ReturnValue_2) pop
+  [1217] Temp_int_Loop_Counter_Variable_1 = 0
+  [1240] Temp_int_Array_Index_Variable = 0
+  [1263] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [1322] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [1360] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1370] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1397] push @1682
+  [1402] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1461] CallFunc_Greater_DoubleDouble_ReturnValue_2 = Greater_DoubleDouble(CallFunc_Array_Get_Item_1, L_BestScore)
+  [1499] if !(CallFunc_Greater_DoubleDouble_ReturnValue_2) pop
+  [1509] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1568] L_BestScore = CallFunc_Array_Get_Item_1
+  [1595] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1654] L_BestPos = CallFunc_Array_Get_Item_2
+  [1681] pop
+  [1682] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1724] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1751] goto @1263
+  [1756] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(L_BestScore, 0.0)
+  [1794] Target = L_BestPos
+  [1821] ScoreIfActionExecutedAtTargetPosition = L_BestScore
+  [1848] AnyPossibleTargetsFound = CallFunc_Greater_DoubleDouble_ReturnValue_1
+  [1867] goto @1946
+  [1872] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1914] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1941] goto @233
+  [1946] return nothing
+  [1948] end
+
+=== GetScaledSimplifiedAttackVectors
+  [0] push @1031
+  [5] ScalingFactor = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [48] GetScalingFactor(CallFunc_GetScalingFactor_ScalingFactor)
+  [71] ScalingFactor = CallFunc_GetScalingFactor_ScalingFactor
+  [98] Temp_int_Loop_Counter_Variable = 0
+  [121] Temp_int_Array_Index_Variable_1 = 0
+  [144] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AttackVectors1_Simple)
+  [203] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [241] if !(CallFunc_Less_IntInt_ReturnValue) goto @461
+  [255] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [282] push @883
+  [287] Default__KismetArrayLibrary.Array_Get(self.AttackVectors1_Simple, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [346] CallFunc_Multiply_VectorVector_ReturnValue_1 = Multiply_VectorVector(CallFunc_Array_Get_Item_1, ScalingFactor)
+  [392] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(ScaledVectors1, CallFunc_Multiply_VectorVector_ReturnValue_1)
+  [460] pop
+  [461] Temp_int_Loop_Counter_Variable_1 = 0
+  [484] Temp_int_Array_Index_Variable = 0
+  [507] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AttackVectors2_Simple)
+  [566] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [604] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @824
+  [618] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [645] push @957
+  [650] Default__KismetArrayLibrary.Array_Get(self.AttackVectors2_Simple, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [709] CallFunc_Multiply_VectorVector_ReturnValue = Multiply_VectorVector(CallFunc_Array_Get_Item, ScalingFactor)
+  [755] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(ScaledVectors2, CallFunc_Multiply_VectorVector_ReturnValue)
+  [823] pop
+  [824] Vectors1 = ScaledVectors1
+  [851] Vectors2 = ScaledVectors2
+  [878] goto @1031
+  [883] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [925] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [952] goto @144
+  [957] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [999] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1026] goto @507
+  [1031] return nothing
+  [1033] end
+
+=== GetScalingFactor
+  [0] CallFunc_NearlyEqual_FloatFloat_ReturnValue = NearlyEqual_FloatFloat(self.DebugScale, 0.0, 1e-06)
+  [47] if !(CallFunc_NearlyEqual_FloatFloat_ReturnValue) goto @232
+  [61] if !(self.ScaleHitAreaToBehemothSize) goto @330
+  [75] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [111] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [140] if !(K2Node_DynamicCast_bSuccess) goto @378
+  [154] K2Node_DynamicCast_AsBehemoth_Interface.GetBehemothScale_interface(CallFunc_GetBehemothScale_interface_Scale)
+  [200] ScalingFactor = CallFunc_GetBehemothScale_interface_Scale
+  [227] goto @426
+  [232] CallFunc_Conv_FloatToVector_InFloat_ImplicitCast = cast<CST_DoubleToFloat>(self.DebugScale)
+  [261] CallFunc_Conv_FloatToVector_ReturnValue = Conv_FloatToVector(CallFunc_Conv_FloatToVector_InFloat_ImplicitCast)
+  [298] ScalingFactor = CallFunc_Conv_FloatToVector_ReturnValue
+  [325] goto @426
+  [330] ScalingFactor = EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0})
+  [373] goto @426
+  [378] CallFunc_GetBehemothScale_interface_Scale = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [421] goto @200
+  [426] return nothing
+  [428] end
+
+=== GetScoreForEffectArea
+  [0] Default__archon_function_library_C.RunTargettingChecksOnTargetSet(self.EffectAreaOfAttack, self.OwningArchonBehemoth, TargetSet, false, CandidateTransform, PredictionTime, self, CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets)
+  [92] ScoreTargetArray(CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets, CallFunc_ScoreTargetArray_Score)
+  [124] GetAvgProximityToIdealArea(CallFunc_RunTargettingChecksOnTargetSet_AvailableTargets, CandidateTransform, PredictionTime, CallFunc_GetAvgProximityToIdealArea_AvgProximityToIdealLocation)
+  [174] Score = CallFunc_ScoreTargetArray_Score
+  [201] AvgDistanceToIdealLocation = CallFunc_GetAvgProximityToIdealArea_AvgProximityToIdealLocation
+  [228] return nothing
+  [230] end
+
+=== INTERNAL_SetCooldown
+  [0] CallFunc_K2_SetTimer_Time_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [29] CallFunc_K2_SetTimer_ReturnValue = K2_SetTimer(self, 'EndCooldown', CallFunc_K2_SetTimer_Time_ImplicitCast, false, 0.0, 0.0)
+  [91] self.CooldownTimer = CallFunc_K2_SetTimer_ReturnValue
+  [118] return nothing
+  [120] end
+
+=== IsActionAvailable
+  [0] push @1800
+  [5] ActionSpecifcTests(CallFunc_ActionSpecifcTests_TestsPassed)
+  [28] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.BaseValue, 0.0)
+  [66] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.OnCooldown)
+  [95] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_ActionSpecifcTests_TestsPassed, CallFunc_Not_PreBool_ReturnValue)
+  [133] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [171] if !(CallFunc_BooleanAND_ReturnValue_2) goto @982
+  [185] self.ThreatTrackingComponent.GetIntensityLevel(CallFunc_GetIntensityLevel_CurrentIntensity)
+  [230] CallFunc_LessEqual_ByteByte_ReturnValue = LessEqual_ByteByte(CallFunc_GetIntensityLevel_CurrentIntensity, self.InitialActionData.MaxIntensity)
+  [277] CallFunc_GreaterEqual_ByteByte_ReturnValue = GreaterEqual_ByteByte(CallFunc_GetIntensityLevel_CurrentIntensity, self.InitialActionData.MinIntensity)
+  [324] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_ByteByte_ReturnValue, CallFunc_LessEqual_ByteByte_ReturnValue)
+  [362] if !(CallFunc_BooleanAND_ReturnValue) goto @982
+  [376] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(self.OwningArchonBehemoth, behemoth_interface_C)
+  [414] if !(CallFunc_DoesImplementInterface_ReturnValue) goto @982
+  [428] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [464] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [493] if !(K2Node_DynamicCast_bSuccess) goto @998
+  [507] K2Node_DynamicCast_AsBehemoth_Interface.BehemothStateMeetsRequirements(self.BehemothRequirements, CallFunc_BehemothStateMeetsRequirements_PassesRequirements, CallFunc_BehemothStateMeetsRequirements_Result)
+  [571] if !(CallFunc_BehemothStateMeetsRequirements_PassesRequirements) goto @982
+  [585] Temp_int_Loop_Counter_Variable_1 = 0
+  [608] Temp_int_Array_Index_Variable_1 = 0
+  [631] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.RequireStates)
+  [690] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [728] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1034
+  [742] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [769] push @1699
+  [774] K2Node_DynamicCast_AsBehemoth_Interface_2 = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [810] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface_2)
+  [839] if !(K2Node_DynamicCast_bSuccess_2) goto @1773
+  [853] Default__KismetArrayLibrary.Array_Get(self.RequireStates, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [912] K2Node_DynamicCast_AsBehemoth_Interface_2.BehemothInState(CallFunc_Array_Get_Item_1, CallFunc_BehemothInState_IsInState_1)
+  [967] if !(CallFunc_BehemothInState_IsInState_1) goto @1789
+  [981] pop
+  [982] IsActionAvailable = false
+  [993] goto @1800
+  [998] CallFunc_BehemothStateMeetsRequirements_PassesRequirements = false
+  [1009] CallFunc_BehemothStateMeetsRequirements_Result = 0
+  [1029] goto @571
+  [1034] Temp_int_Loop_Counter_Variable = 0
+  [1057] Temp_int_Array_Index_Variable = 0
+  [1080] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ExcludedStates)
+  [1139] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [1177] if !(CallFunc_Less_IntInt_ReturnValue) goto @1532
+  [1191] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1218] push @1458
+  [1223] K2Node_DynamicCast_AsBehemoth_Interface_1 = cast<behemoth_interface_C>(self.OwningArchonBehemoth)
+  [1259] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface_1)
+  [1288] if !(K2Node_DynamicCast_bSuccess_1) goto @1442
+  [1302] Default__KismetArrayLibrary.Array_Get(self.ExcludedStates, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1361] K2Node_DynamicCast_AsBehemoth_Interface_1.BehemothInState(CallFunc_Array_Get_Item, CallFunc_BehemothInState_IsInState)
+  [1416] if !(CallFunc_BehemothInState_IsInState) pop
+  [1426] IsActionAvailable = false
+  [1437] goto @1800
+  [1442] CallFunc_BehemothInState_IsInState = false
+  [1453] goto @1416
+  [1458] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1500] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1527] goto @1080
+  [1532] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.BaseValue, 0.0)
+  [1570] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.OnCooldown)
+  [1599] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_ActionSpecifcTests_TestsPassed, CallFunc_Not_PreBool_ReturnValue)
+  [1637] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [1675] IsActionAvailable = CallFunc_BooleanAND_ReturnValue_2
+  [1694] goto @1800
+  [1699] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1741] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1768] goto @631
+  [1773] CallFunc_BehemothInState_IsInState_1 = false
+  [1784] goto @967
+  [1789] IsActionAvailable = false
+  [1800] return nothing
+  [1802] end
+
+=== LoadActionAssets
+  [0] ExecuteUbergraph_BP_BehemothAction(3629)
+  [15] return nothing
+  [17] end
+
+=== MultiplyAttackWeighting
+  [0] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(AttackWeightingMultiplier, self.AttackWeighting)
+  [46] self.AttackWeighting = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [73] return nothing
+  [75] end
+
+=== OnLoaded_1C6A0B0847EC0BA6BB8DF3B464465265
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_BP_BehemothAction(3881)
+  [33] return nothing
+  [35] end
+
+=== PostAttackLogic
+  [0] push @389
+  [5] push @25
+  [10] SetBehemothNavlinkMovement()
+  [24] pop
+  [25] if !(self.ShouldActionCreateDangerZoneForAIGroup?) pop
+  [35] CallFunc_IsValid_Guid_ReturnValue = IsValid_Guid(self.DangerZoneGUID)
+  [64] if !(CallFunc_IsValid_Guid_ReturnValue) pop
+  [74] CallFunc_GetComponentByClass_ReturnValue = self.OwningArchonBehemoth.GetComponentByClass(ai_coordination_agent_bpc_C)
+  [125] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [154] if !(CallFunc_IsValid_ReturnValue) pop
+  [164] CallFunc_GetComponentByClass_ReturnValue = self.OwningArchonBehemoth.GetComponentByClass(ai_coordination_agent_bpc_C)
+  [215] CallFunc_GetComponentByClass_ReturnValue.GetAICoordinationManager(CallFunc_GetAICoordinationManager_AICoordinationManager)
+  [260] CallFunc_GetAICoordinationManager_AICoordinationManager.RemoveDangerZone(CallFunc_GetComponentByClass_ReturnValue.self.MainGroupID, self.DangerZoneGUID)
+  [336] self.DangerZoneGUID = Guid{0, 0, 0, 0}
+  [388] pop
+  [389] return nothing
+  [391] end
+
+=== PreAttackLogic
+  [0] SetBehemothNavlinkMovement()
+  [14] self.InProgress = true
+  [25] if !(self.ShouldActionCreateDangerZoneForAIGroup?) goto @946
+  [39] CallFunc_GetComponentByClass_ReturnValue_1 = self.OwningArchonBehemoth.GetComponentByClass(ai_coordination_agent_bpc_C)
+  [90] L_AICoordAgent = CallFunc_GetComponentByClass_ReturnValue_1
+  [109] CallFunc_IsValid_Guid_ReturnValue = IsValid_Guid(L_AICoordAgent.self.MainGroupID)
+  [160] if !(CallFunc_IsValid_Guid_ReturnValue) goto @946
+  [174] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [202] self.DangerZoneGUID = CallFunc_NewGuid_ReturnValue
+  [229] L_AICoordAgent.GetAICoordinationManager(CallFunc_GetAICoordinationManager_AICoordinationManager_1)
+  [274] CallFunc_GetTransform_ReturnValue = self.OwningArchonBehemoth.GetTransform()
+  [324] K2Node_MakeStruct_danger_zone.DangerSource = self.OwningArchonBehemoth
+  [352] K2Node_MakeStruct_danger_zone.DangerousAction = self
+  [372] K2Node_MakeStruct_danger_zone.DangerLocation = CallFunc_GetTransform_ReturnValue
+  [408] K2Node_MakeStruct_danger_zone.GUID = self.DangerZoneGUID
+  [444] CallFunc_GetAICoordinationManager_AICoordinationManager_1.RegisterDangerZone(L_AICoordAgent.self.MainGroupID, K2Node_MakeStruct_danger_zone)
+  [520] L_AICoordAgent.GetAICoordinationManager(CallFunc_GetAICoordinationManager_AICoordinationManager)
+  [565] CallFunc_GetComponentByClass_ReturnValue = self.OwningArchonBehemoth.GetComponentByClass(ai_coordination_agent_bpc_C)
+  [616] K2Node_MakeStruct_coordination_message.TaskType = 8
+  [645] K2Node_MakeStruct_coordination_message.AgentAllocationType = 3
+  [674] K2Node_MakeStruct_coordination_message.AgentRestrictions = 0
+  [703] K2Node_MakeStruct_coordination_message.TaskExclusivity = 1
+  [732] K2Node_MakeStruct_coordination_message.AssignmentStrategy = 0
+  [761] K2Node_MakeStruct_coordination_message.MessageHandlingStrategy = 0
+  [790] K2Node_MakeStruct_coordination_message.Priority = 50.0
+  [822] K2Node_MakeStruct_coordination_message.PayloadObject = self
+  [842] K2Node_MakeStruct_coordination_message.INTERNAL_SourceAgent = CallFunc_GetComponentByClass_ReturnValue
+  [870] CallFunc_GetAICoordinationManager_AICoordinationManager.PushMessageToGroup(K2Node_MakeStruct_coordination_message, L_AICoordAgent.self.MainGroupID)
+  [946] return nothing
+  [948] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_BP_BehemothAction(841)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_BP_BehemothAction(3541)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_BP_BehemothAction(840)
+  [33] return nothing
+  [35] end
+
+=== ScoreTargetArray
+  [0] push @1032
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(TargetArray)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @623
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @958
+  [194] Default__KismetArrayLibrary.Array_Get(TargetArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] CallFunc_GetAttackTargetScore_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetAttackTargetScore()
+  [382] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetAttackTargetScore_ReturnValue)
+  [411] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.BaseValue)
+  [457] CallFunc_Multiply_DoubleDouble_ReturnValue_4 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_3, self.AttackWeighting)
+  [503] CallFunc_Multiply_DoubleDouble_ReturnValue_5 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_4, self.RuntimeWeightingPercent)
+  [549] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(L_ActionScore, CallFunc_Multiply_DoubleDouble_ReturnValue_5)
+  [595] L_ActionScore = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [622] pop
+  [623] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, self.RandomWeightMax)
+  [669] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(L_ActionScore, CallFunc_RandomFloatInRange_ReturnValue)
+  [715] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(1.0, self.RandomWeightPercent)
+  [761] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.RandomWeightPercent, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [807] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(L_ActionScore, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [853] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_2, CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [899] L_ActionScore = CallFunc_Add_DoubleDouble_ReturnValue
+  [926] Score = L_ActionScore
+  [953] goto @1032
+  [958] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1000] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1027] goto @51
+  [1032] return nothing
+  [1034] end
+
+=== SetBehemothNavlinkMovement
+  [0] CallFunc_GetMovementComponent_ReturnValue = self.OwningArchonBehemoth.GetMovementComponent()
+  [46] K2Node_DynamicCast_AsArchon_Behemoth_Movement_Component = cast<ArchonBehemothMovementComponent>(CallFunc_GetMovementComponent_ReturnValue)
+  [82] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_Movement_Component)
+  [111] if !(K2Node_DynamicCast_bSuccess) goto @166
+  [125] K2Node_DynamicCast_AsArchon_Behemoth_Movement_Component.self.bNavWalkingUsesNavlinks = self.CurrentUsesNavLink
+  [166] return nothing
+  [168] end
+
+=== SimplifyAttackVectors
+  [0] ExecuteUbergraph_BP_BehemothAction(1953)
+  [15] return nothing
+  [17] end
+
+=== SimplifyVectors
+  [0] push @2979
+  [5] L_EndPointIdx = 0
+  [28] L_PointList = Vectors
+  [55] Default__KismetArrayLibrary.Array_Get(L_PointList, 0, CallFunc_Array_Get_Item)
+  [110] L_StartPoint = CallFunc_Array_Get_Item
+  [137] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(L_PointList)
+  [196] L_EndPointIdx = CallFunc_Array_LastIndex_ReturnValue
+  [223] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(L_PointList)
+  [282] Default__KismetArrayLibrary.Array_Get(L_PointList, CallFunc_Array_LastIndex_ReturnValue, CallFunc_Array_Get_Item_1)
+  [341] L_EndPoint = CallFunc_Array_Get_Item_1
+  [368] L_MaxDistance = 0.0
+  [395] Temp_int_Loop_Counter_Variable = 0
+  [418] Temp_int_Array_Index_Variable_2 = 0
+  [441] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(L_PointList)
+  [500] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [538] if !(CallFunc_Less_IntInt_ReturnValue) goto @1125
+  [552] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable
+  [579] push @1689
+  [584] L_CurrIdx = Temp_int_Array_Index_Variable_2
+  [611] CallFunc_InRange_IntInt_ReturnValue = InRange_IntInt(L_CurrIdx, 0, L_EndPointIdx, false, false)
+  [656] if !(CallFunc_InRange_IntInt_ReturnValue) pop
+  [666] Default__KismetArrayLibrary.Array_Get(L_PointList, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [725] ClosestPointToLine(L_StartPoint, L_EndPoint, CallFunc_Array_Get_Item_2, CallFunc_ClosestPointToLine_distance)
+  [775] L_CurrDistance = CallFunc_ClosestPointToLine_distance
+  [802] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(L_CurrDistance, L_MaxDistance)
+  [840] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [850] L_MaxDistance = L_CurrDistance
+  [877] L_index = L_CurrIdx
+  [904] Default__KismetArrayLibrary.Array_Get(L_PointList, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [963] ClosestPointToLine(L_StartPoint, L_EndPoint, CallFunc_Array_Get_Item_2, CallFunc_ClosestPointToLine_distance)
+  [1013] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_ClosestPointToLine_distance)
+  [1050] PrintString(self, CallFunc_Conv_DoubleToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1124] pop
+  [1125] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(L_MaxDistance, Epsilon)
+  [1163] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1601
+  [1177] Temp_int_Loop_Counter_Variable_1 = 0
+  [1200] Temp_int_Array_Index_Variable = 0
+  [1223] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(L_PointList)
+  [1282] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [1320] if !(CallFunc_Less_IntInt_ReturnValue_4) goto @1763
+  [1334] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1361] push @2788
+  [1366] L_CurrIdx = Temp_int_Array_Index_Variable
+  [1393] Default__KismetArrayLibrary.Array_Get(L_PointList, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_5)
+  [1452] L_CurrPt = CallFunc_Array_Get_Item_5
+  [1479] push @2862
+  [1484] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(L_CurrIdx, L_index)
+  [1522] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [1532] CallFunc_Array_Add_ReturnValue_3 = Default__KismetArrayLibrary.Array_Add(L_Before, L_CurrPt)
+  [1600] pop
+  [1601] array{L_StartPoint, L_EndPoint}
+  [1630] L_Results = K2Node_MakeArray_Array
+  [1657] SimplifiedVectors = L_Results
+  [1684] goto @2979
+  [1689] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1731] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1758] goto @441
+  [1763] SimplifyVectors(L_Before, Epsilon, CallFunc_SimplifyVectors_SimplifiedVectors_1)
+  [1804] L_Results1 = CallFunc_SimplifyVectors_SimplifiedVectors_1
+  [1831] SimplifyVectors(L_After, Epsilon, CallFunc_SimplifyVectors_SimplifiedVectors)
+  [1872] L_Results2 = CallFunc_SimplifyVectors_SimplifiedVectors
+  [1899] Temp_int_Loop_Counter_Variable_3 = 0
+  [1922] Temp_int_Array_Index_Variable_3 = 0
+  [1945] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(L_Results1)
+  [2004] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_2)
+  [2042] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @2397
+  [2056] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_3
+  [2083] push @2323
+  [2088] CallFunc_Array_LastIndex_ReturnValue_1 = Default__KismetArrayLibrary.Array_LastIndex(L_Results1)
+  [2147] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Array_Index_Variable_3, CallFunc_Array_LastIndex_ReturnValue_1)
+  [2185] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [2195] Default__KismetArrayLibrary.Array_Get(L_Results1, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_4)
+  [2254] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(L_Results, CallFunc_Array_Get_Item_4)
+  [2322] pop
+  [2323] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [2365] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [2392] goto @1945
+  [2397] Temp_int_Loop_Counter_Variable_2 = 0
+  [2420] Temp_int_Array_Index_Variable_1 = 0
+  [2443] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(L_Results2)
+  [2502] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_1)
+  [2540] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1657
+  [2554] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [2581] push @2714
+  [2586] Default__KismetArrayLibrary.Array_Get(L_Results2, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [2645] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_Results, CallFunc_Array_Get_Item_3)
+  [2713] pop
+  [2714] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [2756] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_1
+  [2783] goto @2443
+  [2788] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2830] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [2857] goto @1223
+  [2862] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(L_index, L_CurrIdx)
+  [2900] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [2910] CallFunc_Array_Add_ReturnValue_2 = Default__KismetArrayLibrary.Array_Add(L_After, L_CurrPt)
+  [2978] pop
+  [2979] return nothing
+  [2981] end
+
+=== StartCooldown
+  [0] self.InProgress = false
+  [11] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.UsesLeft, 1)
+  [53] Temp_int_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [80] self.UsesLeft = Temp_int_Variable
+  [107] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, 0)
+  [141] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @738
+  [155] self.OnCooldown = true
+  [166] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [187] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [223] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [252] if !(K2Node_DynamicCast_bSuccess) goto @699
+  [266] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.AreMultipleBehemothsActive(CallFunc_AreMultipleBehemothsActive_MultiBehemothsActive, CallFunc_AreMultipleBehemothsActive_NumBehemoths)
+  [321] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.InitialActionData.CooldownVariance)
+  [359] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, -1.0)
+  [405] CallFunc_RandomFloatInRange_Max_ImplicitCast = cast<CST_FloatToDouble>(self.InitialActionData.CooldownVariance)
+  [443] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_RandomFloatInRange_Max_ImplicitCast)
+  [489] Temp_bool_Variable = CallFunc_AreMultipleBehemothsActive_MultiBehemothsActive
+  [508] Temp_real_Variable = 0.0
+  [535] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(switch(Temp_bool_Variable){false: Temp_real_Variable, true: self.CooldownDeltaInMultiBehemothFights, default: K2Node_Select_Default}, self.Cooldown)
+  [625] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_RandomFloatInRange_ReturnValue)
+  [671] INTERNAL_SetCooldown(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [694] goto @738
+  [699] CallFunc_AreMultipleBehemothsActive_MultiBehemothsActive = false
+  [710] CallFunc_AreMultipleBehemothsActive_NumBehemoths = 0
+  [733] goto @321
+  [738] return nothing
+  [740] end
+
+=== TestAttackVectorCollision
+  [0] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2_1)
+  [32] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1)
+  [91] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [125] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @1173
+  [139] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2_1)
+  [171] CallFunc_PathHitsNavMesh_ReturnValue_1 = PathHitsNavMesh('', self, CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1, false, CallFunc_PathHitsNavMesh_OutHitPoint_1, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_1, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_1, CallFunc_PathHitsNavMesh_OutFoundNavMesh_1, self.OwningArchonBehemoth, null, null, NavigationQueryFilter_NoDynamic_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, self.DebugDrawNavMeshHit, 3.0)
+  [308] CallFunc_Less_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_1)
+  [337] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast_1, 0.8999999761581421)
+  [375] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_PathHitsNavMesh_ReturnValue_1)
+  [413] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_BooleanOR_ReturnValue_1)
+  [442] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @1173
+  [456] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [488] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [547] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [581] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1173
+  [595] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2)
+  [627] GetScaledSimplifiedAttackVectors(CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2_1)
+  [659] CallFunc_PathHitsNavMesh_ReturnValue = PathHitsNavMesh('', self, CallFunc_GetScaledSimplifiedAttackVectors_Vectors2, false, CallFunc_PathHitsNavMesh_OutHitPoint, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit, CallFunc_PathHitsNavMesh_OutFoundNavMesh, self.OwningArchonBehemoth, null, null, NavigationQueryFilter_NoDynamic_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, self.DebugDrawNavMeshHit, 3.0)
+  [796] CallFunc_PathHitsNavMesh_ReturnValue_1 = PathHitsNavMesh('', self, CallFunc_GetScaledSimplifiedAttackVectors_Vectors1_1, false, CallFunc_PathHitsNavMesh_OutHitPoint_1, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_1, CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit_1, CallFunc_PathHitsNavMesh_OutFoundNavMesh_1, self.OwningArchonBehemoth, null, null, NavigationQueryFilter_NoDynamic_C, EX_VectorConst(Value={'X': 100.0, 'Y': 100.0, 'Z': 1024.0}), self.AllowNavLinks, self.DebugDrawNavMeshHit, 3.0)
+  [933] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_PathHitsNavMesh_OutPathPercentageBeforeHit)
+  [962] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, 0.8999999761581421)
+  [1000] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Less_DoubleDouble_ReturnValue, CallFunc_PathHitsNavMesh_ReturnValue)
+  [1038] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BooleanOR_ReturnValue)
+  [1067] CallFunc_BooleanOR_ReturnValue_2 = BooleanOR(CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal_1, CallFunc_PathHitsNavMesh_OutUsesNavLinkTraversal)
+  [1105] CallFunc_BooleanOR_ReturnValue_3 = BooleanOR(CallFunc_BooleanOR_ReturnValue_2, CallFunc_Not_PreBool_ReturnValue)
+  [1143] if !(CallFunc_BooleanOR_ReturnValue_3) goto @1173
+  [1157] ActionAllowed = true
+  [1168] goto @1184
+  [1173] ActionAllowed = false
+  [1184] return nothing
+  [1186] end

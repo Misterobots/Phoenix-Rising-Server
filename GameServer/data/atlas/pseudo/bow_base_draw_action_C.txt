@@ -1,0 +1,87 @@
+# bow_base_draw_action_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateAccuracyAlpha
+  [0] CallFunc_IsValid_ReturnValue = IsValid(AccuracyEaseCurve)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @265
+  [43] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(HeldTime, MinHoldTime, MaxHoldTime, 0.0, 1.0)
+  [116] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_MapRangeClamped_ReturnValue)
+  [145] CallFunc_GetFloatValue_ReturnValue = AccuracyEaseCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [204] K2Node_FunctionResult_ReturnValue_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [233] ReturnValue = K2Node_FunctionResult_ReturnValue_ImplicitCast
+  [260] goto @365
+  [265] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(HeldTime, MinHoldTime, MaxHoldTime, 0.0, 1.0)
+  [338] ReturnValue = CallFunc_MapRangeClamped_ReturnValue
+  [365] return ReturnValue
+  [375] end
+
+=== ExecuteUbergraph_bow_base_draw_action
+  [0] push @1243
+  [5] goto computed(EntryPoint)
+  [15] push @247
+  [20] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [40] CallFunc_GetOwner_ReturnValue = CallFunc_GetOwningActor_ReturnValue.GetOwner()
+  [82] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [118] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [147] if !(K2Node_DynamicCast_bSuccess) pop
+  [157] self.ArchonCharacter = K2Node_DynamicCast_AsArchon_Character
+  [176] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [227] self.PlayerAimingBpc = CallFunc_GetComponentByClass_ReturnValue
+  [246] pop
+  [247] CallFunc_IsLocallyControlled_ReturnValue_1 = self.ArchonCharacter.IsLocallyControlled()
+  [293] if !(CallFunc_IsLocallyControlled_ReturnValue_1) pop
+  [303] self.HeldTime = 0.0
+  [330] self.Accuracy = 0.0
+  [357] CallFunc_IsValid_ReturnValue = IsValid(self.PlayerAimingBpc.self.ReticleWidget)
+  [408] if !(CallFunc_IsValid_ReturnValue) pop
+  [418] K2Node_DynamicCast_AsReticle_Base_Bpw = cast<reticle_base_bpw_C>(self.PlayerAimingBpc.self.ReticleWidget)
+  [476] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsReticle_Base_Bpw)
+  [505] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [515] pop
+  [516] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [562] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [572] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [601] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetWorldDeltaSeconds_ReturnValue, self.HeldTime)
+  [647] self.HeldTime = CallFunc_Add_DoubleDouble_ReturnValue
+  [674] CallFunc_CalculateAccuracyAlpha_ReturnValue = CalculateAccuracyAlpha(self.HeldTime, self.MinHoldTime, self.MaxHoldTime, self.AccuracyEaseCurve)
+  [742] self.Accuracy = CallFunc_CalculateAccuracyAlpha_ReturnValue
+  [769] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PlayerAimingBpc.self.ReticleWidget)
+  [820] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [830] K2Node_DynamicCast_AsReticle_Base_Bpw_2 = cast<reticle_base_bpw_C>(self.PlayerAimingBpc.self.ReticleWidget)
+  [888] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsReticle_Base_Bpw_2)
+  [917] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [927] K2Node_DynamicCast_AsReticle_Base_Bpw_2.UpdateReticleAlpha(self.Accuracy)
+  [972] pop
+  [973] CallFunc_IsLocallyControlled_ReturnValue_2 = self.ArchonCharacter.IsLocallyControlled()
+  [1019] if !(CallFunc_IsLocallyControlled_ReturnValue_2) pop
+  [1029] CallFunc_IsValid_ReturnValue_1 = IsValid(self.PlayerAimingBpc.self.ReticleWidget)
+  [1080] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1090] K2Node_DynamicCast_AsReticle_Base_Bpw_1 = cast<reticle_base_bpw_C>(self.PlayerAimingBpc.self.ReticleWidget)
+  [1148] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsReticle_Base_Bpw_1)
+  [1177] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [1187] K2Node_DynamicCast_AsReticle_Base_Bpw_1.UpdateReticleAlpha(0.0)
+  [1232] pop
+  [1233] goto @516
+  [1238] goto @15
+  [1243] return nothing
+  [1245] end
+
+=== GetAccuracy
+  [0] Accuracy = self.Accuracy
+  [27] return nothing
+  [29] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_bow_base_draw_action(973)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_bow_base_draw_action(1238)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTick
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_bow_base_draw_action(1233)
+  [33] return nothing
+  [35] end

@@ -1,0 +1,311 @@
+{
+ "name": "bow_base_draw_action_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseGameplayAction",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ArchonCharacter",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerAimingBpc",
+   "type": "ObjectProperty<player_aiming_bpc_C>",
+   "bp_type": "ObjectProperty<player_aiming_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HeldTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinHoldTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxHoldTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AccuracyEaseCurve",
+   "type": "ObjectProperty<CurveFloat>",
+   "bp_type": "ObjectProperty<CurveFloat>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Accuracy",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "CalculateAccuracyAlpha",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "HeldTime",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "MinHoldTime",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "MaxHoldTime",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "AccuracyEaseCurve",
+     "type": "ObjectProperty<CurveFloat>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Private",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "CurveFloat.GetFloatValue",
+    "KismetMathLibrary.MapRangeClamped",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_bow_base_draw_action",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 49,
+   "reads": [
+    "Accuracy",
+    "AccuracyEaseCurve",
+    "ArchonCharacter",
+    "HeldTime",
+    "MaxHoldTime",
+    "MinHoldTime",
+    "PlayerAimingBpc",
+    "ReticleWidget"
+   ],
+   "sets": [
+    "Accuracy",
+    "ArchonCharacter",
+    "HeldTime",
+    "PlayerAimingBpc"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "CalculateAccuracyAlpha",
+    "GameplayStatics.GetWorldDeltaSeconds",
+    "IsLocallyControlled",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetSystemLibrary.IsValid",
+    "PhxBaseGameplayTask.GetOwningActor",
+    "UpdateReticleAlpha"
+   ],
+   "authority": [
+    "IsLocallyControlled"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_aiming_bpc_C"
+   ]
+  },
+  {
+   "name": "GetAccuracy",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Accuracy",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "Accuracy"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bow_base_draw_action_C.ExecuteUbergraph_bow_base_draw_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnStarted",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bow_base_draw_action_C.ExecuteUbergraph_bow_base_draw_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaTime",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "bow_base_draw_action_C.ExecuteUbergraph_bow_base_draw_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "CurveFloat bow_accuracy_curve"
+ ],
+ "package": "/Game/Blueprints/Weapons/_shared/bow/Actions/bow_base_draw_action",
+ "pseudo_file": "pseudo/bow_base_draw_action_C.txt",
+ "game_data": {}
+}

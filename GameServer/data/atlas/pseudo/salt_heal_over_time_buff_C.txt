@@ -1,0 +1,88 @@
+# salt_heal_over_time_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyHeal
+  [0] ExecuteUbergraph_salt_heal_over_time_buff(342)
+  [15] return nothing
+  [17] end
+
+=== ApplyIcon
+  [0] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [49] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.MakeOutgoingSpec(salt_heal_over_time_icon_ge_C, 0.0, GameplayEffectContextHandle{})
+  [131] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', self.MaxDuration)
+  [190] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [210] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [239] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [307] self.HealOverTimeHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [334] return nothing
+  [336] end
+
+=== ExecuteUbergraph_salt_heal_over_time_buff
+  [0] goto computed(EntryPoint)
+  [10] MulticastOnRefreshed()
+  [20] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [40] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [69] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.HealOverTimeHandle, -1)
+  [129] ApplyIcon()
+  [143] goto @1316
+  [148] K2Node_CreateDelegate_OutputDelegate = bind(self.ApplyHeal)
+  [171] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenHeals)
+  [200] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [257] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.TimeBetweenHeals, 0.0)
+  [295] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1316
+  [309] ApplyHeal()
+  [323] ApplyIcon()
+  [337] goto @1316
+  [342] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [362] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [398] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [427] if !(K2Node_DynamicCast_bSuccess) goto @1316
+  [441] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [477] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [506] if !(K2Node_DynamicCast_bSuccess_1) goto @740
+  [520] K2Node_DynamicCast_AsPlayer_Interface.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [566] CallFunc_GetHealth_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetHealth()
+  [616] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [645] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [683] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GetBleedOutState_BleedOutState, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [721] if !(CallFunc_BooleanOR_ReturnValue) goto @756
+  [735] goto @1316
+  [740] CallFunc_GetBleedOutState_BleedOutState = false
+  [751] goto @566
+  [756] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [776] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.HealthRestoredPerSecond, self.TimeBetweenHeals)
+  [822] Default__archon_function_library_C.HealTarget(CallFunc_GetBuffOwner_ReturnValue, CallFunc_GetBuffOwner_ReturnValue, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [887] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [907] HealVFX(CallFunc_GetBuffOwner_ReturnValue)
+  [930] goto @1316
+  [935] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [956] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @975
+  [970] goto @1316
+  [975] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(K2Node_CustomEvent_TargetActor)
+  [1011] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [1040] if !(K2Node_DynamicCast_bSuccess_2) goto @1295
+  [1054] K2Node_DynamicCast_AsPlayer_Interface_1.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [1100] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1232] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_TargetActor)
+  [1290] goto @1316
+  [1295] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [1306] goto @1100
+  [1311] goto @10
+  [1316] return nothing
+  [1318] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_TargetActor = TargetActor
+  [18] ExecuteUbergraph_salt_heal_over_time_buff(935)
+  [33] return nothing
+  [35] end
+
+=== MulticastOnRefreshed
+  [0] ExecuteUbergraph_salt_heal_over_time_buff(1311)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_salt_heal_over_time_buff(148)
+  [15] return nothing
+  [17] end

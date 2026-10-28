@@ -1,0 +1,680 @@
+{
+ "name": "gauntlet_encounter_gmc_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_gamemode_content_bp_C",
+  "GameModeContent",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Arrow",
+   "type": "ObjectProperty<ArrowComponent>",
+   "bp_type": "ObjectProperty<ArrowComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Sphere",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OwnedBehemoths",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 12
+  },
+  {
+   "name": "OwnedModifiers",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_TotalBehemothTLBoost",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GameMode_ModifierManagerComponent",
+   "type": "ObjectProperty<modifier_manager_bpc_C>",
+   "bp_type": "ObjectProperty<modifier_manager_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ContentGUID",
+   "type": "StructProperty<Guid>",
+   "bp_type": "StructProperty<Guid>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShouldDestroyBehemoths",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_BehemothsToSpawn",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DangerFromEvent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DangerScoreThresholds",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LoadedBehemothClasses",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Sphere",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Arrow",
+   "class": "ArrowComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CalculateScore",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Result",
+     "type": "EnumProperty<EGameModeContentResult>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<GameModeContentScore>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 36,
+   "reads": [
+    "DangerScoreThresholds"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetGameMode",
+    "GetDangerLevel",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CheckIfAnyLiveBehemothsRemain",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 35,
+   "reads": [
+    "OwnedBehemoths",
+    "State"
+   ],
+   "sets": [],
+   "calls": [
+    "BehemothInState",
+    "GameModeContent.ContentCompleted",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CleanupGameModeContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Debug_MultiShowScoreDetails",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TotalDangerAccrued",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Score",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_gauntlet_encounter_gmc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 178,
+   "reads": [
+    "ContentGUID",
+    "EncounterDetails",
+    "L_BehemothsToSpawn",
+    "OnStatusWorthHUDNotifyingOccured",
+    "OwnedBehemoths",
+    "OwnedModifiers",
+    "ShouldDestroyBehemoths"
+   ],
+   "sets": [
+    "BehemothState",
+    "DangerFromEvent",
+    "ShouldDestroyBehemoths"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "Actor.ReceiveBeginPlay",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "AuthClearModifiersWithGUID",
+    "AuthStopModifiersByGUID",
+    "CheckIfAnyLiveBehemothsRemain",
+    "GameModeContent.CleanupGameModeContent",
+    "GameModeContent.GameContentComplete",
+    "GameModeContent.MulticastStartLoadingContent",
+    "GameModeContent.StartGameModeContent",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GetTotalDangerAccrued",
+    "K2_DestroyActor",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.VSizeSquared",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "KismetTextLibrary.Format",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "OnRep_BehemothState",
+    "PostBehemothsSpawned",
+    "SpawnBehemoth"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass BP_PatrolCenterPoint_C",
+    "BlueprintGeneratedClass modifier_manager_bpc_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "Texture2D behemoth_icon_dauntless"
+   ]
+  },
+  {
+   "name": "GameContentComplete",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Result",
+     "type": "EnumProperty<EGameModeContentResult>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastStartLoadingContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothStateChanged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "State",
+     "type": "ByteProperty<behemoth_states_enum>"
+    },
+    {
+     "name": "ChangeThatHappened",
+     "type": "ByteProperty<behemoth_state_event>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PostBehemothsSpawned",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 43,
+   "reads": [
+    "ContentGUID",
+    "GameMode_ModifierManagerComponent",
+    "OwnedBehemoths",
+    "OwnedModifiers"
+   ],
+   "sets": [
+    "ContentGUID",
+    "GameMode_ModifierManagerComponent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "AuthAddModifier",
+    "CreateAgentGroup",
+    "GameplayStatics.GetGameMode",
+    "Initialize",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ai_coordination_agent_bpc_C",
+    "BlueprintGeneratedClass ai_coordination_manager_bpc_C",
+    "BlueprintGeneratedClass ai_rule_maintain_distance_C",
+    "BlueprintGeneratedClass modifier_manager_bpc_C"
+   ]
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnBehemoth",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Encounter",
+     "type": "StructProperty<ChosenEncounterContent>"
+    },
+    {
+     "name": "PatrolPoint",
+     "type": "ObjectProperty<BP_PatrolCenterPoint_C>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 63,
+   "reads": [
+    "Arrow",
+    "AuthOnStateChanged",
+    "L_BehemothsToSpawn",
+    "OnDestroyed",
+    "OwnedBehemoths"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "AddActionOverride",
+    "AddTuningPreset_interface",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GameplayStatics.GetGameMode",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.FindLookAtRotation",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetSystemLibrary.IsValid",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.K2_SetWorldRotation",
+    "SpawnBehemothAtChallengeLevelAtPatrolPoint"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable exploration_enemy_level_table"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass action_lookuptable_bpc_C",
+    "BlueprintGeneratedClass behemoth_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass bp_gamemode_behemoth_spawner_component_C"
+   ]
+  },
+  {
+   "name": "StartGameModeContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gauntlet_encounter_gmc_C.ExecuteUbergraph_gauntlet_encounter_gmc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable exploration_enemy_level_table"
+ ],
+ "package": "/Game/gamemodes/_gamemode_content/gauntlet_encounter_gmc",
+ "pseudo_file": "pseudo/gauntlet_encounter_gmc_C.txt",
+ "game_data": {}
+}

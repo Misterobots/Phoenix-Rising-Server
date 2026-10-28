@@ -1,0 +1,460 @@
+{
+ "name": "base_input_donttakedamage_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_conditional_benefit_buff_C",
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "StartWithConditionalEffectsApplied",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimeNotBeingHitToApply",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimerHandle",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EffectActive",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EffectTimerHandle",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SkelMesh",
+   "type": "ObjectProperty<SkeletalMeshComponent>",
+   "bp_type": "ObjectProperty<SkeletalMeshComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_base_input_donttakedamage_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 56,
+   "reads": [
+    "EffectActive",
+    "EffectTimerHandle",
+    "StartWithConditionalEffectsApplied",
+    "TimeNotBeingHitToApply",
+    "TimerHandle"
+   ],
+   "sets": [
+    "EffectActive",
+    "EffectTimerHandle",
+    "SkelMesh",
+    "TimerHandle"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonBuff.OnDamageReceived",
+    "GetSkeletalMeshComponent",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "PlayActivateEffects",
+    "RemoveActivateEffects",
+    "RemoveWarmupEffects",
+    "ResetTimer",
+    "Try Activate Effect",
+    "base_buff_C.OnAdded",
+    "base_conditional_benefit_buff_C.ResetCooldown"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageReceived",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTimerFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayActivateEffects",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayWarmupEffects",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveActivateEffects",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveWarmupEffects",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetCooldown",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetTimer",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_input_donttakedamage_buff_C.ExecuteUbergraph_base_input_donttakedamage_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Try Activate Effect",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ResetCooldown",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "ActivatedEffect",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [
+    "EffectActive"
+   ],
+   "calls": [
+    "base_conditional_benefit_buff_C.Try Activate Effect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/cell_building_blocks/base_input_donttakedamage_buff",
+ "pseudo_file": "pseudo/base_input_donttakedamage_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,954 @@
+{
+ "name": "shiny_reuse_drop_rare_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "lobbed_projectile_base_bp_C",
+  "projectile_base_bp_C",
+  "ArchonProjectileBase",
+  "AbilityActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerAutoCollectRadius",
+   "type": "ObjectProperty<SphereComponent>",
+   "bp_type": "ObjectProperty<SphereComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyMesh",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MeshCenter",
+   "type": "ObjectProperty<SceneComponent>",
+   "bp_type": "ObjectProperty<SceneComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RotatingMovement",
+   "type": "ObjectProperty<RotatingMovementComponent>",
+   "bp_type": "ObjectProperty<RotatingMovementComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LootItemID",
+   "type": "StrProperty",
+   "bp_type": "StrProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GrantImmediately",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DisallowedActors",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DestroyOnPickup",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Lifetime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerLootInstances",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "rep_index": 29
+  },
+  {
+   "name": "LocalRarity",
+   "type": "EnumProperty<EItemRarityLevelType>",
+   "bp_type": "EnumProperty<EItemRarityLevelType>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyObjectMaterialInstance",
+   "type": "ObjectProperty<MaterialInstanceDynamic>",
+   "bp_type": "ObjectProperty<MaterialInstanceDynamic>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerStatesWithLootAvailable",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 30
+  },
+  {
+   "name": "LootCondition",
+   "type": "ByteProperty<loot_condition_type>",
+   "bp_type": "ByteProperty<loot_condition_type>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LootCategory",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "rep_index": 31
+  },
+  {
+   "name": "CanDrivebyPickup",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_CanDrivebyPickup",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 32
+  },
+  {
+   "name": "IsCollectable",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IsCosmeticOnly",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "seasonal shiny mesh",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LootSource",
+   "type": "StrProperty",
+   "bp_type": "StrProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "StaticMesh",
+   "type": "ObjectProperty<StaticMesh>",
+   "bp_type": "ObjectProperty<StaticMesh>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyMaterial",
+   "type": "ObjectProperty<MaterialInterface>",
+   "bp_type": "ObjectProperty<MaterialInterface>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyTags",
+   "type": "StructProperty<GameplayTagContainer>",
+   "bp_type": "StructProperty<GameplayTagContainer>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyColor",
+   "type": "StructProperty<LinearColor>",
+   "bp_type": "StructProperty<LinearColor>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShinyPickupVFX",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_PlayerStatesCopy",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Granted",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Gameplay Effect Class",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "ShinyMesh",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "RotatingMovement",
+   "class": "RotatingMovementComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "MeshCenter",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "PlayerAutoCollectRadius",
+   "class": "SphereComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "BeginPlayFromPool",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BndEvt__PlayerAutoCollectRadius_K2Node_ComponentBoundEvent_1_ComponentBeginOverlapSignature__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "OverlappedComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "OtherActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "OtherComp",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "OtherBodyIndex",
+     "type": "IntProperty"
+    },
+    {
+     "name": "bFromSweep",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "SweepResult",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DisableShiny",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EnableHighlightForDuration",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Duration",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Output",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_shiny_reuse_drop_rare_bp",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_ComponentBoundEvent_SweepResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "CallFunc_GetPlayerCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 124,
+   "reads": [
+    "Colliding Body",
+    "DestroyOnPickup",
+    "DisallowedActors",
+    "Gameplay Effect Class",
+    "MeshCenter",
+    "ParticleSystem",
+    "Poolable",
+    "RotatingMovement",
+    "ShinyColor",
+    "ShinyMesh",
+    "ShinyPickupVFX"
+   ],
+   "sets": [
+    "IsCollectable",
+    "RotationRate",
+    "ShinyPickupVFX"
+   ],
+   "calls": [
+    "Activate",
+    "Actor.GetDistanceTo",
+    "Actor.K2_GetActorLocation",
+    "Actor.ReceiveBeginPlay",
+    "ActorComponent.IsActive",
+    "ActorsWithinDistanceFast",
+    "AkGameplayStatics.PostEventAtLocation",
+    "ApplySpec",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "AuthRemoveGameplayEffectByClass",
+    "CreateDynamicMaterialInstance",
+    "Deactivate",
+    "DisableShiny",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "GetPlayerCharacters",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Conv_LinearColorToVector",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetTextLibrary.Conv_TextToString",
+    "KismetTextLibrary.Format",
+    "MaterialInstanceDynamic.SetVectorParameterValue",
+    "PhxActorPool.DestroyActorPoolAgnostic",
+    "SceneComponent.K2_GetComponentLocation",
+    "SetActorHiddenInGame",
+    "SetUpdatedComponent",
+    "SetVectorParameter",
+    "ShinyCollected",
+    "UpdatePlayerAutoCollectCollision",
+    "projectile_base_bp_C.BeginPlayFromPool",
+    "projectile_base_bp_C.OnProjectileStopped"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_gatherable_shiny_drop",
+    "BlueprintGeneratedClass BP_PlayerCharacter_C",
+    "Material pickup_cone_m",
+    "Material spiral_v2_m",
+    "ParticleSystem shiny_pickup_02_v2_p"
+   ]
+  },
+  {
+   "name": "GetTrackingID",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TrackingID",
+     "type": "StructProperty<Guid>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnProjectileStopped",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_CanDrivebyPickup",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "UpdatePlayerAutoCollectCollision"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetGatherableVisible",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "IsVisible",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetGrantItemID",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "GatherID",
+     "type": "StrProperty"
+    },
+    {
+     "name": "Output",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [
+    "LootItemID"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetMesh",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Mesh",
+     "type": "SoftObjectProperty<StaticMesh>"
+    },
+    {
+     "name": "VFX",
+     "type": "SoftObjectProperty<ParticleSystem>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetTrackingID",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TrackingID",
+     "type": "StructProperty<Guid>"
+    },
+    {
+     "name": "Output",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetupShinyMesh",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewMesh",
+     "type": "ObjectProperty<StaticMesh>"
+    },
+    {
+     "name": "Material",
+     "type": "ObjectProperty<MaterialInterface>"
+    },
+    {
+     "name": "NewTransform",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShinyCollected",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Collector",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnShinyLoot",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "LootID",
+     "type": "NameProperty"
+    },
+    {
+     "name": "ShinyInfo",
+     "type": "StructProperty<eqs_lobbed_projectile_data>"
+    },
+    {
+     "name": "ShinyEQS",
+     "type": "ObjectProperty<EnvQuery>"
+    },
+    {
+     "name": "Lifetime",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shiny_reuse_drop_rare_bp_C.ExecuteUbergraph_shiny_reuse_drop_rare_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdatePlayerAutoCollectCollision",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [
+    "CanDrivebyPickup",
+    "IsCollectable",
+    "PlayerAutoCollectRadius"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.BooleanAND",
+    "SetCollisionEnabled"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/shiny_reuse_drop_rare_bp",
+ "pseudo_file": "pseudo/shiny_reuse_drop_rare_bp_C.txt",
+ "game_data": {}
+}

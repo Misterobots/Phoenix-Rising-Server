@@ -1,0 +1,330 @@
+# aoe_life_steal_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyCatalystPerkBonus
+  [0] GetCellCatalystPerkInfo(CallFunc_GetCellCatalystPerkInfo_CellEffectID, CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [41] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [79] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @187
+  [93] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [113] Default__buff_function_library_C.AdjustBuffTempStacksAoE(CallFunc_GetBuffOwner_ReturnValue, 16000000.0, self.OtherPlayersCatalystBonusStackChange, self.BuffType, true, self)
+  [187] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [225] BonusApplied = CallFunc_GreaterEqual_IntInt_ReturnValue
+  [244] return nothing
+  [246] end
+
+=== ApplyEffect
+  [0] if !(ApplyBonus) goto @105
+  [14] Default__buff_function_library_C.AdjustBuffTempStacks(null, self.AdditionalBehemothCount, self.BuffType, false, self)
+  [71] self.BonusEffectApplied = true
+  [82] ApplyCatalystPerkBonus(CallFunc_ApplyCatalystPerkBonus_BonusApplied)
+  [105] return nothing
+  [107] end
+
+=== ExecuteUbergraph_aoe_life_steal_buff
+  [0] push @3677
+  [5] goto computed(EntryPoint)
+  [15] push @792
+  [20] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [40] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [78] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.CachedLifestealPercent)
+  [124] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [183] Default__archon_function_library_C.HealTarget(CallFunc_Array_Get_Item_1, CallFunc_GetBuffOwner_ReturnValue_1, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [248] Default__KismetArrayLibrary.Array_Get(CallFunc_SphereOverlapActors_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [307] HealVFX(CallFunc_Array_Get_Item_1)
+  [330] if !(self.Debug) pop
+  [340] CallFunc_Conv_DoubleToString_InDouble_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [378] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Conv_DoubleToString_InDouble_ImplicitCast)
+  [415] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Damage Dealt: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [468] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{1.0, 0.022553, 0.0, 1.0}, 5.0, 'None')
+  [542] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [580] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.CachedLifestealPercent)
+  [626] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [663] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Health Healed: ', CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [717] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 1.0, 0.08852, 1.0}, 5.0, 'None')
+  [791] pop
+  [792] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [834] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [861] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_SphereOverlapActors_OutActors)
+  [920] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [958] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [968] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [995] goto @15
+  [1000] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1021] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1036
+  [1035] pop
+  [1036] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_CustomEvent_VFXTarget)
+  [1072] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1101] if !(K2Node_DynamicCast_bSuccess) goto @1352
+  [1115] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [1161] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1293] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_VFXTarget)
+  [1351] pop
+  [1352] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [1363] goto @1161
+  [1368] goto @1000
+  [1373] MulticastOnAdded()
+  [1383] CallFunc_UpdateExpireTime_NewDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.CachedDuration)
+  [1412] UpdateExpireTime(CallFunc_UpdateExpireTime_NewDuration_ImplicitCast, true)
+  [1432] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [1452] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue_4, lifesteal_ui_indicator_ge_C, self.CachedDuration, self, CallFunc_ApplySpecWithDuration_SpecHandle)
+  [1525] RefreshBonus()
+  [1539] GetDuration(CallFunc_GetDuration_Duration_1)
+  [1562] self.BuffDuration = CallFunc_GetDuration_Duration_1
+  [1589] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.RemoveBuff)
+  [1612] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.BuffDuration)
+  [1641] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [1698] self.BuffTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1725] pop
+  [1726] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1746] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [1775] CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffectBySourceEffect(lifesteal_ui_indicator_ge_C, null, -1)
+  [1826] pop
+  [1827] Temp_int_Array_Index_Variable = 0
+  [1850] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [1909] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1947] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @2222
+  [1961] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1988] push @2530
+  [1993] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2052] IsLivingBehemothInRange(CallFunc_Array_Get_Item, CallFunc_IsLivingBehemothInRange_InRange)
+  [2084] if !(CallFunc_IsLivingBehemothInRange_InRange) pop
+  [2094] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2153] CallFunc_Array_AddUnique_ReturnValue = Default__KismetArrayLibrary.Array_AddUnique(self.NearbyBehemoths, CallFunc_Array_Get_Item)
+  [2221] pop
+  [2222] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.NearbyBehemoths)
+  [2281] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_2, self.PrevBehemothCount)
+  [2319] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_2, self.PrevBehemothCount)
+  [2365] CallFunc_SelectInt_ReturnValue = SelectInt(CallFunc_Subtract_IntInt_ReturnValue, 0, CallFunc_Greater_IntInt_ReturnValue_1)
+  [2416] self.AdditionalBehemothCount = CallFunc_SelectInt_ReturnValue
+  [2443] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.NearbyBehemoths)
+  [2502] self.PrevBehemothCount = CallFunc_Array_Length_ReturnValue_3
+  [2529] pop
+  [2530] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2572] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2599] goto @1850
+  [2604] OnAdded()
+  [2614] GetAmount(CallFunc_GetAmount_Amount)
+  [2637] self.CachedLifestealPercent = CallFunc_GetAmount_Amount
+  [2664] GetDuration(CallFunc_GetDuration_Duration)
+  [2687] self.CachedDuration = CallFunc_GetDuration_Duration
+  [2714] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [2734] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_3.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [2785] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPostMitDamage)
+  [2808] K2Node_CreateDelegate_OutputDelegate += None
+  [2849] pop
+  [2850] Default__archon_function_library_C.ActorIsAlive(K2Node_CustomEvent_DamagedActor, self, CallFunc_ActorIsAlive_IsAlive)
+  [2905] if !(CallFunc_ActorIsAlive_IsAlive) pop
+  [2915] Default__meter_gaining_rules_C.CanProcOnDamageEffects(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [2979] if !(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects) pop
+  [2989] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [3009] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [3059] array{6}
+  [3072] CallFunc_SphereOverlapActors_SphereRadius_ImplicitCast = cast<CST_DoubleToFloat>(self.HealRadius)
+  [3101] array{}
+  [3112] CallFunc_SphereOverlapActors_ReturnValue = SphereOverlapActors(self, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_SphereOverlapActors_SphereRadius_ImplicitCast, K2Node_MakeArray_Array, ArchonCharacter, Temp_object_Variable, CallFunc_SphereOverlapActors_OutActors)
+  [3187] Temp_int_Loop_Counter_Variable = 0
+  [3210] Temp_int_Array_Index_Variable_1 = 0
+  [3233] goto @861
+  [3238] ApplyEffect(true)
+  [3253] pop
+  [3254] if !(self.BuffExpired) goto @3269
+  [3268] pop
+  [3269] RefreshBonus()
+  [3283] pop
+  [3284] push @3550
+  [3289] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [3310] K2Node_DynamicCast_AsBpi_Gamestate = cast<bpi_gamestate_C>(CallFunc_GetGameState_ReturnValue)
+  [3346] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate)
+  [3375] if !(K2Node_DynamicCast_bSuccess_1) goto @3504
+  [3389] K2Node_DynamicCast_AsBpi_Gamestate.GetSpawnedBehemoths(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [3435] Default__KismetArrayLibrary.Array_Clear(self.NearbyBehemoths)
+  [3476] Temp_int_Loop_Counter_Variable_1 = 0
+  [3499] goto @1827
+  [3504] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [3545] goto @3435
+  [3550] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.AdditionalBehemothCount, 0)
+  [3584] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [3594] goto @3238
+  [3599] push @3636
+  [3604] K2_ClearAndInvalidateTimerHandle(self, self.BuffTimer)
+  [3624] self.BuffExpired = true
+  [3635] pop
+  [3636] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [3656] RemoveBuff(CallFunc_GetBuffOwner_ReturnValue_5, self)
+  [3676] pop
+  [3677] return nothing
+  [3679] end
+
+=== GetAmount
+  [0] push @445
+  [5] push @397
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [95] if !(K2Node_DynamicCast_bSuccess) goto @429
+  [109] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [155] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [184] if !(CallFunc_IsValid_ReturnValue) pop
+  [194] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Lifesteal_AoE_Potion_C)
+  [245] K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion = cast<QuickItem_Lifesteal_AoE_Potion_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [281] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion)
+  [310] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [320] K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion.GetAmount(CallFunc_GetAmount_Amount)
+  [365] Amount = CallFunc_GetAmount_Amount
+  [392] goto @445
+  [397] Amount = 0.0
+  [424] goto @445
+  [429] CallFunc_GetLoadout_Loadout = null
+  [440] goto @155
+  [445] return nothing
+  [447] end
+
+=== GetCellCatalystPerkInfo
+  [0] push @1201
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [71] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [122] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [167] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [226] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [264] if !(CallFunc_Less_IntInt_ReturnValue) goto @1045
+  [278] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [305] push @1127
+  [310] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [330] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [381] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [426] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [485] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item_2.CellEffectID, 'KW_BETTER_CONSUMABLE')
+  [536] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [546] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(keyword_cell_effects, 'KW_BETTER_CONSUMABLE', CallFunc_GetDataTableRowFromName_OutRow)
+  [619] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [629] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [649] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow.UniqueRankedEffects, 0, CallFunc_Array_Get_Item)
+  [713] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [764] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [809] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.MagnitudesGrantedPerLevel, 0, CallFunc_Array_Get_Item_1)
+  [873] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [932] CellEffectID = CallFunc_Array_Get_Item_2.CellEffectID
+  [968] Rank = CallFunc_Array_Get_Item_2.Rank
+  [1004] RankRequired = CallFunc_Array_Get_Item_1.RankRequired
+  [1040] goto @1201
+  [1045] CellEffectID = 'None'
+  [1076] Rank = -1
+  [1099] RankRequired = 0
+  [1122] goto @1201
+  [1127] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1169] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1196] goto @51
+  [1201] return nothing
+  [1203] end
+
+=== GetDuration
+  [0] push @474
+  [5] push @426
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [95] if !(K2Node_DynamicCast_bSuccess) goto @458
+  [109] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [155] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [184] if !(CallFunc_IsValid_ReturnValue) pop
+  [194] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Lifesteal_AoE_Potion_C)
+  [245] K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion = cast<QuickItem_Lifesteal_AoE_Potion_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [281] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion)
+  [310] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [320] K2Node_DynamicCast_AsQuick_Item_Lifesteal_Ao_E_Potion.GetDuration(CallFunc_GetDuration_Duration)
+  [365] K2Node_FunctionResult_Duration_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDuration_Duration)
+  [394] Duration = K2Node_FunctionResult_Duration_ImplicitCast
+  [421] goto @474
+  [426] Duration = 0.0
+  [453] goto @474
+  [458] CallFunc_GetLoadout_Loadout = null
+  [469] goto @155
+  [474] return nothing
+  [476] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_VFXTarget = VFXTarget
+  [18] ExecuteUbergraph_aoe_life_steal_buff(1368)
+  [33] return nothing
+  [35] end
+
+=== IsLivingBehemothInRange
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Behemoth)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @350
+  [43] Default__damage_function_library_C.GetPercentHealth(Behemoth, 0, self, CallFunc_GetPercentHealth_Succeeded, CallFunc_GetPercentHealth_PercentHealth)
+  [109] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetPercentHealth_PercentHealth, 0.5)
+  [147] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [167] CallFunc_GetSquaredDistanceTo_ReturnValue = Behemoth.GetSquaredDistanceTo(CallFunc_GetBuffOwner_ReturnValue)
+  [226] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSquaredDistanceTo_ReturnValue)
+  [255] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, self.BehemothRageRangeSq)
+  [293] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [331] InRange = CallFunc_BooleanAND_ReturnValue
+  [350] return nothing
+  [352] end
+
+=== IsValidTarget
+  [0] array{GameplayTag{'Combat.Lantern'}, GameplayTag{'Combat.Item'}}
+  [65] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [102] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(InstigatorTags, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [141] if !(CallFunc_HasAnyTags_ReturnValue) goto @171
+  [155] ValidTarget = false
+  [166] goto @498
+  [171] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(TargetActor)
+  [207] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [236] if !(K2Node_DynamicCast_bSuccess_1) goto @266
+  [250] ValidTarget = true
+  [261] goto @498
+  [266] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(TargetActor)
+  [302] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [331] if !(K2Node_DynamicCast_bSuccess) goto @361
+  [345] ValidTarget = false
+  [356] goto @498
+  [361] CallFunc_GetOwner_ReturnValue = TargetActor.GetOwner()
+  [403] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [439] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [468] if !(K2Node_DynamicCast_bSuccess_2) goto @487
+  [482] goto @250
+  [487] ValidTarget = false
+  [498] return nothing
+  [500] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_aoe_life_steal_buff(1373)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_aoe_life_steal_buff(2604)
+  [15] return nothing
+  [17] end
+
+=== OnPostMitDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_aoe_life_steal_buff(2850)
+  [87] return nothing
+  [89] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_aoe_life_steal_buff(1726)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_aoe_life_steal_buff(3254)
+  [33] return nothing
+  [35] end
+
+=== RefreshBonus
+  [0] ExecuteUbergraph_aoe_life_steal_buff(3284)
+  [15] return nothing
+  [17] end
+
+=== RemoveBuff
+  [0] ExecuteUbergraph_aoe_life_steal_buff(3599)
+  [15] return nothing
+  [17] end

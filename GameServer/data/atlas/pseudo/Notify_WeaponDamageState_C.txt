@@ -1,0 +1,42 @@
+# Notify_WeaponDamageState_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Received_NotifyBegin
+  [0] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [42] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [78] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [107] if !(K2Node_DynamicCast_bSuccess_1) goto @723
+  [121] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Animation)
+  [157] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [186] if !(K2Node_DynamicCast_bSuccess) goto @1100
+  [200] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.Mesh.GetAnimInstance()
+  [264] CallFunc_Montage_GetPosition_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_GetPosition(K2Node_DynamicCast_AsAnim_Montage)
+  [323] CallFunc_GetObjectClass_ReturnValue = GetObjectClass(self)
+  [344] CallFunc_GetNotifyAtTime_ReturnValue = GetNotifyAtTime(K2Node_DynamicCast_AsAnim_Montage, CallFunc_GetObjectClass_ReturnValue, CallFunc_Montage_GetPosition_ReturnValue, CallFunc_GetNotifyAtTime_OutNotify)
+  [400] if !(CallFunc_GetNotifyAtTime_ReturnValue) goto @739
+  [414] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [456] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetCurrentWeapon_ReturnValue.GetComponentByClass(weapon_eventdispatcher_bpc_C)
+  [507] CallFunc_GetNotifyEndTime_ReturnValue = GetNotifyEndTime(CallFunc_GetNotifyAtTime_OutNotify)
+  [544] CallFunc_GetNotifyStartTime_ReturnValue = GetNotifyStartTime(CallFunc_GetNotifyAtTime_OutNotify)
+  [581] K2Node_CallDelegate_WindowStart_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetNotifyStartTime_ReturnValue)
+  [610] K2Node_CallDelegate_WindowEnd_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetNotifyEndTime_ReturnValue)
+  [639] OnDamageWindowOpen__DelegateSignature(Animation, K2Node_CallDelegate_WindowStart_ImplicitCast, K2Node_CallDelegate_WindowEnd_ImplicitCast)
+  [707] ReturnValue = true
+  [718] goto @1100
+  [723] ReturnValue = false
+  [734] goto @1100
+  [739] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [768] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [818] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [860] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [889] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_GetDisplayName_ReturnValue_1, ': Failed to find notify at time')
+  [959] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Concat_StrStr_ReturnValue_2)
+  [1005] PrintString(null, CallFunc_Concat_StrStr_ReturnValue_3, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [1079] StackTrace()
+  [1089] ReturnValue = false
+  [1100] return ReturnValue
+  [1110] end
+
+=== ShouldApplyDamage
+  [0] ReturnValue = self.ShouldNotifyApplyDamage
+  [19] return ReturnValue
+  [29] end

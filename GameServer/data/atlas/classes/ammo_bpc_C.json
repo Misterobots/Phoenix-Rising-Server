@@ -1,0 +1,1210 @@
+{
+ "name": "ammo_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonAmmoComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 384,
+ "sdk_header": "ammo_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0x100",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "StartWithFullAmmo",
+   "type": "bool",
+   "offset": "0x108",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "StartingAmmoCount",
+   "type": "int32",
+   "offset": "0x10C",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "ServerOnReloadWeapon",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0x110",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "AmmoMeterScale",
+   "type": "TArray<double>",
+   "offset": "0x120",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_AmmoMeterScale",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ArrayProperty",
+   "rep_index": 4,
+   "schema_rep_index": 4
+  },
+  {
+   "name": "OnAmmoMeterScaleUpdated",
+   "type": "TMulticastInlineDelegate<void(double Scale, int32 Index_0)>",
+   "offset": "0x130",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "LastLoadedAmmoScale",
+   "type": "double",
+   "offset": "0x140",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "StartingAmmoScale",
+   "type": "double",
+   "offset": "0x148",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "AmmoPerShot",
+   "type": "int32",
+   "offset": "0x150",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "IntProperty",
+   "rep_index": 5,
+   "schema_rep_index": 5
+  },
+  {
+   "name": "Cheat_AmmoRegenTimer",
+   "type": "FTimerHandle",
+   "offset": "0x158",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "CurrentAmmoType",
+   "type": "Eammo_type",
+   "offset": "0x160",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "ByteProperty<ammo_type>",
+   "rep_index": 6,
+   "schema_rep_index": 6
+  },
+  {
+   "name": "OnSpentAmmoWithMeterScale",
+   "type": "TMulticastInlineDelegate<void(double Spent_Ammo_Scale)>",
+   "offset": "0x168",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "AmmoScaleMultiplier",
+   "type": "double",
+   "offset": "0x178",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AuthCheatToggleInfiniteAmmo",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ammo_bpc_C.ExecuteUbergraph_ammo_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthReloadNumAmmo",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoToReload",
+     "type": "int32"
+    },
+    {
+     "name": "AmmoWeaponScale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 36,
+   "reads": [
+    "AmmoMeterScale",
+    "MaxAmmoCount",
+    "ServerOnReloadWeapon"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "ArchonAmmoComponent.SetAmmo",
+    "ArchonGameplayStatics.IsShipping",
+    "AuthSetAmmoIndexMeterScale",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Min",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "None"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthReloadWeaponWithAmmoScale",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoScale",
+     "type": "double"
+    },
+    {
+     "name": "OverrideExistingAmmoScale",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 32,
+   "reads": [
+    "AmmoMeterScale",
+    "MaxAmmoCount",
+    "ServerOnReloadWeapon"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAmmoComponent.SetAmmo",
+    "ArchonGameplayStatics.IsShipping",
+    "AuthSetAmmoIndexMeterScale",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "None"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSetAmmoIndexMeterScale",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Scale",
+     "type": "double"
+    },
+    {
+     "name": "AmmoIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 9,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [
+    "LastLoadedAmmoScale"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.GreaterEqual_IntInt"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSetAmmoType",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewAmmoType",
+     "type": "Eammo_type"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [],
+   "sets": [
+    "CurrentAmmoType"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSetCurrentMeterScale",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Scale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [
+    "LastLoadedAmmoScale"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClampMeterScaleOnAmmoChanged",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "OldAmmoCount",
+     "type": "int32"
+    },
+    {
+     "name": "NewAmmoCount",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ammo_bpc_C.ExecuteUbergraph_ammo_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClampMeterScaleToAmmo",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 14,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugOutputAmmoScale",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ammo_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 86,
+   "reads": [
+    "AmmoMeterScale",
+    "AmmoScaleMultiplier",
+    "Cheat_AmmoRegenTimer",
+    "MaxAmmoCount",
+    "OnAmmoChanged",
+    "OnSpentAmmoWithMeterScale",
+    "StartWithFullAmmo",
+    "StartingAmmoCount",
+    "StartingAmmoScale"
+   ],
+   "sets": [
+    "Cheat_AmmoRegenTimer"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonAmmoComponent.AdjustAmmo",
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "ArchonAmmoComponent.SetAmmo",
+    "ArchonGameplayStatics.IsShipping",
+    "AuthSetAmmoIndexMeterScale",
+    "ClampMeterScaleToAmmo",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_IsValidTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.PrintString",
+    "None"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetAmmoIndexScale",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoIndex",
+     "type": "int32"
+    },
+    {
+     "name": "Scale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetAmmoMeterScale",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoMeterScale",
+     "type": "TArray<double>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetAmmoScaleMultiplier",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoScaleMultiplier",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "AmmoScaleMultiplier"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetAverageMeterScale",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Average",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 24,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCurrentAmmoScale",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Scale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [
+    "AmmoMeterScale"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCurrentAmmoType",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AmmoType",
+     "type": "Eammo_type"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "CurrentAmmoType"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_RegenAmmoEvent",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ammo_bpc_C.ExecuteUbergraph_ammo_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsAmmoDepleted",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "OutOfAmmo",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "KismetMathLibrary.EqualEqual_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAmmoMeterScaleUpdated__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Scale",
+     "type": "double"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_AmmoMeterScale",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 14,
+   "reads": [
+    "AmmoMeterScale",
+    "OnAmmoMeterScaleUpdated"
+   ],
+   "sets": [
+    "LastLoadedAmmoScale"
+   ],
+   "calls": [
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetMathLibrary.Subtract_IntInt",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSpentAmmoWithMeterScale__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Spent_Ammo_Scale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ammo_bpc_C.ExecuteUbergraph_ammo_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ammo_bpc_C.ExecuteUbergraph_ammo_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerOnReloadWeapon__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetAmmoScaleMultiplier",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewMultiplier",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [
+    "AmmoScaleMultiplier"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetNewMaxAmmo",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "newMax",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [
+    "MaxAmmoCount",
+    "StartingAmmoScale"
+   ],
+   "sets": [
+    "MaxAmmoCount"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonAmmoComponent.AdjustAmmo",
+    "ArchonAmmoComponent.GetCurrentAmmoCount",
+    "AuthSetAmmoIndexMeterScale",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Player/blueprints/ammo_bpc",
+ "pseudo_file": "pseudo/ammo_bpc_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,802 @@
+{
+ "name": "aoe_life_steal_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HealRadius",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CachedLifestealPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SpecialActive",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debug",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EffectivenessSnapshot",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CachedDuration",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuffTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuffDuration",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NearbyBehemoths",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PrevBehemothCount",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AdditionalBehemothCount",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuffExpired",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothRageRangeSq",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BonusEffectApplied",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OtherPlayersCatalystBonusStackChange",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuffType",
+   "type": "ByteProperty<stat_buff_type>",
+   "bp_type": "ByteProperty<stat_buff_type>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyCatalystPerkBonus",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "BonusApplied",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "BuffType",
+    "OtherPlayersCatalystBonusStackChange"
+   ],
+   "sets": [],
+   "calls": [
+    "AdjustBuffTempStacksAoE",
+    "ArchonBuff.GetBuffOwner",
+    "GetCellCatalystPerkInfo",
+    "KismetMathLibrary.GreaterEqual_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyEffect",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ApplyBonus",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "AdditionalBehemothCount",
+    "BuffType"
+   ],
+   "sets": [
+    "BonusEffectApplied"
+   ],
+   "calls": [
+    "AdjustBuffTempStacks",
+    "ApplyCatalystPerkBonus"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_aoe_life_steal_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_object_Variable",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_SphereOverlapActors_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedBehemoths_SpawnedBehemoths",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 133,
+   "reads": [
+    "AdditionalBehemothCount",
+    "BuffDuration",
+    "BuffExpired",
+    "BuffTimer",
+    "CachedDuration",
+    "CachedLifestealPercent",
+    "Debug",
+    "HealRadius",
+    "NearbyBehemoths",
+    "OnPostMitigationDealtAnyDamage",
+    "PrevBehemothCount"
+   ],
+   "sets": [
+    "AdditionalBehemothCount",
+    "BuffDuration",
+    "BuffExpired",
+    "BuffTimer",
+    "CachedDuration",
+    "CachedLifestealPercent",
+    "PrevBehemothCount"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "ActorIsAlive",
+    "ApplyEffect",
+    "ApplySpecWithDuration",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonBuff.UpdateExpireTime",
+    "CanProcOnDamageEffects",
+    "GameplayModifierFunctionLibrary.RemoveBuff",
+    "GameplayStatics.GetGameState",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetAmount",
+    "GetDuration",
+    "GetSkeletalMeshComponent",
+    "GetSpawnedBehemoths",
+    "HealTarget",
+    "HealVFX",
+    "IsLivingBehemothInRange",
+    "KismetArrayLibrary.Array_AddUnique",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.SelectInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.SphereOverlapActors",
+    "RefreshBonus",
+    "RemoveActiveGameplayEffectBySourceEffect",
+    "SetActorParameter",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass lifesteal_ui_indicator_ge_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "ParticleSystem buff_heal_generic_p"
+   ]
+  },
+  {
+   "name": "GetAmount",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Amount",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "ArchonLoadout.GetInventoryQuickItemFromAbility",
+    "GetAmount",
+    "GetLoadout",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_Lifesteal_AoE_Potion_C"
+   ]
+  },
+  {
+   "name": "GetCellCatalystPerkInfo",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CellEffectID",
+     "type": "NameProperty"
+    },
+    {
+     "name": "Rank",
+     "type": "IntProperty"
+    },
+    {
+     "name": "RankRequired",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 38,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonBuff.GetBuffOwner",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GetCurrentAppliedCellEffects",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable keyword_cell_effects"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass cell_manager_bpc_C"
+   ]
+  },
+  {
+   "name": "GetDuration",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Duration",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 23,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "ArchonLoadout.GetInventoryQuickItemFromAbility",
+    "GetDuration",
+    "GetLoadout",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_Lifesteal_AoE_Potion_C"
+   ]
+  },
+  {
+   "name": "HealVFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "VFXTarget",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsLivingBehemothInRange",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    },
+    {
+     "name": "InRange",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "BehemothRageRangeSq"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetSquaredDistanceTo",
+    "ArchonBuff.GetBuffOwner",
+    "GetPercentHealth",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsValidTarget",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TargetActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "InstigatorTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "ValidTarget",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshBonus",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveBuff",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "aoe_life_steal_buff_C.ExecuteUbergraph_aoe_life_steal_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable keyword_cell_effects"
+ ],
+ "package": "/Game/game/consumables/aoe_life_steal_buff",
+ "pseudo_file": "pseudo/aoe_life_steal_buff_C.txt",
+ "game_data": {}
+}

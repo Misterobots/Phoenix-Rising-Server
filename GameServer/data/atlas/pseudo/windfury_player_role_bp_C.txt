@@ -1,0 +1,101 @@
+# windfury_player_role_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AbilityDoDamageEvent
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @620
+  [35] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [55] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [91] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [120] if !(K2Node_DynamicCast_bSuccess) goto @620
+  [134] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [154] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [204] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [241] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, aoe_simple_playerowned_tempest_C, CallFunc_Conv_VectorToTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue)
+  [291] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageScale', self.DamageScale)
+  [332] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [352] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetOwner_ReturnValue)
+  [393] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', 1.0)
+  [434] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [475] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [495] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [545] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [582] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [620] return nothing
+  [622] end
+
+=== ActivateGameplayEvent
+  [0] ActivateGameplayEvent(EventName)
+  [19] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'AbilityDoDamage')
+  [61] if !(K2Node_SwitchName_CmpSuccess) goto @136
+  [75] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'ActivateAbility')
+  [117] if !(K2Node_SwitchName_CmpSuccess) goto @155
+  [131] goto @603
+  [136] AbilityDoDamageEvent()
+  [150] goto @603
+  [155] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [176] if !(CallFunc_IsServer_ReturnValue) goto @603
+  [190] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [210] Default__buff_function_library_C.GetBuffCurrentStacks(2, CallFunc_GetOwner_ReturnValue, self, CallFunc_GetBuffCurrentStacks_CurrentStacks)
+  [267] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'TEMPEST_SpeedStackDamageMult', CallFunc_GetDataTableRowFromName_OutRow)
+  [340] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @603
+  [354] CallFunc_Conv_IntToDouble_ReturnValue = Conv_IntToDouble(CallFunc_GetBuffCurrentStacks_CurrentStacks)
+  [391] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Conv_IntToDouble_ReturnValue, 1.0, 99.0)
+  [446] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow.RawFloat)
+  [484] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_FClamp_ReturnValue)
+  [530] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, 1.0)
+  [576] self.DamageScale = CallFunc_Add_DoubleDouble_ReturnValue
+  [603] return nothing
+  [605] end
+
+=== BP_HandleUnequip
+  [0] ExecuteUbergraph_windfury_player_role_bp(429)
+  [15] return nothing
+  [17] end
+
+=== CanActivateAbilityBP
+  [0] CallFunc_CanActivateAbilityBP_ReturnValue = CanActivateAbilityBP()
+  [20] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [40] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [69] CallFunc_GetActiveEffectsWithAllTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.GetActiveEffectsWithAllTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Buffs.WindFuryStacks'})})
+  [174] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(CallFunc_GetActiveEffectsWithAllTags_ReturnValue, 0)
+  [230] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @432
+  [244] Default__KismetArrayLibrary.Array_Get(CallFunc_GetActiveEffectsWithAllTags_ReturnValue, 0, CallFunc_Array_Get_Item)
+  [299] CallFunc_GetActiveGameplayEffectStackCount_ReturnValue = GetActiveGameplayEffectStackCount(CallFunc_Array_Get_Item)
+  [336] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_GetActiveGameplayEffectStackCount_ReturnValue, 0)
+  [370] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_CanActivateAbilityBP_ReturnValue, CallFunc_Greater_IntInt_ReturnValue)
+  [408] ReturnValue = CallFunc_BooleanAND_ReturnValue
+  [427] goto @443
+  [432] ReturnValue = false
+  [443] return ReturnValue
+  [453] end
+
+=== ExecuteUbergraph_windfury_player_role_bp
+  [0] push @686
+  [5] goto computed(EntryPoint)
+  [15] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [42] push @192
+  [47] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [67] Default__KismetArrayLibrary.Array_Get(CallFunc_GetActiveEffectsWithAllTags_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [126] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetOwner_ReturnValue, CallFunc_Array_Get_Item, -1)
+  [191] pop
+  [192] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [234] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [261] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetActiveEffectsWithAllTags_ReturnValue)
+  [320] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [358] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [368] goto @15
+  [373] Temp_int_Array_Index_Variable = 0
+  [396] goto @261
+  [401] Temp_int_Loop_Counter_Variable = 0
+  [424] goto @373
+  [429] BP_HandleUnequip()
+  [439] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [459] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [488] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [517] if !(CallFunc_IsValid_ReturnValue) pop
+  [527] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [547] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [576] CallFunc_GetActiveEffectsWithAllTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.GetActiveEffectsWithAllTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Buffs.WindFuryStacks'})})
+  [681] goto @401
+  [686] return nothing
+  [688] end

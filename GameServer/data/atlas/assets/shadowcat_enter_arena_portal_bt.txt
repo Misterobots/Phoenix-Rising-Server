@@ -1,0 +1,14 @@
+shadowcat_enter_arena_portal_bt  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=EnteringArena)]
+  Sequence
+    {service hide_behemoth_bttask  (DisableCollisionDuringHide=false)}
+    [if ForceSuccess]
+    1) Sequence
+      1) Sequence
+        1) Wait  (WaitTime=0.3)
+      2) set_blackboard_key_bttask "Set Pounce Location"  (ResultKey=bb.PounceLocation, DataType=Vector, SourceData={"BlackboardKeyName": "SelfActor"}, bShowPropertyDetails=false)
+      3) try_set_behemoth_state_bttask  (State=CustomState, WhenInterruptedChangeState=CustomState)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_exit)
+    2) try_set_behemoth_state_bttask  (State=EnteringArena, StateChangeType=End, WhenInterruptedChangeState=EnteringArena, InterruptedChangeStateEvent=End)

@@ -1,0 +1,62 @@
+# activate_weapon_part_gameplay_bpns_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetNotifyName
+  [0] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(EWeaponPartType, self.WeaponPartToActivate)
+  [46] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Activate ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [94] ReturnValue = CallFunc_Concat_StrStr_ReturnValue
+  [121] return ReturnValue
+  [131] end
+
+=== Received_NotifyBegin
+  [0] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [42] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [78] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [107] if !(K2Node_DynamicCast_bSuccess_1) goto @741
+  [121] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Animation)
+  [157] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [186] if !(K2Node_DynamicCast_bSuccess) goto @741
+  [200] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.Mesh.GetAnimInstance()
+  [264] CallFunc_Montage_GetPosition_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_GetPosition(K2Node_DynamicCast_AsAnim_Montage)
+  [323] CallFunc_GetNotifyAtTime_ReturnValue = GetNotifyAtTime(K2Node_DynamicCast_AsAnim_Montage, activate_weapon_part_gameplay_bpns_C, CallFunc_Montage_GetPosition_ReturnValue, CallFunc_GetNotifyAtTime_OutNotify)
+  [379] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [421] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [457] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [486] if !(K2Node_DynamicCast_bSuccess_2) goto @725
+  [500] K2Node_DynamicCast_AsWeapon_Bpi.GetWeaponPartByType(self.WeaponPartToActivate, CallFunc_GetWeaponPartByType_WeaponPartRef)
+  [555] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetWeaponPartByType_WeaponPartRef)
+  [584] if !(CallFunc_IsValid_ReturnValue) goto @741
+  [598] CallFunc_GetNotifyStartTime_ReturnValue = GetNotifyStartTime(CallFunc_GetNotifyAtTime_OutNotify)
+  [635] CallFunc_ActivateWeaponPartGameplay_StartTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetNotifyStartTime_ReturnValue)
+  [664] CallFunc_GetWeaponPartByType_WeaponPartRef.ActivateWeaponPartGameplay(CallFunc_ActivateWeaponPartGameplay_StartTime_ImplicitCast)
+  [709] ReturnValue = true
+  [720] goto @741
+  [725] CallFunc_GetWeaponPartByType_WeaponPartRef = null
+  [736] goto @555
+  [741] return ReturnValue
+  [751] end
+
+=== Received_NotifyEnd
+  [0] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [42] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [78] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [107] if !(K2Node_DynamicCast_bSuccess_1) goto @698
+  [121] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [163] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [199] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [228] if !(K2Node_DynamicCast_bSuccess_2) goto @682
+  [242] K2Node_DynamicCast_AsWeapon_Bpi.GetWeaponPartByType(self.WeaponPartToActivate, CallFunc_GetWeaponPartByType_WeaponPartRef)
+  [297] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Animation)
+  [333] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [362] if !(K2Node_DynamicCast_bSuccess) goto @698
+  [376] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.Mesh.GetAnimInstance()
+  [440] CallFunc_Montage_GetPosition_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_GetPosition(K2Node_DynamicCast_AsAnim_Montage)
+  [499] CallFunc_GetNotifyAtTime_ReturnValue = GetNotifyAtTime(K2Node_DynamicCast_AsAnim_Montage, activate_weapon_part_gameplay_bpns_C, CallFunc_Montage_GetPosition_ReturnValue, CallFunc_GetNotifyAtTime_OutNotify)
+  [555] CallFunc_GetNotifyEndTime_ReturnValue = GetNotifyEndTime(CallFunc_GetNotifyAtTime_OutNotify)
+  [592] CallFunc_DeactivateWeaponPartGameplay_EndTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetNotifyEndTime_ReturnValue)
+  [621] CallFunc_GetWeaponPartByType_WeaponPartRef.DeactivateWeaponPartGameplay(CallFunc_DeactivateWeaponPartGameplay_EndTime_ImplicitCast)
+  [666] ReturnValue = true
+  [677] goto @698
+  [682] CallFunc_GetWeaponPartByType_WeaponPartRef = null
+  [693] goto @297
+  [698] return ReturnValue
+  [708] end

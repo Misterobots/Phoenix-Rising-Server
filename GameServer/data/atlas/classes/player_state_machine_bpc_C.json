@@ -1,0 +1,2829 @@
+{
+ "name": "player_state_machine_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonPlayerStateMachineComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 568,
+ "sdk_header": "player_state_machine_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xF0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "bDesiredStrafing",
+   "type": "bool",
+   "offset": "0xF8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "BoolProperty",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "DEFAULT_MAX_ACCELERATION",
+   "type": "double",
+   "offset": "0x100",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "DEFAULT_BRAKING_DECELERATION_WALKING",
+   "type": "double",
+   "offset": "0x108",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "STRAFE_MAX_ACCELERATION",
+   "type": "double",
+   "offset": "0x110",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "STRAFE_BRAKING_DECELERATION_WALKING",
+   "type": "double",
+   "offset": "0x118",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "DEFAULT_TURN_RATE",
+   "type": "double",
+   "offset": "0x120",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "STRAFE_TURN_RATE",
+   "type": "double",
+   "offset": "0x128",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "StrafeTransitionState",
+   "type": "Estrafe_transition_states",
+   "offset": "0x130",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_StrafeTransitionState",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ByteProperty<strafe_transition_states>",
+   "rep_index": 3,
+   "schema_rep_index": 3
+  },
+  {
+   "name": "StrafeIdlePivot",
+   "type": "Estrafe_states",
+   "offset": "0x131",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "ByteProperty<strafe_states>",
+   "rep_index": 4,
+   "schema_rep_index": 4
+  },
+  {
+   "name": "DebugStateMachine",
+   "type": "bool",
+   "offset": "0x132",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "BoolProperty",
+   "rep_index": 5,
+   "schema_rep_index": 5
+  },
+  {
+   "name": "DefaultPlayerState",
+   "type": "EPlayerStatesDefault",
+   "offset": "0x133",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EPlayerStatesDefault>"
+  },
+  {
+   "name": "ArchonCharacter",
+   "type": "AArchonCharacter*",
+   "offset": "0x138",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ArchonCharacter>"
+  },
+  {
+   "name": "PlayerDispatcher",
+   "type": "Uplayer_eventdispatcher_bpc_C*",
+   "offset": "0x140",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<player_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "SheatheComponent",
+   "type": "Uweapon_sheathe_bpc_C*",
+   "offset": "0x148",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<weapon_sheathe_bpc_C>"
+  },
+  {
+   "name": "PreviousDefaultPlayerState",
+   "type": "EPlayerStatesDefault",
+   "offset": "0x150",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EPlayerStatesDefault>"
+  },
+  {
+   "name": "LayeredPlayerState",
+   "type": "EPlayerStatesLayered",
+   "offset": "0x151",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EPlayerStatesLayered>"
+  },
+  {
+   "name": "LPreviousMovementMode",
+   "type": "EMovementMode",
+   "offset": "0x152",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EMovementMode>"
+  },
+  {
+   "name": "LNewMovementMode",
+   "type": "EMovementMode",
+   "offset": "0x153",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EMovementMode>"
+  },
+  {
+   "name": "MAX_ACCELERATION",
+   "type": "double",
+   "offset": "0x158",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "MAX_ACCELERATION_SPRINT",
+   "type": "double",
+   "offset": "0x160",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "BRAKING_DECELERATION_WALKING",
+   "type": "double",
+   "offset": "0x168",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "ROTATION_RATE",
+   "type": "FRotator",
+   "offset": "0x170",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Rotator>"
+  },
+  {
+   "name": "CameraBoom",
+   "type": "UArchonSpringArmComponent*",
+   "offset": "0x188",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ArchonSpringArmComponent>"
+  },
+  {
+   "name": "PreviousDesiredLocoState",
+   "type": "EArchonLocomotionState",
+   "offset": "0x190",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "EnumProperty<EArchonLocomotionState>"
+  },
+  {
+   "name": "EnableFollowCamera",
+   "type": "bool",
+   "offset": "0x191",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "AbilitySystem",
+   "type": "UAbilitySystemComponent*",
+   "offset": "0x198",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<AbilitySystemComponent>"
+  },
+  {
+   "name": "DesiredAcceleration",
+   "type": "double",
+   "offset": "0x1A0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "FallingConst",
+   "type": "bool",
+   "offset": "0x1A8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "JumpApexHeight",
+   "type": "double",
+   "offset": "0x1B0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "JumpHeightAtGround",
+   "type": "double",
+   "offset": "0x1B8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "JumpLandHeavyThreshold",
+   "type": "double",
+   "offset": "0x1C0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "LIsLanding",
+   "type": "bool",
+   "offset": "0x1C8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "JumpFallDistance",
+   "type": "double",
+   "offset": "0x1D0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "JumpReworkFeature",
+   "type": "bool",
+   "offset": "0x1D8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "PreviousCurrentLocomotionState",
+   "type": "EArchonLocomotionState",
+   "offset": "0x1D9",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "EnumProperty<EArchonLocomotionState>"
+  },
+  {
+   "name": "LPreviousLayeredState",
+   "type": "EPlayerStatesLayered",
+   "offset": "0x1DA",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<EPlayerStatesLayered>"
+  },
+  {
+   "name": "CurrentLocomotionState",
+   "type": "EArchonLocomotionState",
+   "offset": "0x1DB",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "EnumProperty<EArchonLocomotionState>"
+  },
+  {
+   "name": "LocationLastFrame",
+   "type": "FVector",
+   "offset": "0x1E0",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "StrafeStateChange",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0x1F8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "Slow_Rotation",
+   "type": "FRotator",
+   "offset": "0x208",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Rotator>"
+  },
+  {
+   "name": "Default_Rotation",
+   "type": "FRotator",
+   "offset": "0x220",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Rotator>"
+  }
+ ],
+ "components": [
+  {
+   "name": "CameraBoom",
+   "class": "UArchonSpringArmComponent",
+   "source": "property"
+  },
+  {
+   "name": "AbilitySystem",
+   "class": "UAbilitySystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CalculateAttackState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "ArchonCharacter"
+   ],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ArchonCharacter.GetIsAttacking",
+    "ArchonGameplayStatics.IsInCity"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateBannerPlantState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "IsPlantingBanner"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateBleedOutState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "GetBleedOutState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateDodgeState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "ArchonCharacter"
+   ],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ArchonCharacter.GetIsDodging",
+    "ArchonGameplayStatics.IsInCity"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateEdgeRecoveryState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "IsInEdgeRecovery"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateEmoteState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "IsEmoting"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateInteractingState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 19,
+   "reads": [
+    "ArchonCharacter",
+    "Mesh"
+   ],
+   "sets": [
+    "DefaultPlayerState",
+    "LayeredPlayerState"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonAnimInstance.IsPlayingMontageOnSlot",
+    "IsInteracting",
+    "SkeletalMeshComponent.GetAnimInstance"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateJumpState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "ArchonCharacter",
+    "CharMovement",
+    "LIsLanding",
+    "LocationLastFrame"
+   ],
+   "sets": [
+    "DefaultPlayerState",
+    "JumpApexHeight",
+    "JumpHeightAtGround",
+    "LocationLastFrame"
+   ],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "IsFalling",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.EqualEqual_VectorVector",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Subtract_VectorVector"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateLocomotionState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 53,
+   "reads": [
+    "ArchonCharacter",
+    "CurrentLocomotionState",
+    "DesiredLocomotionStateNative",
+    "MovementComponentNative",
+    "OnCurrentLocomotionStateChanged",
+    "OnDesiredLocomotionStateChanged",
+    "PlayerDispatcher",
+    "PreviousCurrentLocomotionState",
+    "PreviousDesiredLocoState",
+    "Velocity"
+   ],
+   "sets": [
+    "CurrentLocomotionState",
+    "DefaultPlayerState",
+    "DesiredLocomotionStateNative",
+    "PreviousCurrentLocomotionState",
+    "PreviousDesiredLocoState"
+   ],
+   "calls": [
+    "ArchonPlayerStateMachineComponent.CalculateCurrentLocomotionStateNative",
+    "ArchonPlayerStateMachineComponent.CalculateDesiredLocomotionStateNative",
+    "ArchonPlayerStateMachineComponent.SetMaxDesiredLocoStateNative",
+    "GetIsInSlowChargeState",
+    "GetIsValidSprintAttempt",
+    "KismetMathLibrary.Conv_ByteToInt",
+    "KismetMathLibrary.Conv_IntToByte",
+    "KismetMathLibrary.Min",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetNodeHelperLibrary.GetValidValue",
+    "None",
+    "Server_UpdateCurrentLocoState",
+    "Server_UpdateDesiredLocoState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateStaggerState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [
+    "AbilitySystem"
+   ],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "HasMatchingGameplayTag",
+    "KismetMathLibrary.BooleanOR"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateTraversalState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [
+    "ArchonCharacter"
+   ],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [
+    "ArchonCharacter.IsTraversing"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugDrawStrafePivots",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Enable",
+     "type": "bool"
+    },
+    {
+     "name": "Radius",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 43,
+   "reads": [
+    "ArchonCharacter",
+    "StrafeIdlePivot"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetActorForwardVector",
+    "Actor.GetActorRightVector",
+    "Actor.K2_GetActorLocation",
+    "ArchonGameplayStatics.IsPlayInEditor",
+    "GetTopDownAimRotation",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.GetForwardVector",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.DrawDebugArrow",
+    "KismetSystemLibrary.DrawDebugCircle",
+    "KismetSystemLibrary.DrawDebugString",
+    "Pawn.GetControlRotation"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugPlayerStates",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Debug",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [
+    "CharacterMovement",
+    "DesiredLocomotionStateNative",
+    "MovementMode"
+   ],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "GetPlayerStates",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "UserDefinedEnum EPlayerStatesDefault",
+    "UserDefinedEnum EPlayerStatesLayered"
+   ]
+  },
+  {
+   "name": "EndStrafe",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_player_state_machine_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 408,
+   "reads": [
+    "ArchonCharacter",
+    "CharMovement",
+    "CharacterMovement",
+    "CurrentLocomotionState",
+    "DebugStateMachine",
+    "DefaultPlayerState",
+    "Default_Rotation",
+    "DesiredLocoRefCount_Native",
+    "DesiredLocomotionStateNative",
+    "IsInPreMatchAirship",
+    "LayeredPlayerState",
+    "MAX_ACCELERATION",
+    "MAX_ACCELERATION_SPRINT",
+    "MovementComponentNative",
+    "OnChainbladesSpin",
+    "OnCurrentLocomotionStateChanged",
+    "OnDesiredLocomotionStateChanged",
+    "OnMovementModeChanged",
+    "OnPlayerStateDefaultChanged",
+    "OnReachedJumpApex",
+    "PlayerDispatcher",
+    "PreviousCurrentLocomotionState",
+    "PreviousDefaultPlayerState",
+    "PreviousDesiredLocoState",
+    "Slow_Rotation",
+    "StrafeTransitionState"
+   ],
+   "sets": [
+    "AbilitySystem",
+    "ArchonCharacter",
+    "CameraBoom",
+    "CurrentLocomotionState",
+    "DebugStateMachine",
+    "DefaultPlayerState",
+    "DesiredLocomotionStateNative",
+    "InputScaleNative",
+    "JumpApexHeight",
+    "LIsLanding",
+    "LNewMovementMode",
+    "LPreviousLayeredState",
+    "LPreviousMovementMode",
+    "LayeredPlayerState",
+    "MaxAcceleration",
+    "MovementComponentNative",
+    "PlayerDispatcher",
+    "PreviousCurrentLocomotionState",
+    "PreviousDefaultPlayerState",
+    "PreviousDesiredLocoState",
+    "RotationRate",
+    "SheatheComponent",
+    "StrafeSpeedModNative",
+    "StrafeTransitionState",
+    "bDesiredStrafing"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.GetActorFeetLocation",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "ArchonGameplayStatics.IsInCity",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "ArchonPlayerStateMachineComponent.UpdatePlayerGameplayState",
+    "CalculateAttackState",
+    "CalculateBannerPlantState",
+    "CalculateBleedOutState",
+    "CalculateDodgeState",
+    "CalculateEdgeRecoveryState",
+    "CalculateEmoteState",
+    "CalculateInteractingState",
+    "CalculateJumpState",
+    "CalculateLocomotionState",
+    "CalculateStaggerState",
+    "CalculateTraversalState",
+    "DebugDrawStrafePivots",
+    "DebugPlayerStates",
+    "GetBaseAimRotation",
+    "GetDefaultMovementSettings",
+    "GetVelocity",
+    "IsLocallyControlled",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Resize",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Conv_ByteToInt",
+    "KismetMathLibrary.Conv_VectorToRotator",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.NormalizedDeltaRotator",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetMathLibrary.VSize",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.MakeLiteralInt",
+    "Multi_UpdateCurrentLocoState",
+    "Multi_UpdateDefaultPlayerState",
+    "Multi_UpdateDesiredLocoState",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "OnDefaultStateChanged",
+    "OnLayeredStateChanged",
+    "OnRep_StrafeTransitionState",
+    "Server_UpdateSpeed",
+    "Server_UpdateStrafeTransitionState",
+    "SetComponentTickEnabled",
+    "SetLocomotionTunables",
+    "SetMaxMovementSpeed",
+    "SetStrafeSpeedMod",
+    "Update Strafe Transition States",
+    "UpdateFollowCamera",
+    "UpdateJumpVariables",
+    "UpdateStateMachine"
+   ],
+   "authority": [
+    "IsLocallyControlled",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass weapon_sheathe_bpc_C"
+   ]
+  },
+  {
+   "name": "GetDefaultMovementSettings",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 9,
+   "reads": [
+    "BrakingDecelerationWalking",
+    "MaxAcceleration",
+    "MovementComponentNative",
+    "RotationRate"
+   ],
+   "sets": [
+    "DEFAULT_BRAKING_DECELERATION_WALKING",
+    "DEFAULT_MAX_ACCELERATION",
+    "DEFAULT_TURN_RATE"
+   ],
+   "calls": [
+    "KismetMathLibrary.BreakRotator"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetDesiredLocomotionState",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredLocomotionState_GetDesiredLocomotionState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "DesiredLocomotionStateNative"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetIndexFromAngle",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "InputPin",
+     "type": "double"
+    },
+    {
+     "name": "Array",
+     "type": "TArray<double>"
+    },
+    {
+     "name": "Array_Index",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 27,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetPlayerStates",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PlayerStates",
+     "type": "Fplayer_states_struct"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 10,
+   "reads": [
+    "DefaultPlayerState",
+    "LayeredPlayerState",
+    "PlayerGameplayState",
+    "SheatheComponent"
+   ],
+   "sets": [],
+   "calls": [
+    "GetWeaponSheatheState",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetStrafeTransitionState",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StrafeTransitionState",
+     "type": "Estrafe_transition_states"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "StrafeTransitionState"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetTopDownAimRotation",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "double",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 18,
+   "reads": [
+    "ArchonCharacter"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetActorForwardVector",
+    "Actor.GetActorRightVector",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.DegAcos",
+    "KismetMathLibrary.Dot_VectorVector",
+    "KismetMathLibrary.GetForwardVector",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.SignOfFloat",
+    "KismetSystemLibrary.IsValid",
+    "Pawn.GetControlRotation"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsFollowCameraEnabled",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Return",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "EnableFollowCamera"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsStrafingNative",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsStrafing_IsStrafingNative",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 8,
+   "reads": [
+    "StrafeTransitionState"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "JumpLandEnd",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Multi_UpdateCurrentLocoState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CurrentLocomotionState",
+     "type": "EArchonLocomotionState"
+    },
+    {
+     "name": "PreviousCurrentLocomotionState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Multi_UpdateDefaultPlayerState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DefaultPlayerState",
+     "type": "EPlayerStatesDefault"
+    },
+    {
+     "name": "PreviousDefaultPlayerState",
+     "type": "EPlayerStatesDefault"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Multi_UpdateDesiredLocoState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredLocomotionState",
+     "type": "EArchonLocomotionState"
+    },
+    {
+     "name": "PreviousState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnChainbladesSpinChanged",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsSpinning",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDefaultStateChanged",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "DefaultPlayerState",
+    "OnPlayerStateDefaultChanged",
+    "PlayerDispatcher",
+    "PreviousDefaultPlayerState"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "None",
+    "Server_UpdateDefaultPlayerState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLayeredStateChanged",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [
+    "LPreviousLayeredState",
+    "LayeredPlayerState",
+    "OnPlayerStateLayeredChanged",
+    "PlayerDispatcher"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnMovementModeChanged",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PreviousMovementMode",
+     "type": "EMovementMode"
+    },
+    {
+     "name": "NewMovementMode",
+     "type": "EMovementMode"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPlayerStateDefaultChanged",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewPlayerState",
+     "type": "EPlayerStatesDefault"
+    },
+    {
+     "name": "PreviousPlayerState",
+     "type": "EPlayerStatesDefault"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_StrafeTransitionState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "StrafeStateChange",
+    "StrafeTransitionState"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "None",
+    "SetStrafingMode"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_UpdateCurrentLocoState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CurrentLocomotionState",
+     "type": "EArchonLocomotionState"
+    },
+    {
+     "name": "PreviousCurrentLocomotionState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_UpdateDefaultPlayerState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DefaultPlayerState",
+     "type": "EPlayerStatesDefault"
+    },
+    {
+     "name": "PreviousDefaultPlayerState",
+     "type": "EPlayerStatesDefault"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_UpdateDesiredLocoState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredLocoState",
+     "type": "EArchonLocomotionState"
+    },
+    {
+     "name": "PreviousState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_UpdateSpeed",
+   "flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Speed",
+     "type": "double"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Server_UpdateStrafeTransitionState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StrafeTransitionState",
+     "type": "Estrafe_transition_states"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetDefaultPlayerState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DefaultPlayerState",
+     "type": "EPlayerStatesDefault"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [
+    "DefaultPlayerState"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetDesiredLocomotionState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredLocomotionState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [
+    "DesiredLocomotionStateNative"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetInputScale",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "MoveForward_SetInputScale",
+     "type": "float"
+    },
+    {
+     "name": "MoveRight_SetInputScale",
+     "type": "float"
+    },
+    {
+     "name": "InputDisabled_SetInputScale",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetJumpApexHeight",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetLocomotionTunables",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "BRAKING_DECELERATION_WALKING",
+    "CameraBoom",
+    "MovementComponentNative",
+    "ROTATION_RATE"
+   ],
+   "sets": [
+    "BrakingDecelerationWalking",
+    "RotationRate",
+    "bEnableCameraRotationLag"
+   ],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetMaxDesiredLocoState",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredLocoState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 27,
+   "reads": [
+    "DesiredLocoRefCount_Native"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_IntToByte",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetNodeHelperLibrary.GetValidValue"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetMaxDesiredLocomotionState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Enable",
+     "type": "bool"
+    },
+    {
+     "name": "MaxDesiredLocoState",
+     "type": "EArchonLocomotionState"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetMaxMovementSpeed",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "ArchonCharacter"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "ArchonCharacter.GetCurrentWeapon",
+    "ArchonPlayerStateMachineComponent.SetExplicitMovementSpeeds",
+    "GetIsChainbladesSpin",
+    "GetIsInSlowChargeState",
+    "GetSlowChargeBaseSpeed",
+    "KismetMathLibrary.BooleanOR"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetStrafingMode",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Enable",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 30,
+   "reads": [
+    "ArchonCharacter",
+    "DEFAULT_BRAKING_DECELERATION_WALKING",
+    "DEFAULT_MAX_ACCELERATION",
+    "DEFAULT_TURN_RATE",
+    "MovementComponentNative",
+    "STRAFE_BRAKING_DECELERATION_WALKING",
+    "STRAFE_MAX_ACCELERATION",
+    "STRAFE_TURN_RATE"
+   ],
+   "sets": [
+    "BrakingDecelerationWalking",
+    "MaxAcceleration",
+    "RotationRate",
+    "bOrientRotationToMovement",
+    "bUseControllerDesiredRotation"
+   ],
+   "calls": [
+    "DisableLocoTransitions",
+    "EnableLocoTransitions",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartStrafe",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StrafeStateChange__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ToggleDebug",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Debug",
+     "type": "bool"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Update Strafe Transition States",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "State",
+     "type": "ByteProperty<strafe_transition_states>"
+    },
+    {
+     "name": "StateChanged",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_2",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 177,
+   "reads": [
+    "ArchonCharacter",
+    "Instigator",
+    "Mesh",
+    "StrafeIdlePivot",
+    "StrafeTransitionState",
+    "bDesiredStrafing"
+   ],
+   "sets": [
+    "StrafeIdlePivot"
+   ],
+   "calls": [
+    "Actor.GetActorForwardVector",
+    "AnimInstance.Montage_IsActive",
+    "ArchonAnimInstance.IsPlayingMontageOnSlot",
+    "GetIndexFromAngle",
+    "GetPlayerStates",
+    "GetTopDownAimRotation",
+    "GetVelocity",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.Conv_VectorToRotator",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.NearlyEqual_FloatFloat",
+    "KismetMathLibrary.NormalizedDeltaRotator",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.VSize",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.LoadAsset_Blocking",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "Pawn.GetControlRotation",
+    "PlayNetworkedMontage",
+    "SkeletalMeshComponent.GetAnimInstance"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateFollowCamera",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewPlayerState",
+     "type": "EPlayerStatesDefault"
+    },
+    {
+     "name": "PreviousPlayerState",
+     "type": "EPlayerStatesDefault"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 42,
+   "reads": [],
+   "sets": [
+    "EnableFollowCamera"
+   ],
+   "calls": [
+    "IsStrafingNative",
+    "KismetMathLibrary.NotEqual_ByteByte"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateJumpVariables",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [
+    "ArchonCharacter",
+    "JumpApexHeight",
+    "JumpHeightAtGround",
+    "LIsLanding",
+    "LNewMovementMode",
+    "LPreviousMovementMode"
+   ],
+   "sets": [
+    "JumpFallDistance",
+    "JumpHeightAtGround",
+    "LIsLanding"
+   ],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateStateMachine",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_state_machine_bpc_C.ExecuteUbergraph_player_state_machine_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Update_Strafe_Transition_States",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "State",
+     "type": "Estrafe_transition_states"
+    },
+    {
+     "name": "StateChanged",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Player/blueprints/Components/player_state_machine_bpc",
+ "pseudo_file": "pseudo/player_state_machine_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

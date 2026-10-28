@@ -1,0 +1,783 @@
+{
+ "name": "swarmed_debuff_C",
+ "kind": "blueprint",
+ "parents": [
+  "dot_base_debuff_C",
+  "base_debuff_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TransferCollision",
+   "type": "ObjectProperty<SphereComponent>",
+   "bp_type": "ObjectProperty<SphereComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Health",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HitActor",
+   "type": "ObjectProperty<swarmed_debuff_hit_actor_bp_C>",
+   "bp_type": "ObjectProperty<swarmed_debuff_hit_actor_bp_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 18
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "TransferCollision",
+   "class": "SphereComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthAttemptCustomStatusEffectAnim",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthDoDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_swarmed_debuff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_BuffStackData",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    },
+    {
+     "name": "K2Node_Event_DamageEventData",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "K2Node_Event_DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "K2Node_Event_Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    },
+    {
+     "name": "K2Node_Event_Modifier_1",
+     "type": "InterfaceProperty"
+    },
+    {
+     "name": "K2Node_Event_Modifier",
+     "type": "InterfaceProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 151,
+   "reads": [
+    "BaseDamageAmount",
+    "FlameDamageAmount",
+    "FrostDamageAmount",
+    "HitActor",
+    "MaxDuration",
+    "OnDodgeRollEnd",
+    "PhysicalDamageAmount",
+    "RadiantDamageAmount",
+    "RawElementalDamageAmount",
+    "ShockDamageAmount",
+    "SpawnedVFX",
+    "UmbralDamageAmount",
+    "VFXAttachPoint_0",
+    "VFX_0"
+   ],
+   "sets": [
+    "HitActor",
+    "OwnedDebuff",
+    "TimeRemaining",
+    "VFX_0"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttribute",
+    "AbilitySystemComponent.RemoveActiveEffectsWithGrantedTags",
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "Actor.GetInstigator",
+    "Actor.GetInstigatorController",
+    "Actor.K2_SetActorLocation",
+    "Actor.ReceiveBeginPlay",
+    "ActorComponent.K2_DestroyComponent",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.ApplyArchonElementalDamage",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "GetHitActorLocation",
+    "GetOwnedGameplayTags",
+    "GetSkeletalMeshComponent",
+    "GetSocketLocation",
+    "IsImmune",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "ManualRemove",
+    "MultiDestroy",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "PlayNetworkedMontage",
+    "ReduceHealth",
+    "SceneComponent.K2_SetWorldLocation",
+    "SetMaxDesiredLocoState",
+    "StartPersistentAudio",
+    "base_buff_C.OnRemoved",
+    "dot_base_debuff_C.OnAdded",
+    "dot_base_debuff_C.ReceiveDestroyed",
+    "dot_base_debuff_C.ReceiveTick"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_ua_generic_statuseffect_01_mot",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass swarmed_debuff_hit_actor_bp_C"
+   ]
+  },
+  {
+   "name": "GetHitActorLocation",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Location",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 18,
+   "reads": [
+    "VFXAttachPoint_0"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "ArchonBuff.GetBuffOwner",
+    "GetSkeletalMeshComponent",
+    "GetSocketLocation",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleBuffStacksRemovedFromDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "BuffStackData",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsImmune",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Immune?",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonBuff.GetBuffOwner",
+    "HasMatchingGameplayTag"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ManualRemove",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAboutToDieBP",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PreventDeath",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageReceivedBP",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageSource",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDodgeRollEnd_Event",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Character",
+     "type": "ObjectProperty<ArchonCharacter>"
+    },
+    {
+     "name": "Montage",
+     "type": "ObjectProperty<AnimMontage>"
+    },
+    {
+     "name": "Interrupted",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitigationReceivedDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageGiver",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInstigator",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPremitigateDamageNonNative",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageGiver",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "DamageEventTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "bHasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "bOverrideDamageData",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OutDamageEventTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<DamageEventData>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSweepHit",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageGiver",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageEventTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "bHasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RegisterIncomingDamageModifier",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Modifier",
+     "type": "InterfaceProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UnregisterIncomingDamageModifier",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Modifier",
+     "type": "InterfaceProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "swarmed_debuff_C.ExecuteUbergraph_swarmed_debuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/swarmed_debuff",
+ "pseudo_file": "pseudo/swarmed_debuff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,119 @@
+# gameplay_helpers_fl_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActorHasAbilitySystemGameplayTag
+  [0] push @237
+  [5] push @226
+  [10] CallFunc_IsValid_ReturnValue = IsValid(Actor)
+  [39] if !(CallFunc_IsValid_ReturnValue) pop
+  [49] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Actor)
+  [78] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [107] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [117] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Actor)
+  [146] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(Tag)
+  [202] HasTag = CallFunc_HasMatchingGameplayTag_ReturnValue
+  [221] goto @237
+  [226] HasTag = false
+  [237] return nothing
+  [239] end
+
+=== ApplyBuffs-UseBuffApplierIfPossible
+  [0] push @631
+  [5] push @332
+  [10] CallFunc_IsValid_ReturnValue = IsValid(Instigator)
+  [39] if !(CallFunc_IsValid_ReturnValue) goto @359
+  [53] CallFunc_GetComponentByClass_ReturnValue_1 = Instigator.GetComponentByClass(BuffApplierComponent)
+  [104] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [133] if !(CallFunc_IsValid_ReturnValue_2) goto @359
+  [147] CallFunc_GetComponentByClass_ReturnValue_1 = Instigator.GetComponentByClass(BuffApplierComponent)
+  [198] CallFunc_TryAddBuff_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue_1.TryAddBuff(BuffClass, CallFunc_TryAddBuff_BuffWasReplacedByOverrides, HitResult, BuffTarget, StartBuff)
+  [289] BuffRef = CallFunc_TryAddBuff_ReturnValue_1
+  [308] BuffWasReplacedByOverrides = CallFunc_TryAddBuff_BuffWasReplacedByOverrides
+  [327] goto @631
+  [332] BuffRef = null
+  [343] BuffWasReplacedByOverrides = false
+  [354] goto @631
+  [359] CallFunc_GetComponentByClass_ReturnValue = BuffTarget.GetComponentByClass(ArchonBuffableComponent)
+  [410] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [439] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [449] CallFunc_GetComponentByClass_ReturnValue = BuffTarget.GetComponentByClass(ArchonBuffableComponent)
+  [500] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(BuffClass, CallFunc_TryAddBuff_BuffAdded, HitResult, Instigator, StartBuff)
+  [591] if !(CallFunc_TryAddBuff_BuffAdded) pop
+  [601] BuffRef = CallFunc_TryAddBuff_ReturnValue
+  [620] BuffWasReplacedByOverrides = false
+  [631] return nothing
+  [633] end
+
+=== ApplyGameplayEffects
+  [0] push @1702
+  [5] push @1272
+  [10] CallFunc_IsValid_ReturnValue_2 = IsValid(SourceActor)
+  [39] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [49] CallFunc_IsValid_ReturnValue = IsValid(TargetActor)
+  [78] if !(CallFunc_IsValid_ReturnValue) pop
+  [88] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(TargetActor)
+  [117] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [146] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(SourceActor)
+  [175] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue_2)
+  [204] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue_3, CallFunc_IsValid_ReturnValue_1)
+  [242] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [252] Temp_int_Loop_Counter_Variable = 0
+  [275] Temp_int_Array_Index_Variable_1 = 0
+  [298] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Effects)
+  [357] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [395] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [405] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [432] push @1304
+  [437] CallFunc_GetAbilitySystemComponent_ReturnValue_3 = GetAbilitySystemComponent(SourceActor)
+  [466] CallFunc_MakeEffectContext_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_3.MakeEffectContext()
+  [520] Default__KismetArrayLibrary.Array_Get(Effects, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [579] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_3.MakeOutgoingSpec(CallFunc_Array_Get_Item.Effect, 0.0, CallFunc_MakeEffectContext_ReturnValue)
+  [665] array{CallFunc_MakeOutgoingSpec_ReturnValue}
+  [685] INTERNAL_FakeEffectArray = K2Node_MakeArray_Array
+  [712] Temp_int_Loop_Counter_Variable_1 = 0
+  [735] Temp_int_Array_Index_Variable = 0
+  [758] Default__KismetArrayLibrary.Array_Get(Effects, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [817] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.Magnitudes)
+  [885] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [923] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1378
+  [937] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [964] push @1628
+  [969] Default__KismetArrayLibrary.Array_Get(Effects, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1028] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.Magnitudes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1096] Default__KismetArrayLibrary.Array_Get(INTERNAL_FakeEffectArray, 0, CallFunc_Array_Get_Item_3)
+  [1151] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_Array_Get_Item_3, CallFunc_Array_Get_Item_1.name, CallFunc_Array_Get_Item_1.float)
+  [1224] array{CallFunc_AssignSetByCallerMagnitude_ReturnValue}
+  [1244] INTERNAL_FakeEffectArray = K2Node_MakeArray_Array_1
+  [1271] pop
+  [1272] AppliedSpecs = L_AppliedSpecs
+  [1299] goto @1702
+  [1304] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1346] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1373] goto @298
+  [1378] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(TargetActor)
+  [1407] CallFunc_GetAbilitySystemComponent_ReturnValue_3 = GetAbilitySystemComponent(SourceActor)
+  [1436] Default__KismetArrayLibrary.Array_Get(INTERNAL_FakeEffectArray, 0, CallFunc_Array_Get_Item_2)
+  [1491] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_3.BP_ApplyGameplayEffectSpecToTarget(CallFunc_Array_Get_Item_2, CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [1559] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_AppliedSpecs, CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue)
+  [1627] pop
+  [1628] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1670] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1697] goto @758
+  [1702] return nothing
+  [1704] end
+
+=== AuthRemoveGameplayEffectByClass
+  [0] CallFunc_IsValid_ReturnValue_2 = IsValid(Target)
+  [29] if !(CallFunc_IsValid_ReturnValue_2) goto @351
+  [43] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Target)
+  [72] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [101] if !(CallFunc_IsValid_ReturnValue_1) goto @351
+  [115] CallFunc_IsValid_ReturnValue = IsValid(Instigator)
+  [144] if !(CallFunc_IsValid_ReturnValue) goto @351
+  [158] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(Instigator)
+  [187] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [216] if !(CallFunc_IsValid_ReturnValue_3) goto @351
+  [230] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Target)
+  [259] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(Instigator)
+  [288] CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffectBySourceEffect(GEClass, CallFunc_GetAbilitySystemComponent_ReturnValue_1, StacksToRemove)
+  [351] return nothing
+  [353] end

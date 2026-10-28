@@ -1,0 +1,946 @@
+{
+ "name": "destructible_01_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "influenced_destructable_base_bp_C",
+  "ArchonDestructableBase",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "base_destruction",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Explosion",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Stump",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Broken Part",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Main Part",
+   "type": "ObjectProperty<StaticMeshComponent>",
+   "bp_type": "ObjectProperty<StaticMeshComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bush",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "dont_spawn_broken_part",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "dont_spawn_stump_part",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "preview_broken_part",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "preview_stump_part",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NewVar_0",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "tree_up",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NearestDist",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NearestBehemoth",
+   "type": "ObjectProperty<Actor>",
+   "bp_type": "ObjectProperty<Actor>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DesiredUpVector",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "z_rotation",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "stump_scale",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Explode Sound",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerImpactSound",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Impact Audio?",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Rustle Oneshot Slow",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Old Speed",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Current Speed",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Rustle Loop Start Event",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Rustle Oneshot Fast",
+   "type": "ObjectProperty<Object>",
+   "bp_type": "ObjectProperty<Object>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DebugImpact",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DesiredTreeAngle",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentTreeAngle",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "RotationInitComplete",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Replace with new AK Component",
+   "type": "ObjectProperty<AkComponent>",
+   "bp_type": "ObjectProperty<AkComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnExploded",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinDestructionAngle",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "Broken Part",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "base_destruction",
+   "class": "ParticleSystemComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Main Part",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Explosion",
+   "class": "ParticleSystemComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "Stump",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AudioImpactCausedBy",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "InstigatingActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "SoundComponent",
+     "type": "ObjectProperty<AkComponent>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AkComponent.SetSwitch",
+    "AkGameObject.SetRTPCValue",
+    "GetIsLocalPlayerAudioEnabled",
+    "KismetMathLibrary.Conv_BoolToFloat",
+    "KismetStringLibrary.Conv_BoolToString",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Evaluate",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_destructible_01_bp",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "K2Node_Event_HitInfo",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "K2Node_CustomEvent_HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "K2Node_Event_InfluencerComponent_1",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "K2Node_Event_InfluencerComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 236,
+   "reads": [
+    "Broken Part",
+    "CurrentTreeAngle",
+    "DebugImpact",
+    "DesiredTreeAngle",
+    "DesiredUpVector",
+    "EvaluationRateInSeconds",
+    "Explode Sound",
+    "Explosion",
+    "Impact Audio?",
+    "InfluenceTester",
+    "Influencers",
+    "Main Part",
+    "MinDestructionAngle",
+    "OnExploded",
+    "PlayerImpactSound",
+    "RotationInitComplete",
+    "Stump",
+    "WeaponType",
+    "base_destruction",
+    "bush",
+    "dont_spawn_broken_part",
+    "dont_spawn_stump_part",
+    "stump_scale",
+    "z_rotation"
+   ],
+   "sets": [
+    "CanCharacterStepUpOn",
+    "CurrentTreeAngle",
+    "DesiredTreeAngle",
+    "DesiredUpVector",
+    "RotationInitComplete",
+    "z_rotation"
+   ],
+   "calls": [
+    "Activate",
+    "Actor.FlushNetDormancy",
+    "Actor.GetActorUpVector",
+    "Actor.GetOwner",
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_SetActorRotation",
+    "Actor.SetNetDormancy",
+    "AddImpulse",
+    "AkComponent.SetSwitch",
+    "AkGameplayStatics.SpawnAkComponentAtLocation",
+    "ArchonCharacter.GetCurrentWeapon",
+    "ArchonDestructableBase.CaptureStaticFarShadows",
+    "AudioImpactCausedBy",
+    "GameplayStatics.BreakHitResult",
+    "GameplayStatics.GetWorldDeltaSeconds",
+    "GameplayStatics.MakeHitResult",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetComponentRadius",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Abs",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.Cross_VectorVector",
+    "KismetMathLibrary.DegAcos",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Dot_VectorVector",
+    "KismetMathLibrary.FInterpTo",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.MapRangeClamped",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.Normal",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.RotatorFromAxisAndAngle",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.VSize",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.DrawDebugArrow",
+    "KismetSystemLibrary.GetComponentBounds",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "MultiDestruct",
+    "None",
+    "PostAssociatedAkEvent",
+    "RotateClient",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.K2_GetComponentRotation",
+    "SceneComponent.K2_SetRelativeLocation",
+    "SceneComponent.K2_SetRelativeRotation",
+    "SceneComponent.SetRelativeScale3D",
+    "SceneComponent.SetVisibility",
+    "SetCollisionEnabled",
+    "SetSimulatePhysics",
+    "influenced_destructable_base_bp_C.ReceiveBeginPlay"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetComponentRadius",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PrimitiveComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "Radius",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "bSuccess",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Private",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 23,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "CapsuleComponent.GetScaledCapsuleRadius",
+    "SphereComponent.GetScaledSphereRadius"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiDestruct",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "DamageCauserActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnExploded__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnInfluencerAdded",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "InfluencerComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "InfluencerActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnInfluencerRemoved",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "InfluencerComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "InfluencerActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceivePointDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Damage",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "HitLocation",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "HitNormal",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "HitComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "BoneName",
+     "type": "NameProperty"
+    },
+    {
+     "name": "ShotFromDirection",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "HitInfo",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RotateClient",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Angle",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Up",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "ZRotation",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "destructible_01_bp_C.ExecuteUbergraph_destructible_01_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UserConstructionScript",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 33,
+   "reads": [
+    "Broken Part",
+    "Main Part",
+    "NewVar_0",
+    "Stump",
+    "base_destruction",
+    "preview_broken_part",
+    "preview_stump_part",
+    "stump_scale"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "SceneComponent.K2_AddLocalOffset",
+    "SceneComponent.SetRelativeScale3D",
+    "SceneComponent.SetVisibility",
+    "SetMaterial"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/World/foliage/_shared/destructible_01_bp",
+ "pseudo_file": "pseudo/destructible_01_bp_C.txt",
+ "game_data": {}
+}

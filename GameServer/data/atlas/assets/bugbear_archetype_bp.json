@@ -1,0 +1,648 @@
+{
+ "name": "bugbear_archetype_bp",
+ "package": "Archon/Content/Monsters/mb/bugbear/blueprints/bugbear_archetype_bp",
+ "type": "ClassDefaults",
+ "class": "bugbear_archetype_bp_C",
+ "refs": [
+  "AlignmentComponent",
+  "CharMoveComp",
+  "CharacterEventDispatcherComponent",
+  "CharacterMesh0",
+  "CollisionCylinder",
+  "EncounterThreatComponent",
+  "GameplayActionComponent",
+  "GameplayActionComponent.PhxComboGameplayActionActorData_0",
+  "GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0",
+  "PartCollisionComponent",
+  "PhxGameplayPropertyOverrideComponent",
+  "Play_Foley_Scissors_Wings_Loop",
+  "SyncedAnimationComponent",
+  "b_xf_bug_00_loco_airpivotfast_135l_00_mot",
+  "b_xf_bug_00_loco_airpivotfast_135r_00_mot",
+  "b_xf_bug_00_loco_airpivotfast_45l_00_mot",
+  "b_xf_bug_00_loco_airpivotfast_45r_00_mot",
+  "b_xf_bug_00_loco_airpivotslow_135l_00_mot",
+  "b_xf_bug_00_loco_airpivotslow_135r_00_mot",
+  "b_xf_bug_00_loco_airpivotslow_45l_00_mot",
+  "b_xf_bug_00_loco_airpivotslow_45r_00_mot",
+  "behemoth_metadata_table",
+  "behemoth_rage_bugbear_p",
+  "bugbear_action_set_table",
+  "bugbear_animbp_C",
+  "bugbear_beam_bp_C",
+  "bugbear_bt_ty_jenkins",
+  "bugbear_damage_table",
+  "bugbear_generic_action_table_C",
+  "bugbear_orb_bomb_projectile_bp_C",
+  "bugbear_orb_projectile_bp_C",
+  "bugbear_part_bspreset_C",
+  "bugbear_stagger_table_C",
+  "mb_bugbear_00",
+  "mb_bugbear_00_backleft_mi",
+  "mb_bugbear_00_headsev_mi",
+  "mb_bugbear_player_col_phat",
+  "moonface_135turn_l_mot",
+  "moonface_135turn_r_mot",
+  "moonface_180turn_l_mot",
+  "moonface_180turn_r_mot",
+  "moonface_45turn_l_mot",
+  "moonface_45turn_r_mot",
+  "moonface_90turn_l_mot",
+  "moonface_90turn_r_mot",
+  "rage_eye_trails_p",
+  "tail_gem_standard_ptpreset_C",
+  "tail_staggerable_standard_ptpreset_C"
+ ],
+ "exports": {
+  "behemoth_lookat_bpc_GEN_VARIABLE": {
+   "type": "behemoth_lookat_bpc_C",
+   "props": {
+    "bEnableCurvedTorsoAngle": false
+   }
+  },
+  "behemoth_statemanager_bpc_GEN_VARIABLE": {
+   "type": "behemoth_statemanager_bpc_C",
+   "props": {
+    "StateInfos": [
+     {
+      "State": "behemoth_states_enum::ReadyToExitCustomState",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Dazed",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         10.0,
+         12.5,
+         15.0,
+         17.5
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [],
+      "RequiredStates": [
+       "behemoth_states_enum::Dazed"
+      ]
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Combat",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         90.0,
+         75.0,
+         60.0,
+         45.0
+        ],
+        "ConditionRequirements": []
+       },
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::End",
+        "ScalingDelay": [
+         90.0,
+         75.0,
+         60.0,
+         45.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [
+       "behemoth_states_enum::Injured/PrepToFlee",
+       "behemoth_states_enum::ReadyToFlee",
+       "behemoth_states_enum::AtherCharged"
+      ],
+      "RequiredStates": []
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToExitAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         45.0,
+         70.0,
+         100.0,
+         150.0
+        ],
+        "ConditionRequirements": []
+       },
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Injured/PrepToFlee",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [
+       "behemoth_states_enum::FinalForm"
+      ],
+      "RequiredStates": [
+       "behemoth_states_enum::AtherCharged"
+      ]
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToFlee",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Dazed",
+        "StateChangeType": "behemoth_state_event::End",
+        "ScalingDelay": [],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [],
+      "RequiredStates": [
+       "behemoth_states_enum::Injured/PrepToFlee"
+      ]
+     }
+    ]
+   }
+  },
+  "Default__bugbear_archetype_bp_C": {
+   "type": "bugbear_archetype_bp_C",
+   "props": {
+    "UberGraphFrame": {},
+    "LaserTarget": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": 0.0
+    },
+    "VulnerabilityDamageWindowRatios": [
+     0.23499999940395355
+    ],
+    "Wings Event": "AkAudioEvent Play_Foley_Scissors_Wings_Loop",
+    "Base Eye Emissive Color": {
+     "R": 0.0,
+     "G": 0.0,
+     "B": 0.0,
+     "A": 0.0,
+     "Hex": "000000"
+    },
+    "BaseHealth": 38000.0,
+    "Rage Vfx": [
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "l_eye_socket_bugbear",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     },
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "r_eye_socket_bugbear",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     },
+     {
+      "Vfx": "ParticleSystem behemoth_rage_bugbear_p",
+      "Socket_Name": "None",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     }
+    ],
+    "BehaviorTree": "BehaviorTree bugbear_bt_ty_jenkins",
+    "Behemoth Name - Sounds": "Bugbear",
+    "Behemoth Name - Voice": "Bugbear",
+    "PivotAnimations": [
+     {
+      "Angle": 90.0,
+      "Left_Montage": "AnimMontage b_xf_bug_00_loco_airpivotslow_45l_00_mot",
+      "Right_Montage": "AnimMontage b_xf_bug_00_loco_airpivotslow_45r_00_mot"
+     },
+     {
+      "Angle": 180.0,
+      "Left_Montage": "AnimMontage b_xf_bug_00_loco_airpivotslow_135l_00_mot",
+      "Right_Montage": "AnimMontage b_xf_bug_00_loco_airpivotslow_135r_00_mot"
+     }
+    ],
+    "EoM_LootID": "DT_BUGBEAR_NORMAL_TANKS_MASTER",
+    "Flee_HealthThreshold_Ratio": 0.375,
+    "DamageProgressionParameters": [
+     "Damage Progression"
+    ],
+    "AlternatePivotAnimationSets": [
+     {
+      "SetName": "DazedPivot",
+      "PivotData": [
+       {
+        "Angle": 60.0,
+        "Left_Montage": "AnimMontage moonface_45turn_l_mot",
+        "Right_Montage": "AnimMontage moonface_45turn_r_mot"
+       },
+       {
+        "Angle": 110.0,
+        "Left_Montage": "AnimMontage moonface_90turn_l_mot",
+        "Right_Montage": "AnimMontage moonface_90turn_r_mot"
+       },
+       {
+        "Angle": 150.0,
+        "Left_Montage": "AnimMontage moonface_135turn_l_mot",
+        "Right_Montage": "AnimMontage moonface_135turn_r_mot"
+       },
+       {
+        "Angle": 180.0,
+        "Left_Montage": "AnimMontage moonface_180turn_l_mot",
+        "Right_Montage": "AnimMontage moonface_180turn_r_mot"
+       }
+      ]
+     },
+     {
+      "SetName": "Fast",
+      "PivotData": [
+       {
+        "Angle": 90.0,
+        "Left_Montage": "AnimMontage b_xf_bug_00_loco_airpivotfast_45l_00_mot",
+        "Right_Montage": "AnimMontage b_xf_bug_00_loco_airpivotfast_45r_00_mot"
+       },
+       {
+        "Angle": 180.0,
+        "Left_Montage": "AnimMontage b_xf_bug_00_loco_airpivotfast_135l_00_mot",
+        "Right_Montage": "AnimMontage b_xf_bug_00_loco_airpivotfast_135r_00_mot"
+       }
+      ]
+     }
+    ],
+    "Behemoth Music": "Bugbear",
+    "ArchetypeName": "Bugbear",
+    "GenericActionLists": [
+     "BlueprintGeneratedClass bugbear_generic_action_table_C"
+    ],
+    "StaggerLists": [
+     "BlueprintGeneratedClass bugbear_stagger_table_C"
+    ],
+    "BehemothElementalResistAndPowerSet": "behemoth_resistset_type::Radiant",
+    "LookAtSockets": [
+     "stomach_jnt",
+     "head_jnt",
+     "long_tail_16_jnt"
+    ],
+    "HasEnterArenaBehavior": true,
+    "ActionSetTable": "DataTable bugbear_action_set_table",
+    "GlobalPower": 575.0,
+    "RadiantPower": 1.0,
+    "RawElementalPower": 0.0,
+    "GlobalResistance": 500.0,
+    "FlameResistance": 0.25,
+    "FrostResistance": 0.25,
+    "ShockResistance": 0.25,
+    "RadiantResistance": 0.5,
+    "UmbralResistance": -0.5,
+    "BehemothDataRow": "behemoth_metadata_table[bugbear_normal]",
+    "OwnedTagsContainer": [],
+    "GameplayActionComponent": "PhxGameplayActionComponent GameplayActionComponent",
+    "AlignmentComponent": "PhxAlignmentComponent AlignmentComponent",
+    "SyncedAnimationComponent": "PhxSyncedAnimationComponent SyncedAnimationComponent",
+    "EncounterThreatComponent": "EncounterThreatComponent EncounterThreatComponent",
+    "PartCollisionComponent": "ArchonPartCollisionComponent PartCollisionComponent",
+    "PhxGameplayPropertyOverrideComponent": "PhxGameplayPropertyOverrideComponent PhxGameplayPropertyOverrideComponent",
+    "CharacterEventDispatcherComponent": "ArchonCharacterEventDispatcherComponent CharacterEventDispatcherComponent",
+    "Mesh": "SkeletalMeshComponentBudgeted CharacterMesh0",
+    "CharacterMovement": "ArchonBehemothMovementComponent CharMoveComp",
+    "CapsuleComponent": "CapsuleComponent CollisionCylinder",
+    "RootComponent": "CapsuleComponent CollisionCylinder"
+   }
+  },
+  "DamageComp_GEN_VARIABLE": {
+   "type": "DamageComponent",
+   "props": {
+    "DamageTable": "DataTable bugbear_damage_table"
+   }
+  },
+  "BackLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C"
+   }
+  },
+  "BackRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C"
+   }
+  },
+  "FrontLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C"
+   }
+  },
+  "FrontRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C"
+   }
+  },
+  "Head_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C"
+   }
+  },
+  "Tail_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass tail_staggerable_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C",
+    "VFXBoneName": "long_tail_09_jnt",
+    "PhATBones": [
+     "long_tail_15_jnt",
+     "long_tail_00_jnt",
+     "long_tail_01_jnt",
+     "long_tail_03_jnt",
+     "long_tail_05_jnt",
+     "long_tail_07_jnt",
+     "long_tail_09_jnt",
+     "long_tail_11_jnt",
+     "long_tail_13_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset mb_bugbear_player_col_phat",
+    "MovementPhATBones": [
+     "long_tail_16_jnt",
+     "long_tail_00_jnt",
+     "long_tail_01_jnt",
+     "long_tail_04_jnt",
+     "long_tail_06_jnt",
+     "long_tail_08_jnt",
+     "long_tail_10_jnt",
+     "long_tail_12_jnt",
+     "long_tail_14_jnt"
+    ]
+   }
+  },
+  "TailGem_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": "BlueprintGeneratedClass tail_gem_standard_ptpreset_C",
+    "PartBreakPreset": "BlueprintGeneratedClass bugbear_part_bspreset_C",
+    "VFXBoneName": "long_tail_17_jnt",
+    "PhATBones": [
+     "long_tail_16_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset mb_bugbear_player_col_phat",
+    "MovementPhATBones": [
+     "long_tail_17_jnt"
+    ]
+   }
+  },
+  "PhxActorPool_bugbear_beam_bp_GEN_VARIABLE": {
+   "type": "PhxActorPool",
+   "props": {
+    "ActorClass": "BlueprintGeneratedClass bugbear_beam_bp_C",
+    "NumToPreallocate": 20
+   }
+  },
+  "PhxActorPool_bugbear_bomb_orb_projectile_bp_GEN_VARIABLE": {
+   "type": "PhxActorPool",
+   "props": {
+    "ActorClass": "BlueprintGeneratedClass bugbear_orb_bomb_projectile_bp_C",
+    "NumToPreallocate": 200
+   }
+  },
+  "PhxActorPool_bugbear_orb_projectile_bp_GEN_VARIABLE": {
+   "type": "PhxActorPool",
+   "props": {
+    "ActorClass": "BlueprintGeneratedClass bugbear_orb_projectile_bp_C",
+    "NumToPreallocate": 150
+   }
+  },
+  "GameplayActionComponent": {
+   "type": "PhxGameplayActionComponent",
+   "props": {
+    "GameplayActionData": [
+     "PhxComboGameplayActionActorData GameplayActionComponent.PhxComboGameplayActionActorData_0",
+     "PhxMoveAndDoGameplayActionActorData GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0"
+    ]
+   }
+  },
+  "CharacterMesh0": {
+   "type": "SkeletalMeshComponentBudgeted",
+   "props": {
+    "AnimClass": "AnimBlueprintGeneratedClass bugbear_animbp_C",
+    "SkeletalMesh": "SkeletalMesh mb_bugbear_00",
+    "SkinnedAsset": "SkeletalMesh mb_bugbear_00",
+    "OverrideMaterials": [
+     null,
+     null,
+     null,
+     "MaterialInstanceConstant mb_bugbear_00_headsev_mi",
+     "MaterialInstanceConstant mb_bugbear_00_backleft_mi"
+    ],
+    "BodyInstance": {
+     "ObjectType": "ECollisionChannel::ECC_PhysicsBody",
+     "CollisionEnabled": "ECollisionEnabled::QueryAndPhysics",
+     "CollisionProfileName": "BehemothPhysicsMesh",
+     "CollisionResponses": {
+      "ResponseArray": [
+       {
+        "Channel": "Pawn",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Visibility",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Camera",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "PhysicsBody",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Vehicle",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Destructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Player",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterPart",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableActor",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Projectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Explosion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterCapsule",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "MonsterOnlyDestructible",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "Influence",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "QueryVolume",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "ReflectableProjectile",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "SoundOcclusion",
+        "Response": "ECollisionResponse::ECR_Ignore"
+       },
+       {
+        "Channel": "DamageableByHitScan",
+        "Response": "ECollisionResponse::ECR_Block"
+       }
+      ]
+     }
+    },
+    "AttachParent": "CapsuleComponent CollisionCylinder"
+   }
+  },
+  "BehemothVsBehemothForceField_GEN_VARIABLE": {
+   "type": "SphereComponent",
+   "props": {
+    "RelativeLocation": {
+     "X": -320.0,
+     "Y": 0.0,
+     "Z": 0.0
+    },
+    "RelativeScale3D": {
+     "X": 13.0,
+     "Y": 13.0,
+     "Z": 13.0
+    }
+   }
+  },
+  "staggerable_bpc_GEN_VARIABLE": {
+   "type": "staggerable_bpc_C",
+   "props": {
+    "StaggerData": [
+     {
+      "StaggerDamageRequired": 2000.0,
+      "StaggerRegenPerSecond": 15.0,
+      "StaggerPerHitArmor": 80.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 3000.0
+     },
+     {
+      "StaggerDamageRequired": 2400.0,
+      "StaggerRegenPerSecond": 15.0,
+      "StaggerPerHitArmor": 90.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 4000.0
+     },
+     {
+      "StaggerDamageRequired": 2800.0,
+      "StaggerRegenPerSecond": 20.0,
+      "StaggerPerHitArmor": 100.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 5000.0
+     },
+     {
+      "StaggerDamageRequired": 3200.0,
+      "StaggerRegenPerSecond": 20.0,
+      "StaggerPerHitArmor": 105.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 6000.0
+     },
+     {
+      "StaggerDamageRequired": 3600.0,
+      "StaggerRegenPerSecond": 25.0,
+      "StaggerPerHitArmor": 105.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 7000.0
+     },
+     {
+      "StaggerDamageRequired": 4000.0,
+      "StaggerRegenPerSecond": 30.0,
+      "StaggerPerHitArmor": 110.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 8000.0
+     },
+     {
+      "StaggerDamageRequired": 4400.0,
+      "StaggerRegenPerSecond": 35.0,
+      "StaggerPerHitArmor": 110.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 10000.0
+     },
+     {
+      "StaggerDamageRequired": 4800.0,
+      "StaggerRegenPerSecond": 40.0,
+      "StaggerPerHitArmor": 120.0,
+      "StaggerType": "stagger_type::Heavy",
+      "TemporaryArmorOnStagger": 12500.0
+     }
+    ]
+   }
+  }
+ }
+}

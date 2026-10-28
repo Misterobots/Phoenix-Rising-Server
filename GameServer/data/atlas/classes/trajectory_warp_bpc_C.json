@@ -1,0 +1,1381 @@
+{
+ "name": "trajectory_warp_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 336,
+ "sdk_header": "trajectory_warp_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "ObjectTypesThatBlockMyCapsule",
+   "type": "TArray<EObjectTypeQuery>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "WarpComponent",
+   "type": "UArchonWarpComponent*",
+   "offset": "0xB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ArchonWarpComponent>"
+  },
+  {
+   "name": "CurrentTrajectory",
+   "type": "UTrajectory*",
+   "offset": "0xC0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Trajectory>"
+  },
+  {
+   "name": "MainColliderComponent",
+   "type": "UCapsuleComponent*",
+   "offset": "0xC8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<CapsuleComponent>"
+  },
+  {
+   "name": "CharacterMovementComponent",
+   "type": "UCharacterMovementComponent*",
+   "offset": "0xD0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<CharacterMovementComponent>"
+  },
+  {
+   "name": "ObjectTypesWeShouldIgnoreDuringJump",
+   "type": "TArray<EObjectTypeQuery>",
+   "offset": "0xD8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "OnTrajectoryWarpStarted",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0xE8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "CurrentTrajectoryState",
+   "type": "Etrajectory_status",
+   "offset": "0xF8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "ByteProperty<trajectory_status>",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "CurrentTrajectoryInfo",
+   "type": "Factive_trajectory_info",
+   "offset": "0x100",
+   "size": 56,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<active_trajectory_info>"
+  },
+  {
+   "name": "Debug_ForceServerInitiated",
+   "type": "bool",
+   "offset": "0x138",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "BoolProperty",
+   "rep_index": 3,
+   "schema_rep_index": 3
+  },
+  {
+   "name": "IgnoreClientErrorCorrectionHandle",
+   "type": "FPhxGameplayPropertyOverrideHandle",
+   "offset": "0x13C",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PhxGameplayPropertyOverrideHandle>"
+  },
+  {
+   "name": "ActorsToIgnore",
+   "type": "TArray<AActor*>",
+   "offset": "0x140",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "WarpComponent",
+   "class": "UArchonWarpComponent",
+   "source": "property"
+  },
+  {
+   "name": "MainColliderComponent",
+   "class": "UCapsuleComponent",
+   "source": "property"
+  },
+  {
+   "name": "CharacterMovementComponent",
+   "class": "UCharacterMovementComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthStartJump",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "JumpRequest",
+     "type": "Fjump_trajectory_request"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthStartLinearTrajectoryWarpFromCurve",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LinearTrajectoryRequest",
+     "type": "Flinear_trajectory_request"
+    },
+    {
+     "name": "StartLocation",
+     "type": "FVector"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Auth_StartBallisticTrajectoryWarp",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "WarpRequest",
+     "type": "Fballistic_trajectory_request"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BroadcastStartJump",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "JumpRequest",
+     "type": "Fjump_trajectory_request"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientInitialted_StartBallisticTrajectoryWarp",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "WarpRequest",
+     "type": "Fballistic_trajectory_request"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EnterTrajectoryWarpMode",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TrajectoryFollowType",
+     "type": "ETrajectoryWarpFollowType"
+    },
+    {
+     "name": "DrawDebug",
+     "type": "bool"
+    },
+    {
+     "name": "TimeToExtendTrajectoryWithGravity",
+     "type": "double"
+    },
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 52,
+   "reads": [
+    "CharMovement",
+    "CharacterMovementComponent",
+    "CurrentTrajectory",
+    "CurrentTrajectoryInfo",
+    "MainColliderComponent",
+    "ObjectTypesWeShouldIgnoreDuringJump",
+    "OnTrajectoryWarpStarted",
+    "WarpComponent"
+   ],
+   "sets": [
+    "IgnoreClientErrorCorrectionHandle"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.ConvertObjectTypeToCollisionChannel",
+    "ArchonWarpComponent.StartTrajectoryWarp",
+    "GetGravityZ",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "None",
+    "PhxGameplayPropertyOverrideComponent.AddMovementIgnoreClientErrorCorrectionOverride",
+    "SetCollisionResponseToChannel",
+    "SetMovementMode",
+    "SetTrajectoryState",
+    "Trajectory.ExtendTrajectoryWithGravity"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_trajectory_warp_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 151,
+   "reads": [
+    "ActorsToIgnore",
+    "CurrentTrajectory",
+    "CurrentTrajectoryInfo",
+    "MainColliderComponent",
+    "ObjectTypesThatBlockMyCapsule",
+    "OnStartedPerformingOperations",
+    "PerformedMovementInterruptingActionDelegate",
+    "WarpComponent"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ActorComponent.ReceiveTick",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "ArchonWarpComponent.GetTrajectoryWarpTime",
+    "BroadcastStartJump",
+    "CapsuleComponent.GetScaledCapsuleHalfHeight",
+    "CapsuleComponent.GetScaledCapsuleRadius",
+    "GameplayStatics.BreakHitResult",
+    "Internal_ServerBroadcastStartBallisticTrajectoryWarp",
+    "Internal_ServerBroadcastTrajectoryWarpToRemotes",
+    "KismetArrayLibrary.Array_AddUnique",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.DrawDebugSphere",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "MultiStopWarp",
+    "Multi_StartBallisticTrajectoryWarp",
+    "MulticastStartLinearTrajectoryWarpFromCurve",
+    "StartBallisticTrajectory",
+    "StartJump",
+    "StartLinearCurveTrajectory",
+    "StopTrajectoryWarp",
+    "Trajectory.CapsuleTraceAlongTrajectoryForObjects",
+    "Trajectory.DebugDraw",
+    "Trajectory.EndTime"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass hit_reaction_bpc_C"
+   ]
+  },
+  {
+   "name": "GetCurrentTrajectory",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CurrentTrajectory",
+     "type": "UTrajectory*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "CurrentTrajectory"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_ServerBroadcastStartBallisticTrajectoryWarp",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "WarpRequest",
+     "type": "Fballistic_trajectory_request"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_ServerBroadcastTrajectoryWarpToRemotes",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LinearTrajectoryRequest",
+     "type": "Flinear_trajectory_request"
+    },
+    {
+     "name": "StartLocation",
+     "type": "FVector"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsTrajectoryActive",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TrajectoryIsActive",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 4,
+   "reads": [
+    "CurrentTrajectory"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiStopWarp",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Multi_StartBallisticTrajectoryWarp",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IgnoreLocalClient",
+     "type": "bool"
+    },
+    {
+     "name": "WarpRequest",
+     "type": "Fballistic_trajectory_request"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastStartLinearTrajectoryWarpFromCurve",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LinearTrajectoryRequest",
+     "type": "Flinear_trajectory_request"
+    },
+    {
+     "name": "IgnoreLocalClient",
+     "type": "bool"
+    },
+    {
+     "name": "StartLocation",
+     "type": "FVector"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnHitReacting",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Instigator",
+     "type": "AActor*"
+    },
+    {
+     "name": "InstigatorTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "Magnitude",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPerformedMovementInterruptingAction",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActionSourceTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTrajectoryWarpStarted__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PrepareForTrajectoryWarp",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TrajectoryTraceAheadTime",
+     "type": "double"
+    },
+    {
+     "name": "VelocityToSetAfterTrajectory",
+     "type": "FVector"
+    },
+    {
+     "name": "WhatToDoWhenReadyToTransition",
+     "type": "Etrajectory_trace_hit_strategy"
+    },
+    {
+     "name": "TrajectoryTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 50,
+   "reads": [
+    "ActorsToIgnore",
+    "CapsuleComponent",
+    "CurrentTrajectoryInfo",
+    "MainColliderComponent",
+    "ObjectTypesThatBlockMyCapsule",
+    "ObjectTypesWeShouldIgnoreDuringJump"
+   ],
+   "sets": [
+    "CharacterMovementComponent",
+    "CurrentTrajectoryInfo",
+    "MainColliderComponent",
+    "ObjectTypesThatBlockMyCapsule",
+    "WarpComponent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "GetObjectTypesThisComponentRespondsTo",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerDebug",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Pos",
+     "type": "FVector"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetTrajectoryState",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TrajectoryState",
+     "type": "Etrajectory_status"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "CurrentTrajectoryState"
+   ],
+   "sets": [
+    "CurrentTrajectoryState"
+   ],
+   "calls": [
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartBallisticTrajectory",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "WarpRequest",
+     "type": "Fballistic_trajectory_request"
+    },
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 35,
+   "reads": [
+    "CharacterMovement",
+    "CurrentTrajectory"
+   ],
+   "sets": [
+    "CurrentTrajectory"
+   ],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "EnterTrajectoryWarpMode",
+    "GetGravityZ",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.TransformLocation",
+    "KismetSystemLibrary.IsValid",
+    "PrepareForTrajectoryWarp",
+    "Trajectory.CreateBallisticTrajectory"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartClientInitiatedLinearTrajectoryWarp",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LinearTrajectoryRequest",
+     "type": "Flinear_trajectory_request"
+    },
+    {
+     "name": "StartLocation",
+     "type": "FVector"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "trajectory_warp_bpc_C.ExecuteUbergraph_trajectory_warp_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartJump",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "JumpRequest",
+     "type": "Fjump_trajectory_request"
+    },
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 45,
+   "reads": [
+    "CurrentTrajectory",
+    "MainColliderComponent",
+    "ObjectTypesThatBlockMyCapsule"
+   ],
+   "sets": [
+    "CurrentTrajectory"
+   ],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "CapsuleComponent.GetScaledCapsuleRadius",
+    "EnterTrajectoryWarpMode",
+    "FindLobbedProjectileAim",
+    "GameplayStatics.Blueprint_PredictProjectilePath_ByObjectType",
+    "KismetArrayLibrary.Array_LastIndex",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid",
+    "PrepareForTrajectoryWarp",
+    "Trajectory.CreateBallisticTrajectory"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartLinearCurveTrajectory",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LinearTrajectoryRequest",
+     "type": "Flinear_trajectory_request"
+    },
+    {
+     "name": "StartLocation",
+     "type": "FVector"
+    },
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 18,
+   "reads": [
+    "CurrentTrajectory"
+   ],
+   "sets": [
+    "CurrentTrajectory"
+   ],
+   "calls": [
+    "EnterTrajectoryWarpMode",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.MakeVector",
+    "KismetSystemLibrary.IsValid",
+    "PrepareForTrajectoryWarp",
+    "Trajectory.CreateLinearTrajectoryFromCurve"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopTrajectoryWarp",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 49,
+   "reads": [
+    "ActorsToIgnore",
+    "CharacterMovementComponent",
+    "CurrentTrajectory",
+    "CurrentTrajectoryInfo",
+    "IgnoreClientErrorCorrectionHandle",
+    "MainColliderComponent",
+    "ObjectTypesWeShouldIgnoreDuringJump",
+    "WarpComponent"
+   ],
+   "sets": [
+    "CurrentTrajectory",
+    "CurrentTrajectoryInfo",
+    "Velocity"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.ConvertObjectTypeToCollisionChannel",
+    "ArchonWarpComponent.StopTrajectoryWarp",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "PhxGameplayPropertyOverrideComponent.RemoveMovementIgnoreClientErrorCorrectionOverride",
+    "SetCollisionResponseToChannel",
+    "SetMovementMode",
+    "SetTrajectoryState",
+    "StopMovementImmediately"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/trajectory_warp_bpc",
+ "pseudo_file": "pseudo/trajectory_warp_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

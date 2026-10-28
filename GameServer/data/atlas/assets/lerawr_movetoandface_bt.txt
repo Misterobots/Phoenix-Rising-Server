@@ -1,0 +1,11 @@
+lerawr_movetoandface_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Moves to Pounce Location and nicely faces attack target"]
+  Sequence
+    [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.PounceLocation, MinDistance=800, MaxDistance=99999, ObservedKeyNames=["SelfActor", "PounceLocation"], FlowAbortMode=Self)]
+    1) SimpleParallel
+      1) wait_for_distance_bttask  (TargetKey=bb.PounceLocation, MinDistanceData={"ConstantFloat": 1500.0}, MaxDistanceData={"ConstantFloat": 6000.0}, BlackboardKeyNameToCheck=CanTransitToNextAnim, RequiredBlackboardKeyType=Bool, BlackboardCompareData={"ConstantBool": true})
+      2) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.PounceLocation)
+    2) BehemothAction "run to landturn"  (Montage=AnimMontage b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot)
+    3) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=LandAndTurn)

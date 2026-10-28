@@ -1,0 +1,69 @@
+mcrollin_ice_clone_bt  blackboard=BlackboardData mcr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=3)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+    [if current_target_is_valid_btdeco]
+    5) try_set_behemoth_state_bttask  (State=Combat)
+    6) Selector "Selector_AttackOrNonAttack"
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        1) Sequence "AttackThenTurnAroundIfOptimal"
+          [if Blackboard  (TopScore Is Greater Than 0.000000)]
+          1) Selector "StateGate"
+            1) Sequence
+              [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass mcr_roll_atk_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+              1) MCRRollManager "Roll"  (Montage=AnimMontage mcr_rollattack_mot, MontagePlayRate=0.1, RecoveryTime=0, TimeLimit=5, CollisionTest_XLenght=1800, ActionClassToCooldown=BlueprintGeneratedClass mcr_roll_atk_C, ScoreKey=bb.TopScore, bShowPropertyDetails=false)
+              2) Selector
+                [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+                1) BehemothAction  (Montage=AnimMontage b_tp_gen_00_atk_attackfromrollalpha_fwd_00_mot, bShowPropertyDetails=false)
+                [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass mcr_tailslam_fromroll_atk_C, bShowPropertyDetails=false)]
+                2) PerformActionClass "Slam_FromRoll"  (ActionClass=BlueprintGeneratedClass mcr_tailslam_fromroll_atk_C, bShowPropertyDetails=false)
+                [if btdeco_percentchance  (PercentChance=0.5)]
+                3) PerformActionClass "Gore_FromRoll"  (ActionClass=BlueprintGeneratedClass mcr_gorefromroll_atk_C, bShowPropertyDetails=false)
+                4) BehemothAction "RollRecover"  (Montage=AnimMontage b_mcr_atk_rollrecover_mot)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shared_mcr_postattack_repo_bt)
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+          [if btdeco_variablecooldown  (Cooldown_Min=80, Cooldown_Max=140, StartTime=130)]
+          3) Sequence
+            {service clear_forcepersonalityanim_ondeact_btservice}
+            [if ForceSuccess]
+            1) Sequence
+              [if current_target_is_down_btdeco]
+              1) set_blackboard_key_bttask "Set ForcePersonalityAnim to True"  (ResultKey=bb.ForcePersonalityAnim, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+            2) get_player_target_bttask
+            3) RotateTowardsTarget  (Target=bb.AttackTarget)
+            [if ForceSuccess]
+            4) Sequence
+              1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.5}, {"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.25}, {"Montage": "AnimMontage b_mcr_pers_rawr_long", "Chance": 1.0}])
+        [if Blackboard  (TopScore Is Equal To 0.000000)]
+        2) Selector "Reposition"
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+            {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+          [if Blackboard  (CurrentHelper is Is Not Set)]
+          2) Selector "No Helper GOTO AttackTarget"
+            [if Cooldown  (CooldownTime=10)]
+            1) Selector
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": -1260.0, "Z": 0.0}])]
+              1) Selector "Left Sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepL_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_left_mot, RecoveryTime=0.1)
+                2) BehemothAction "SidestepL"  (Montage=AnimMontage b_mcr_loco_sidestep_left_mot, RecoveryTime=0.1)
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": 1260.0, "Z": 0.0}])]
+              2) Selector "Right sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepR_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_right_mot, RecoveryTime=0.1)
+                2) BehemothAction "SidestepR"  (Montage=AnimMontage b_mcr_loco_sidestep_right_mot, RecoveryTime=0.1)
+      2) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

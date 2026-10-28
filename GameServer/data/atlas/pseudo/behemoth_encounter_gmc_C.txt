@@ -1,0 +1,439 @@
+# behemoth_encounter_gmc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateScore
+  [0] push @875
+  [5] L_DangerAccruedDuringEvent = 0.0
+  [32] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(Result, 1)
+  [63] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @676
+  [77] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [98] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [134] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [163] if !(K2Node_DynamicCast_bSuccess) goto @769
+  [177] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetDangerLevel(CallFunc_GetDangerLevel_Danger)
+  [223] L_DangerAccruedDuringEvent = CallFunc_GetDangerLevel_Danger
+  [250] Temp_int_Loop_Counter_Variable = 0
+  [273] Temp_int_Array_Index_Variable = 0
+  [296] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DangerScoreThresholds)
+  [355] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [393] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [403] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [430] push @801
+  [435] Default__KismetArrayLibrary.Array_Get(self.DangerScoreThresholds, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [494] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(L_DangerAccruedDuringEvent, CallFunc_Array_Get_Item)
+  [532] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [542] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(Temp_int_Array_Index_Variable)
+  [579] K2Node_MakeStruct_GameModeContentScore.Score = CallFunc_Conv_IntToFloat_ReturnValue
+  [615] K2Node_MakeStruct_GameModeContentScore.Outcome = 0
+  [644] ReturnValue = K2Node_MakeStruct_GameModeContentScore
+  [671] goto @875
+  [676] K2Node_MakeStruct_GameModeContentScore_1.Score = 0.0
+  [708] K2Node_MakeStruct_GameModeContentScore_1.Outcome = 0
+  [737] ReturnValue = K2Node_MakeStruct_GameModeContentScore_1
+  [764] goto @875
+  [769] CallFunc_GetDangerLevel_Danger = 0.0
+  [796] goto @223
+  [801] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [843] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [870] goto @296
+  [875] return ReturnValue
+  [885] end
+
+=== CheckIfAnyLiveBehemothsRemain
+  [0] push @666
+  [5] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.State, 3)
+  [36] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [46] L_AnyAlive = false
+  [57] Temp_bool_True_if_break_was_hit_Variable = false
+  [68] Temp_int_Loop_Counter_Variable = 0
+  [91] Temp_int_Array_Index_Variable = 0
+  [114] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [143] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.OwnedBehemoths)
+  [202] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [240] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [278] if !(CallFunc_BooleanAND_ReturnValue) goto @525
+  [292] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [319] push @553
+  [324] Default__KismetArrayLibrary.Array_Get(self.OwnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [383] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_Array_Get_Item)
+  [419] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [448] if !(K2Node_DynamicCast_bSuccess) goto @627
+  [462] K2Node_DynamicCast_AsBehemoth_Interface.BehemothInState(10, CallFunc_BehemothInState_IsInState)
+  [510] if !(CallFunc_BehemothInState_IsInState) goto @643
+  [524] pop
+  [525] if !(L_AnyAlive) goto @540
+  [539] pop
+  [540] ContentCompleted(1)
+  [552] pop
+  [553] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [595] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [622] goto @114
+  [627] CallFunc_BehemothInState_IsInState = false
+  [638] goto @510
+  [643] L_AnyAlive = true
+  [654] Temp_bool_True_if_break_was_hit_Variable = true
+  [665] pop
+  [666] return nothing
+  [668] end
+
+=== CleanupGameModeContent
+  [0] ExecuteUbergraph_behemoth_encounter_gmc(4419)
+  [15] return nothing
+  [17] end
+
+=== CustomEvent_0
+  [0] ExecuteUbergraph_behemoth_encounter_gmc(5246)
+  [15] return nothing
+  [17] end
+
+=== Debug_MultiShowScoreDetails
+  [0] frame.K2Node_CustomEvent_TotalDangerAccrued = TotalDangerAccrued
+  [18] frame.K2Node_CustomEvent_Score = Score
+  [36] ExecuteUbergraph_behemoth_encounter_gmc(5266)
+  [51] return nothing
+  [53] end
+
+=== ExecuteUbergraph_behemoth_encounter_gmc
+  [0] push @5323
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [57] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [84] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(self.L_BehemothsToSpawn)
+  [143] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_5)
+  [181] if !(CallFunc_Less_IntInt_ReturnValue_5) goto @427
+  [195] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_3
+  [222] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Variable, CallFunc_Array_Get_Item_5)
+  [281] Default__KismetArrayLibrary.Array_Get(self.L_BehemothsToSpawn, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_6)
+  [340] SpawnBehemoth(CallFunc_Array_Get_Item_6, CallFunc_Array_Get_Item_5)
+  [372] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), 1623886217, 'ExecuteUbergraph_behemoth_encounter_gmc', self})
+  [426] pop
+  [427] PostBehemothsSpawned()
+  [441] CallFunc_GetGameMode_ReturnValue_1 = GetGameMode(self)
+  [462] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue_1)
+  [498] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [527] if !(K2Node_DynamicCast_bSuccess_2) goto @615
+  [541] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetTotalDangerAccrued(CallFunc_GetTotalDangerAccrued_TotalDangerAccrued)
+  [587] self.DangerFromEvent = CallFunc_GetTotalDangerAccrued_TotalDangerAccrued
+  [614] pop
+  [615] CallFunc_GetTotalDangerAccrued_TotalDangerAccrued = 0.0
+  [642] goto @587
+  [647] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [668] K2Node_DynamicCast_AsBPGS_Archon_Game_State = cast<BPGS_Archon_GameState_C>(CallFunc_GetGameState_ReturnValue)
+  [704] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGS_Archon_Game_State)
+  [733] if !(K2Node_DynamicCast_bSuccess) pop
+  [743] K2Node_DynamicCast_AsBPGS_Archon_Game_State.FlushNetDormancy()
+  [775] K2Node_DynamicCast_AsBPGS_Archon_Game_State.self.BehemothState = 6
+  [817] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsBPGS_Archon_Game_State, 28, 'BehemothState')
+  [854] K2Node_DynamicCast_AsBPGS_Archon_Game_State.OnRep_BehemothState()
+  [890] pop
+  [891] goto @647
+  [896] push @1078
+  [901] Default__KismetArrayLibrary.Array_Get(self.EncounterDetails.EncounterContent, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [969] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.ContentType, 0)
+  [1009] if !(K2Node_SwitchEnum_CmpSuccess) goto @1295
+  [1023] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.ContentType, 1)
+  [1063] if !(K2Node_SwitchEnum_CmpSuccess) goto @1432
+  [1077] pop
+  [1078] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1120] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1147] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.EncounterDetails.EncounterContent)
+  [1215] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1253] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1263] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_1
+  [1290] goto @896
+  [1295] Default__KismetArrayLibrary.Array_Get(self.EncounterDetails.EncounterContent, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [1363] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.L_BehemothsToSpawn, CallFunc_Array_Get_Item)
+  [1431] pop
+  [1432] Default__KismetArrayLibrary.Array_Get(self.EncounterDetails.EncounterContent, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [1500] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.OwnedModifiers, CallFunc_Array_Get_Item.ContentName)
+  [1577] pop
+  [1578] push @1754
+  [1583] Default__KismetArrayLibrary.Array_Get(self.OwnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1642] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_Array_Get_Item_2)
+  [1679] PrintString(self, CallFunc_GetDisplayName_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 0.5, 'None')
+  [1753] pop
+  [1754] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1796] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1823] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.OwnedBehemoths)
+  [1882] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [1920] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [1930] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1957] goto @1578
+  [1962] Temp_int_Loop_Counter_Variable = 0
+  [1985] Temp_int_Array_Index_Variable = 0
+  [2008] goto @1823
+  [2013] Temp_int_Loop_Counter_Variable_1 = 0
+  [2036] Temp_int_Array_Index_Variable_3 = 0
+  [2059] goto @1147
+  [2064] push @2710
+  [2069] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [2128] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item_4)
+  [2157] if !(CallFunc_IsValid_ReturnValue) pop
+  [2167] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [2195] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [2254] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_Array_Get_Item_4.K2_GetActorLocation()
+  [2304] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue)
+  [2350] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [2387] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_VSizeSquared_ReturnValue, Temp_real_Variable)
+  [2425] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [2435] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [2463] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_5, CallFunc_Array_Get_Item_4)
+  [2522] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_Array_Get_Item_4.K2_GetActorLocation()
+  [2572] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue)
+  [2618] CallFunc_VSizeSquared_ReturnValue = VSizeSquared(CallFunc_Subtract_VectorVector_ReturnValue)
+  [2655] Temp_real_Variable = CallFunc_VSizeSquared_ReturnValue
+  [2682] Temp_int_Variable = Temp_int_Array_Index_Variable_5
+  [2709] pop
+  [2710] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [2752] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_4
+  [2779] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [2838] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue_4)
+  [2876] if !(CallFunc_Less_IntInt_ReturnValue_4) goto @2922
+  [2890] Temp_int_Array_Index_Variable_5 = Temp_int_Loop_Counter_Variable_4
+  [2917] goto @2064
+  [2922] Temp_int_Loop_Counter_Variable_3 = 0
+  [2945] Temp_int_Array_Index_Variable_4 = 0
+  [2968] goto @84
+  [2973] push @3750
+  [2978] K2Node_MakeStruct_FormatArgumentData.ArgumentName = 'score'
+  [3012] K2Node_MakeStruct_FormatArgumentData.ArgumentValueType = 3
+  [3041] K2Node_MakeStruct_FormatArgumentData.ArgumentValue = EX_TextConst(Value={'SourceString': ''})
+  [3070] K2Node_MakeStruct_FormatArgumentData.ArgumentValueInt = 0
+  [3106] K2Node_MakeStruct_FormatArgumentData.ArgumentValueFloat = 0.0
+  [3138] K2Node_MakeStruct_FormatArgumentData.ArgumentValueDouble = K2Node_CustomEvent_Score
+  [3174] K2Node_MakeStruct_FormatArgumentData.ArgumentValueGender = 0
+  [3203] K2Node_MakeStruct_FormatArgumentData_1.ArgumentName = 'total_danger'
+  [3244] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueType = 3
+  [3273] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValue = EX_TextConst(Value={'SourceString': ''})
+  [3302] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueInt = 0
+  [3338] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueFloat = 0.0
+  [3370] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueDouble = K2Node_CustomEvent_TotalDangerAccrued
+  [3406] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueGender = 0
+  [3435] array{K2Node_MakeStruct_FormatArgumentData_1, K2Node_MakeStruct_FormatArgumentData}
+  [3464] CallFunc_Format_ReturnValue = Format(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': '(DEBUG) Total Danger Accrued: {total_danger}, Score: {score}'}}), K2Node_MakeArray_Array)
+  [3565] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [3624] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_Array_Get_Item_3.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [3675] OnStatusWorthHUDNotifyingOccured__DelegateSignature(CallFunc_Format_ReturnValue, behemoth_icon_dauntless, 'None', false, false)
+  [3749] pop
+  [3750] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [3792] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [3819] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [3878] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_3)
+  [3916] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [3926] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [3953] goto @2973
+  [3958] Temp_int_Loop_Counter_Variable_2 = 0
+  [3981] Temp_int_Array_Index_Variable_1 = 0
+  [4004] goto @3819
+  [4009] Temp_int_Array_Index_Variable_2 = 0
+  [4032] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.OwnedBehemoths)
+  [4091] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_5, CallFunc_Array_Length_ReturnValue_1)
+  [4129] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [4139] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_5
+  [4166] push @4267
+  [4171] Default__KismetArrayLibrary.Array_Get(self.OwnedBehemoths, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_1)
+  [4230] CallFunc_Array_Get_Item_1.K2_DestroyActor()
+  [4266] pop
+  [4267] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_5, 1)
+  [4309] Temp_int_Loop_Counter_Variable_5 = CallFunc_Add_IntInt_ReturnValue_5
+  [4336] goto @4032
+  [4341] Temp_real_Variable = 9999999827968.0
+  [4368] Temp_int_Loop_Counter_Variable_4 = 0
+  [4391] Temp_int_Array_Index_Variable_5 = 0
+  [4414] goto @2779
+  [4419] CleanupGameModeContent()
+  [4429] push @4472
+  [4434] if !(self.ShouldDestroyBehemoths) pop
+  [4444] Temp_int_Loop_Counter_Variable_5 = 0
+  [4467] goto @4009
+  [4472] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [4493] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameMode_ReturnValue.GetComponentByClass(modifier_manager_bpc_C)
+  [4544] CallFunc_GetComponentByClass_ReturnValue.AuthClearModifiersWithGUID(self.ContentGUID)
+  [4589] pop
+  [4590] StartGameModeContent()
+  [4600] array{}
+  [4611] GetAllActorsOfClass(self, BP_PatrolCenterPoint_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [4640] goto @4341
+  [4645] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_CustomEvent_ChangeThatHappened, 0)
+  [4676] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(K2Node_CustomEvent_State, 10)
+  [4707] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [4745] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [4755] CheckIfAnyLiveBehemothsRemain()
+  [4769] pop
+  [4770] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(K2Node_CustomEvent_DestroyedActor)
+  [4806] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [4835] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [4845] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.OwnedBehemoths, K2Node_DynamicCast_AsArchon_Behemoth)
+  [4905] CheckIfAnyLiveBehemothsRemain()
+  [4919] pop
+  [4920] GameContentComplete(K2Node_Event_Result)
+  [4939] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(K2Node_Event_Result, 0)
+  [4970] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(K2Node_Event_Result, 3)
+  [5001] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_2, CallFunc_EqualEqual_ByteByte_ReturnValue_3)
+  [5039] self.ShouldDestroyBehemoths = CallFunc_BooleanOR_ReturnValue
+  [5058] CallFunc_GetGameMode_ReturnValue_2 = GetGameMode(self)
+  [5079] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetGameMode_ReturnValue_2.GetComponentByClass(modifier_manager_bpc_C)
+  [5130] CallFunc_GetComponentByClass_ReturnValue_1.AuthStopModifiersByGUID(self.ContentGUID)
+  [5175] Delay(self, 0.5, LatentActionInfo{EX_SkipOffsetConst(Value=891), -2145003402, 'ExecuteUbergraph_behemoth_encounter_gmc', self})
+  [5229] pop
+  [5230] goto @2013
+  [5235] ReceiveBeginPlay()
+  [5245] pop
+  [5246] goto @1962
+  [5251] MulticastStartLoadingContent()
+  [5261] goto @5230
+  [5266] array{}
+  [5277] array{}
+  [5288] GetPlayerStatesAndCharacters(self, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [5318] goto @3958
+  [5323] return nothing
+  [5325] end
+
+=== GameContentComplete
+  [0] frame.K2Node_Event_Result = Result
+  [18] ExecuteUbergraph_behemoth_encounter_gmc(4920)
+  [33] return nothing
+  [35] end
+
+=== MulticastStartLoadingContent
+  [0] ExecuteUbergraph_behemoth_encounter_gmc(5251)
+  [15] return nothing
+  [17] end
+
+=== OnBehemothDestroyed
+  [0] frame.K2Node_CustomEvent_DestroyedActor = DestroyedActor
+  [18] ExecuteUbergraph_behemoth_encounter_gmc(4770)
+  [33] return nothing
+  [35] end
+
+=== OnBehemothStateChanged
+  [0] frame.K2Node_CustomEvent_State = State
+  [18] frame.K2Node_CustomEvent_ChangeThatHappened = ChangeThatHappened
+  [36] ExecuteUbergraph_behemoth_encounter_gmc(4645)
+  [51] return nothing
+  [53] end
+
+=== PostBehemothsSpawned
+  [0] push @1193
+  [5] push @600
+  [10] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.OwnedBehemoths)
+  [69] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [103] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [113] array{ai_rule_maintain_distance_C}
+  [133] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [154] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetGameMode_ReturnValue.GetComponentByClass(ai_coordination_manager_bpc_C)
+  [205] CallFunc_GetComponentByClass_ReturnValue_1.CreateAgentGroup(K2Node_MakeArray_Array, CallFunc_CreateAgentGroup_GroupGUID)
+  [259] Temp_int_Loop_Counter_Variable_1 = 0
+  [282] Temp_int_Array_Index_Variable = 0
+  [305] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.OwnedBehemoths)
+  [364] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [402] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [412] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [439] push @1119
+  [444] Default__KismetArrayLibrary.Array_Get(self.OwnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [503] CallFunc_GetComponentByClass_ReturnValue = CallFunc_Array_Get_Item.GetComponentByClass(ai_coordination_agent_bpc_C)
+  [554] CallFunc_GetComponentByClass_ReturnValue.Initialize(CallFunc_CreateAgentGroup_GroupGUID)
+  [599] pop
+  [600] CallFunc_GetGameMode_ReturnValue_1 = GetGameMode(self)
+  [621] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetGameMode_ReturnValue_1.GetComponentByClass(modifier_manager_bpc_C)
+  [672] self.GameMode_ModifierManagerComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [691] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [719] self.ContentGUID = CallFunc_NewGuid_ReturnValue
+  [746] Temp_int_Loop_Counter_Variable = 0
+  [769] Temp_int_Array_Index_Variable_1 = 0
+  [792] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.OwnedModifiers)
+  [851] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [889] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [899] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [926] push @1045
+  [931] Default__KismetArrayLibrary.Array_Get(self.OwnedModifiers, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [990] self.GameMode_ModifierManagerComponent.AuthAddModifier(CallFunc_Array_Get_Item_1, self.ContentGUID)
+  [1044] pop
+  [1045] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1087] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1114] goto @792
+  [1119] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1161] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1188] goto @305
+  [1193] return nothing
+  [1195] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_behemoth_encounter_gmc(5235)
+  [15] return nothing
+  [17] end
+
+=== SpawnBehemoth
+  [0] push @2387
+  [5] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(PatrolPoint)
+  [42] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Patrol point is ', CallFunc_GetDisplayName_ReturnValue)
+  [97] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 10.0, 'None')
+  [171] K2Node_MakeStruct_behemoth_spawn_params.TriggersEndOfMission = false
+  [191] K2Node_MakeStruct_behemoth_spawn_params.IsTemporarySpawnedBehemoth = false
+  [211] K2Node_MakeStruct_behemoth_spawn_params.OpensAetherVents = true
+  [231] K2Node_MakeStruct_behemoth_spawn_params.CanFlee = false
+  [251] K2Node_MakeStruct_behemoth_spawn_params.PlayArrivalBehavior = false
+  [271] K2Node_MakeStruct_behemoth_spawn_params.DelayAfterDeathBeforeDissolve = 8.0
+  [303] K2Node_MakeStruct_behemoth_spawn_params.AdditionalTuningPresets = tuning_data_array{EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'tuning_data_array'", 'ObjectPath': '/Game/_shared/blueprints/structs/tuning_data_array.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TuningDatas_4_45ED239C4F7CACDA0136819823EF4B10', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'TuningDatas_4_45ED239C4F7CACDA0136819823EF4B10', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 32, 'Struct': {'ObjectName': "UserDefinedStruct'behemoth_tuning_data'", 'ObjectPath': '/Game/_shared/blueprints/structs/behemoth_tuning_data.0'}}}},Values=)}
+  [358] L_SpawnParams = K2Node_MakeStruct_behemoth_spawn_params
+  [385] CallFunc_IsValid_ReturnValue = IsValid(Encounter.ExtraTuning.DataTable)
+  [432] if !(CallFunc_IsValid_ReturnValue) goto @693
+  [446] CallFunc_GetDataTableRowFromName_Generic_ReturnValue = Default__ArchonGameplayStatics.GetDataTableRowFromName_Generic(Encounter.ExtraTuning.DataTable, Encounter.ExtraTuning.RowName, L_ExtraTuningData, CallFunc_GetDataTableRowFromName_Generic_OutRow)
+  [560] if !(CallFunc_GetDataTableRowFromName_Generic_ReturnValue) goto @693
+  [574] L_ExtraTuningData = CallFunc_GetDataTableRowFromName_Generic_OutRow
+  [601] array{L_ExtraTuningData}
+  [621] K2Node_MakeStruct_tuning_data_array.TuningDatas = K2Node_MakeArray_Array_1
+  [657] L_SpawnParams.AdditionalTuningPresets = K2Node_MakeStruct_tuning_data_array
+  [693] CallFunc_FTrunc_A_ImplicitCast = cast<CST_FloatToDouble>(self.OptionalPowerOverride)
+  [722] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_FTrunc_A_ImplicitCast)
+  [759] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [780] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetGameMode_ReturnValue.GetComponentByClass(bp_gamemode_behemoth_spawner_component_C)
+  [831] CallFunc_GetComponentByClass_ReturnValue.SpawnBehemothAtChallengeLevelAtPatrolPoint(Encounter.ContentName, Encounter.ScaledChallengeLevel, escalation_level_table, L_SpawnParams, true, PatrolPoint, CallFunc_FTrunc_ReturnValue, CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth)
+  [949] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth)
+  [978] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [988] push @2166
+  [993] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.OwnedBehemoths, CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth)
+  [1061] CallFunc_K2_GetComponentLocation_ReturnValue = self.Arrow.K2_GetComponentLocation()
+  [1111] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth.K2_GetActorLocation()
+  [1161] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue)
+  [1207] self.Arrow.K2_SetWorldRotation(CallFunc_FindLookAtRotation_ReturnValue, false, CallFunc_K2_SetWorldRotation_SweepHitResult, false)
+  [1259] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnBehemothStateChanged)
+  [1282] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth.GetComponentByClass(behemoth_eventdispatcher_bpc_C)
+  [1333] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1374] K2Node_CreateDelegate_OutputDelegate = bind(self.OnBehemothDestroyed)
+  [1397] K2Node_CreateDelegate_OutputDelegate += None
+  [1438] Temp_real_Variable = 0.6660000085830688
+  [1465] Temp_real_Variable_1 = 0.5
+  [1492] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.L_BehemothsToSpawn)
+  [1551] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [1585] Temp_bool_Variable = CallFunc_Greater_IntInt_ReturnValue
+  [1604] L_BehemothHealthScale = switch(Temp_bool_Variable){false: Temp_real_Variable, true: Temp_real_Variable_1, default: K2Node_Select_Default}
+  [1675] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth)
+  [1711] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [1740] if !(K2Node_DynamicCast_bSuccess) pop
+  [1750] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(1.0, L_BehemothHealthScale)
+  [1796] K2Node_MakeStruct_HealthScale_12_B2A784E04A6C63ED6D77AB9F82896B3F_ImplicitCast = cast<CST_DoubleToFloat>(L_BehemothHealthScale)
+  [1825] K2Node_MakeStruct_behemoth_tuning_data.HealthScale = K2Node_MakeStruct_HealthScale_12_B2A784E04A6C63ED6D77AB9F82896B3F_ImplicitCast
+  [1861] K2Node_MakeStruct_behemoth_tuning_data.BonusPctOfMaxHealthToParts = 0.0
+  [1893] K2Node_MakeStruct_PartHealthScale_16_BB5C6E554907196C6F0BC6837E26211D_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1922] K2Node_MakeStruct_behemoth_tuning_data.PartHealthScale = K2Node_MakeStruct_PartHealthScale_16_BB5C6E554907196C6F0BC6837E26211D_ImplicitCast
+  [1958] K2Node_MakeStruct_behemoth_tuning_data.BonusPctOfMaxHealthToExpose = 0.0
+  [1990] K2Node_MakeStruct_behemoth_tuning_data.ExposeHealthScale = 1.0
+  [2022] K2Node_MakeStruct_behemoth_tuning_data.StaggerHealthScale = 1.0
+  [2054] K2Node_MakeStruct_behemoth_tuning_data.DamageScale = 1.0
+  [2086] K2Node_MakeStruct_behemoth_tuning_data.ElementalHealthScale = 1.0
+  [2118] K2Node_DynamicCast_AsBehemoth_Interface.AddTuningPreset_interface(K2Node_MakeStruct_behemoth_tuning_data, true)
+  [2165] pop
+  [2166] array{null}
+  [2178] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth.GetComponentByClass(action_lookuptable_bpc_C)
+  [2229] CallFunc_GetComponentByClass_ReturnValue_1.AddActionOverride(7, K2Node_MakeArray_Array)
+  [2276] array{null}
+  [2288] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_SpawnBehemothAtChallengeLevelAtPatrolPoint_SpawnedBehemoth.GetComponentByClass(action_lookuptable_bpc_C)
+  [2339] CallFunc_GetComponentByClass_ReturnValue_1.AddActionOverride(19, K2Node_MakeArray_Array)
+  [2386] pop
+  [2387] return nothing
+  [2389] end
+
+=== StartGameModeContent
+  [0] ExecuteUbergraph_behemoth_encounter_gmc(4590)
+  [15] return nothing
+  [17] end

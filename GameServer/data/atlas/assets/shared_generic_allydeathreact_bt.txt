@@ -1,0 +1,12 @@
+shared_generic_allydeathreact_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) set_blackboard_object_from_message_bttask  (ResultKeyName=TargetActor)
+    2) try_set_behemoth_state_bttask  (State=ReadyToEnterRage)
+    3) Sequence
+      {service override_default_turn_warp_btservice  (TurnWarpTargetKeyName=TargetActor)}
+      {service override_lookat_target_bts}
+      1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25)
+      2) generic_action_bttask  (ActionType=BackUp)
+    4) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)

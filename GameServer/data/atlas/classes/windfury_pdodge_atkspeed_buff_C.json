@@ -1,0 +1,493 @@
+{
+ "name": "windfury_pdodge_atkspeed_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "cooldown_manager_bpc",
+   "type": "ObjectProperty<cooldown_manager_bpc_C>",
+   "bp_type": "ObjectProperty<cooldown_manager_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WhereShouldMagnitudeBeApplied",
+   "type": "ByteProperty<cell_damage_modification>",
+   "bp_type": "ByteProperty<cell_damage_modification>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MovespeedGEEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentMagnitude",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MovespeedEffectClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Character",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcEffect",
+   "type": "ObjectProperty<ParticleSystem>",
+   "bp_type": "ObjectProperty<ParticleSystem>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OnProcAudio",
+   "type": "ObjectProperty<AkAudioEvent>",
+   "bp_type": "ObjectProperty<AkAudioEvent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ManualMagnitudeAdjustment",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LowHPTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NumMobilityCells",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AttackspeedGEHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AtkspeedEffectClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CooldownName",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CooldownTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "cooldown_manager_bpc",
+   "class": "cooldown_manager_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AddMobilityPerksFromGear",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Gear",
+     "type": "ObjectProperty<ArchonInventoryItem_CellContainer>"
+    },
+    {
+     "name": "CallFunc_GetAllPermanentCellEffects_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [
+    "NumMobilityCells"
+   ],
+   "sets": [
+    "NumMobilityCells"
+   ],
+   "calls": [
+    "ArchonInventoryItem_CellContainer.GetAllPermanentCellEffects",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable keyword_cell_effects"
+   ],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_windfury_pdodge_atkspeed_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetActiveEffectsWithAllTags_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "CallFunc_GetEquippedCells_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 145,
+   "reads": [
+    "AttackspeedGEHandle",
+    "Character",
+    "CooldownName",
+    "CooldownTime",
+    "Mesh",
+    "MovespeedGEEffectHandle",
+    "NumMobilityCells",
+    "OnPerfectDodgeDelegate",
+    "OnProcAudio",
+    "OnProcEffect",
+    "OwnerAbilitySystemComponent",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [
+    "AttackspeedGEHandle",
+    "Character",
+    "NumMobilityCells"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.GetActiveEffectsWithAllTags",
+    "ActorIsAlive",
+    "AddMobilityPerksFromGear",
+    "AdjustBuffTempStacks",
+    "AkGameplayStatics.PostEvent",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonLoadout.GetActiveLoadoutSlotData",
+    "ArchonLoadoutSlotData.GetArmsInventoryItem",
+    "ArchonLoadoutSlotData.GetChestInventoryItem",
+    "ArchonLoadoutSlotData.GetEquippedCells",
+    "ArchonLoadoutSlotData.GetHelmetInventoryItem",
+    "ArchonLoadoutSlotData.GetLegsInventoryItem",
+    "ArchonLoadoutSlotData.GetWeaponInventoryItem",
+    "ArchonLoadoutStringLibrary.Conv_ItemIdReplToString",
+    "ArchonPlayerController.GetLoadout",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GameplayStatics.SpawnEmitterAttached",
+    "IsCooldownReady",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetSystemLibrary.IsValid",
+    "MakeOutgoingSpec",
+    "Pawn.GetController",
+    "RegisterCooldown",
+    "RemoveActiveGameplayEffect",
+    "SetActorParameter",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [],
+   "tables": [
+    "FeatureFlaggedCompositeDataTable generated_cell_catalog_composite"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass ce_rage_damage_ge_C"
+   ]
+  },
+  {
+   "name": "MeshEmitVFX_Multi",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoadoutChanged",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPerfectDodge",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "windfury_pdodge_atkspeed_buff_C.ExecuteUbergraph_windfury_pdodge_atkspeed_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable keyword_cell_effects",
+  "FeatureFlaggedCompositeDataTable generated_cell_catalog_composite"
+ ],
+ "package": "/Game/_shared/blueprints/buffs/playerroles/windfury/windfury_pdodge_atkspeed_buff",
+ "pseudo_file": "pseudo/windfury_pdodge_atkspeed_buff_C.txt",
+ "game_data": {}
+}

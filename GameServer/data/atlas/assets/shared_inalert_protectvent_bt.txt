@@ -1,0 +1,25 @@
+shared_inalert_protectvent_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  Sequence
+    {service try_pick_new_target_bts  (Interval=2)}
+    1) Selector
+      [if not navtrace_btdeco  (TraceTargetBlackboardKey=CurrentPatrolPoint, bInverseCondition=true)]
+      [if TimeLimit]
+      [if Cooldown]
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      1) Sequence
+        1) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentPatrolPoint)
+      2) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player", "QueryConfig": [{"ParamName": "None", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+        [if ForceSuccess]
+        [if Blackboard  (AttackTarget is Is Set)]
+        2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=25)
+        3) Selector
+          1) Sequence
+            1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1200.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+            2) move_towards_point_bttask
+          2) Selector
+            1) generic_action_bttask  (ActionType=LookAround)

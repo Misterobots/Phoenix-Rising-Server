@@ -1,0 +1,247 @@
+# hideable_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthAddHideState
+  [0] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [28] L_Guid = CallFunc_NewGuid_ReturnValue
+  [55] K2Node_MakeStruct_hide_show_request.GUID = L_Guid
+  [91] K2Node_MakeStruct_hide_show_request.WhatToAffect = What to Affect
+  [127] K2Node_MakeStruct_hide_show_request.Value = Value
+  [163] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.Requests, K2Node_MakeStruct_hide_show_request)
+  [231] AuthRefreshHiddenStatus()
+  [245] RequestGUID = L_Guid
+  [272] return nothing
+  [274] end
+
+=== AuthOnCollisionChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== AuthOnVisibilityChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== AuthRefreshHiddenStatus
+  [0] push @1170
+  [5] L_Collision = false
+  [16] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [36] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [78] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [88] push @696
+  [93] push @543
+  [98] L_Collision = self.BaseShouldCollide
+  [117] L_Visibility = self.BaseIsVisibile
+  [136] Temp_int_Loop_Counter_Variable = 0
+  [159] Temp_int_Array_Index_Variable = 0
+  [182] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Requests)
+  [241] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [279] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [289] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [316] push @849
+  [321] Default__KismetArrayLibrary.Array_Get(self.Requests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [380] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.WhatToAffect, 0)
+  [420] if !(K2Node_SwitchEnum_CmpSuccess) goto @923
+  [434] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.WhatToAffect, 1)
+  [474] if !(K2Node_SwitchEnum_CmpSuccess) goto @928
+  [488] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.WhatToAffect, 2)
+  [528] if !(K2Node_SwitchEnum_CmpSuccess) goto @1049
+  [542] pop
+  [543] CallFunc_NotEqual_BoolBool_ReturnValue_1 = NotEqual_BoolBool(L_Visibility, self.Internal_Visible)
+  [581] if !(CallFunc_NotEqual_BoolBool_ReturnValue_1) pop
+  [591] self.Internal_Visible = L_Visibility
+  [610] MarkPropertyDirtyFromRepIndex(self, 2, 'Internal_Visible')
+  [639] OnRep_Internal_Visible()
+  [653] InternalUpdateVisibility()
+  [667] AuthOnVisibilityChanged__DelegateSignature(self.Internal_Visible)
+  [695] pop
+  [696] CallFunc_NotEqual_BoolBool_ReturnValue = NotEqual_BoolBool(L_Collision, self.Internal_Collidable)
+  [734] if !(CallFunc_NotEqual_BoolBool_ReturnValue) pop
+  [744] self.Internal_Collidable = L_Collision
+  [763] MarkPropertyDirtyFromRepIndex(self, 3, 'Internal_Collidable')
+  [792] OnRep_Internal_Collidable()
+  [806] InternalUpdateCollision()
+  [820] AuthOnCollisionChanged__DelegateSignature(self.Internal_Collidable)
+  [848] pop
+  [849] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [891] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [918] goto @182
+  [923] push @1049
+  [928] Default__KismetArrayLibrary.Array_Get(self.Requests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [987] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.Value, 1)
+  [1027] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [1037] L_Collision = false
+  [1048] pop
+  [1049] Default__KismetArrayLibrary.Array_Get(self.Requests, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1108] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.Value, 1)
+  [1148] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [1158] L_Visibility = false
+  [1169] pop
+  [1170] return nothing
+  [1172] end
+
+=== AuthRemoveHideState
+  [0] GetIndexOfGUID(RequestGUID, CallFunc_GetIndexOfGUID_Index)
+  [32] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfGUID_Index, 0)
+  [66] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @149
+  [80] Default__KismetArrayLibrary.Array_Remove(self.Requests, CallFunc_GetIndexOfGUID_Index)
+  [130] AuthRefreshHiddenStatus()
+  [144] goto @488
+  [149] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [178] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [228] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [270] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, "Error: Trying to remove a hide request that isn't valid!")
+  [365] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [439] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [459] if !(CallFunc_IsShipping_ReturnValue) goto @478
+  [473] goto @488
+  [478] StackTrace()
+  [488] return nothing
+  [490] end
+
+=== AuthSetBaseVisibilityAndCollision
+  [0] push @611
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Value, 1)
+  [108] if !(K2Node_SwitchEnum_CmpSuccess) goto @168
+  [122] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Value, 2)
+  [153] if !(K2Node_SwitchEnum_CmpSuccess) goto @168
+  [167] pop
+  [168] push @309
+  [173] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(WhatToAffect, 0)
+  [204] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @324
+  [218] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(WhatToAffect, 1)
+  [249] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @470
+  [263] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(WhatToAffect, 2)
+  [294] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @329
+  [308] pop
+  [309] AuthRefreshHiddenStatus()
+  [323] pop
+  [324] push @470
+  [329] Temp_bool_Variable = true
+  [340] Temp_bool_Variable_1 = false
+  [351] Temp_bool_Variable_2 = false
+  [362] Temp_byte_Variable = Value
+  [389] self.BaseIsVisibile = switch(Temp_byte_Variable){0: Temp_bool_Variable_2, 1: Temp_bool_Variable_1, 2: Temp_bool_Variable, default: K2Node_Select_Default}
+  [469] pop
+  [470] Temp_bool_Variable = true
+  [481] Temp_bool_Variable_1 = false
+  [492] Temp_bool_Variable_2 = false
+  [503] Temp_byte_Variable = Value
+  [530] self.BaseShouldCollide = switch(Temp_byte_Variable){0: Temp_bool_Variable_2, 1: Temp_bool_Variable_1, 2: Temp_bool_Variable, default: K2Node_Select_Default}
+  [610] pop
+  [611] return nothing
+  [613] end
+
+=== ExecuteUbergraph_hideable_bpc
+  [0] push @427
+  [5] goto computed(EntryPoint)
+  [15] OnRep_Internal_Visible()
+  [29] self.Internal_Collidable = self.BaseShouldCollide
+  [48] MarkPropertyDirtyFromRepIndex(self, 3, 'Internal_Collidable')
+  [77] OnRep_Internal_Collidable()
+  [91] pop
+  [92] MarkPropertyDirtyFromRepIndex(self, 2, 'Internal_Visible')
+  [121] goto @15
+  [126] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [146] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.Internal_Visible)
+  [175] CallFunc_GetOwner_ReturnValue.SetActorHiddenInGame(CallFunc_Not_PreBool_ReturnValue)
+  [220] PetHiddenFixup()
+  [234] pop
+  [235] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [255] CallFunc_GetOwner_ReturnValue.SetActorEnableCollision(self.Internal_Collidable)
+  [296] pop
+  [297] push @398
+  [302] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [322] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [364] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [374] self.Internal_Visible = self.BaseIsVisibile
+  [393] goto @92
+  [398] InternalUpdateCollision()
+  [412] InternalUpdateVisibility()
+  [426] pop
+  [427] return nothing
+  [429] end
+
+=== GetIndexOfGUID
+  [0] push @395
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Requests)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @293
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @321
+  [194] CallFunc_EqualEqual_GuidGuid_ReturnValue = EqualEqual_GuidGuid(EX_ArrayGetByRef(ArrayVariable=self.Requests,ArrayIndex=Temp_int_Array_Index_Variable).GUID, GUID)
+  [251] if !(CallFunc_EqualEqual_GuidGuid_ReturnValue) pop
+  [261] Index = Temp_int_Array_Index_Variable
+  [288] goto @395
+  [293] Index = -1
+  [316] goto @395
+  [321] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [363] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [390] goto @51
+  [395] return nothing
+  [397] end
+
+=== InternalUpdateCollision
+  [0] ExecuteUbergraph_hideable_bpc(235)
+  [15] return nothing
+  [17] end
+
+=== InternalUpdateVisibility
+  [0] ExecuteUbergraph_hideable_bpc(126)
+  [15] return nothing
+  [17] end
+
+=== OnRep_Internal_Collidable
+  [0] InternalUpdateCollision()
+  [14] return nothing
+  [16] end
+
+=== OnRep_Internal_Visible
+  [0] InternalUpdateVisibility()
+  [14] return nothing
+  [16] end
+
+=== PetHiddenFixup
+  [0] push @1043
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonPetComponent)
+  [76] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [105] if !(CallFunc_IsValid_ReturnValue) pop
+  [115] Temp_int_Loop_Counter_Variable = 0
+  [138] Temp_int_Array_Index_Variable = 0
+  [161] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [181] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonPetComponent)
+  [232] CallFunc_GetAttachedPetVariantComponents_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetAttachedPetVariantComponents()
+  [282] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAttachedPetVariantComponents_ReturnValue)
+  [341] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [379] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [389] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [416] push @969
+  [421] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [441] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonPetComponent)
+  [492] CallFunc_GetAttachedPetVariantComponents_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetAttachedPetVariantComponents()
+  [542] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAttachedPetVariantComponents_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [601] CallFunc_Array_Get_Item.SetVisibility(self.Internal_Visible, true)
+  [643] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [663] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonPetComponent)
+  [714] CallFunc_GetAttachedPetVariantComponents_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.GetAttachedPetVariantComponents()
+  [764] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAttachedPetVariantComponents_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [823] K2Node_DynamicCast_AsCascade_Particle_System_Component = cast<ParticleSystemComponent>(CallFunc_Array_Get_Item)
+  [859] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCascade_Particle_System_Component)
+  [888] if !(K2Node_DynamicCast_bSuccess) pop
+  [898] K2Node_DynamicCast_AsCascade_Particle_System_Component.ResetParticles(false)
+  [931] K2Node_DynamicCast_AsCascade_Particle_System_Component.ActivateSystem(true)
+  [968] pop
+  [969] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1011] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1038] goto @161
+  [1043] return nothing
+  [1045] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_hideable_bpc(297)
+  [15] return nothing
+  [17] end

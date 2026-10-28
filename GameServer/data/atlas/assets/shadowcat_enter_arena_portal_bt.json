@@ -1,0 +1,166 @@
+{
+ "name": "shadowcat_enter_arena_portal_bt",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/shadowcat_enter_arena_portal_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "shadowcat_bb",
+  "shadowcat_portal_exit"
+ ],
+ "exports": {
+  "shadowcat_enter_arena_portal_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData shadowcat_bb",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_0"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_0": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::EnteringArena",
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_5",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt"
+   }
+  },
+  "BTComposite_Sequence_3": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTComposite_Sequence_5": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_3",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_23",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDecorator_ForceSuccess_1": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_RunBehavior_23": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_exit",
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTTask_Wait_2": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.3,
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "hide_behemoth_bttask_C_1": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "DisableCollisionDuringHide": false,
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "set_blackboard_key_bttask_C_0": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.PounceLocation",
+    "DataType": "blackboard_comparable_key_type::Vector",
+    "SourceData": {
+     "BlackboardKeyName": "SelfActor"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Set Pounce Location",
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_0": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::EnteringArena",
+    "StateChangeType": "behemoth_state_event::End",
+    "WhenInterruptedChangeState": "behemoth_states_enum::EnteringArena",
+    "InterruptedChangeStateEvent": "behemoth_state_event::End",
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_1": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::CustomState",
+    "WhenInterruptedChangeState": "behemoth_states_enum::CustomState",
+    "TreeAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  }
+ }
+}

@@ -1,0 +1,149 @@
+{
+ "name": "public_event_grukstorm",
+ "package": "Archon/Content/gamemodes/exploration/content_assets/public_event_grukstorm",
+ "type": "GameContentDataAsset",
+ "refs": [
+  "behemoth_metadata_table",
+  "behemoth_tuning_presets",
+  "creature_metadata_table",
+  "dt_public_event_loot",
+  "gruk_hold_the_zone_area_bp",
+  "island_creature_spawn_eqs",
+  "public_event_loot_ceremony_actor_temp",
+  "public_event_ui_data"
+ ],
+ "exports": {
+  "call_to_action_chooser_C_0": {
+   "type": "call_to_action_chooser_C",
+   "props": {
+    "WaitTime": 30.0,
+    "GameContentTags": [
+     "GameContent.PublicEvent.Stage.Incoming"
+    ],
+    "Parent": "@public_event_chooser_C_0"
+   }
+  },
+  "call_to_action_chooser_C_1": {
+   "type": "call_to_action_chooser_C",
+   "props": {
+    "CallToActionObjectReference": "/Game/gamemodes/_game_content/call_to_action/public_event_loot_ceremony_actor_temp.public_event_loot_ceremony_actor_temp_C",
+    "WaitTime": 30.0,
+    "GameContentTags": [
+     "GameContent.PublicEvent.Stage.Loot"
+    ],
+    "Parent": "@public_event_chooser_C_0"
+   }
+  },
+  "creature_wave_chooser_C_0": {
+   "type": "creature_wave_chooser_C",
+   "props": {
+    "Waves": [
+     {
+      "WaveContents": [
+       {
+        "Creature": "creature_metadata_table[boar_normal]",
+        "AcceptCreaturesPassingThisQuery": {
+         "TokenStreamVersion": 0,
+         "TagDictionary": [],
+         "QueryTokenStream": [],
+         "UserDescription": "",
+         "AutoDescription": ""
+        },
+        "Amount": 2,
+        "PercentChance": 1.0,
+        "SpawnQuery": "EnvQuery island_creature_spawn_eqs"
+       }
+      ],
+      "NextWaveCondition": "next_wave_condition::StartNextWaveAfterTime",
+      "FinishWaveWhenThisPercentRemain": 0.0,
+      "TimeUntilNextWaveMin": 0.2,
+      "TimeUntilNextWaveMax": 0.2
+     }
+    ],
+    "WhatToDoWhenWavesFinished": "creature_wave_finished_action::LoopBackToFirstWave",
+    "SpawnCapacity": 10,
+    "Parent": "@specific_behemoth_set_chooser_C_0"
+   }
+  },
+  "danger_meter_chooser_C_0": {
+   "type": "danger_meter_chooser_C",
+   "props": {
+    "Parent": "@specific_behemoth_set_chooser_C_0"
+   }
+  },
+  "public_event_grukstorm": {
+   "type": "GameContentDataAsset",
+   "props": {
+    "ContentChooser": "@public_event_chooser_C_0"
+   }
+  },
+  "hold_the_zone_chooser_C_0": {
+   "type": "hold_the_zone_chooser_C",
+   "props": {
+    "ZoneActorClass": "/Game/gamemodes/_game_content/hold_the_zone/gruk_hold_the_zone_area_bp.gruk_hold_the_zone_area_bp_C",
+    "TotalPointsRequired": 200.0,
+    "BasePointsPerSecond": 2.0,
+    "PointsPerSecondForAdditionalPlayers": 0.0,
+    "MaxPlayersThatCanGainValue": 1,
+    "Parent": "@PhxGameContentCombinationChooser_0"
+   }
+  },
+  "PhxGameContentCombinationChooser_0": {
+   "type": "PhxGameContentCombinationChooser",
+   "props": {
+    "ContentProgressDisplayType": "EContentProgressType::Percentage",
+    "ChildContentChoosers": [
+     "@hold_the_zone_chooser_C_0",
+     "@creature_wave_chooser_C_0"
+    ],
+    "GameContentTags": [
+     "GameContent.PublicEvent.Stage.1"
+    ],
+    "Parent": "@public_event_chooser_C_0"
+   }
+  },
+  "public_event_chooser_C_0": {
+   "type": "public_event_chooser_C",
+   "props": {
+    "UIDataRow": "public_event_ui_data[GrukStorm]",
+    "ContentLoot": "dt_public_event_loot[GrukStorm]",
+    "ChildContentChoosers": [
+     "@call_to_action_chooser_C_0",
+     "@PhxGameContentCombinationChooser_0",
+     "@wait_chooser_C_0",
+     "@specific_behemoth_set_chooser_C_0",
+     "@call_to_action_chooser_C_1"
+    ]
+   }
+  },
+  "specific_behemoth_set_chooser_C_0": {
+   "type": "specific_behemoth_set_chooser_C",
+   "props": {
+    "Behemoths": [
+     {
+      "SelectedBehemoth": "behemoth_metadata_table[rock_alpha]",
+      "Level": 14,
+      "Weighting": 100.0,
+      "TuningPresetRow": "behemoth_tuning_presets[None]",
+      "ShowInHuntScreen": true
+     }
+    ],
+    "ChildContentChoosers": [
+     "@creature_wave_chooser_C_0",
+     "@danger_meter_chooser_C_0"
+    ],
+    "GameContentTags": [
+     "GameContent.PublicEvent.Stage.2"
+    ],
+    "Parent": "@public_event_chooser_C_0"
+   }
+  },
+  "wait_chooser_C_0": {
+   "type": "wait_chooser_C",
+   "props": {
+    "WaitTime": 2.0,
+    "Parent": "@public_event_chooser_C_0"
+   }
+  }
+ }
+}

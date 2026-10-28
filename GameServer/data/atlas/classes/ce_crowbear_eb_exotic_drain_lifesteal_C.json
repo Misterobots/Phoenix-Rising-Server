@@ -1,0 +1,407 @@
+{
+ "name": "ce_crowbear_eb_exotic_drain_lifesteal_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifeDrainEffects",
+   "type": "StructProperty<archon_impulse>",
+   "bp_type": "StructProperty<archon_impulse>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamagePerSecond",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifeDrainGEHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IsLifeDrainActive",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_IsLifeDrainActive",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 17
+  },
+  {
+   "name": "LifeDrainVFX",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifeStealGEHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MeterComponent",
+   "type": "ObjectProperty<weapon_meter_bpc_C>",
+   "bp_type": "ObjectProperty<weapon_meter_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageBonus",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageBuffHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyDamageBuff",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [
+    "DamageBonus"
+   ],
+   "sets": [
+    "DamageBuffHandle"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "ArchonBuff.GetBuffOwner",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_crowbear_eb_exotic_damage_ge_C"
+   ]
+  },
+  {
+   "name": "ExecuteUbergraph_ce_crowbear_eb_exotic_drain_lifesteal",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_Tag_1",
+     "type": "StructProperty<GameplayTag>"
+    },
+    {
+     "name": "K2Node_Event_Tag",
+     "type": "StructProperty<GameplayTag>"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 76,
+   "reads": [
+    "DamagePerSecond",
+    "IsLifeDrainActive"
+   ],
+   "sets": [
+    "IsLifeDrainActive"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.FlushNetDormancy",
+    "Actor.GetInstigatorController",
+    "Actor.GetOwner",
+    "AdjustBuffHeldStacks",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.OnTagAdded",
+    "ArchonBuff.OnTagRemoved",
+    "ArchonGameplayStatics.ApplyArchonTrueDamage",
+    "HasMatchingGameplayTag",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.Delay",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_IsLifeDrainActive",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_crowbear_eb_exotic_drain_lifesteal_C.ExecuteUbergraph_ce_crowbear_eb_exotic_drain_lifesteal"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_IsLifeDrainActive",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 15,
+   "reads": [
+    "IsLifeDrainActive",
+    "LifeDrainEffects",
+    "LifeDrainVFX"
+   ],
+   "sets": [
+    "LifeDrainVFX"
+   ],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "GetMesh",
+    "SpawnImpulse",
+    "TryDeactivateComponent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTagAdded",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Tag",
+     "type": "StructProperty<GameplayTag>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_crowbear_eb_exotic_drain_lifesteal_C.ExecuteUbergraph_ce_crowbear_eb_exotic_drain_lifesteal"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTagRemoved",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Tag",
+     "type": "StructProperty<GameplayTag>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_crowbear_eb_exotic_drain_lifesteal_C.ExecuteUbergraph_ce_crowbear_eb_exotic_drain_lifesteal"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_crowbear_eb_exotic_drain_lifesteal_C.ExecuteUbergraph_ce_crowbear_eb_exotic_drain_lifesteal"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveDamageBuff",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [
+    "DamageBuffHandle"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonBuff.GetBuffOwner",
+    "RemoveActiveGameplayEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_crowbear_eb_exotic_drain_lifesteal",
+ "pseudo_file": "pseudo/ce_crowbear_eb_exotic_drain_lifesteal_C.txt",
+ "game_data": {}
+}

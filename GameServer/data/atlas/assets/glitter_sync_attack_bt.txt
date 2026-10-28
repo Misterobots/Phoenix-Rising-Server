@@ -1,0 +1,23 @@
+glitter_sync_attack_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if current_target_is_valid_btdeco]
+  [root if ticket_is_available_btdeco "Is Sync Attack Entrance Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttackEntrance"])]
+  [root if ticket_is_available_btdeco "Is Sync Attack Ticket Available?"  (FindAnyTicketsWithTheseTags=["AI.Tickets.SyncAttack"])]
+  Selector "RealRoot"
+    1) Sequence
+      1) consume_ticket_bttask  (TicketCategory=SyncAttackEntrance)
+      2) perform_action_montage_bttask "Synced Laser Entrance 00"  (Montage=AnimMontage b_glitter_normal_sync_atk_lazer_enter_mot)
+      3) Sequence
+        1) Selector
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_live_player_within_distance_incombat_tethered", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TempLocation)
+          2) set_blackboard_key_bttask "Set TempLocation to Current Location "  (ResultKey=bb.TempLocation, DataType=Vector, SourceData={"BlackboardKeyName": "SelfActor"}, bShowPropertyDetails=false)
+        2) teleport_bttask  (DestinationKeyName=TempLocation)
+        [if ForceSuccess]
+        3) perform_action_montage_bttask "Synced Laser Miss (Entrance Attempt)"  (Montage=AnimMontage b_glitter_normal_sync_atk_lazer_miss)
+      [if ForceSuccess]
+      [if PhxHasSyncedAnimation "Was Entrance Successful?"  (ControllerClass=BlueprintGeneratedClass glit_laser_synced_anim_controller_C)]
+      4) Sequence
+        1) consume_ticket_bttask  (TicketCategory=SyncAttack)
+        2) PhxWaitForSyncedAnimationCompletion "Wait for Sync Completion"  (ControllerClass=BlueprintGeneratedClass glit_laser_synced_anim_controller_C)
+      5) perform_action_montage_bttask "Synced Laser Exit"  (Montage=AnimMontage b_glitter_normal_sync_atk_lazer_exit)

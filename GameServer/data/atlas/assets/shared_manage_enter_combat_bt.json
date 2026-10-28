@@ -1,0 +1,231 @@
+{
+ "name": "shared_manage_enter_combat_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/shared_manage_enter_combat_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base",
+  "shared_enter_combat_internal_bt"
+ ],
+ "exports": {
+  "shared_manage_enter_combat_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_1",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_1",
+     "@current_target_is_valid_btdeco_C_1",
+     "@enter_combat_check_btdeco_C_0"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt"
+   }
+  },
+  "BTComposite_Selector_3": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_set_boolean_C_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_set_boolean_C_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_3",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_10",
+       "@BTDecorator_Blackboard_10"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_8",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_5",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_11"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt"
+   }
+  },
+  "BTComposite_Sequence_5": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_7",
+      "Decorators": [
+       "@BTDecorator_Blackboard_11"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_Blackboard_10": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "HasEnteredCombatSinceLastDisengage is Is Not Set",
+    "OperationType": 1,
+    "BlackboardKey": "bb.HasEnteredCombatSinceLastDisengage",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_Blackboard_11": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "TempBool is Is Set",
+    "BlackboardKey": "bb.TempBool",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTDecorator_ForceSuccess_0": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_ForceSuccess_10": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_ForceSuccess_11": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_RunBehavior_3": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_enter_combat_internal_bt",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "bttask_set_boolean_C_6": {
+   "type": "bttask_set_boolean_C",
+   "props": {
+    "Key": "bb.TempBool",
+    "Value": true,
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Selector_3"
+   }
+  },
+  "bttask_set_boolean_C_7": {
+   "type": "bttask_set_boolean_C",
+   "props": {
+    "Key": "bb.TempBool",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "current_target_is_valid_btdeco_C_1": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "ValidityType": "ETargetAccessRequirement::Accessible",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt"
+   }
+  },
+  "enter_combat_check_btdeco_C_0": {
+   "type": "enter_combat_check_btdeco_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.AttackTarget",
+    "PredictTargetHorizFuturePosTime": 1.0,
+    "MaxDistance": {
+     "BlackboardKeyName": "EnterCombatRange"
+    },
+    "ObservedKeyNames": [
+     "SelfActor",
+     "AttackTarget"
+    ],
+    "bShowPropertyDetails": false,
+    "FlowAbortMode": "EBTFlowAbortMode::LowerPriority",
+    "NodeName": "In EnterCombatRange, or ForceEnterCombat",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt"
+   }
+  },
+  "behemoth_generic_action_bttask_C_7": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::EnterCombat",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "behemoth_generic_action_bttask_C_8": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::PreEnterCombat",
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_3": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree shared_manage_enter_combat_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  }
+ }
+}

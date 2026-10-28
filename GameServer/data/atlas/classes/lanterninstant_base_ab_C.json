@@ -1,0 +1,478 @@
+{
+ "name": "lanterninstant_base_ab_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonGameplayAbility",
+  "GameplayAbility",
+  "Object"
+ ],
+ "size": 1096,
+ "sdk_header": "lanterninstant_base_ab_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0x408",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "BuffToApplyOnDischarge",
+   "type": "UClass*",
+   "offset": "0x410",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ClassProperty<Class>"
+  },
+  {
+   "name": "ReplicationDelay",
+   "type": "double",
+   "offset": "0x418",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "DischargeDuration",
+   "type": "double",
+   "offset": "0x420",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "LanternTelemetryName",
+   "type": "FString",
+   "offset": "0x428",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StrProperty"
+  },
+  {
+   "name": "SingleChargeCost",
+   "type": "double",
+   "offset": "0x438",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "PassiveSecondaryChargeRate",
+   "type": "double",
+   "offset": "0x440",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "CallForDischarge",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "LanternObject",
+     "type": "AArchonLantern*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.SendGameplayEventToActor",
+    "GameplayAbility.GetActorInfo",
+    "InstantDischargeSecondaryInterface"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CanUseInMontage",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActiveMontage",
+     "type": "UAnimMontage*"
+    },
+    {
+     "name": "CanUse",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_lanterninstant_base_ab",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 85,
+   "reads": [
+    "BuffToApplyOnDischarge",
+    "DischargeDuration",
+    "Lantern",
+    "LanternTelemetryName",
+    "OnFinish",
+    "ReplicationDelay"
+   ],
+   "sets": [
+    "AbilityLevel",
+    "MaxDuration",
+    "ReplicationDelay"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.SendGameplayEventToActor",
+    "AbilityTask_WaitDelay.WaitDelay",
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "CallForDischarge",
+    "Emit Lantern Ability Used Event",
+    "GameplayAbility.GetAbilityLevel",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayTask.ReadyForActivation",
+    "K2_CommitAbility",
+    "K2_EndAbility",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.IsValidClass",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "Pawn.GetController",
+    "StartBuff",
+    "StartDischarge",
+    "TryAddBuff"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass global_telemetry_actor_C"
+   ]
+  },
+  {
+   "name": "K2_ActivateAbility",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "lanterninstant_base_ab_C.ExecuteUbergraph_lanterninstant_base_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_ActivateAbilityFromEvent",
+   "flags": [
+    "Event",
+    "Protected",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EventData_K2_ActivateAbilityFromEvent",
+     "type": "FGameplayEventData"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_CanActivateAbility",
+   "flags": [
+    "Event",
+    "Protected",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "bool",
+   "params": [
+    {
+     "name": "ActorInfo_K2_CanActivateAbility",
+     "type": "FGameplayAbilityActorInfo"
+    },
+    {
+     "name": "Handle_K2_CanActivateAbility",
+     "type": "FGameplayAbilitySpecHandle"
+    },
+    {
+     "name": "RelevantTags_K2_CanActivateAbility",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 32,
+   "reads": [
+    "Lantern"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonGameplayStatics.IsInCity",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray",
+    "GetBleedOutState",
+    "GetCurrentSecondaryChargeInterface",
+    "GetSingleChargeCostInterface",
+    "HasAnyMatchingGameplayTags",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "K2_OnEndAbility",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "bWasCancelled_K2_OnEndAbility",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [
+    "BuffToApplyOnDischarge"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GameplayAbility.K2_OnEndAbility",
+    "KismetMathLibrary.ClassIsChildOf",
+    "KismetSystemLibrary.IsValid",
+    "RemoveBuffByClass"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass lantern_active_base_buff_C"
+   ]
+  },
+  {
+   "name": "OnFinish_A45B31B54C10BA2832BD18960165C25E",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "lanterninstant_base_ab_C.ExecuteUbergraph_lanterninstant_base_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartDischarge",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DischargeDuration",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "lanterninstant_base_ab_C.ExecuteUbergraph_lanterninstant_base_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/Lanterns/Abilities/lanterninstant_base_ab",
+ "pseudo_file": "pseudo/lanterninstant_base_ab_C.txt",
+ "game_data": {}
+}

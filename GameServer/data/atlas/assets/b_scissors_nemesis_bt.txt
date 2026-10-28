@@ -1,0 +1,161 @@
+b_scissors_nemesis_bt  blackboard=BlackboardData bugbear_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=1)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    [if Blackboard "Check if dead"  (MonsterIsDead is Is Set)]
+    1) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_announce_bt)
+      2) Selector
+        [if behemoth_in_state_btdeco  (State=Flying)]
+        1) BehemothAction "Flying Death"  (Montage=AnimMontage b_scissors_00_state_deathflying_fwd_00_mot)
+        2) BehemothAction "Grounded Death"  (Montage=AnimMontage b_scissors_00_state_deathground_fwd_00_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    [if set_state_btdeco  (State=Deaggroing)]
+    [if Blackboard  (ReadyToDeaggro is Is Set)]
+    5) Sequence
+      1) generic_action_bttask  (ActionType=DeAggroAnnounce)
+      2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_aetherconsume_position", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 300.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+      [if ForceSuccess]
+      3) Sequence
+        [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.CurrentPatrolPoint, MinDistance=300, MaxDistance=100000)]
+        1) MoveTo  (AcceptableRadius=300, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+      [if ForceSuccess]
+      4) Sequence
+        [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Set)]
+        1) Sequence
+          1) pivot_towards_target_bttask  (PivotTarget=bb.CurrentPatrolPoint, BlendOutTime=0.25, MinAngleToTriggerPivot=30)
+          [if ForceSuccess]
+          2) call_specific_behemoth_function_bttask "Uncloak"  (SpecificFunction=StopCloak, bShowPropertyDetails=false)
+          [if ForceSuccess]
+          3) Sequence
+            1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_flyidletogroundidle_fwd_00_mot, MontagePlayRate=1.5)
+            2) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+          4) generic_action_bttask  (ActionType=QuickAetherVentHeal)
+          [if ForceSuccess]
+          5) Sequence
+            1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_groundidletoflyidle_fwd_00_mot, MontagePlayRate=1.5)
+            2) try_set_behemoth_state_bttask  (State=Flying)
+      5) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_cleanup_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    6) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChange"
+      [if behemoth_in_state_btdeco  (State=ReadyToAetherCharge)]
+      1) Sequence
+        1) set_random_blackboard_bttask  (VariableType=Int, MinValue=1, MaxValue=3, BlackboardValue=bb.DebugMode, DisallowIntValue=DebugMode)
+        2) bttask_enter_aethercharge_state  (Montage=AnimMontage b_scissors_00_state_chargeenter_fwd_00_mot)
+      [if behemoth_in_state_btdeco  (State=ReadyToExitCustomState)]
+      2) try_change_state_bttask  (StateChanges=[{"State": "behemoth_states_enum::Flying", "StateChange": "behemoth_state_event::Begin"}])
+      [if behemoth_in_state_btdeco  (State=ReadyToEnterRage)]
+      3) Sequence
+        1) bttask_enter_rage_state  (Montage=AnimMontage b_scissors_00_state_rage_cloakenter_fwd_00_mot)
+      [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass b_scissors_xscissor_rage_exit_atk_C, bShowPropertyDetails=false)]
+      4) bttask_exit_rage_state  (Montage=AnimMontage b_scissors_00_atk_xscissorhit_rage_exit_fwd_00_mot, bShowPropertyDetails=false)
+      [if behemoth_in_state_btdeco  (State=ReadyToExitAetherCharge)]
+      5) Sequence
+        1) bttask_exit_aethercharge_state  (Montage=AnimMontage bugbear_exit_aether_mot)
+    [if behemoth_in_state_btdeco  (State=Dazed, StateRequirement=ExcludedByState)]
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    8) Selector
+      1) Selector
+        [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 15.0}, MaxCooldown={"ConstantFloat": 20.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+        [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+        1) Sequence
+          [if Loop  (NumLoops=2)]
+          1) Sequence
+            [if Cooldown  (CooldownTime=3)]
+            [if angle_between_greater_than_btdeco  (GoalAngle=35, TargetPosBBKey=AttackTarget)]
+            1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass bugbear_festivaloflights_atk_C, bShowPropertyDetails=false)]
+        2) Sequence
+          1) Selector
+            [if compare_targets_and_sides  (Radius=1750)]
+            1) Sequence
+              1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+              2) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination, BlendOutTime=0.25)
+              3) BehemothAction  (Montage=AnimMontage b_xf_bug_00_loco_flyingdashto180_fwd_00_mot, MontagePlayRate=1.5)
+            2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass bugbear_clawslam_atk_C, bShowPropertyDetails=false)]
+        3) Sequence
+          1) RunBehavior  (BehaviorAsset=BehaviorTree bugbear_slam_attacks_bt)
+        [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass b_scissors_dashspin_atk_C, bShowPropertyDetails=false)]
+        4) Sequence
+          1) LoopMontageUntilPastTarget "Dash"  (Montage=AnimMontage b_scissors_00_atk_dash_fwd_00_mot, RecoveryTime=0, LoopingSection=SpinLoopStart, InjuredLoopingSection=SpinLoopStart, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "interrupted", "SectionName": "SpinLoopEnd"}, {"State": "None", "SectionName": "SpinLoopEnd"}]}, ActionClassToCooldown=BlueprintGeneratedClass b_scissors_dashspin_atk_C, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}], InterruptedSection=SpinLoopEnd, bShowPropertyDetails=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Combat"}, bShowPropertyDetails=false)]
+        5) Selector
+          [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 45.0}, MaxCooldown={"ConstantFloat": 70.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          1) generic_action_bttask  (ActionType=Growl)
+          [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 30.0}, MaxCooldown={"ConstantFloat": 45.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+          2) generic_action_bttask  (ActionType=Growl)
+        6) Sequence
+        7) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    9) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+      [if current_target_is_valid_btdeco]
+      [if enter_combat_check_btdeco "In EnterCombatRange, or ForceEnterCombat"  (Origin=bb.SelfPos, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, ObservedKeyNames=["SelfPos", "AttackTarget"], bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+      2) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_groundidletoflyidle_fwd_00_mot, MontagePlayRate=1.5)
+          2) try_set_behemoth_state_bttask  (State=Flying)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+        3) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+        4) generic_action_bttask  (ActionType=EnterCombat)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+      [if current_target_is_valid_btdeco]
+      4) Sequence
+        1) try_set_behemoth_state_bttask  (State=Alerted)
+        [if ForceSuccess]
+        2) Sequence
+          1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_groundidletoflyidle_fwd_00_mot, MontagePlayRate=1.5)
+          2) try_set_behemoth_state_bttask  (State=Flying)
+        3) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+    [if Blackboard  (TopScore Is Equal To 0.000000)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if current_target_is_valid_btdeco  (FlowAbortMode=Self)]
+    [if behemoth_in_state_btdeco  (State=Dazed, StateRequirement=ExcludedByState)]
+    10) Selector "Selector_AttackOrNonAttack"
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      [if Cooldown]
+      1) move_towards_point_bttask  (DestinationKey=AttackTarget, ActEvenIfWeCantGetCloser=false)
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=500, MaxDistance=99999)]
+      [if BTDeco_ArchonCooldown  (CooldownTime=5, TimerGameTimeStart=bb.TargetActor)]
+      2) generic_action_bttask  (ActionType=RushTo180)
+      [if angle_between_greater_than_btdeco  (GoalAngle=35, TargetPosBBKey=AttackTarget)]
+      3) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+      [if not can_perform_action_bttask  (CheckActionSpecificRequirements=false, ActionClass=BlueprintGeneratedClass b_scissors_scissorcut_atk_C, bShowPropertyDetails=false, bInverseCondition=true)]
+      4) generic_action_bttask  (ActionType=BackUp)
+    11) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+      [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+      [if not is_island_gamemode_btdeco  (IslandGameMode=Trials, bInverseCondition=true)]
+      2) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          [if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.CurrentPatrolPoint, MinDistance={"ConstantFloat": 500.0}, MaxDistance={"ConstantFloat": 999999.0}, bShowPropertyDetails=false)]
+          1) Sequence
+            [if ForceSuccess]
+            1) Sequence
+              1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_groundidletoflyidle_fwd_00_mot, MontagePlayRate=1.5)
+              2) try_set_behemoth_state_bttask  (State=Flying)
+            2) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentPatrolPoint)
+        [if ForceSuccess]
+        2) Sequence
+          1) BehemothAction  (Montage=AnimMontage b_scissors_00_loco_flyidletogroundidle_fwd_00_mot, MontagePlayRate=1.5)
+          2) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+        3) BehemothAction  (Montage=AnimMontage b_scissors_00_pers_fwd_00_mot, MontagePlayRate=1.5)

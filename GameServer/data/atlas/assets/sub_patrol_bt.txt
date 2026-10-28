@@ -1,0 +1,14 @@
+sub_patrol_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+  Selector
+    1) Sequence
+      1) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+      [if ForceSuccess]
+      2) get_player_target_bttask
+      [if TimeLimit  (TimeLimit=10)]
+      3) Sequence
+        {service LookAlongPath  (HelperKey=bb.TargetActor)}
+        1) MoveTo  (bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+    2) Wait  (WaitTime=1)

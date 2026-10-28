@@ -1,0 +1,89 @@
+# damage_override_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CheckDamageOverrides
+  [0] push @2825
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable_1 = 0
+  [51] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.DamageOverrideRules)
+  [110] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_3)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @755
+  [162] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [189] push @771
+  [194] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [253] Temp_byte_Variable = CallFunc_Array_Get_Item.RequiredMatchingType
+  [289] CallFunc_HasAnyTags_ReturnValue_1 = HasAnyTags(DamageTags, CallFunc_Array_Get_Item.RequiredDamageTags, false)
+  [337] CallFunc_HasAllTags_ReturnValue = HasAllTags(DamageTags, CallFunc_Array_Get_Item.RequiredDamageTags, false)
+  [385] if !(switch(Temp_byte_Variable){0: CallFunc_HasAllTags_ReturnValue, 1: CallFunc_HasAnyTags_ReturnValue_1, default: K2Node_Select_Default}) pop
+  [441] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [500] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(DamageTags, CallFunc_Array_Get_Item.ExcludedDamageTags, false)
+  [548] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasAnyTags_ReturnValue)
+  [577] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [587] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [646] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.OverriddenDamageRowSource, 0)
+  [686] if !(K2Node_SwitchEnum_CmpSuccess) goto @845
+  [700] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.OverriddenDamageRowSource, 1)
+  [740] if !(K2Node_SwitchEnum_CmpSuccess) goto @2762
+  [754] pop
+  [755] DidOverride = false
+  [766] goto @2825
+  [771] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [813] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [840] goto @51
+  [845] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [865] L_DamageRowSource = CallFunc_GetOwner_ReturnValue
+  [884] K2Node_DynamicCast_AsDamage_Interface = cast<damage_interface_C>(L_DamageRowSource)
+  [920] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDamage_Interface)
+  [949] if !(K2Node_DynamicCast_bSuccess) goto @2580
+  [963] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1022] K2Node_DynamicCast_AsDamage_Interface.GetDamageRow(CallFunc_Array_Get_Item.UseAbsoluteDamageValuesFromThisRowInstead, CallFunc_GetDamageRow_DamageRow, CallFunc_GetDamageRow_DamageScale, CallFunc_GetDamageRow_RowFound)
+  [1104] Default__damage_function_library_C.DamageRowToElementsArray(CallFunc_GetDamageRow_DamageRow, self, CallFunc_DamageRowToElementsArray_ElementArray)
+  [1159] L_Elements = CallFunc_DamageRowToElementsArray_ElementArray
+  [1186] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(DamageEventData_ref.PreMitigationDamages)
+  [1254] Default__KismetArrayLibrary.Array_Resize(L_Elements, CallFunc_Array_Length_ReturnValue_1)
+  [1304] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(DamageEventData_ref.Multipliers)
+  [1372] Default__KismetArrayLibrary.Array_Resize(L_Mults, CallFunc_Array_Length_ReturnValue)
+  [1422] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(DamageEventData_ref.Multipliers)
+  [1490] Default__KismetArrayLibrary.Array_Resize(L_PostResists, CallFunc_Array_Length_ReturnValue)
+  [1540] Temp_int_Loop_Counter_Variable_1 = 0
+  [1563] Temp_int_Array_Index_Variable = 0
+  [1586] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(L_Mults)
+  [1645] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_2)
+  [1683] if !(CallFunc_Less_IntInt_ReturnValue) goto @1961
+  [1697] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1724] push @1887
+  [1729] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1788] CallFunc_Array_Set_Item_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.Multiplier)
+  [1826] Default__KismetArrayLibrary.Array_Set(L_Mults, Temp_int_Array_Index_Variable, CallFunc_Array_Set_Item_ImplicitCast, false)
+  [1886] pop
+  [1887] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1929] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1956] goto @1586
+  [1961] K2Node_SetFieldsInStruct_PreMitigationDamages_ImplicitCast = ConvertArrayType(L_Elements)
+  [1998] DamageEventData_ref.PreMitigationDamages = K2Node_SetFieldsInStruct_PreMitigationDamages_ImplicitCast
+  [2034] K2Node_SetFieldsInStruct_Multipliers_ImplicitCast = ConvertArrayType(L_Mults)
+  [2071] DamageEventData_ref.Multipliers = K2Node_SetFieldsInStruct_Multipliers_ImplicitCast
+  [2107] K2Node_SetFieldsInStruct_PostResistDamages_ImplicitCast = ConvertArrayType(L_PostResists)
+  [2144] DamageEventData_ref.PostResistDamages = K2Node_SetFieldsInStruct_PostResistDamages_ImplicitCast
+  [2180] DamageEventData_ref.ExplicitPartBreakDamage = 0.0
+  [2212] DamageEventData_ref.ExplicitStaggerDamage = 0.0
+  [2244] DamageEventData_ref.ExplicitExposeDamage = 0.0
+  [2276] DamageEventData_ref.FinalStaggerDamage = 0.0
+  [2308] DamageEventData_ref.FinalExposeDamage = 0.0
+  [2340] DamageEventData_ref.AdditiveDamageMultiplier = 0.0
+  [2372] DamageEventData_ref.MultiplicativeDamageMultiplier = 1.0
+  [2404] DamageEventData_ref.BaseWeaponElementalHealthDamageModifier = 1.0
+  [2436] DamageEventData_ref.ElementalHealthDamageModifier = 1.0
+  [2468] Default__KismetArrayLibrary.Array_Get(self.DamageOverrideRules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [2527] AppendGameplayTagContainers(DamageTags, CallFunc_Array_Get_Item.TagsToAdd)
+  [2564] DidOverride = true
+  [2575] goto @2825
+  [2580] CallFunc_GetDamageRow_DamageRow = DamageTableData{0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, null, null, EX_ArrayConst(InnerProperty={'Path': ['RemoveBuffStacksList', 'RemoveBuffStacksList'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AssetTags', 'AssetTags'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=)}
+  [2719] CallFunc_GetDamageRow_DamageScale = 0.0
+  [2746] CallFunc_GetDamageRow_RowFound = false
+  [2757] goto @1104
+  [2762] CallFunc_IsValid_ReturnValue = IsValid(DamageInstigator)
+  [2791] if !(CallFunc_IsValid_ReturnValue) pop
+  [2801] L_DamageRowSource = DamageInstigator
+  [2820] goto @884
+  [2825] return nothing
+  [2827] end

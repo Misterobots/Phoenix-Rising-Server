@@ -1,0 +1,59 @@
+# creature_telemetry_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== POSTCreatureKilledEvent
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Killer)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @989
+  [43] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(Killer)
+  [80] L_KillerName = CallFunc_GetDisplayName_ReturnValue
+  [107] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(Killer)
+  [143] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [172] if !(K2Node_DynamicCast_bSuccess) goto @304
+  [186] Default__telemetry_function_library_C.Get Playfab IDs(K2Node_DynamicCast_AsArchon_Character, self, CallFunc_Get_Playfab_IDs_Player_ID, CallFunc_Get_Playfab_IDs_Character_ID)
+  [250] L_PlayerID = CallFunc_Get_Playfab_IDs_Player_ID
+  [277] L_CharacterID = CallFunc_Get_Playfab_IDs_Character_ID
+  [304] CallFunc_CreateJsonValueString_ReturnValue = CreateJsonValueString(L_CharacterID)
+  [341] CallFunc_CreateJsonObjectField_ReturnValue = CreateJsonObjectField('killer_character_id', CallFunc_CreateJsonValueString_ReturnValue)
+  [399] CallFunc_Conv_GuidToString_ReturnValue = Conv_GuidToString(CreatureGUID)
+  [436] CallFunc_CreateJsonValueString_ReturnValue_1 = CreateJsonValueString(CallFunc_Conv_GuidToString_ReturnValue)
+  [473] CallFunc_CreateJsonValueString_ReturnValue_2 = CreateJsonValueString(L_PlayerID)
+  [510] CallFunc_CreateJsonObjectField_ReturnValue_1 = CreateJsonObjectField('creature_id', CallFunc_CreateJsonValueString_ReturnValue_1)
+  [560] CallFunc_CreateJsonObjectField_ReturnValue_2 = CreateJsonObjectField('killer_player_id', CallFunc_CreateJsonValueString_ReturnValue_2)
+  [615] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [635] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [672] CallFunc_CreateJsonValueString_ReturnValue_3 = CreateJsonValueString(L_KillerName)
+  [709] CallFunc_CreateJsonValueString_ReturnValue_4 = CreateJsonValueString(CallFunc_GetDisplayName_ReturnValue_1)
+  [746] CallFunc_CreateJsonObjectField_ReturnValue_3 = CreateJsonObjectField('killer_name', CallFunc_CreateJsonValueString_ReturnValue_3)
+  [796] CallFunc_CreateJsonObjectField_ReturnValue_4 = CreateJsonObjectField('creature_name', CallFunc_CreateJsonValueString_ReturnValue_4)
+  [848] array{CallFunc_CreateJsonObjectField_ReturnValue_1, CallFunc_CreateJsonObjectField_ReturnValue_4, CallFunc_CreateJsonObjectField_ReturnValue_3, CallFunc_CreateJsonObjectField_ReturnValue_2, CallFunc_CreateJsonObjectField_ReturnValue}
+  [904] CallFunc_CreateJsonObject_ReturnValue = CreateJsonObject(K2Node_MakeArray_Array)
+  [941] TriggerTitleEvent(self, 'creature_killed_event', CallFunc_CreateJsonObject_ReturnValue)
+  [984] goto @1014
+  [989] L_KillerName = ''
+  [1009] goto @107
+  [1014] return nothing
+  [1016] end
+
+=== POSTCreatureSpawnedEvent
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue.self.Instigator)
+  [71] if !(CallFunc_IsValid_ReturnValue) goto @676
+  [85] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [105] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(CallFunc_GetOwner_ReturnValue.self.Instigator)
+  [164] L_InstigatorName = CallFunc_GetDisplayName_ReturnValue_1
+  [191] CallFunc_Conv_GuidToString_ReturnValue = Conv_GuidToString(CreatureGUID)
+  [228] CallFunc_CreateJsonValueString_ReturnValue = CreateJsonValueString(L_InstigatorName)
+  [265] CallFunc_CreateJsonValueString_ReturnValue_1 = CreateJsonValueString(CallFunc_Conv_GuidToString_ReturnValue)
+  [302] CallFunc_CreateJsonObjectField_ReturnValue = CreateJsonObjectField('instigator_name', CallFunc_CreateJsonValueString_ReturnValue)
+  [356] CallFunc_CreateJsonObjectField_ReturnValue_1 = CreateJsonObjectField('creature_id', CallFunc_CreateJsonValueString_ReturnValue_1)
+  [406] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [426] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [463] CallFunc_CreateJsonValueString_ReturnValue_2 = CreateJsonValueString(CallFunc_GetDisplayName_ReturnValue)
+  [500] CallFunc_CreateJsonObjectField_ReturnValue_2 = CreateJsonObjectField('creature_name', CallFunc_CreateJsonValueString_ReturnValue_2)
+  [552] array{CallFunc_CreateJsonObjectField_ReturnValue_1, CallFunc_CreateJsonObjectField_ReturnValue_2, CallFunc_CreateJsonObjectField_ReturnValue}
+  [590] CallFunc_CreateJsonObject_ReturnValue = CreateJsonObject(K2Node_MakeArray_Array)
+  [627] TriggerTitleEvent(self, 'creature_spawned_event', CallFunc_CreateJsonObject_ReturnValue)
+  [671] goto @701
+  [676] L_InstigatorName = ''
+  [696] goto @191
+  [701] return nothing
+  [703] end

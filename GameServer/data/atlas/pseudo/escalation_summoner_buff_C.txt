@@ -1,0 +1,111 @@
+# escalation_summoner_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CleanUpPreviousSpawn
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.ActiveSummons, Class, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @489
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.ActiveSummons, Class, CallFunc_Map_Find_Value)
+  [152] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Map_Find_Value)
+  [181] if !(CallFunc_IsValid_ReturnValue) goto @489
+  [195] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.ActiveSummons, Class, CallFunc_Map_Find_Value)
+  [264] CallFunc_Map_Find_Value.SetLifeSpan(0.1)
+  [305] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.ActiveSummons, Class, CallFunc_Map_Find_Value)
+  [374] CallFunc_GetLifeSpan_ReturnValue = CallFunc_Map_Find_Value.GetLifeSpan()
+  [428] K2Node_FunctionResult_AdditionalLifespan_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetLifeSpan_ReturnValue)
+  [457] AdditionalLifespan = K2Node_FunctionResult_AdditionalLifespan_ImplicitCast
+  [484] goto @516
+  [489] AdditionalLifespan = 0.0
+  [516] return nothing
+  [518] end
+
+=== ExecuteUbergraph_escalation_summoner_buff
+  [0] goto computed(EntryPoint)
+  [10] MulticastOnAdded()
+  [20] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [40] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [76] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [105] if !(K2Node_DynamicCast_bSuccess) goto @925
+  [119] CallFunc_GetPlayerName_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.PlayerState.GetPlayerName()
+  [191] TextMulti(CallFunc_GetPlayerName_ReturnValue)
+  [214] goto @925
+  [219] CallFunc_GetArchonLocalPlayer_ReturnValue = GetArchonLocalPlayer(self)
+  [240] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetArchonLocalPlayer_ReturnValue)
+  [269] if !(CallFunc_IsValid_ReturnValue) goto @925
+  [283] CallFunc_GetArchonLocalPlayer_ReturnValue = GetArchonLocalPlayer(self)
+  [304] CallFunc_GetChatClient_ReturnValue = CallFunc_GetArchonLocalPlayer_ReturnValue.GetChatClient()
+  [346] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetChatClient_ReturnValue)
+  [375] if !(CallFunc_IsValid_ReturnValue_1) goto @925
+  [389] CallFunc_GetArchonLocalPlayer_ReturnValue = GetArchonLocalPlayer(self)
+  [410] CallFunc_GetChatClient_ReturnValue = CallFunc_GetArchonLocalPlayer_ReturnValue.GetChatClient()
+  [452] CallFunc_Conv_StringToText_ReturnValue = Conv_StringToText(K2Node_CustomEvent_Name)
+  [489] K2Node_MakeStruct_FormatArgumentData.ArgumentName = 'Name'
+  [522] K2Node_MakeStruct_FormatArgumentData.ArgumentValueType = 4
+  [551] K2Node_MakeStruct_FormatArgumentData.ArgumentValue = CallFunc_Conv_StringToText_ReturnValue
+  [587] K2Node_MakeStruct_FormatArgumentData.ArgumentValueInt = 0
+  [623] K2Node_MakeStruct_FormatArgumentData.ArgumentValueFloat = 0.0
+  [655] K2Node_MakeStruct_FormatArgumentData.ArgumentValueDouble = 0.0
+  [691] K2Node_MakeStruct_FormatArgumentData.ArgumentValueGender = 0
+  [720] array{K2Node_MakeStruct_FormatArgumentData}
+  [740] CallFunc_Format_ReturnValue = Format(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': '{Name} has picked up the Elemental Summoner Amp!'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '301E0A384785807467C7BCB784442CA4'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}), K2Node_MakeArray_Array)
+  [865] CallFunc_GetChatClient_ReturnValue.InsertStatusMessage(CallFunc_Format_ReturnValue)
+  [910] goto @925
+  [915] goto @219
+  [920] goto @10
+  [925] return nothing
+  [927] end
+
+=== FindSpawn
+  [0] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(-400.0, 400.0)
+  [46] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [66] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_RandomFloatInRange_ReturnValue, CallFunc_RandomFloatInRange_ReturnValue, 0.0)
+  [121] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorRotation()
+  [171] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [191] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.K2_GetActorLocation()
+  [241] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [287] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_K2_GetActorRotation_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [358] ReturnValue = CallFunc_MakeTransform_ReturnValue
+  [385] return ReturnValue
+  [395] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_escalation_summoner_buff(920)
+  [15] return nothing
+  [17] end
+
+=== SpawnRandomSummon
+  [0] CallFunc_FindSpawn_ReturnValue = FindSpawn()
+  [32] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [52] Temp_class_Variable = escalation_summoner_healer_actor_C
+  [71] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [107] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [136] Temp_class_Variable_1 = escalation_summoner_explosive_actor_C
+  [155] Temp_class_Variable_2 = escalation_summoner_crit_aura_actor_C
+  [174] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, 2)
+  [212] Temp_int_Variable = CallFunc_RandomIntegerInRange_ReturnValue
+  [239] CallFunc_SpawnActorFromClassWrapper_ReturnValue = SpawnActorFromClassWrapper(self, switch(Temp_int_Variable){0: Temp_class_Variable, 1: Temp_class_Variable_1, 2: Temp_class_Variable_2, default: K2Node_Select_Default}, CallFunc_FindSpawn_ReturnValue, null, K2Node_DynamicCast_AsArchon_Character, 0)
+  [360] Temp_class_Variable = escalation_summoner_healer_actor_C
+  [379] Temp_class_Variable_1 = escalation_summoner_explosive_actor_C
+  [398] Temp_class_Variable_2 = escalation_summoner_crit_aura_actor_C
+  [417] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, 2)
+  [455] Temp_int_Variable = CallFunc_RandomIntegerInRange_ReturnValue
+  [482] CleanUpPreviousSpawn(switch(Temp_int_Variable){0: Temp_class_Variable, 1: Temp_class_Variable_1, 2: Temp_class_Variable_2, default: K2Node_Select_Default}, CallFunc_CleanUpPreviousSpawn_AdditionalLifespan)
+  [584] CallFunc_GetLifeSpan_ReturnValue = CallFunc_SpawnActorFromClassWrapper_ReturnValue.GetLifeSpan()
+  [638] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetLifeSpan_ReturnValue)
+  [667] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_CleanUpPreviousSpawn_AdditionalLifespan, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [713] CallFunc_SetLifeSpan_InLifespan_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [742] CallFunc_SpawnActorFromClassWrapper_ReturnValue.SetLifeSpan(CallFunc_SetLifeSpan_InLifespan_ImplicitCast)
+  [787] Temp_class_Variable = escalation_summoner_healer_actor_C
+  [806] Temp_class_Variable_1 = escalation_summoner_explosive_actor_C
+  [825] Temp_class_Variable_2 = escalation_summoner_crit_aura_actor_C
+  [844] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, 2)
+  [882] Temp_int_Variable = CallFunc_RandomIntegerInRange_ReturnValue
+  [909] Default__BlueprintMapLibrary.Map_Add(self.ActiveSummons, switch(Temp_int_Variable){0: Temp_class_Variable, 1: Temp_class_Variable_1, 2: Temp_class_Variable_2, default: K2Node_Select_Default}, CallFunc_SpawnActorFromClassWrapper_ReturnValue)
+  [1038] CallFunc_TransformLocation_ReturnValue = TransformLocation(CallFunc_FindSpawn_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [1100] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_vfx_summoner_spawn, CallFunc_TransformLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [1194] return nothing
+  [1196] end
+
+=== TextMulti
+  [0] frame.K2Node_CustomEvent_Name = Name
+  [18] ExecuteUbergraph_escalation_summoner_buff(915)
+  [33] return nothing
+  [35] end

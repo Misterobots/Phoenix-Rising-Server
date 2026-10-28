@@ -1,0 +1,158 @@
+# revive_ab_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_revive_ab
+  [0] goto computed(EntryPoint)
+  [10] goto @4551
+  [15] K2_EndAbility()
+  [29] goto @4551
+  [34] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(K2Node_Event_EventData.OptionalObject)
+  [80] CallFunc_IsValid_ReturnValue = IsValid(K2Node_Event_EventData.OptionalObject)
+  [118] CallFunc_SelectString_ReturnValue = SelectString(CallFunc_GetDisplayName_ReturnValue, 'none', CallFunc_IsValid_ReturnValue)
+  [170] CallFunc_GetActorInfo_ReturnValue_1 = GetActorInfo()
+  [198] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(CallFunc_GetActorInfo_ReturnValue_1.OwnerActor)
+  [244] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BLEEDOUT: revive_ab ActivateAbilityFromEvent on ', CallFunc_GetDisplayName_ReturnValue_1)
+  [331] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' revived by ')
+  [382] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_SelectString_ReturnValue)
+  [428] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, false, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [502] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [523] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [559] K2Node_DynamicCast_bSuccess_5 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [588] if !(K2Node_DynamicCast_bSuccess_5) goto @3711
+  [602] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetGameModeTunables(CallFunc_GetGameModeTunables_GameModeTunables)
+  [648] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [676] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [721] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [750] K2Node_DynamicCast_AsPlayer_State_Interface_1 = cast<player_state_interface_C>(K2Node_DynamicCast_AsPawn.self.PlayerState)
+  [808] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_State_Interface_1)
+  [837] if !(K2Node_DynamicCast_bSuccess_4) goto @893
+  [851] K2Node_DynamicCast_AsPlayer_State_Interface_1.AuthModifyInjuryCount(1)
+  [893] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [921] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [966] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [995] K2Node_DynamicCast_AsPlayer_State_Interface = cast<player_state_interface_C>(K2Node_DynamicCast_AsPawn.self.PlayerState)
+  [1053] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_State_Interface)
+  [1082] if !(K2Node_DynamicCast_bSuccess_3) goto @3753
+  [1096] K2Node_DynamicCast_AsPlayer_State_Interface.GetInjuryCount(CallFunc_GetInjuryCount_PlayerInjuryCount)
+  [1142] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [1170] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [1294] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [1422] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_GetInjuryCount_PlayerInjuryCount)
+  [1459] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [1488] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGameModeTunables_GameModeTunables.InjuryReviveFlatHealthReduction)
+  [1526] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [1572] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [1601] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1647] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Subtract_DoubleDouble_ReturnValue, 300.0, 1000.0)
+  [1702] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [1731] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_FClamp_ReturnValue, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [1777] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0)
+  [1815] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @2547
+  [1829] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [1857] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [1981] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [2109] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_GetInjuryCount_PlayerInjuryCount)
+  [2146] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [2175] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGameModeTunables_GameModeTunables.InjuryReviveFlatHealthReduction)
+  [2213] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [2259] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [2288] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2334] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Subtract_DoubleDouble_ReturnValue, 300.0, 1000.0)
+  [2389] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [2418] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_FClamp_ReturnValue, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [2464] Default__archon_function_library_C.HealTarget(CallFunc_GetActorInfo_ReturnValue.OwnerActor, CallFunc_GetActorInfo_ReturnValue.OwnerActor, self, CallFunc_Subtract_DoubleDouble_ReturnValue_1, self)
+  [2547] K2Node_DynamicCast_AsActor = cast<Actor>(K2Node_Event_EventData.OptionalObject)
+  [2592] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsActor)
+  [2621] if !(K2Node_DynamicCast_bSuccess) goto @3530
+  [2635] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [2663] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [2787] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_GetInjuryCount_PlayerInjuryCount)
+  [2824] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [2853] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGameModeTunables_GameModeTunables.InjuryReviveFlatHealthReduction)
+  [2891] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [2937] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [2966] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3012] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Subtract_DoubleDouble_ReturnValue, 300.0, 1000.0)
+  [3067] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'None'}
+  [3121] K2Node_MakeStruct_GameplayEventData.Instigator = null
+  [3141] K2Node_MakeStruct_GameplayEventData.Target = null
+  [3161] K2Node_MakeStruct_GameplayEventData.OptionalObject = CallFunc_GetActorInfo_ReturnValue.OwnerActor
+  [3198] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [3218] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [3259] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [3314] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [3369] K2Node_MakeStruct_EventMagnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FClamp_ReturnValue)
+  [3398] K2Node_MakeStruct_GameplayEventData.EventMagnitude = K2Node_MakeStruct_EventMagnitude_ImplicitCast
+  [3434] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [3475] SendGameplayEventToActor(K2Node_DynamicCast_AsActor, GameplayTag{'Abilities.RevivedOther'}, K2Node_MakeStruct_GameplayEventData)
+  [3530] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [3558] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [3603] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [3632] if !(K2Node_DynamicCast_bSuccess_1) goto @3781
+  [3646] K2Node_DynamicCast_AsPlayer_Interface.GetIsAttackingInterface(CallFunc_GetIsAttackingInterface_IsAttacking)
+  [3692] if !(CallFunc_GetIsAttackingInterface_IsAttacking) goto @3797
+  [3706] goto @15
+  [3711] CallFunc_GetGameModeTunables_GameModeTunables = game_mode_tunables{100.0}
+  [3748] goto @648
+  [3753] CallFunc_GetInjuryCount_PlayerInjuryCount = 0
+  [3776] goto @1142
+  [3781] CallFunc_GetIsAttackingInterface_IsAttacking = false
+  [3792] goto @3692
+  [3797] Temp_object_Variable = h_mr_lgd_funguy_ability_bleedout_to_idle_mot
+  [3816] Temp_object_Variable_1 = h_mr_ua_bleedout_getup_fwd_01_mot
+  [3835] CallFunc_EqualEqual_GameplayTag_ReturnValue = EqualEqual_GameplayTag(K2Node_Event_EventData.EventTag, GameplayTag{'Abilities.Revive.Funguy'})
+  [3900] Temp_bool_Variable = CallFunc_EqualEqual_GameplayTag_ReturnValue
+  [3919] CallFunc_CreatePlayMontageAndWaitProxy_ReturnValue = CreatePlayMontageAndWaitProxy(self, 'None', switch(Temp_bool_Variable){false: Temp_object_Variable_1, true: Temp_object_Variable, default: K2Node_Select_Default}, 1.0, 'None', false, 1.0, 0.0)
+  [4035] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_CreatePlayMontageAndWaitProxy_ReturnValue)
+  [4064] if !(CallFunc_IsValid_ReturnValue_2) goto @4366
+  [4078] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnCompleted_C226FCD64D92176DC81B569C6C08C69B)
+  [4101] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [4142] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnBlendOut_C226FCD64D92176DC81B569C6C08C69B)
+  [4165] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [4206] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnInterrupted_C226FCD64D92176DC81B569C6C08C69B)
+  [4229] K2Node_CreateDelegate_OutputDelegate_4 += None
+  [4270] K2Node_CreateDelegate_OutputDelegate = bind(self.OnCancelled_C226FCD64D92176DC81B569C6C08C69B)
+  [4293] K2Node_CreateDelegate_OutputDelegate += None
+  [4334] CallFunc_CreatePlayMontageAndWaitProxy_ReturnValue.ReadyForActivation()
+  [4366] CallFunc_WaitDelay_ReturnValue = WaitDelay(self, 2.4)
+  [4392] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_WaitDelay_ReturnValue)
+  [4421] if !(CallFunc_IsValid_ReturnValue_1) goto @4551
+  [4435] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnFinish_969C43114E8C915EEEFFD984680F13EA)
+  [4458] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [4499] CallFunc_WaitDelay_ReturnValue.ReadyForActivation()
+  [4531] goto @4551
+  [4536] goto @15
+  [4541] goto @4551
+  [4546] goto @4551
+  [4551] return nothing
+  [4553] end
+
+=== K2_ActivateAbilityFromEvent
+  [0] frame.K2Node_Event_EventData = EventData
+  [18] ExecuteUbergraph_revive_ab(34)
+  [33] return nothing
+  [35] end
+
+=== OnBlendOut_C226FCD64D92176DC81B569C6C08C69B
+  [0] ExecuteUbergraph_revive_ab(4546)
+  [15] return nothing
+  [17] end
+
+=== OnCancelled_C226FCD64D92176DC81B569C6C08C69B
+  [0] ExecuteUbergraph_revive_ab(10)
+  [15] return nothing
+  [17] end
+
+=== OnCompleted_C226FCD64D92176DC81B569C6C08C69B
+  [0] ExecuteUbergraph_revive_ab(4541)
+  [15] return nothing
+  [17] end
+
+=== OnFinish_969C43114E8C915EEEFFD984680F13EA
+  [0] ExecuteUbergraph_revive_ab(4536)
+  [15] return nothing
+  [17] end
+
+=== OnInterrupted_C226FCD64D92176DC81B569C6C08C69B
+  [0] ExecuteUbergraph_revive_ab(4551)
+  [15] return nothing
+  [17] end

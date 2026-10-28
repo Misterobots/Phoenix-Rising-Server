@@ -1,0 +1,556 @@
+# encounter_creator_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthGetContentThatSharesWeighting
+  [0] push @1130
+  [5] push @1024
+  [10] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(Content.ContentType, 0)
+  [50] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [60] Default__behemoth_function_library_C.GetBehemothMetadata(Content.ContentName, self, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [133] if !(CallFunc_GetBehemothMetadata_FoundMetadata) pop
+  [143] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_GetBehemothMetadata_Out_Row.BehemothName)
+  [189] CallFunc_Split_ReturnValue = Split(CallFunc_Conv_NameToString_ReturnValue, '_', CallFunc_Split_LeftS, CallFunc_Split_RightS, 1, 0)
+  [243] L_MyArch = CallFunc_Split_LeftS
+  [270] array{}
+  [281] GetDataTableRowNames(behemoth_metadata_table, CallFunc_GetDataTableRowNames_OutRowNames)
+  [309] Temp_int_Loop_Counter_Variable = 0
+  [332] Temp_int_Array_Index_Variable = 0
+  [355] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames)
+  [414] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [452] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [462] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [489] push @1056
+  [494] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [553] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(CallFunc_Array_Get_Item, CallFunc_GetBehemothMetadata_Out_Row.BehemothName)
+  [600] if !(CallFunc_NotEqual_NameName_ReturnValue) pop
+  [610] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [669] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(behemoth_metadata_table, CallFunc_Array_Get_Item, CallFunc_GetDataTableRowFromName_OutRow)
+  [738] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [748] CallFunc_Conv_NameToString_ReturnValue_1 = Conv_NameToString(CallFunc_GetDataTableRowFromName_OutRow.BehemothName)
+  [794] CallFunc_ToLower_ReturnValue = ToLower(CallFunc_Conv_NameToString_ReturnValue_1)
+  [831] CallFunc_StartsWith_ReturnValue = StartsWith(CallFunc_ToLower_ReturnValue, L_MyArch, 1)
+  [871] if !(CallFunc_StartsWith_ReturnValue) pop
+  [881] K2Node_MakeStruct_ContentNameAndTypePair.ContentName = CallFunc_GetDataTableRowFromName_OutRow.BehemothName
+  [926] K2Node_MakeStruct_ContentNameAndTypePair.ContentType = 0
+  [955] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_ContentThatShares, K2Node_MakeStruct_ContentNameAndTypePair)
+  [1023] pop
+  [1024] ReturnValue = L_ContentThatShares
+  [1051] goto @1130
+  [1056] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1098] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1125] goto @355
+  [1130] return ReturnValue
+  [1140] end
+
+=== AuthInitialize_BP
+  [0] frame.K2Node_Event_Params = Params
+  [18] ExecuteUbergraph_encounter_creator_bpc(5632)
+  [33] return nothing
+  [35] end
+
+=== CanContentBeUsedTogether
+  [0] push @489
+  [5] push @119
+  [10] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(ContentItem1.DifficultyOptionType, 0)
+  [50] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @135
+  [64] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(ContentItem1.DifficultyOptionType, 1)
+  [104] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @374
+  [118] pop
+  [119] ReturnValue = true
+  [130] goto @489
+  [135] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(ContentItem2.DifficultyOptionType, 0)
+  [175] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @309
+  [189] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(ContentItem2.DifficultyOptionType, 1)
+  [229] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @244
+  [243] pop
+  [244] CheckBehemoth/ModifierCombo(ContentItem1, ContentItem2, CallFunc_CheckBehemoth_ModifierCombo_CanBeUsedTogether_1)
+  [285] ReturnValue = CallFunc_CheckBehemoth_ModifierCombo_CanBeUsedTogether_1
+  [304] goto @489
+  [309] CheckBehemoth/BehemothCombo(ContentItem1, ContentItem2, CallFunc_CheckBehemoth_BehemothCombo_CanBeUsedTogether)
+  [350] ReturnValue = CallFunc_CheckBehemoth_BehemothCombo_CanBeUsedTogether
+  [369] goto @489
+  [374] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(ContentItem2.DifficultyOptionType, 0)
+  [414] if !(K2Node_SwitchEnum_CmpSuccess) goto @429
+  [428] pop
+  [429] CheckBehemoth/ModifierCombo(ContentItem2, ContentItem1, CallFunc_CheckBehemoth_ModifierCombo_CanBeUsedTogether)
+  [470] ReturnValue = CallFunc_CheckBehemoth_ModifierCombo_CanBeUsedTogether
+  [489] return ReturnValue
+  [499] end
+
+=== CheckBehemoth/BehemothCombo
+  [0] push @657
+  [5] push @630
+  [10] push @394
+  [15] push @199
+  [20] Default__behemoth_function_library_C.GetBehemothMetadata(Behemoth1.DifficultyOptionName, self, CallFunc_GetBehemothMetadata_Out_Row_1, CallFunc_GetBehemothMetadata_FoundMetadata_1)
+  [93] if !(CallFunc_GetBehemothMetadata_FoundMetadata_1) goto @646
+  [107] CallFunc_HasTag_ReturnValue_1 = HasTag(CallFunc_GetBehemothMetadata_Out_Row_1.MetaDataTags, GameplayTag{'Behemoth.Attribute.NoMultiBehemothEncounters'}, true)
+  [173] if !(CallFunc_HasTag_ReturnValue_1) pop
+  [183] CanBeUsedTogether = false
+  [194] goto @657
+  [199] Default__behemoth_function_library_C.GetBehemothMetadata(Behemoth2.DifficultyOptionName, self, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [272] if !(CallFunc_GetBehemothMetadata_FoundMetadata) goto @378
+  [286] CallFunc_HasTag_ReturnValue = HasTag(CallFunc_GetBehemothMetadata_Out_Row.MetaDataTags, GameplayTag{'Behemoth.Attribute.NoMultiBehemothEncounters'}, true)
+  [352] if !(CallFunc_HasTag_ReturnValue) pop
+  [362] CanBeUsedTogether = false
+  [373] goto @657
+  [378] CanBeUsedTogether = false
+  [389] goto @657
+  [394] if !(self.DebugParams.bAllowMultipleBehemothsOfSameArchetype) goto @418
+  [417] pop
+  [418] GetArchetypeFromMetadataName(Behemoth1.DifficultyOptionName, CallFunc_GetArchetypeFromMetadataName_Succeded_1, CallFunc_GetArchetypeFromMetadataName_Archetype_1)
+  [468] if !(CallFunc_GetArchetypeFromMetadataName_Succeded_1) pop
+  [478] GetArchetypeFromMetadataName(Behemoth2.DifficultyOptionName, CallFunc_GetArchetypeFromMetadataName_Succeded, CallFunc_GetArchetypeFromMetadataName_Archetype)
+  [528] CallFunc_EqualEqual_StrStr_ReturnValue = EqualEqual_StrStr(CallFunc_GetArchetypeFromMetadataName_Archetype_1, CallFunc_GetArchetypeFromMetadataName_Archetype)
+  [566] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetArchetypeFromMetadataName_Succeded, CallFunc_EqualEqual_StrStr_ReturnValue)
+  [604] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [614] CanBeUsedTogether = false
+  [625] goto @657
+  [630] CanBeUsedTogether = true
+  [641] goto @657
+  [646] CanBeUsedTogether = false
+  [657] return nothing
+  [659] end
+
+=== CheckBehemoth/ModifierCombo
+  [0] Default__bait_function_library_C.Can Apply Modifier to Behemoth(Modifier.DifficultyOptionName, Behemoth.DifficultyOptionName, self, CallFunc_Can_Apply_Modifier_to_Behemoth_CanAdd)
+  [82] CanBeUsedTogether = CallFunc_Can_Apply_Modifier_to_Behemoth_CanAdd
+  [101] return nothing
+  [103] end
+
+=== DebugOutputToCSV
+  [0] push @1435
+  [5] CallFunc_GetDataTableRowNamesForStruct_ReturnValue = Default__ArchonGameplayStatics.GetDataTableRowNamesForStruct(EX_ArrayGetByRef(ArrayVariable=GeneratedEncounters,ArrayIndex=0))
+  [70] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(L_CSV, CallFunc_GetDataTableRowNamesForStruct_ReturnValue)
+  [138] Temp_int_Loop_Counter_Variable = 0
+  [161] Temp_int_Array_Index_Variable = 0
+  [184] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(GeneratedEncounters)
+  [243] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [281] if !(CallFunc_Less_IntInt_ReturnValue) goto @597
+  [295] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [322] push @1361
+  [327] Default__KismetArrayLibrary.Array_Get(GeneratedEncounters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [386] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(Temp_int_Array_Index_Variable)
+  [423] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Conv_IntToString_ReturnValue)
+  [460] CallFunc_SerializeStructForDataTable_ReturnValue = Default__ArchonGameplayStatics.SerializeStructForDataTable(CallFunc_Conv_StringToName_ReturnValue, CallFunc_Array_Get_Item)
+  [528] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_CSV, CallFunc_SerializeStructForDataTable_ReturnValue)
+  [596] pop
+  [597] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [652] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [710] CallFunc_SaveStringArrayToFile_ReturnValue = SaveStringArrayToFile(CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_Concat_StrStr_ReturnValue, L_CSV, true, false)
+  [759] if !(CallFunc_SaveStringArrayToFile_ReturnValue) goto @1068
+  [773] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [828] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [886] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Successfully wrote to ', CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [947] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Concat_StrStr_ReturnValue)
+  [993] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1067] pop
+  [1068] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1123] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [1181] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('Failed to save file ', CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1240] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Concat_StrStr_ReturnValue)
+  [1286] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1360] pop
+  [1361] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1403] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1430] goto @184
+  [1435] return nothing
+  [1437] end
+
+=== DebugOutputToCSV_Simple
+  [0] push @2057
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable_1 = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(GeneratedEncounters)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @1076
+  [162] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [189] push @1840
+  [194] L_CurrEncounter = ''
+  [214] Temp_int_Loop_Counter_Variable_1 = 0
+  [237] Temp_int_Array_Index_Variable = 0
+  [260] Default__KismetArrayLibrary.Array_Get(GeneratedEncounters, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [319] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.EncounterContent)
+  [387] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [425] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1914
+  [439] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [466] push @1983
+  [471] Temp_string_Variable = ', '
+  [493] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(Temp_int_Array_Index_Variable, 0)
+  [527] Default__KismetArrayLibrary.Array_Get(GeneratedEncounters, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [586] Temp_string_Variable_1 = ''
+  [606] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EncounterContent, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [674] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(CallFunc_Array_Get_Item_1.ScaledChallengeLevel)
+  [720] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_Array_Get_Item_1.ContentName)
+  [766] Temp_bool_Variable = CallFunc_EqualEqual_IntInt_ReturnValue
+  [785] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(L_CurrEncounter, switch(Temp_bool_Variable){false: Temp_string_Variable, true: Temp_string_Variable_1, default: K2Node_Select_Default})
+  [875] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, CallFunc_Conv_NameToString_ReturnValue)
+  [921] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, ' (')
+  [962] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, CallFunc_Conv_IntToString_ReturnValue)
+  [1008] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_8, ')')
+  [1048] L_CurrEncounter = CallFunc_Concat_StrStr_ReturnValue_9
+  [1075] pop
+  [1076] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1131] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [1189] CallFunc_SaveStringArrayToFile_ReturnValue = SaveStringArrayToFile(CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_Concat_StrStr_ReturnValue, L_CSV, true, false)
+  [1238] if !(CallFunc_SaveStringArrayToFile_ReturnValue) goto @1547
+  [1252] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1307] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [1365] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Successfully wrote to ', CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1426] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Concat_StrStr_ReturnValue)
+  [1472] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1546] pop
+  [1547] Default__data_generation_library_C.GetPathToGeneratedTables(self, CallFunc_GetPathToGeneratedTables_GeneratedTablesPath, CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1602] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('encounter_creator_test', '.csv')
+  [1660] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('Failed to save file ', CallFunc_GetPathToGeneratedTables_DisplayPathName)
+  [1719] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Concat_StrStr_ReturnValue)
+  [1765] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1839] pop
+  [1840] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1882] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1909] goto @51
+  [1914] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_CSV, L_CurrEncounter)
+  [1982] pop
+  [1983] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2025] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2052] goto @260
+  [2057] return nothing
+  [2059] end
+
+=== DoesContentMatchAnyTags
+  [0] push @1181
+  [5] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Queries)
+  [64] CallFunc_GetNumGameplayTagsInContainer_ReturnValue = GetNumGameplayTagsInContainer(Tags)
+  [101] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_GetNumGameplayTagsInContainer_ReturnValue, CallFunc_Array_Length_ReturnValue)
+  [147] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Add_IntInt_ReturnValue, 0)
+  [181] if !(CallFunc_Greater_IntInt_ReturnValue) goto @336
+  [195] push @360
+  [200] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(ContentType, 0)
+  [231] if !(K2Node_SwitchEnum_CmpSuccess) goto @376
+  [245] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(ContentType, 1)
+  [276] if !(K2Node_SwitchEnum_CmpSuccess) goto @1024
+  [290] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(ContentType, 2)
+  [321] if !(K2Node_SwitchEnum_CmpSuccess) goto @1170
+  [335] pop
+  [336] ReturnValue = ResultIfEmpty
+  [355] goto @1181
+  [360] ReturnValue = false
+  [371] goto @1181
+  [376] Default__behemoth_function_library_C.GetBehemothMetadata(ContentName, self, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [440] if !(CallFunc_GetBehemothMetadata_FoundMetadata) pop
+  [450] CallFunc_GetNumGameplayTagsInContainer_ReturnValue_1 = GetNumGameplayTagsInContainer(Tags)
+  [487] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_GetNumGameplayTagsInContainer_ReturnValue_1, 0)
+  [521] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @613
+  [535] CallFunc_HasAnyTags_ReturnValue_1 = HasAnyTags(CallFunc_GetBehemothMetadata_Out_Row.MetaDataTags, Tags, false)
+  [583] if !(CallFunc_HasAnyTags_ReturnValue_1) goto @613
+  [597] ReturnValue = true
+  [608] goto @1181
+  [613] Temp_int_Loop_Counter_Variable = 0
+  [636] Temp_int_Array_Index_Variable = 0
+  [659] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(Queries)
+  [718] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [756] if !(CallFunc_Less_IntInt_ReturnValue) goto @1008
+  [770] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [797] push @934
+  [802] Default__KismetArrayLibrary.Array_Get(Queries, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [861] CallFunc_DoesContainerMatchTagQuery_ReturnValue = DoesContainerMatchTagQuery(CallFunc_GetBehemothMetadata_Out_Row.MetaDataTags, CallFunc_Array_Get_Item)
+  [908] if !(CallFunc_DoesContainerMatchTagQuery_ReturnValue) pop
+  [918] ReturnValue = true
+  [929] goto @1181
+  [934] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [976] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [1003] goto @659
+  [1008] ReturnValue = false
+  [1019] goto @1181
+  [1024] Default__bait_function_library_C.GetModifierFromID(ContentName, self, CallFunc_GetModifierFromID_Found, CallFunc_GetModifierFromID_ModifierInfo)
+  [1088] if !(CallFunc_GetModifierFromID_Found) pop
+  [1098] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(CallFunc_GetModifierFromID_ModifierInfo.ModifierMetaTags, Tags, false)
+  [1146] ReturnValue = CallFunc_HasAnyTags_ReturnValue
+  [1165] goto @1181
+  [1170] ReturnValue = true
+  [1181] return ReturnValue
+  [1191] end
+
+=== ExecuteUbergraph_encounter_creator_bpc
+  [0] push @5714
+  [5] goto computed(EntryPoint)
+  [15] array{}
+  [26] GetDataTableRowNames(hunt_modifiers, CallFunc_GetDataTableRowNames_OutRowNames)
+  [54] Temp_int_Loop_Counter_Variable = 0
+  [77] Temp_int_Array_Index_Variable = 0
+  [100] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames)
+  [159] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [197] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [207] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [234] push @1319
+  [239] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [298] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(hunt_modifiers, CallFunc_Array_Get_Item, CallFunc_GetDataTableRowFromName_OutRow)
+  [367] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [377] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow.GeneratedHuntWeighting)
+  [415] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [453] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [463] array{}
+  [474] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [533] CallFunc_DoesContentMatchAnyTags_ReturnValue = DoesContentMatchAnyTags(CallFunc_Array_Get_Item, 1, self.L_AllTagsThatCanPass, K2Node_MakeArray_Array, false)
+  [587] if !(CallFunc_DoesContentMatchAnyTags_ReturnValue) pop
+  [597] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [656] GetBonusWeightingForContent(CallFunc_Array_Get_Item, K2Node_Event_Params, 1, CallFunc_GetBonusWeightingForContent_WeightingScale)
+  [699] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [758] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow.GeneratedHuntWeighting)
+  [796] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_GetBonusWeightingForContent_WeightingScale, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [842] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, 100.0)
+  [888] K2Node_MakeStruct_GeneratorBounds.MinLevel = CallFunc_GetDataTableRowFromName_OutRow.ThreatLevel
+  [933] K2Node_MakeStruct_GeneratorBounds.MaxLevel = CallFunc_GetDataTableRowFromName_OutRow.ThreatLevel
+  [978] K2Node_MakeStruct_EncounterDifficultyOption.DifficultyOptionName = CallFunc_Array_Get_Item
+  [1014] K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [1043] K2Node_MakeStruct_EncounterDifficultyOption.DifficultyOptionWeight = K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast
+  [1079] K2Node_MakeStruct_EncounterDifficultyOption.DifficultyOptionType = 1
+  [1108] K2Node_MakeStruct_EncounterDifficultyOption.GeneratorLevelBounds = K2Node_MakeStruct_GeneratorBounds
+  [1144] K2Node_MakeStruct_EncounterDifficultyOption.GeneratorLevelApplicationType = 0
+  [1173] K2Node_MakeStruct_EncounterDifficultyOption.ComplexityScore = CallFunc_GetDataTableRowFromName_OutRow.HuntComplexityModifier
+  [1218] K2Node_MakeStruct_EncounterDifficultyOption.RoundsSinceLastPicked = -1
+  [1250] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.L_Modifiers, K2Node_MakeStruct_EncounterDifficultyOption)
+  [1318] pop
+  [1319] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1361] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [1388] goto @100
+  [1393] DebugOutputToCSV_Simple(self.L_Encounters)
+  [1416] pop
+  [1417] Temp_int_Variable = 1
+  [1440] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, 50)
+  [1474] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @1393
+  [1488] push @1668
+  [1493] CallFunc_CreateEncounterFromDefinition_ReturnValue = CreateEncounterFromDefinition(self.DebugDefinition, self.DebugTargetThreatLevel, false, CallFunc_CreateEncounterFromDefinition_GeneratedEncounter)
+  [1549] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_CreateEncounterFromDefinition_ReturnValue.Result, 0)
+  [1589] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [1599] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.L_Encounters, CallFunc_CreateEncounterFromDefinition_GeneratedEncounter)
+  [1667] pop
+  [1668] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [1710] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1737] goto @1440
+  [1742] Default__BlueprintMapLibrary.Map_Clear(self.EncounterContentOptions)
+  [1783] Default__KismetArrayLibrary.Array_Clear(self.L_Behemoths)
+  [1824] push @3746
+  [1829] Temp_byte_Variable_1 = 0
+  [1849] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(K2Node_Event_Params.ContentInclusionRules, Temp_byte_Variable_1, CallFunc_Map_Find_Value_1)
+  [1927] if !(CallFunc_Map_Find_ReturnValue_1) goto @4263
+  [1941] Temp_byte_Variable_1 = 0
+  [1961] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(K2Node_Event_Params.ContentInclusionRules, Temp_byte_Variable_1, CallFunc_Map_Find_Value_1)
+  [2039] GetAllPossibleTagsFromConditionalList(CallFunc_Map_Find_Value_1, CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleTagsThatCanPass_1, CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleQueriesThatCanPass_1)
+  [2080] self.L_AllTagsThatCanPass = CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleTagsThatCanPass_1
+  [2107] self.L_AllQueriesThatCanPass = CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleQueriesThatCanPass_1
+  [2134] array{}
+  [2145] GetDataTableRowNames(behemoth_metadata_table, CallFunc_GetDataTableRowNames_OutRowNames_1)
+  [2173] Temp_int_Loop_Counter_Variable_1 = 0
+  [2196] Temp_int_Array_Index_Variable_1 = 0
+  [2219] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames_1)
+  [2278] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [2316] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [2326] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [2353] push @4355
+  [2358] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames_1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2417] Default__behemoth_function_library_C.GetBehemothMetadata(CallFunc_Array_Get_Item_1, self, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [2481] if !(CallFunc_GetBehemothMetadata_FoundMetadata) pop
+  [2491] self.L_BehemothBetaData = CallFunc_GetBehemothMetadata_Out_Row
+  [2518] if !(self.L_BehemothBetaData.BehemothAvailableInRotation) pop
+  [2537] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames_1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2596] self.L_MetadataName = CallFunc_Array_Get_Item_1
+  [2623] CallFunc_DoesContentMatchAnyTags_ReturnValue_1 = DoesContentMatchAnyTags(self.L_MetadataName, 0, self.L_AllTagsThatCanPass, self.L_AllQueriesThatCanPass, true)
+  [2677] if !(CallFunc_DoesContentMatchAnyTags_ReturnValue_1) pop
+  [2687] Default__hunt_function_library_C.GetCurrentIslandSpec(self, CallFunc_GetCurrentIslandSpec_FoundSpec, CallFunc_GetCurrentIslandSpec_IslandDirectorSpec)
+  [2742] if !(CallFunc_GetCurrentIslandSpec_FoundSpec) goto @4429
+  [2756] CallFunc_HasTag_ReturnValue = HasTag(CallFunc_GetCurrentIslandSpec_IslandDirectorSpec.IslandSpecTags, GameplayTag{'IslandSpec.AdventurePatrol'}, false)
+  [2822] Temp_bool_Variable = CallFunc_HasTag_ReturnValue
+  [2841] self.L_ArchetypeIntroducedLevel = switch(Temp_bool_Variable){false: self.L_BehemothBetaData.Exploration_ArchetypeFirstIntroducedAtPlayerLevel, true: self.L_BehemothBetaData.AdventurePatrols_FirstIntroducedAtPlayerLevel, default: K2Node_Select_Default}
+  [2930] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(self.L_ArchetypeIntroducedLevel, K2Node_Event_Params.AllowOnlyBehemothsIntroducedAtOrBeforeThisLevel)
+  [2977] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) pop
+  [2987] GetBonusWeightingForContent(self.L_MetadataName, K2Node_Event_Params, 0, CallFunc_GetBonusWeightingForContent_WeightingScale_1)
+  [3030] CallFunc_HasTag_ReturnValue_1 = HasTag(self.L_BehemothBetaData.MetaDataTags, GameplayTag{'Behemoth.Attribute.BoostDeathStrike'}, true)
+  [3096] if !(CallFunc_HasTag_ReturnValue_1) goto @4470
+  [3110] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.L_BehemothBetaData.ThreatLevel, 2)
+  [3161] CallFunc_Multiply_IntInt_ReturnValue_1 = Multiply_IntInt(CallFunc_Multiply_IntInt_ReturnValue, 3)
+  [3203] K2Node_MakeStruct_GeneratorBounds_1.MinLevel = CallFunc_Multiply_IntInt_ReturnValue
+  [3239] K2Node_MakeStruct_GeneratorBounds_1.MaxLevel = CallFunc_Multiply_IntInt_ReturnValue_1
+  [3275] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.L_BehemothBetaData.WeightingForGenerators)
+  [3313] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_GetBonusWeightingForContent_WeightingScale_1)
+  [3359] CallFunc_Divide_DoubleDouble_ReturnValue_2 = Divide_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_2, 100.0)
+  [3405] K2Node_MakeStruct_EncounterDifficultyOption_2.DifficultyOptionName = self.L_MetadataName
+  [3441] K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast_2 = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue_2)
+  [3470] K2Node_MakeStruct_EncounterDifficultyOption_2.DifficultyOptionWeight = K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast_2
+  [3506] K2Node_MakeStruct_EncounterDifficultyOption_2.DifficultyOptionType = 0
+  [3535] K2Node_MakeStruct_EncounterDifficultyOption_2.GeneratorLevelBounds = K2Node_MakeStruct_GeneratorBounds_1
+  [3571] K2Node_MakeStruct_EncounterDifficultyOption_2.GeneratorLevelApplicationType = 0
+  [3600] K2Node_MakeStruct_EncounterDifficultyOption_2.ComplexityScore = self.L_BehemothBetaData.BehemothComplexity
+  [3645] K2Node_MakeStruct_EncounterDifficultyOption_2.RoundsSinceLastPicked = -1
+  [3677] CallFunc_Array_Add_ReturnValue_3 = Default__KismetArrayLibrary.Array_Add(self.L_Behemoths, K2Node_MakeStruct_EncounterDifficultyOption_2)
+  [3745] pop
+  [3746] K2Node_MakeStruct_EncounterDifficultyOptionList_1.DifficultyOptions = self.L_Behemoths
+  [3782] Temp_byte_Variable_3 = 0
+  [3802] Default__BlueprintMapLibrary.Map_Add(self.EncounterContentOptions, Temp_byte_Variable_3, K2Node_MakeStruct_EncounterDifficultyOptionList_1)
+  [3861] self.L_AllTagsThatCanPass = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [3907] Default__KismetArrayLibrary.Array_Clear(self.L_AllQueriesThatCanPass)
+  [3948] Temp_byte_Variable = 1
+  [3968] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(K2Node_Event_Params.ContentInclusionRules, Temp_byte_Variable, CallFunc_Map_Find_Value)
+  [4046] if !(CallFunc_Map_Find_ReturnValue) goto @4253
+  [4060] Temp_byte_Variable = 1
+  [4080] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(K2Node_Event_Params.ContentInclusionRules, Temp_byte_Variable, CallFunc_Map_Find_Value)
+  [4158] GetAllPossibleTagsFromConditionalList(CallFunc_Map_Find_Value, CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleTagsThatCanPass, CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleQueriesThatCanPass)
+  [4199] self.L_AllTagsThatCanPass = CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleTagsThatCanPass
+  [4226] self.L_AllQueriesThatCanPass = CallFunc_GetAllPossibleTagsFromConditionalList_AllPossibleQueriesThatCanPass
+  [4253] push @5405
+  [4258] goto @15
+  [4263] self.L_AllTagsThatCanPass = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [4309] Default__KismetArrayLibrary.Array_Clear(self.L_AllQueriesThatCanPass)
+  [4350] goto @2134
+  [4355] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [4397] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [4424] goto @2219
+  [4429] self.L_ArchetypeIntroducedLevel = self.L_BehemothBetaData.Exploration_ArchetypeFirstIntroducedAtPlayerLevel
+  [4465] goto @2930
+  [4470] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.L_BehemothBetaData.ThreatLevel, 9)
+  [4513] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @5373
+  [4527] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(self.L_BehemothBetaData.ThreatLevel)
+  [4573] CallFunc_MapRangeUnclamped_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [4602] CallFunc_MapRangeUnclamped_ReturnValue = MapRangeUnclamped(CallFunc_MapRangeUnclamped_Value_ImplicitCast, 9.0, 17.0, 3.0, 6.0)
+  [4675] self.L_GenLevelScaleFactor = CallFunc_MapRangeUnclamped_ReturnValue
+  [4702] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(self.L_BehemothBetaData.ThreatLevel, self.L_GenLevelScaleFactor)
+  [4757] CallFunc_Round_ReturnValue = Round(CallFunc_Multiply_IntFloat_ReturnValue)
+  [4794] self.BehemothThreatLevelMax = CallFunc_Round_ReturnValue
+  [4821] CallFunc_Multiply_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(self.L_BehemothBetaData.WeightingForGenerators)
+  [4859] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_GetBonusWeightingForContent_WeightingScale_1, CallFunc_Multiply_DoubleDouble_B_ImplicitCast_1)
+  [4905] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 100.0)
+  [4951] K2Node_MakeStruct_GeneratorBounds_2.MinLevel = self.L_BehemothBetaData.ThreatLevel
+  [4996] K2Node_MakeStruct_GeneratorBounds_2.MaxLevel = self.BehemothThreatLevelMax
+  [5032] K2Node_MakeStruct_EncounterDifficultyOption_1.DifficultyOptionName = self.L_MetadataName
+  [5068] K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue_1)
+  [5097] K2Node_MakeStruct_EncounterDifficultyOption_1.DifficultyOptionWeight = K2Node_MakeStruct_DifficultyOptionWeight_ImplicitCast_1
+  [5133] K2Node_MakeStruct_EncounterDifficultyOption_1.DifficultyOptionType = 0
+  [5162] K2Node_MakeStruct_EncounterDifficultyOption_1.GeneratorLevelBounds = K2Node_MakeStruct_GeneratorBounds_2
+  [5198] K2Node_MakeStruct_EncounterDifficultyOption_1.GeneratorLevelApplicationType = 0
+  [5227] K2Node_MakeStruct_EncounterDifficultyOption_1.ComplexityScore = self.L_BehemothBetaData.BehemothComplexity
+  [5272] K2Node_MakeStruct_EncounterDifficultyOption_1.RoundsSinceLastPicked = -1
+  [5304] CallFunc_Array_Add_ReturnValue_2 = Default__KismetArrayLibrary.Array_Add(self.L_Behemoths, K2Node_MakeStruct_EncounterDifficultyOption_1)
+  [5372] pop
+  [5373] self.L_GenLevelScaleFactor = 1.5
+  [5400] goto @4702
+  [5405] K2Node_MakeStruct_EncounterDifficultyOptionList.DifficultyOptions = self.L_Modifiers
+  [5441] Temp_byte_Variable_2 = 1
+  [5461] Default__BlueprintMapLibrary.Map_Add(self.EncounterContentOptions, Temp_byte_Variable_2, K2Node_MakeStruct_EncounterDifficultyOptionList)
+  [5520] pop
+  [5521] Default__KismetArrayLibrary.Array_Clear(self.L_Modifiers)
+  [5562] goto @1742
+  [5567] AuthInitialize(self.DebugParams)
+  [5586] Default__KismetArrayLibrary.Array_Clear(self.L_Encounters)
+  [5627] goto @1417
+  [5632] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [5652] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [5694] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [5704] goto @5521
+  [5709] goto @5567
+  [5714] return nothing
+  [5716] end
+
+=== GetAllPossibleTagsFromConditionalList
+  [0] push @511
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(ConditionalList.AllowContentThatPassesAnyOfTheseRules)
+  [119] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [157] if !(CallFunc_Less_IntInt_ReturnValue) goto @378
+  [171] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [198] push @437
+  [203] AppendGameplayTagContainers(L_PossibleTags, EX_ArrayGetByRef(ArrayVariable=ConditionalList.AllowContentThatPassesAnyOfTheseRules,ArrayIndex=Temp_int_Array_Index_Variable).ContentTagsAllowed)
+  [259] array{}
+  [270] GetBehemothTagQueriesFromTableEntries(self, EX_ArrayGetByRef(ArrayVariable=ConditionalList.AllowContentThatPassesAnyOfTheseRules,ArrayIndex=Temp_int_Array_Index_Variable).BehemothTagQueriesAllowed, CallFunc_GetBehemothTagQueriesFromTableEntries_OutQueries)
+  [327] Default__KismetArrayLibrary.Array_Append(L_PossibleQueries, CallFunc_GetBehemothTagQueriesFromTableEntries_OutQueries)
+  [377] pop
+  [378] AllPossibleTagsThatCanPass = L_PossibleTags
+  [405] AllPossibleQueriesThatCanPass = L_PossibleQueries
+  [432] goto @511
+  [437] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [479] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [506] goto @51
+  [511] return nothing
+  [513] end
+
+=== GetArchetypeFromMetadataName
+  [0] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(MetadataName)
+  [37] CallFunc_FindSubstring_ReturnValue = FindSubstring(CallFunc_Conv_NameToString_ReturnValue, '_', false, false, -1)
+  [84] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_FindSubstring_ReturnValue, 0)
+  [118] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @305
+  [132] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(MetadataName)
+  [169] CallFunc_FindSubstring_ReturnValue = FindSubstring(CallFunc_Conv_NameToString_ReturnValue, '_', false, false, -1)
+  [216] CallFunc_Left_ReturnValue = Left(CallFunc_Conv_NameToString_ReturnValue, CallFunc_FindSubstring_ReturnValue)
+  [262] Succeded = true
+  [273] Archetype = CallFunc_Left_ReturnValue
+  [300] goto @336
+  [305] Succeded = false
+  [316] Archetype = ''
+  [336] return nothing
+  [338] end
+
+=== GetBonusWeightingForContent
+  [0] push @702
+  [5] L_Weighting = 1.0
+  [32] L_Weighting = 1.0
+  [59] Temp_int_Loop_Counter_Variable = 0
+  [82] Temp_int_Array_Index_Variable = 0
+  [105] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(EncounterCreationParams.ConditionalWeighting)
+  [173] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [211] if !(CallFunc_Less_IntInt_ReturnValue) goto @596
+  [225] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [252] push @628
+  [257] Default__KismetArrayLibrary.Array_Get(EncounterCreationParams.ConditionalWeighting, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [325] array{}
+  [336] CallFunc_DoesContentMatchAnyTags_ReturnValue = DoesContentMatchAnyTags(ContentName, ContentType, CallFunc_Array_Get_Item.RequiredTags, K2Node_MakeArray_Array, false)
+  [406] if !(CallFunc_DoesContentMatchAnyTags_ReturnValue) pop
+  [416] Default__KismetArrayLibrary.Array_Get(EncounterCreationParams.ConditionalWeighting, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [484] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.WeightingScaleIfTagsPassed)
+  [522] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(L_Weighting, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [568] L_Weighting = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [595] pop
+  [596] WeightingScale = L_Weighting
+  [623] goto @702
+  [628] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [670] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [697] goto @105
+  [702] return nothing
+  [704] end
+
+=== ModifierMatchesRequiredTags
+  [0] CallFunc_IsGameplayTagQueryEmpty_ReturnValue = IsGameplayTagQueryEmpty(EncounterModifier.RequiredContentTags)
+  [38] if !(CallFunc_IsGameplayTagQueryEmpty_ReturnValue) goto @68
+  [52] ReturnValue = true
+  [63] goto @536
+  [68] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EncounterModifier.ContentType, 0)
+  [108] if !(K2Node_SwitchEnum_CmpSuccess) goto @181
+  [122] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EncounterModifier.ContentType, 1)
+  [162] if !(K2Node_SwitchEnum_CmpSuccess) goto @369
+  [176] goto @536
+  [181] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(behemoth_metadata_table, Content.DifficultyOptionName, CallFunc_GetDataTableRowFromName_OutRow)
+  [259] if !(CallFunc_GetDataTableRowFromName_ReturnValue) goto @353
+  [273] CallFunc_DoesContainerMatchTagQuery_ReturnValue = DoesContainerMatchTagQuery(CallFunc_GetDataTableRowFromName_OutRow.MetaDataTags, EncounterModifier.RequiredContentTags)
+  [329] ReturnValue = CallFunc_DoesContainerMatchTagQuery_ReturnValue
+  [348] goto @536
+  [353] ReturnValue = false
+  [364] goto @536
+  [369] CallFunc_GetDataTableRowFromName_ReturnValue_1 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(hunt_modifiers, Content.DifficultyOptionName, CallFunc_GetDataTableRowFromName_OutRow_1)
+  [447] if !(CallFunc_GetDataTableRowFromName_ReturnValue_1) goto @353
+  [461] CallFunc_DoesContainerMatchTagQuery_ReturnValue_1 = DoesContainerMatchTagQuery(CallFunc_GetDataTableRowFromName_OutRow_1.ModifierMetaTags, EncounterModifier.RequiredContentTags)
+  [517] ReturnValue = CallFunc_DoesContainerMatchTagQuery_ReturnValue_1
+  [536] return ReturnValue
+  [546] end
+
+=== PrintBehemothSpec
+  [0] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(Behemothspec.BehemothMetaDataName)
+  [46] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(Behemothspec.GeneratorLevel)
+  [92] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(CallFunc_Conv_NameToString_ReturnValue, ' (')
+  [133] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, CallFunc_Conv_IntToString_ReturnValue)
+  [179] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, ')')
+  [219] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [293] return nothing
+  [295] end
+
+=== TestGenerateEncounters
+  [0] ExecuteUbergraph_encounter_creator_bpc(5709)
+  [15] return nothing
+  [17] end

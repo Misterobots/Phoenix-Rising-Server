@@ -1,0 +1,267 @@
+# matchmaking_status_controller_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CleanupMatchmakingStatus
+  [0] push @186
+  [5] push @97
+  [10] CallFunc_IsValid_ReturnValue_1 = IsValid(self.MatchmakingStatusHUDWidget)
+  [39] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [49] self.MatchmakingStatusHUDWidget.Close()
+  [85] self.MatchmakingStatusHUDWidget = null
+  [96] pop
+  [97] CallFunc_IsValid_ReturnValue = IsValid(self.MatchmakingStatusScreenWidget)
+  [126] if !(CallFunc_IsValid_ReturnValue) pop
+  [136] self.MatchmakingStatusScreenWidget.Close(false, false)
+  [174] self.MatchmakingStatusScreenWidget = null
+  [185] pop
+  [186] return nothing
+  [188] end
+
+=== ExecuteUbergraph_matchmaking_status_controller
+  [0] push @2465
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetParty_ReturnValue = self.PlayerController.GetParty()
+  [57] self.PartyClient = CallFunc_GetParty_ReturnValue
+  [76] CallFunc_IsValid_ReturnValue_2 = IsValid(self.PartyClient)
+  [105] if !(CallFunc_IsValid_ReturnValue_2) goto @345
+  [119] K2Node_CreateDelegate_OutputDelegate = bind(self.ShowMatchmakingStatusHUD)
+  [142] K2Node_CreateDelegate_OutputDelegate += None
+  [183] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.HandleMatchmakingCompleted)
+  [206] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [247] CallFunc_K2_SetTimer_ReturnValue = K2_SetTimer(self, 'UpdateMatchmakingStatus', 1.0, true, 0.0, 0.0)
+  [317] self.UpdateTimer = CallFunc_K2_SetTimer_ReturnValue
+  [344] pop
+  [345] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), -437589424, 'ExecuteUbergraph_matchmaking_status_controller', self})
+  [399] pop
+  [400] self.PartyClient.TransitionToDestination()
+  [432] pop
+  [433] self.MatchmakingStatusScreenWidget = null
+  [444] CallFunc_IsValid_ReturnValue = IsValid(self.MatchmakingStatusHUDWidget)
+  [473] if !(CallFunc_IsValid_ReturnValue) pop
+  [483] self.MatchmakingStatusHUDWidget.Show()
+  [519] CallFunc_IsLocalPlayerPartyLeader_ReturnValue = self.PartyClient.IsLocalPlayerPartyLeader()
+  [561] CallFunc_BooleanAND_ReturnValue = BooleanAND(K2Node_CustomEvent_MatchmakingCancelled, CallFunc_IsLocalPlayerPartyLeader_ReturnValue)
+  [599] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [609] SpawnWidetAfterCancel()
+  [623] self.WidgetToSpawnOnCancel = null
+  [634] pop
+  [635] self.PlayerController = K2Node_CustomEvent_PlayerController
+  [654] goto @15
+  [659] CallFunc_IsValid_ReturnValue_1 = IsValid(self.MatchmakingStatusHUDWidget)
+  [688] if !(CallFunc_IsValid_ReturnValue_1) goto @703
+  [702] pop
+  [703] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, matchmaking_status_hud_bpw_C, self.PlayerController)
+  [764] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'MatchmakingStatusController', self)
+  [797] self.MatchmakingStatusHUDWidget = CallFunc_Create_ReturnValue
+  [816] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnMatchmakingStatusHUDClosed)
+  [839] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [880] Default__UserWidgetFunctions_C.Get Chat Layer(self, CallFunc_Get_Chat_Layer_ZOrder)
+  [926] self.MatchmakingStatusHUDWidget.AddToViewport(CallFunc_Get_Chat_Layer_ZOrder)
+  [971] pop
+  [972] CallFunc_GetMatchmakingPartyState_ReturnValue = self.PartyClient.GetMatchmakingPartyState()
+  [1022] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue, 3)
+  [1053] if !(K2Node_SwitchEnum_CmpSuccess) goto @400
+  [1067] pop
+  [1068] self.MatchmakingStatusHUDWidget = null
+  [1079] CallFunc_GetMatchmakingPartyState_ReturnValue_1 = self.PartyClient.GetMatchmakingPartyState()
+  [1129] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 0)
+  [1160] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [1170] CallFunc_GetMatchmakingPartyState_ReturnValue_1 = self.PartyClient.GetMatchmakingPartyState()
+  [1220] self.LastMatchmakingStatus = CallFunc_GetMatchmakingPartyState_ReturnValue_1
+  [1247] pop
+  [1248] K2_ClearAndInvalidateTimerHandle(self, self.UpdateTimer)
+  [1268] CleanupMatchmakingStatus()
+  [1282] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.ShowMatchmakingStatusHUD)
+  [1305] K2Node_CreateDelegate_OutputDelegate_3 -= None
+  [1346] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.HandleMatchmakingCompleted)
+  [1369] K2Node_CreateDelegate_OutputDelegate_4 -= None
+  [1410] pop
+  [1411] if !(K2Node_CustomEvent_Success) goto @1426
+  [1425] pop
+  [1426] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_Reason, 'LEADER_CANCELED')
+  [1472] if !(K2Node_SwitchString_CmpSuccess) goto @1657
+  [1486] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_Reason, 'PARTY_MEMBER_LEFT')
+  [1534] if !(K2Node_SwitchString_CmpSuccess) goto @1890
+  [1548] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_Reason, 'TIMEOUT')
+  [1586] if !(K2Node_SwitchString_CmpSuccess) goto @2083
+  [1600] K2Node_SwitchString_CmpSuccess = NotEqual_StriStri(K2Node_CustomEvent_Reason, 'OLD_VERSION')
+  [1642] if !(K2Node_SwitchString_CmpSuccess) goto @2311
+  [1656] pop
+  [1657] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(self.SkipMatchmakingHuntSelected, 'None')
+  [1699] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [1709] CallFunc_GetChatClient_ReturnValue = GetChatClient(self)
+  [1730] CallFunc_MakeLiteralText_ReturnValue = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Matchmaking was cancelled by the party leader.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '234E3F314C07FE83ECEFC9AA73563A59'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}))
+  [1844] CallFunc_GetChatClient_ReturnValue.InsertStatusMessage(CallFunc_MakeLiteralText_ReturnValue)
+  [1889] pop
+  [1890] CallFunc_GetChatClient_ReturnValue_1 = GetChatClient(self)
+  [1911] CallFunc_MakeLiteralText_ReturnValue_1 = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Matchmaking was cancelled because a player left the party.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '650E3213412D9B0749A38095776458B6'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}))
+  [2037] CallFunc_GetChatClient_ReturnValue_1.InsertStatusMessage(CallFunc_MakeLiteralText_ReturnValue_1)
+  [2082] pop
+  [2083] CallFunc_GetChatClient_ReturnValue_2 = GetChatClient(self)
+  [2104] CallFunc_MakeLiteralText_ReturnValue_2 = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Matchmaking has timed out.  You may queue again, or start a Private Hunt to skip matchmaking.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '54D19D114468150CD41DADB3A692BFE7'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}))
+  [2265] CallFunc_GetChatClient_ReturnValue_2.InsertStatusMessage(CallFunc_MakeLiteralText_ReturnValue_2)
+  [2310] pop
+  [2311] Default__UserWidgetFunctions_C.Create Popup Message(null, EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'This version of Dauntless is out of date. Please use the patcher to update.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': 'B4508C72420170F969103AA8608C4E71'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}), self)
+  [2464] pop
+  [2465] return nothing
+  [2467] end
+
+=== GetCurrentMatchFoundCountdown
+  [0] CallFunc_GetRealTimeSeconds_ReturnValue = GetRealTimeSeconds(self)
+  [29] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetRealTimeSeconds_ReturnValue, self.MatchFoundTime)
+  [75] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.TotalFoundHuntCountdownSeconds, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [121] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0)
+  [167] SecondsRemaining = CallFunc_FMax_ReturnValue
+  [194] return nothing
+  [196] end
+
+=== GetTotalMatchmakingTime
+  [0] CallFunc_GetRealTimeSeconds_ReturnValue = GetRealTimeSeconds(self)
+  [29] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetRealTimeSeconds_ReturnValue, self.MatchmakingStartedTime)
+  [75] MatchmakingTimeInSeconds = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [102] return nothing
+  [104] end
+
+=== HandleMatchmakingCompleted
+  [0] frame.K2Node_CustomEvent_Success = Success
+  [18] frame.K2Node_CustomEvent_Reason = Reason
+  [36] ExecuteUbergraph_matchmaking_status_controller(1411)
+  [51] return nothing
+  [53] end
+
+=== InitMatchmakingStatus
+  [0] frame.K2Node_CustomEvent_PlayerController = PlayerController
+  [18] ExecuteUbergraph_matchmaking_status_controller(635)
+  [33] return nothing
+  [35] end
+
+=== OnMatchmakingStatusHUDClosed
+  [0] ExecuteUbergraph_matchmaking_status_controller(1068)
+  [15] return nothing
+  [17] end
+
+=== OnMatchmakingStatusScreenClosed
+  [0] frame.K2Node_CustomEvent_MatchmakingCancelled = MatchmakingCancelled
+  [18] ExecuteUbergraph_matchmaking_status_controller(433)
+  [33] return nothing
+  [35] end
+
+=== OnMatchmakingStatusScreenGoNow
+  [0] ExecuteUbergraph_matchmaking_status_controller(972)
+  [15] return nothing
+  [17] end
+
+=== OpenMatchmakingStatusScreen
+  [0] self.WidgetToSpawnOnCancel = WidgetToDisplayOnCancel
+  [19] CallFunc_GetMatchmakingPartyState_ReturnValue = self.PartyClient.GetMatchmakingPartyState()
+  [69] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue, 1)
+  [100] if !(K2Node_SwitchEnum_CmpSuccess) goto @254
+  [114] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue, 2)
+  [145] if !(K2Node_SwitchEnum_CmpSuccess) goto @254
+  [159] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue, 3)
+  [190] if !(K2Node_SwitchEnum_CmpSuccess) goto @254
+  [204] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue, 4)
+  [235] if !(K2Node_SwitchEnum_CmpSuccess) goto @254
+  [249] goto @727
+  [254] CallFunc_IsValid_ReturnValue_1 = IsValid(self.MatchmakingStatusScreenWidget)
+  [283] if !(CallFunc_IsValid_ReturnValue_1) goto @302
+  [297] goto @727
+  [302] UpdateMatchmakingStatus()
+  [316] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, matchmaking_status_screen_bpw_C, self.PlayerController)
+  [377] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'MatchmakingStatusController', self)
+  [410] self.MatchmakingStatusScreenWidget = CallFunc_Create_ReturnValue
+  [429] Default__UserWidgetFunctions_C.Get Screen Layer(self, CallFunc_Get_Screen_Layer_ZOrder)
+  [475] self.MatchmakingStatusScreenWidget.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder)
+  [520] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnMatchmakingStatusScreenClosed)
+  [543] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [584] K2Node_CreateDelegate_OutputDelegate = bind(self.OnMatchmakingStatusScreenGoNow)
+  [607] K2Node_CreateDelegate_OutputDelegate += None
+  [648] CallFunc_IsValid_ReturnValue = IsValid(self.MatchmakingStatusHUDWidget)
+  [677] if !(CallFunc_IsValid_ReturnValue) goto @727
+  [691] self.MatchmakingStatusHUDWidget.Hide()
+  [727] return nothing
+  [729] end
+
+=== ShowMatchmakingStatusHUD
+  [0] ExecuteUbergraph_matchmaking_status_controller(659)
+  [15] return nothing
+  [17] end
+
+=== ShutdownMatchmakingStatus
+  [0] ExecuteUbergraph_matchmaking_status_controller(1248)
+  [15] return nothing
+  [17] end
+
+=== SpawnWidetAfterCancel
+  [0] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.WidgetToSpawnOnCancel)
+  [29] if !(CallFunc_IsValidClass_ReturnValue) goto @238
+  [43] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, self.WidgetToSpawnOnCancel, self.PlayerController)
+  [104] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Create_ReturnValue)
+  [133] if !(CallFunc_IsValid_ReturnValue) goto @238
+  [147] Default__UserWidgetFunctions_C.Get Screen Layer(self, CallFunc_Get_Screen_Layer_ZOrder)
+  [193] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder)
+  [238] return nothing
+  [240] end
+
+=== UpdateMatchmakingStatus
+  [0] push @1652
+  [5] CallFunc_IsValid_ReturnValue = IsValid(self.PartyClient)
+  [34] if !(CallFunc_IsValid_ReturnValue) pop
+  [44] push @325
+  [49] CallFunc_GetMatchmakingPartyState_ReturnValue_1 = self.PartyClient.GetMatchmakingPartyState()
+  [99] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 0)
+  [130] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @403
+  [144] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 1)
+  [175] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @608
+  [189] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 2)
+  [220] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @608
+  [234] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 3)
+  [265] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @979
+  [279] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_GetMatchmakingPartyState_ReturnValue_1, 4)
+  [310] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @608
+  [324] pop
+  [325] CallFunc_GetMatchmakingPartyState_ReturnValue = self.PartyClient.GetMatchmakingPartyState()
+  [375] self.LastMatchmakingStatus = CallFunc_GetMatchmakingPartyState_ReturnValue
+  [402] pop
+  [403] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(self.SkipMatchmakingHuntSelected, 'None')
+  [445] if !(CallFunc_NotEqual_NameName_ReturnValue) pop
+  [455] CallFunc_IsLocalPlayerPartyLeader_ReturnValue_1 = self.PartyClient.IsLocalPlayerPartyLeader()
+  [497] if !(CallFunc_IsLocalPlayerPartyLeader_ReturnValue_1) goto @576
+  [511] CallFunc_FindHunt_ReturnValue = self.PartyClient.FindHunt(self.SkipMatchmakingHuntSelected, true, 'None')
+  [576] self.SkipMatchmakingHuntSelected = 'None'
+  [607] pop
+  [608] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.LastMatchmakingStatus, 0)
+  [639] if !(K2Node_SwitchEnum_CmpSuccess) goto @699
+  [653] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.LastMatchmakingStatus, 3)
+  [684] if !(K2Node_SwitchEnum_CmpSuccess) goto @699
+  [698] pop
+  [699] CallFunc_GetRealTimeSeconds_ReturnValue_1 = GetRealTimeSeconds(self)
+  [728] self.MatchmakingStartedTime = CallFunc_GetRealTimeSeconds_ReturnValue_1
+  [755] ShowMatchmakingStatusHUD()
+  [769] CallFunc_IsLocalPlayerPartyLeader_ReturnValue = self.PartyClient.IsLocalPlayerPartyLeader()
+  [811] if !(CallFunc_IsLocalPlayerPartyLeader_ReturnValue) goto @826
+  [825] pop
+  [826] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, hunt_started_announce_bpw_C, self.PlayerController)
+  [887] Default__UserWidgetFunctions_C.Get Chat Layer(self, CallFunc_Get_Chat_Layer_ZOrder)
+  [933] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_Get_Chat_Layer_ZOrder)
+  [978] pop
+  [979] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.LastMatchmakingStatus, 3)
+  [1010] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @1548
+  [1024] CallFunc_GetRealTimeSeconds_ReturnValue = GetRealTimeSeconds(self)
+  [1053] self.MatchFoundTime = CallFunc_GetRealTimeSeconds_ReturnValue
+  [1080] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(self, match_found_announce_bpw_C, self.PlayerController)
+  [1141] Default__UserWidgetFunctions_C.Get Chat Layer(self, CallFunc_Get_Chat_Layer_ZOrder_1)
+  [1187] CallFunc_Create_ReturnValue_1.AddToViewport(CallFunc_Get_Chat_Layer_ZOrder_1)
+  [1232] ShowMatchmakingStatusHUD()
+  [1246] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.LastMatchmakingStatus, 4)
+  [1277] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [1287] CallFunc_MakeLiteralText_ReturnValue = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Unable to cancel matchmaking.  A match has already been found.  You may leave the party if you do not want to go on this hunt.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': 'F7B9249C4A80CB41E6023FA1E739E7DE'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}))
+  [1481] CallFunc_GetChatClient_ReturnValue = GetChatClient(self)
+  [1502] CallFunc_GetChatClient_ReturnValue.InsertStatusMessage(CallFunc_MakeLiteralText_ReturnValue)
+  [1547] pop
+  [1548] GetCurrentMatchFoundCountdown(CallFunc_GetCurrentMatchFoundCountdown_SecondsRemaining)
+  [1571] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_GetCurrentMatchFoundCountdown_SecondsRemaining, 0.0)
+  [1609] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [1619] self.PartyClient.TransitionToDestination()
+  [1651] pop
+  [1652] return nothing
+  [1654] end

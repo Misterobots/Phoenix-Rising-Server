@@ -1,0 +1,98 @@
+{
+ "name": "eqs_shadowcat_portal_entry_setup",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/eqs/eqs_shadowcat_portal_entry_setup",
+ "type": "EnvQuery",
+ "refs": [
+  "EQContext_AllLivePlayers_C",
+  "EQContext_CurrentPatrolCenterPoint_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.InnerRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.OuterRadius"
+   }
+  },
+  "eqs_shadowcat_portal_entry_setup": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_shadowcat_portal_entry_setup",
+    "Options": [
+     "@EnvQueryOption_0"
+    ]
+   }
+  },
+  "EnvQueryGenerator_Donut_0": {
+   "type": "EnvQueryGenerator_Donut",
+   "props": {
+    "InnerRadius": {
+     "DefaultValue": 1000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "OuterRadius": {
+     "DefaultValue": 1500.0,
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "PointsPerRing": {
+     "DefaultValue": 12
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_0": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_Donut_0",
+    "Tests": [
+     "@EnvQueryTest_Distance_2",
+     "@EnvQueryTest_Distance_3",
+     "@EnvQueryTest_ArchonNavTrace_0"
+    ]
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_0": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "TestOrder": 3,
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_2": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_AllLivePlayers_C",
+    "TestOrder": 1,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_3": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_CurrentPatrolCenterPoint_C",
+    "TestOrder": 2,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

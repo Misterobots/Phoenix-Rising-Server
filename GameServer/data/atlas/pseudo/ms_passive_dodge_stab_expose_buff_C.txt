@@ -1,0 +1,57 @@
+# ms_passive_dodge_stab_expose_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_ms_passive_dodge_stab_expose_buff
+  [0] goto computed(EntryPoint)
+  [10] RemoveExistingBuff()
+  [24] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [44] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [73] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ms_passive_dodge_stab_expose_ge_C, 0.0, GameplayEffectContextHandle{})
+  [155] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.BuffDuration)
+  [184] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [243] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.Magnitude)
+  [272] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1)
+  [331] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [351] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [380] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1, CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [448] self.ActiveSpec = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [475] TrackAppliedGameplayEffect(self.ActiveSpec)
+  [494] goto @828
+  [499] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [550] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPostDamageDealt)
+  [573] K2Node_CreateDelegate_OutputDelegate += None
+  [614] goto @828
+  [619] MulticastOnAdded()
+  [629] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [649] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [685] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [714] if !(K2Node_DynamicCast_bSuccess) goto @828
+  [728] self.ArchonCharacter = K2Node_DynamicCast_AsArchon_Character
+  [747] goto @499
+  [752] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.Pike.DodgeX'}, false)
+  [809] if !(CallFunc_HasTag_ReturnValue) goto @828
+  [823] goto @10
+  [828] return nothing
+  [830] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ms_passive_dodge_stab_expose_buff(619)
+  [15] return nothing
+  [17] end
+
+=== OnPostDamageDealt
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_ms_passive_dodge_stab_expose_buff(752)
+  [87] return nothing
+  [89] end
+
+=== RemoveExistingBuff
+  [0] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.ActiveSpec)
+  [29] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @152
+  [43] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [63] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [92] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.ActiveSpec, -1)
+  [152] return nothing
+  [154] end

@@ -1,0 +1,69 @@
+# eb_special_attack_speed_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== EndBuff
+  [0] ExecuteUbergraph_eb_special_attack_speed_buff(10)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_eb_special_attack_speed_buff
+  [0] goto computed(EntryPoint)
+  [10] K2_ClearAndInvalidateTimerHandle(self, self.BuffTimer)
+  [30] goto @703
+  [35] OnAdded()
+  [45] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [65] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetOwner_ReturnValue)
+  [101] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [130] if !(K2Node_DynamicCast_bSuccess) goto @625
+  [144] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [190] self.Weapon = CallFunc_GetOwnedWeapon_Weapon
+  [209] CallFunc_GetItemId_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetItemId()
+  [259] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetItemId_ReturnValue)
+  [296] CallFunc_LookupPowerTableRow_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.LookupPowerTableRow(CallFunc_Conv_StringToName_ReturnValue, CallFunc_LookupPowerTableRow_OutPowerTableData)
+  [360] if !(CallFunc_LookupPowerTableRow_ReturnValue) goto @703
+  [374] K2Node_VariableSet_SuperDecayRate_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LookupPowerTableRow_OutPowerTableData.EBlade_SuperDecayRate)
+  [412] self.SuperDecayRate = K2Node_VariableSet_SuperDecayRate_ImplicitCast
+  [439] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_LookupPowerTableRow_OutPowerTableData.EBlade_SuperModeAttackRate)
+  [477] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, 1.0)
+  [523] self.AttackSpeedIncrease = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [550] CallFunc_GetComponentByClass_ReturnValue = self.Weapon.GetComponentByClass(weapon_meter_bpc_C)
+  [601] self.MeterComponent = CallFunc_GetComponentByClass_ReturnValue
+  [620] goto @703
+  [625] CallFunc_GetOwnedWeapon_Weapon = null
+  [636] goto @190
+  [641] OnTagAdded(K2Node_Event_Tag_1)
+  [660] HandleEffects()
+  [674] goto @703
+  [679] goto @35
+  [684] OnTagRemoved(K2Node_Event_Tag)
+  [703] return nothing
+  [705] end
+
+=== GetBuffDuration
+  [0] self.MeterComponent.GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [45] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, self.SuperDecayRate)
+  [91] ReturnValue = CallFunc_Divide_DoubleDouble_ReturnValue
+  [118] return ReturnValue
+  [128] end
+
+=== HandleEffects
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] Default__buff_function_library_C.AdjustBuffTempStacks(CallFunc_GetOwner_ReturnValue, 2, 2, false, self)
+  [74] return nothing
+  [76] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_eb_special_attack_speed_buff(679)
+  [15] return nothing
+  [17] end
+
+=== OnTagAdded
+  [0] frame.K2Node_Event_Tag_1 = Tag
+  [18] ExecuteUbergraph_eb_special_attack_speed_buff(641)
+  [33] return nothing
+  [35] end
+
+=== OnTagRemoved
+  [0] frame.K2Node_Event_Tag = Tag
+  [18] ExecuteUbergraph_eb_special_attack_speed_buff(684)
+  [33] return nothing
+  [35] end

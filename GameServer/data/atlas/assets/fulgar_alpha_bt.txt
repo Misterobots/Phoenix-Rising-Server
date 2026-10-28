@@ -1,0 +1,85 @@
+fulgar_alpha_bt  blackboard=BlackboardData fulgar_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true, Interval=0.01)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_announce_bt)
+      2) Selector
+        [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.StaggeredFromLocation)]
+        1) BehemothAction "DIE!!! Left"  (Montage=AnimMontage fulgar_death_l_mot)
+        2) BehemothAction "DIE!!!Right"  (Montage=AnimMontage fulgar_death_r_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree fulgars_stupid_deaggro_bt)
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    6) Sequence "Flee"
+      {service service_managefulgartimers_bpt "ManageFulgarTimers"}
+      1) RunBehavior "Flee"  (BehaviorAsset=BehaviorTree fulgar_flee_bt)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+    8) Selector "State Changes"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      1) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage fulgar_discharge_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage fuglar_roar_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_fulgar_alpha_rage_exit_mot)
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      4) bttask_enter_aethercharge_state  (Montage=AnimMontage b_fulgar_alpha_aether_enter_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      5) bttask_enter_rage_state  (Montage=AnimMontage b_fulgar_alpha_rage_enter_mot)
+    9) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    10) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    11) Selector
+      [if Blackboard  (InRageState is Is Set)]
+      1) Selector
+        [if Cooldown  (CooldownTime=45)]
+        1) Sequence
+          {service hide_behemoth_bttask  (HideOnStart=false)}
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_teleport_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 4000.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 6000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+          2) teleport_bttask  (FacingTargetKeyName=KnownTargetsAvgPos, OptionalMontage=AnimMontage fulgar_teleport_entry_mot, TeleportDelay=2.25, HideBehemothOnTeleport=true)
+          3) Wait  (WaitTime=1.5)
+          4) teleport_bttask  (FacingTargetKeyName=KnownTargetsAvgPos)
+          5) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+      [if Blackboard  (AetherCharged is Is Set)]
+      2) Selector
+        [if Cooldown  (CooldownTime=20)]
+        1) Selector "3 breath combo"
+          [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=3000)]
+          1) Sequence "Tooclose, backstep first"
+            1) TestCollisionForSpecificAction "Test Backstep collision"  (ActionClassToTest=BlueprintGeneratedClass Atk_Fulgar_Backstep_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+            2) BehemothAction "BackStep"  (Montage=AnimMontage b_fulgar_alpha_backstep_mot, RecoveryTime=0.6)
+            3) PerformActionClass "ChargedLightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedLightningBreath_C, bShowPropertyDetails=false)
+          2) PerformActionClass "ChargedLightningBreath"  (ActionClass=BlueprintGeneratedClass Atk_Fulgar_ChargedLightningBreath_C, bShowPropertyDetails=false)
+      [if Cooldown  (CooldownTime=20)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireIntactPartName": "Tail"}, bShowPropertyDetails=false)]
+      3) Sequence
+        1) EvaluateSpecificAction "Check Tailswipes"  (ActionClassesToTest=["BlueprintGeneratedClass fulgar_alpha_action_180swipe_l_C", "BlueprintGeneratedClass fulgar_alpha_action_180swipe_r_C"], ChosenActionKey=bb.TempAction)
+        2) Selector
+          [if BTDeco_CheckChosenAction "Can We Swipe?"  (ActionClass=BlueprintGeneratedClass fulgar_alpha_action_180swipe_l_C, ChosenAttackKeyName=TempAction, bShowPropertyDetails=false)]
+          1) Sequence
+            1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            2) Wait  (WaitTime=1)
+          [if BTDeco_CheckChosenAction "Can We Swipe?"  (ActionClass=BlueprintGeneratedClass fulgar_alpha_action_180swipe_r_C, ChosenAttackKeyName=TempAction, bShowPropertyDetails=false)]
+          2) Sequence
+            1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            2) Wait  (WaitTime=1)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      4) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    12) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    13) Selector
+      {service service_managefulgartimers_bpt "ManageFulgarTimers"}
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

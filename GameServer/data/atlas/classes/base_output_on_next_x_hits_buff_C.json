@@ -1,0 +1,387 @@
+{
+ "name": "base_output_on_next_x_hits_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": 1888,
+ "sdk_header": "base_output_on_next_x_hits_buff_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NumHitsAllowed",
+   "type": "int32",
+   "offset": "0x740",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "ServerDeflectionTime",
+   "type": "double",
+   "offset": "0x748",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "PlayerEventDispatcher",
+   "type": "Uplayer_eventdispatcher_bpc_C*",
+   "offset": "0x750",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<player_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "bOnlyCountWeaponHits",
+   "type": "bool",
+   "offset": "0x758",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CritsOnly",
+   "type": "bool",
+   "offset": "0x759",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CustomCanAffectTarget",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Target",
+     "type": "AActor*"
+    },
+    {
+     "name": "DamageAndInstigatorTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "CanAffect",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_base_output_on_next_x_hits_buff",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 56,
+   "reads": [
+    "CritsOnly",
+    "OnPostMitigationDealtAnyDamage",
+    "OnPostWeaponHitComplete",
+    "PlayerEventDispatcher",
+    "ServerDeflectionTime",
+    "bOnlyCountWeaponHits"
+   ],
+   "sets": [
+    "PlayerEventDispatcher"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "AddEmpoweredWeaponEffectsStack",
+    "ArchonBuff.GetBuffOwner",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "CanProcOnDamageEffects",
+    "HandleHitEvent",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "RemoveEmpoweredWeaponEffectsStack",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "HandleHitEvent",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "DamageAndInstigatorTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 10,
+   "reads": [
+    "NumHitsAllowed",
+    "OwnerBuffableComponent"
+   ],
+   "sets": [
+    "NumHitsAllowed"
+   ],
+   "calls": [
+    "CustomCanAffectTarget",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "RemoveBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_output_on_next_x_hits_buff_C.ExecuteUbergraph_base_output_on_next_x_hits_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMitigationDealtAnyDamage",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "FPostMitigationDamageSummary"
+    },
+    {
+     "name": "DamageTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "Context",
+     "type": "FGameplayEffectContextHandle"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_output_on_next_x_hits_buff_C.ExecuteUbergraph_base_output_on_next_x_hits_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostWeaponHitComplete_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DamageAndInstigatorTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "FinalDamageAmount",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_output_on_next_x_hits_buff_C.ExecuteUbergraph_base_output_on_next_x_hits_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_output_on_next_x_hits_buff_C.ExecuteUbergraph_base_output_on_next_x_hits_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/cell_building_blocks/base_output_on_next_x_hits_buff",
+ "pseudo_file": "pseudo/base_output_on_next_x_hits_buff_C.txt",
+ "game_data": {}
+}

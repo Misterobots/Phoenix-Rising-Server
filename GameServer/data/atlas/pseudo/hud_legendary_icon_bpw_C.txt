@@ -1,0 +1,67 @@
+# hud_legendary_icon_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Construct
+  [0] ExecuteUbergraph_hud_legendary_icon_bpw(10)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_hud_legendary_icon_bpw
+  [0] goto computed(EntryPoint)
+  [10] goto @115
+  [15] goto @115
+  [20] if !(K2Node_Event_InAbilityBlocked) goto @77
+  [34] self.Locked_Image.SetVisibility(0)
+  [72] goto @115
+  [77] self.Locked_Image.SetVisibility(1)
+  [115] return nothing
+  [117] end
+
+=== HandleAbilityAvailabilityChanged
+  [0] frame.K2Node_Event_InAbilityEnabled = InAbilityEnabled
+  [18] ExecuteUbergraph_hud_legendary_icon_bpw(15)
+  [33] return nothing
+  [35] end
+
+=== HandleAbilityBlockedChanged
+  [0] frame.K2Node_Event_InAbilityBlocked = InAbilityBlocked
+  [18] ExecuteUbergraph_hud_legendary_icon_bpw(20)
+  [33] return nothing
+  [35] end
+
+=== OnWeaponPartComponentsChanged
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Weapon)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @363
+  [43] CallFunc_GetWeaponSlot_ReturnValue = Weapon.GetWeaponSlot()
+  [93] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.WeaponSlot, CallFunc_GetWeaponSlot_ReturnValue)
+  [131] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @363
+  [145] K2Node_DynamicCast_AsWeapon_Bpi = cast<weapon_bpi_C>(Weapon)
+  [181] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsWeapon_Bpi)
+  [210] if !(K2Node_DynamicCast_bSuccess) goto @337
+  [224] K2Node_DynamicCast_AsWeapon_Bpi.FindLegendaryWeaponPart(CallFunc_FindLegendaryWeaponPart_LegendaryWeaponPart)
+  [270] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_FindLegendaryWeaponPart_LegendaryWeaponPart)
+  [299] if !(CallFunc_IsValid_ReturnValue_1) goto @353
+  [313] SetLegendaryWeaponPart(CallFunc_FindLegendaryWeaponPart_LegendaryWeaponPart)
+  [332] goto @363
+  [337] CallFunc_FindLegendaryWeaponPart_LegendaryWeaponPart = null
+  [348] goto @270
+  [353] ClearLegendaryWeaponPart()
+  [363] return nothing
+  [365] end
+
+=== ReceiveHandleWeaponEquipped
+  [0] push @266
+  [5] ReceiveHandleWeaponEquipped(InWeapon)
+  [24] push @242
+  [29] CallFunc_IsValid_ReturnValue = IsValid(InWeapon)
+  [58] if !(CallFunc_IsValid_ReturnValue) pop
+  [68] CallFunc_GetComponentByClass_ReturnValue = InWeapon.GetComponentByClass(weapon_eventdispatcher_bpc_C)
+  [119] WeaponEventDispatcher = CallFunc_GetComponentByClass_ReturnValue
+  [138] CallFunc_IsValid_ReturnValue_1 = IsValid(WeaponEventDispatcher)
+  [167] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [177] K2Node_CreateDelegate_OutputDelegate = bind(self.OnWeaponPartComponentsChanged)
+  [200] K2Node_CreateDelegate_OutputDelegate += None
+  [241] pop
+  [242] OnWeaponPartComponentsChanged(InWeapon)
+  [265] pop
+  [266] return nothing
+  [268] end

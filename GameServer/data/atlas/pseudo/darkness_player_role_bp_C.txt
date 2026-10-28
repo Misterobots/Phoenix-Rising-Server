@@ -1,0 +1,621 @@
+# darkness_player_role_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateGameplayEvent
+  [0] ActivateGameplayEvent(EventName)
+  [19] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'EnterRealm')
+  [61] if !(K2Node_SwitchName_CmpSuccess) goto @136
+  [75] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'ExitRealm')
+  [117] if !(K2Node_SwitchName_CmpSuccess) goto @155
+  [131] goto @171
+  [136] EnterRealmEvent()
+  [150] goto @171
+  [155] ExitRealmEvent(true, true)
+  [171] return nothing
+  [173] end
+
+=== AddDamageStack
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [49] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ce_darkness_realm_damage_ge_C, 0.0, GameplayEffectContextHandle{})
+  [131] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_MakeOutgoingSpec_ReturnValue)
+  [190] self.RealmDamageGE = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [217] return nothing
+  [219] end
+
+=== AddHealthRegenStack
+  [0] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.DarknessStacks, 1)
+  [42] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [69] self.DarknessStacks = Temp_int_Variable
+  [96] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [116] Default__buff_function_library_C.AdjustBuffMaxStacks(CallFunc_GetOwner_ReturnValue, 1, 0, self)
+  [169] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [189] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetOwner_ReturnValue, 1, 0, false, self)
+  [243] AddTimeToRealm(self.DarknessTimeExtensionAdd)
+  [266] return nothing
+  [268] end
+
+=== AddTimeToRealm
+  [0] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.DarknessTimer)
+  [38] K2Node_VariableSet_RemainingTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [67] RemainingTime = K2Node_VariableSet_RemainingTime_ImplicitCast
+  [94] K2_ClearAndInvalidateTimerHandle(self, self.DarknessTimer)
+  [114] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(RemainingTime, TimeToAdd)
+  [160] K2Node_CreateDelegate_OutputDelegate = bind(self.EndDarkness)
+  [183] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [212] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [269] self.DarknessTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [296] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [316] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetOwner_ReturnValue_1, self.RealmDamageGE, -1)
+  [381] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(RemainingTime, TimeToAdd)
+  [427] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [447] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [476] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ce_darkness_realm_damage_ge_C, 0.0, GameplayEffectContextHandle{})
+  [558] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [587] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DURATION', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [646] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [666] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [695] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [754] self.RealmDamageGE = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [781] return nothing
+  [783] end
+
+=== AuthDoAoE
+  [0] ExecuteUbergraph_darkness_player_role_bp(3889)
+  [15] return nothing
+  [17] end
+
+=== BP_HandleEquipForGameplay
+  [0] ExecuteUbergraph_darkness_player_role_bp(3075)
+  [15] return nothing
+  [17] end
+
+=== BP_HandleUnequip
+  [0] ExecuteUbergraph_darkness_player_role_bp(2124)
+  [15] return nothing
+  [17] end
+
+=== CacheTuningValues
+  [0] push @1550
+  [5] CacheTuningValues()
+  [15] push @1401
+  [20] push @1252
+  [25] push @1103
+  [30] push @954
+  [35] push @805
+  [40] push @656
+  [45] push @507
+  [50] push @358
+  [55] push @209
+  [60] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_MaxSelfDamageAmount', CallFunc_GetDataTableRowFromName_OutRow)
+  [133] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [143] K2Node_VariableSet_DarknessMaxSelfDamageAmount_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow.RawFloat)
+  [181] self.DarknessMaxSelfDamageAmount = K2Node_VariableSet_DarknessMaxSelfDamageAmount_ImplicitCast
+  [208] pop
+  [209] CallFunc_GetDataTableRowFromName_ReturnValue_2 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_DistanceBetweenTendrils', CallFunc_GetDataTableRowFromName_OutRow_2)
+  [282] if !(CallFunc_GetDataTableRowFromName_ReturnValue_2) pop
+  [292] K2Node_VariableSet_DistanceBetweenTendrils_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_2.RawFloat)
+  [330] self.DistanceBetweenTendrils = K2Node_VariableSet_DistanceBetweenTendrils_ImplicitCast
+  [357] pop
+  [358] CallFunc_GetDataTableRowFromName_ReturnValue_4 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_HealingDuration', CallFunc_GetDataTableRowFromName_OutRow_4)
+  [431] if !(CallFunc_GetDataTableRowFromName_ReturnValue_4) pop
+  [441] K2Node_VariableSet_DarknessHealingDuration_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_4.RawFloat)
+  [479] self.DarknessHealingDuration = K2Node_VariableSet_DarknessHealingDuration_ImplicitCast
+  [506] pop
+  [507] CallFunc_GetDataTableRowFromName_ReturnValue_5 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_HealingPerStack', CallFunc_GetDataTableRowFromName_OutRow_5)
+  [580] if !(CallFunc_GetDataTableRowFromName_ReturnValue_5) pop
+  [590] K2Node_VariableSet_DarknessHealingPerStack_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_5.RawFloat)
+  [628] self.DarknessHealingPerStack = K2Node_VariableSet_DarknessHealingPerStack_ImplicitCast
+  [655] pop
+  [656] CallFunc_GetDataTableRowFromName_ReturnValue_6 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_MinHealthRequired', CallFunc_GetDataTableRowFromName_OutRow_6)
+  [729] if !(CallFunc_GetDataTableRowFromName_ReturnValue_6) pop
+  [739] K2Node_VariableSet_DarknessMinHealthRequired_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_6.RawFloat)
+  [777] self.DarknessMinHealthRequired = K2Node_VariableSet_DarknessMinHealthRequired_ImplicitCast
+  [804] pop
+  [805] CallFunc_GetDataTableRowFromName_ReturnValue_1 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_LifestealPassiveAmount', CallFunc_GetDataTableRowFromName_OutRow_1)
+  [878] if !(CallFunc_GetDataTableRowFromName_ReturnValue_1) pop
+  [888] K2Node_VariableSet_DarknessLifestealPassiveAmount_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_1.RawFloat)
+  [926] self.DarknessLifestealPassiveAmount = K2Node_VariableSet_DarknessLifestealPassiveAmount_ImplicitCast
+  [953] pop
+  [954] CallFunc_GetDataTableRowFromName_ReturnValue_3 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_MinSelfDamageAmount', CallFunc_GetDataTableRowFromName_OutRow_3)
+  [1027] if !(CallFunc_GetDataTableRowFromName_ReturnValue_3) pop
+  [1037] K2Node_VariableSet_DarknessMinSelfDamageAmount_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_3.RawFloat)
+  [1075] self.DarknessMinSelfDamageAmount = K2Node_VariableSet_DarknessMinSelfDamageAmount_ImplicitCast
+  [1102] pop
+  [1103] CallFunc_GetDataTableRowFromName_ReturnValue_7 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_UmbralStateMinDuration', CallFunc_GetDataTableRowFromName_OutRow_7)
+  [1176] if !(CallFunc_GetDataTableRowFromName_ReturnValue_7) pop
+  [1186] K2Node_VariableSet_DarknessStateMinDuration_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_7.RawFloat)
+  [1224] self.DarknessStateMinDuration = K2Node_VariableSet_DarknessStateMinDuration_ImplicitCast
+  [1251] pop
+  [1252] CallFunc_GetDataTableRowFromName_ReturnValue_8 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_TimeExtensionAdd', CallFunc_GetDataTableRowFromName_OutRow_8)
+  [1325] if !(CallFunc_GetDataTableRowFromName_ReturnValue_8) pop
+  [1335] K2Node_VariableSet_DarknessTimeExtensionAdd_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_8.RawFloat)
+  [1373] self.DarknessTimeExtensionAdd = K2Node_VariableSet_DarknessTimeExtensionAdd_ImplicitCast
+  [1400] pop
+  [1401] CallFunc_GetDataTableRowFromName_ReturnValue_9 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_roles_tuning_table, 'DARKNESS_DamagePerStack', CallFunc_GetDataTableRowFromName_OutRow_9)
+  [1474] if !(CallFunc_GetDataTableRowFromName_ReturnValue_9) pop
+  [1484] K2Node_VariableSet_DarknessDamagePerStack_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDataTableRowFromName_OutRow_9.RawFloat)
+  [1522] self.DarknessDamagePerStack = K2Node_VariableSet_DarknessDamagePerStack_ImplicitCast
+  [1549] pop
+  [1550] return nothing
+  [1552] end
+
+=== CanActivateAbilityBP
+  [0] push @661
+  [5] CallFunc_CanActivateAbilityBP_ReturnValue = CanActivateAbilityBP()
+  [25] push @629
+  [30] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [50] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [86] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [115] if !(K2Node_DynamicCast_bSuccess) pop
+  [125] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(K2Node_DynamicCast_AsArchon_Character)
+  [154] K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface = cast<GameplayTagAssetInterface>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [190] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface)
+  [219] if !(K2Node_DynamicCast_bSuccess_1) goto @645
+  [233] array{GameplayTag{'State.InvulnerableEdgeRecovery'}}
+  [271] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [308] CallFunc_HasAnyMatchingGameplayTags_ReturnValue = K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface.HasAnyMatchingGameplayTags(CallFunc_MakeGameplayTagContainerFromArray_ReturnValue)
+  [364] Temp_bool_Variable = CallFunc_HasAnyMatchingGameplayTags_ReturnValue
+  [383] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_Variable)
+  [412] CallFunc_GetHealth_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetHealth()
+  [462] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [491] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, self.DarknessMinHealthRequired)
+  [529] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [567] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_CanActivateAbilityBP_ReturnValue)
+  [605] ReturnValue = CallFunc_BooleanAND_ReturnValue_1
+  [624] goto @661
+  [629] ReturnValue = false
+  [640] goto @661
+  [645] Temp_bool_Variable = false
+  [656] goto @383
+  [661] return ReturnValue
+  [671] end
+
+=== DebugDarknessOrbsOnCast
+  [0] frame.K2Node_CustomEvent_DoOnCast = DoOnCast
+  [18] ExecuteUbergraph_darkness_player_role_bp(5576)
+  [33] return nothing
+  [35] end
+
+=== EndDarkness
+  [0] ExecuteUbergraph_darkness_player_role_bp(4580)
+  [15] return nothing
+  [17] end
+
+=== EnterRealmEvent
+  [0] push @829
+  [5] GameMode = 0
+  [25] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [46] if !(CallFunc_IsServer_ReturnValue) pop
+  [56] push @692
+  [61] push @337
+  [66] push @249
+  [71] SacrificeHealth()
+  [85] AuthDoAoE()
+  [99] Multi_PlayAttachedFX()
+  [113] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [133] CallFunc_RunEQSQuery_ReturnValue = RunEQSQuery(self, eqs_darkness_projectiles, CallFunc_GetOwner_ReturnValue_1, 3, null, self.Params)
+  [184] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnProjectileSpawnQueryFinished)
+  [207] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [248] pop
+  [249] CallFunc_IsValid_ReturnValue = IsValid(self.HealOverTimeBuff)
+  [278] if !(CallFunc_IsValid_ReturnValue) pop
+  [288] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [308] RemoveBuff(CallFunc_GetOwner_ReturnValue_2, self.HealOverTimeBuff)
+  [336] pop
+  [337] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [357] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [386] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ce_darkness_realm_damage_ge_C, 0.0, GameplayEffectContextHandle{})
+  [468] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.DarknessStateMinDuration)
+  [497] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DURATION', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [556] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [576] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [605] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [664] self.RealmDamageGE = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [691] pop
+  [692] K2Node_CreateDelegate_OutputDelegate = bind(self.EndDarkness)
+  [715] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.DarknessStateMinDuration)
+  [744] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [801] self.DarknessTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [828] pop
+  [829] return nothing
+  [831] end
+
+=== ExecuteUbergraph_darkness_player_role_bp
+  [0] push @6860
+  [5] goto computed(EntryPoint)
+  [15] Multi_ExitStateFX()
+  [29] pop
+  [30] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [72] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_1
+  [99] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.AoELocations)
+  [158] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [196] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [206] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_2
+  [233] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [253] Default__KismetArrayLibrary.Array_Get(self.AoELocations, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [312] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_Array_Get_Item_2)
+  [349] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, aoe_simple_playerowned_darkness_C, CallFunc_Conv_VectorToTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue_5)
+  [399] SetBoolPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Debug_SpawnOnCast', self.Debug Spawn on Cast)
+  [440] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(Temp_int_Array_Index_Variable_2)
+  [477] CallFunc_SetDoublePropertyByName_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [506] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'RandomRotationOffset', CallFunc_SetDoublePropertyByName_Value_ImplicitCast)
+  [547] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', 400.0)
+  [588] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [608] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetOwner_ReturnValue_5)
+  [649] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', 1.0)
+  [690] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [731] Default__KismetArrayLibrary.Array_Get(self.AoELocations, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [790] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_Array_Get_Item_2)
+  [827] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [865] Default__KismetArrayLibrary.Array_Get(self.AoELocations, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [924] Multi_AoE_FX(CallFunc_Array_Get_Item_2)
+  [947] Delay(self, 0.3, LatentActionInfo{EX_SkipOffsetConst(Value=30), 1582650133, 'ExecuteUbergraph_darkness_player_role_bp', self})
+  [1001] pop
+  [1002] push @1135
+  [1007] Default__KismetArrayLibrary.Array_Get(self.AoELocationsReversed, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1066] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.AoELocations, CallFunc_Array_Get_Item)
+  [1134] pop
+  [1135] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1177] Temp_int_Loop_Counter_Variable = CallFunc_Subtract_IntInt_ReturnValue
+  [1204] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Temp_int_Loop_Counter_Variable, 0)
+  [1238] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @1284
+  [1252] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1279] goto @1002
+  [1284] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [1304] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue_5)
+  [1340] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [1369] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [1379] Temp_int_Loop_Counter_Variable_2 = 0
+  [1402] Temp_int_Array_Index_Variable_2 = 0
+  [1425] goto @99
+  [1430] Temp_int_Array_Index_Variable_1 = 0
+  [1453] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1473] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetOwner_ReturnValue_2, self)
+  [1529] CallFunc_GetAllBuffs_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.GetAllBuffs()
+  [1579] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllBuffs_ReturnValue)
+  [1638] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [1676] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1686] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [1713] push @2015
+  [1718] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1738] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetOwner_ReturnValue_2, self)
+  [1794] CallFunc_GetAllBuffs_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.GetAllBuffs()
+  [1844] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllBuffs_ReturnValue, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [1903] K2Node_DynamicCast_AsFrostbite_Buildup = cast<frostbite_buildup_C>(CallFunc_Array_Get_Item_1)
+  [1939] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsFrostbite_Buildup)
+  [1968] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [1978] if !(K2Node_DynamicCast_AsFrostbite_Buildup.self.WarmBloodedAvailable) goto @2089
+  [2014] pop
+  [2015] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2057] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [2084] goto @1453
+  [2089] ExitRealmEvent(false, false)
+  [2105] Multi_StopAttachedFX()
+  [2119] goto @15
+  [2124] BP_HandleUnequip()
+  [2134] push @2149
+  [2139] push @2266
+  [2144] goto @2089
+  [2149] CallFunc_IsServer_ReturnValue_1 = IsServer(self)
+  [2170] if !(CallFunc_IsServer_ReturnValue_1) pop
+  [2180] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2200] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetOwner_ReturnValue_1, self.LifestealGE, -1)
+  [2265] pop
+  [2266] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2286] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue_1)
+  [2315] if !(CallFunc_IsValid_ReturnValue) pop
+  [2325] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2345] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [2381] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [2410] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [2420] CallFunc_GetController_ReturnValue_1 = K2Node_DynamicCast_AsArchon_Character_1.GetController()
+  [2462] K2Node_DynamicCast_AsPlayer_Controller_Interface_1 = cast<player_controller_interface_C>(CallFunc_GetController_ReturnValue_1)
+  [2498] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_1)
+  [2527] if !(K2Node_DynamicCast_bSuccess_3) goto @2756
+  [2541] CallFunc_GetPlayerEventDispatcher_ReturnValue_1 = K2Node_DynamicCast_AsPlayer_Controller_Interface_1.GetPlayerEventDispatcher()
+  [2588] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetPlayerEventDispatcher_ReturnValue_1)
+  [2617] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2627] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnBleedoutStateChanged)
+  [2650] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [2691] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnFrostbitten)
+  [2714] K2Node_CreateDelegate_OutputDelegate_3 -= None
+  [2755] pop
+  [2756] CallFunc_GetPlayerEventDispatcher_ReturnValue_1 = null
+  [2767] goto @2588
+  [2772] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AoELocationsReversed)
+  [2831] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [2873] Temp_int_Loop_Counter_Variable = CallFunc_Subtract_IntInt_ReturnValue_1
+  [2900] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AoELocationsReversed)
+  [2959] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [3001] CallFunc_Max_ReturnValue = Max(0, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [3043] Temp_int_Array_Index_Variable = CallFunc_Max_ReturnValue
+  [3070] goto @1204
+  [3075] push @3488
+  [3080] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3100] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [3136] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [3165] if !(K2Node_DynamicCast_bSuccess) pop
+  [3175] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [3217] K2Node_DynamicCast_AsPlayer_Controller_Interface = cast<player_controller_interface_C>(CallFunc_GetController_ReturnValue)
+  [3253] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface)
+  [3282] if !(K2Node_DynamicCast_bSuccess_1) goto @3472
+  [3296] CallFunc_GetPlayerEventDispatcher_ReturnValue = K2Node_DynamicCast_AsPlayer_Controller_Interface.GetPlayerEventDispatcher()
+  [3343] K2Node_CreateDelegate_OutputDelegate = bind(self.OnBleedoutStateChanged)
+  [3366] K2Node_CreateDelegate_OutputDelegate += None
+  [3407] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnFrostbitten)
+  [3430] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [3471] pop
+  [3472] CallFunc_GetPlayerEventDispatcher_ReturnValue = null
+  [3483] goto @3343
+  [3488] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [3509] if !(CallFunc_IsServer_ReturnValue) pop
+  [3519] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3539] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [3568] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(ce_darkness_passive_lifesteal_ge_C, 0.0, GameplayEffectContextHandle{})
+  [3650] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.DarknessLifestealPassiveAmount)
+  [3679] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'MAGNITUDE', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [3738] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [3758] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [3787] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [3846] self.LifestealGE = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [3873] pop
+  [3874] if !(K2Node_CustomEvent_NewBleedoutState) pop
+  [3884] goto @2089
+  [3889] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [3909] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.DamageStackScalar, 100.0)
+  [3955] K2Node_MakeStruct_EnvNamedValue.ParamName = 'Cone.AlignedPointsDistance'
+  [3995] K2Node_MakeStruct_EnvNamedValue.ParamType = 0
+  [4024] K2Node_MakeStruct_Value_ImplicitCast = cast<CST_DoubleToFloat>(self.DistanceBetweenTendrils)
+  [4053] K2Node_MakeStruct_EnvNamedValue.Value = K2Node_MakeStruct_Value_ImplicitCast
+  [4089] CallFunc_FCeil_ReturnValue = FCeil(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [4126] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_FCeil_ReturnValue, self.DistanceBetweenTendrils)
+  [4172] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.DistanceBetweenTendrils, 5.0)
+  [4218] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Multiply_IntFloat_ReturnValue, self.DistanceBetweenTendrils, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [4273] K2Node_MakeStruct_EnvNamedValue_1.ParamName = 'Cone.Range'
+  [4313] K2Node_MakeStruct_EnvNamedValue_1.ParamType = 0
+  [4342] K2Node_MakeStruct_Value_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_FClamp_ReturnValue)
+  [4371] K2Node_MakeStruct_EnvNamedValue_1.Value = K2Node_MakeStruct_Value_ImplicitCast_1
+  [4407] array{K2Node_MakeStruct_EnvNamedValue, K2Node_MakeStruct_EnvNamedValue_1}
+  [4436] CallFunc_RunEQSQuery_ReturnValue = RunEQSQuery(self, eqs_darkness_line_forward_attack, CallFunc_GetOwner_ReturnValue_4, 3, null, K2Node_MakeArray_Array)
+  [4487] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnAoEQueryFinished)
+  [4510] K2Node_CreateDelegate_OutputDelegate_4 += None
+  [4551] pop
+  [4552] Temp_int_Loop_Counter_Variable_1 = 0
+  [4575] goto @1430
+  [4580] goto @2089
+  [4585] CallFunc_IsValid_ReturnValue_2 = IsValid(self.CachedOwnerVFXBpc)
+  [4614] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [4624] self.CachedOwnerVFXBpc.RemoveVFX(23)
+  [4662] pop
+  [4663] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [4683] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetOwner_ReturnValue_3)
+  [4712] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [4722] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [4742] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_3.GetComponentByClass(vfx_bpc_C)
+  [4793] self.CachedOwnerVFXBpc = CallFunc_GetComponentByClass_ReturnValue
+  [4812] pop
+  [4813] CallFunc_IsValid_ReturnValue_4 = IsValid(self.CachedOwnerVFXBpc)
+  [4842] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [4852] self.CachedOwnerVFXBpc.RemoveVFX(23)
+  [4890] self.CachedOwnerVFXBpc.AddVFX(23, 6)
+  [4930] pop
+  [4931] Multi_StopAttachedFX()
+  [4941] goto @4585
+  [4946] Local_PlayAttachedFX()
+  [4956] goto @4813
+  [4961] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_CustomEvent_QueryStatus_1, 1)
+  [4992] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [5002] array{}
+  [5013] CallFunc_GetQueryResultsAsLocations_ReturnValue = K2Node_CustomEvent_QueryInstance_1.GetQueryResultsAsLocations(CallFunc_GetQueryResultsAsLocations_ResultLocations)
+  [5064] self.AoELocationsReversed = CallFunc_GetQueryResultsAsLocations_ResultLocations
+  [5091] Default__KismetArrayLibrary.Array_Clear(self.AoELocations)
+  [5132] goto @2772
+  [5137] CallFunc_GetOwner_ReturnValue_6 = GetOwner()
+  [5157] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_6)
+  [5186] if !(CallFunc_IsLocalCharacter_ReturnValue) goto @5388
+  [5200] CallFunc_PostEventAtLocation_ReturnValue_1 = Default__AkGameplayStatics.PostEventAtLocation(Play_vfx_umbral_tentacle_spawn, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [5294] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, amp_s10a_planar_travel_umbral_burst_p, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [5387] pop
+  [5388] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Umbral_Portal_Open, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [5482] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, amp_s10a_planar_travel_umbral_burst_small_p, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.5, 'Y': 0.5, 'Z': 0.5}), true, 0, true)
+  [5575] pop
+  [5576] self.Debug Spawn on Cast = K2Node_CustomEvent_DoOnCast
+  [5595] pop
+  [5596] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(K2Node_CustomEvent_QueryStatus, 1)
+  [5627] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) pop
+  [5637] array{}
+  [5648] CallFunc_GetQueryResultsAsLocations_ReturnValue_1 = K2Node_CustomEvent_QueryInstance.GetQueryResultsAsLocations(CallFunc_GetQueryResultsAsLocations_ResultLocations_1)
+  [5699] CallFunc_GetOwner_ReturnValue_7 = GetOwner()
+  [5719] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [5739] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_8.K2_GetActorLocation()
+  [5789] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 150.0}), CallFunc_K2_GetActorLocation_ReturnValue)
+  [5851] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [5938] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1 = BeginDeferredActorSpawnFromClass(self, darkness_gatherable_projectile_C, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue_7)
+  [5988] CallFunc_GetOwner_ReturnValue_8 = GetOwner()
+  [6008] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_8.K2_GetActorLocation()
+  [6058] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 150.0}), CallFunc_K2_GetActorLocation_ReturnValue)
+  [6120] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [6207] CallFunc_FinishSpawningActor_ReturnValue_1 = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue_1, CallFunc_MakeTransform_ReturnValue)
+  [6245] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetQueryResultsAsLocations_ResultLocations_1)
+  [6304] CallFunc_RandomInteger_ReturnValue = RandomInteger(CallFunc_Array_Length_ReturnValue_3)
+  [6341] Default__KismetArrayLibrary.Array_Get(CallFunc_GetQueryResultsAsLocations_ResultLocations_1, CallFunc_RandomInteger_ReturnValue, CallFunc_Array_Get_Item_3)
+  [6400] CallFunc_FinishSpawningActor_ReturnValue_1.AuthLobProjectile(CallFunc_Array_Get_Item_3, 250.0, 275.0)
+  [6463] pop
+  [6464] CallFunc_GetOwner_ReturnValue_9 = GetOwner()
+  [6484] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_GetOwner_ReturnValue_9)
+  [6513] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [6523] CallFunc_GetOwner_ReturnValue_9 = GetOwner()
+  [6543] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_GetOwner_ReturnValue_9.K2_GetRootComponent()
+  [6585] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(amp_s10a_planar_travel_umbral_burst_small_p, CallFunc_K2_GetRootComponent_ReturnValue, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [6717] CallFunc_IsValid_ReturnValue_6 = IsValid(self.UmbralStateEndAkEvent)
+  [6746] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [6756] CallFunc_GetOwner_ReturnValue_10 = GetOwner()
+  [6776] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(self.UmbralStateEndAkEvent, CallFunc_GetOwner_ReturnValue_10, 0, Temp_delegate_Variable, false)
+  [6859] pop
+  [6860] return nothing
+  [6862] end
+
+=== ExitRealmEvent
+  [0] push @2243
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.RealmBuffs)
+  [110] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @369
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @1056
+  [194] Default__KismetArrayLibrary.Array_Get(self.RealmBuffs, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [253] K2Node_DynamicCast_AsDarkness_Umbral_Realm_Buff = cast<darkness_umbral_realm_buff_C>(CallFunc_Array_Get_Item_1)
+  [289] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDarkness_Umbral_Realm_Buff)
+  [318] if !(K2Node_DynamicCast_bSuccess_1) goto @1130
+  [332] K2Node_DynamicCast_AsDarkness_Umbral_Realm_Buff.ExitRealm()
+  [368] pop
+  [369] self.IsInRealm = false
+  [380] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [401] if !(CallFunc_IsServer_ReturnValue) pop
+  [411] push @1238
+  [416] push @931
+  [421] K2_ClearAndInvalidateTimerHandle(self, self.DarknessTimer)
+  [441] array{}
+  [452] GetAllActorsOfClass(self, darkness_gatherable_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [481] Temp_int_Loop_Counter_Variable_1 = 0
+  [504] Temp_int_Array_Index_Variable_1 = 0
+  [527] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [586] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [624] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [634] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [661] push @2169
+  [666] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [686] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [745] CallFunc_GetOwner_ReturnValue_3 = CallFunc_Array_Get_Item.GetOwner()
+  [787] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_GetOwner_ReturnValue_3, CallFunc_GetOwner_ReturnValue_1)
+  [825] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [835] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [894] CallFunc_Array_Get_Item.K2_DestroyActor()
+  [930] pop
+  [931] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.RealmDamageGE)
+  [960] if !(CallFunc_IsGameplayEffectActive_ReturnValue) pop
+  [970] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [990] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetOwner_ReturnValue_5, self.RealmDamageGE, -1)
+  [1055] pop
+  [1056] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1098] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [1125] goto @51
+  [1130] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [1150] Default__KismetArrayLibrary.Array_Get(self.RealmBuffs, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1209] RemoveBuff(CallFunc_GetOwner_ReturnValue_4, CallFunc_Array_Get_Item_1)
+  [1237] pop
+  [1238] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.DarknessStacks, 0)
+  [1272] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [1282] push @2145
+  [1287] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1307] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.DarknessStacks, -1)
+  [1349] Default__buff_function_library_C.AdjustBuffHeldStacks(CallFunc_GetOwner_ReturnValue, CallFunc_Multiply_IntInt_ReturnValue, 0, false, self)
+  [1407] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1427] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.DarknessStacks, -1)
+  [1469] Default__buff_function_library_C.AdjustBuffMaxStacks(CallFunc_GetOwner_ReturnValue, CallFunc_Multiply_IntInt_ReturnValue, 0, self)
+  [1526] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1546] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(ArchonBuffableComponent)
+  [1597] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(darkness_heal_over_time_buff_C, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, CallFunc_GetOwner_ReturnValue_2, false)
+  [1680] K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff = cast<darkness_heal_over_time_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [1716] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff)
+  [1745] if !(K2Node_DynamicCast_bSuccess) pop
+  [1755] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.DarknessHealingPerStack, self.DarknessHealingDuration)
+  [1801] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(self.DarknessStacks, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [1847] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_IntFloat_ReturnValue, self.HealStackScalar)
+  [1893] K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff.self.HealthRestoredPerSecond = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [1942] K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff.FlushNetDormancy()
+  [1974] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.DarknessHealingDuration)
+  [2003] K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff.self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [2052] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff, 10, 'MaxDuration')
+  [2089] K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff.StartBuff()
+  [2125] self.HealOverTimeBuff = K2Node_DynamicCast_AsDarkness_Heal_Over_Time_Buff
+  [2144] pop
+  [2145] self.DarknessStacks = 0
+  [2168] pop
+  [2169] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2211] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [2238] goto @527
+  [2243] return nothing
+  [2245] end
+
+=== Local_PlayAttachedFX
+  [0] ExecuteUbergraph_darkness_player_role_bp(4946)
+  [15] return nothing
+  [17] end
+
+=== Multi_AoE_FX
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] ExecuteUbergraph_darkness_player_role_bp(5137)
+  [33] return nothing
+  [35] end
+
+=== Multi_ExitStateFX
+  [0] ExecuteUbergraph_darkness_player_role_bp(6464)
+  [15] return nothing
+  [17] end
+
+=== Multi_StopAttachedFX
+  [0] ExecuteUbergraph_darkness_player_role_bp(4931)
+  [15] return nothing
+  [17] end
+
+=== OnAoEQueryFinished
+  [0] frame.K2Node_CustomEvent_QueryInstance_1 = QueryInstance
+  [18] frame.K2Node_CustomEvent_QueryStatus_1 = QueryStatus
+  [36] ExecuteUbergraph_darkness_player_role_bp(4961)
+  [51] return nothing
+  [53] end
+
+=== OnBleedoutStateChanged
+  [0] frame.K2Node_CustomEvent_NewBleedoutState = NewBleedoutState
+  [18] ExecuteUbergraph_darkness_player_role_bp(3874)
+  [33] return nothing
+  [35] end
+
+=== OnFrostbitten
+  [0] ExecuteUbergraph_darkness_player_role_bp(4552)
+  [15] return nothing
+  [17] end
+
+=== OnProjectileSpawnQueryFinished
+  [0] frame.K2Node_CustomEvent_QueryInstance = QueryInstance
+  [18] frame.K2Node_CustomEvent_QueryStatus = QueryStatus
+  [36] ExecuteUbergraph_darkness_player_role_bp(5596)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_darkness_player_role_bp(4663)
+  [15] return nothing
+  [17] end
+
+=== SacrificeHealth
+  [0] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @1119
+  [99] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.DarknessMinSelfDamageAmount, 100.0)
+  [145] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(self.DarknessMaxSelfDamageAmount, 100.0)
+  [191] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [228] CallFunc_FTrunc_ReturnValue_1 = FTrunc(CallFunc_Divide_DoubleDouble_ReturnValue_1)
+  [265] CallFunc_GetHealth_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetHealth()
+  [315] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [344] CallFunc_Divide_DoubleDouble_ReturnValue_2 = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.DarknessMinSelfDamageAmount)
+  [390] CallFunc_FFloor_ReturnValue = FFloor(CallFunc_Divide_DoubleDouble_ReturnValue_2)
+  [427] CallFunc_Clamp_ReturnValue = Clamp(CallFunc_FFloor_ReturnValue, CallFunc_FTrunc_ReturnValue, CallFunc_FTrunc_ReturnValue_1)
+  [482] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Clamp_ReturnValue, 100.0)
+  [528] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Multiply_IntFloat_ReturnValue, 100.0)
+  [574] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [603] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_IntFloat_ReturnValue)
+  [641] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Multiply_IntFloat_ReturnValue, CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [696] self.DamageStackScalar = CallFunc_SelectFloat_ReturnValue
+  [723] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [743] CallFunc_GetInstigatorController_ReturnValue = CallFunc_GetOwner_ReturnValue.GetInstigatorController()
+  [785] array{GameplayTag{'Stagger.None'}, GameplayTag{'DamageType.DoDamageToInvulnerableDodge'}, GameplayTag{'DamageType.Self'}, GameplayTag{'DamageType.DoDamageToInvulnerable'}, GameplayTag{'DamageType.BypassShields'}}
+  [931] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = K2Node_MakeStruct_Guid
+  [967] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = K2Node_MakeArray_Array
+  [1003] CallFunc_ApplyArchonTrueDamage_TrueDamage_ImplicitCast = cast<CST_DoubleToFloat>(self.DamageStackScalar)
+  [1032] Default__ArchonGameplayStatics.ApplyArchonTrueDamage(CallFunc_GetOwner_ReturnValue, CallFunc_ApplyArchonTrueDamage_TrueDamage_ImplicitCast, CallFunc_GetInstigatorController_ReturnValue, CallFunc_GetOwner_ReturnValue, DamageType, null, K2Node_MakeStruct_ArchonExtendedDamageInfo)
+  [1119] return nothing
+  [1121] end

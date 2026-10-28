@@ -1,0 +1,828 @@
+{
+ "name": "bp_loot_item_library_C",
+ "kind": "blueprint",
+ "parents": [
+  "BlueprintFunctionLibrary",
+  "Object"
+ ],
+ "size": 40,
+ "sdk_header": "bp_loot_item_library_classes.hpp",
+ "properties": [],
+ "components": [],
+ "functions": [
+  {
+   "name": "FindIndexOfPlayerInLootInstanceArray",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PlayerState",
+     "type": "APlayerState*"
+    },
+    {
+     "name": "LootInstanceArray",
+     "type": "TArray<Fplayer_loot_instance>"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetAdventureBehemothKillLoot",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BehemothName",
+     "type": "FName"
+    },
+    {
+     "name": "BehemothPower",
+     "type": "int32"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "LootArray",
+     "type": "TArray<FPlayFabCatalogItemQuantity>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 54,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "DataTableFunctionLibrary.DoesDataTableRowExist",
+    "GetBehemothMetadata",
+    "GetCurrentIslandSpec",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Round",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.IsValid",
+    "MergeAddPlayfabItemsWithQuantity",
+    "ScaleRewardAmountWithPower"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetBehemothRewardsBasedOnPlayerHunt",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "MetadataTableName",
+     "type": "FName"
+    },
+    {
+     "name": "PlayerHuntID",
+     "type": "FString"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "ItemRewards",
+     "type": "TArray<Fdata_table_row_and_quantity>"
+    },
+    {
+     "name": "ProgressionRewards",
+     "type": "TArray<FProgressTrackRank>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 51,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.CurrentGameModeHasTags",
+    "BlueprintGameplayTagLibrary.EqualEqual_GameplayTag",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromTag",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "KismetArrayLibrary.Array_Append",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetStringLibrary.Conv_StringToName"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable behemoth_metadata_table",
+    "DataTable exploration_enemy_level_table",
+    "DataTable player_hunts_table",
+    "DataTable threat_level_table"
+   ],
+   "assets": []
+  },
+  {
+   "name": "GetEndOfHuntScaleFactor",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PlayerController",
+     "type": "AArchonPlayerController*"
+    },
+    {
+     "name": "MatchmakerHuntID",
+     "type": "FString"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "RewardScaleFactor",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [
+    "HuntSystem"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonPlayerController.GetProgressionComponent",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabled",
+    "HuntSystemComponent.GetPlayerHuntID",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetSystemLibrary.IsValid",
+    "ProgressionComponent.GetTrackProgression",
+    "RescaleAndClamp"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable player_hunts_table"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass enable_CR2019_bpff_C"
+   ]
+  },
+  {
+   "name": "GetItemRarity",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ItemId",
+     "type": "FName"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "Rarity_Level",
+     "type": "EItemRarityLevelType"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonCatalog.GetCatalogItem",
+    "ArchonGameplayStatics.GetArchonCatalog",
+    "KismetStringLibrary.Conv_NameToString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetMaxRarityOfItems",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ItemInfos",
+     "type": "TArray<FGiveItemInfo>"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "MaxRarity",
+     "type": "EItemRarityLevelType"
+    },
+    {
+     "name": "CreateShinyEvenIfLowRarity",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 35,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonCatalog.GetCatalogItem",
+    "ArchonGameplayStatics.GetArchonCatalog",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_ByteByte",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Conv_NameToString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetShinyCategoryForItem",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ItemId",
+     "type": "FName"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "ShinyDropCategory",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonCatalog.GetCatalogItem",
+    "ArchonGameplayStatics.GetArchonCatalog",
+    "KismetStringLibrary.Conv_NameToString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MatchmakerHuntMatchesTag",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Tag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "WorldContextObject",
+     "type": "AActor*"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "PlayerHuntHasTag",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.GetHunts",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "GameplayStatics.GetGameMode",
+    "GetCurrentMissionInfo",
+    "HuntCatalog.GetMatchmakerHunt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PassesBreakCondition",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "AArchonBehemoth*"
+    },
+    {
+     "name": "BreakConditions",
+     "type": "Fconditional_break_data"
+    },
+    {
+     "name": "BrokenPartType",
+     "type": "Ebehemoth_bodypart_type"
+    },
+    {
+     "name": "PlayerController",
+     "type": "AArchonPlayerController*"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "PassesConditions",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 286,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetFloatAttribute",
+    "ArchonBehemothBPLibrary.GetBehemothTagQueriesFromTableEntries",
+    "ArchonGameInstance.GetCurrentHuntPassSeasonData",
+    "ArchonInventory.HasItemFromItemId",
+    "ArchonPlayerController.GetInventory",
+    "BehemothInState",
+    "BlueprintGameplayTagLibrary.DoesContainerMatchTagQuery",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "GameplayStatics.GetGameInstance",
+    "GetBehemothMetadata",
+    "GetDefaultElementalAttackType",
+    "GetFirstDamageTakenTimestamp",
+    "GetMetadataTableName",
+    "KismetArrayLibrary.Array_Append",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.RandomFloat",
+    "KismetMathLibrary.UtcNow",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid",
+    "MatchmakerHuntMatchesTag",
+    "PlayerPassesQuestRequirements",
+    "TuningDataStatics.IsScheduledItemActive"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable behemoth_metadata_table"
+   ],
+   "assets": []
+  },
+  {
+   "name": "PassesGenericLootCondition",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TargetActor",
+     "type": "AActor*"
+    },
+    {
+     "name": "GenericConditionalLootRow",
+     "type": "Fconditional_loot"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "PassesCondition",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 39,
+   "reads": [
+    "MetadataTags"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonArrayExtensions.Map_KeyValueAt",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintMapLibrary.Map_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass metadata_bpc_C"
+   ]
+  },
+  {
+   "name": "ScaleRewardAmountWithPower",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BehemothPower",
+     "type": "int32"
+    },
+    {
+     "name": "MinReward",
+     "type": "int32"
+    },
+    {
+     "name": "MaxReward",
+     "type": "int32"
+    },
+    {
+     "name": "MinPowerScale",
+     "type": "int32"
+    },
+    {
+     "name": "MaxPowerScale",
+     "type": "int32"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "Reward_Amount",
+     "type": "int32"
+    },
+    {
+     "name": "RewardAmountUnrounded",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 16,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Round",
+    "RescaleAndClamp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetLootItemDetails",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "InLoot",
+     "type": "TArray<FArchonLoot>"
+    },
+    {
+     "name": "WorldContextObject",
+     "type": "UObject*"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "Loot",
+     "type": "TArray<FArchonLoot>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 31,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonCatalog.GetCatalogItem",
+    "ArchonGameplayStatics.GetArchonCatalog",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UnpackPlayfabItemsWithQuantity",
+   "flags": [
+    "Static",
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ItemsWithQuantity",
+     "type": "TArray<FPlayFabCatalogItemQuantity>"
+    },
+    {
+     "name": "Inventory",
+     "type": "AArchonInventory*"
+    },
+    {
+     "name": "__WorldContext",
+     "type": "UObject*"
+    },
+    {
+     "name": "UnpackedItemsWithQuantity",
+     "type": "TArray<FPlayFabCatalogItemQuantity>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Static",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 43,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonInventory.UnpackItems",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetStringLibrary.Conv_StringToName"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable behemoth_metadata_table",
+  "DataTable exploration_enemy_level_table",
+  "DataTable player_hunts_table",
+  "DataTable threat_level_table"
+ ],
+ "package": "/Game/Blueprints/bp_loot_item_library",
+ "pseudo_file": "pseudo/bp_loot_item_library_C.txt",
+ "game_data": {}
+}

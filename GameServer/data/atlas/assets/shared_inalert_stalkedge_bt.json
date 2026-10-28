@@ -1,0 +1,426 @@
+{
+ "name": "shared_inalert_stalkedge_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/shared_inalert_stalkedge_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base",
+  "eqs_edge_of_arena"
+ ],
+ "exports": {
+  "shared_inalert_stalkedge_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_2",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_1",
+     "@behemoth_in_state_btdeco_C_3"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt"
+   }
+  },
+  "behemoth_in_state_btdeco_C_3": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt"
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_2",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_4"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_1",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_3",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Cooldown_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_3",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_0",
+       "@BTDecorator_Cooldown_2"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTComposite_Selector_2": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_4",
+      "Decorators": [
+       "@BTDecorator_Cooldown_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [
+       "@BTDecorator_Blackboard_1",
+       "@BTDecorator_ForceSuccess_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@try_pick_new_target_bts_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt"
+   }
+  },
+  "BTComposite_Sequence_3": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_1",
+      "Decorators": [
+       "@set_behemoth_loco_mode_btdeco_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_1",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_0",
+       "@BTDecorator_Blackboard_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "AttackTarget is Is Set",
+    "BlackboardKey": "bb.AttackTarget",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTDecorator_Blackboard_1": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "AttackTarget is Is Set",
+    "BlackboardKey": "bb.AttackTarget",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_ConeCheck_1": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.RightPoint",
+    "Observed": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_ConeCheck_3": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.LeftPoint",
+    "Observed": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_ConeCheck_4": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.BackPoint",
+    "Observed": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_Cooldown_1": {
+   "type": "BTDecorator_Cooldown",
+   "props": {
+    "CooldownTime": 10.0,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_Cooldown_2": {
+   "type": "BTDecorator_Cooldown",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_Cooldown_3": {
+   "type": "BTDecorator_Cooldown",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_0": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.MoveDestination",
+    "MinDistance": 2500.0,
+    "MaxDistance": 10000.0,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_ForceSuccess_0": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTDecorator_ForceSuccess_1": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_MoveTo_1": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 500.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTTask_RunEQSQuery_2": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_edge_of_arena",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1500.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 4000.0,
+       "BBKey": "bb.None"
+      }
+     ],
+     "EQSQueryBlackboardKey": "bb.TargetActor"
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "behemoth_generic_action_bttask_C_1": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::StrafeLeft",
+    "RequireThatActionExists": true,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "behemoth_generic_action_bttask_C_2": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::BackUp",
+    "RequireThatActionExists": true,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "behemoth_generic_action_bttask_C_3": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::StrafeRight",
+    "RequireThatActionExists": true,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "behemoth_generic_action_bttask_C_4": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::Growl",
+    "RequireThatActionExists": true,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "behemoth_generic_action_bttask_C_5": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::Suspicious",
+    "RequireThatActionExists": true,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_1": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "MinAngleToTriggerPivot": 25.0,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_1": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Run",
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "try_pick_new_target_bts_C_1": {
+   "type": "try_pick_new_target_bts_C",
+   "props": {
+    "Interval": 2.0,
+    "TreeAsset": "BehaviorTree shared_inalert_stalkedge_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  }
+ }
+}

@@ -1,0 +1,700 @@
+# npc_interaction_helpers_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetScreenParameters
+  [0] push @331
+  [5] ScreenParameters = QuestEvent.self.Params
+  [54] push @304
+  [59] CallFunc_IsValid_ReturnValue = IsValid(Quest)
+  [88] if !(CallFunc_IsValid_ReturnValue) pop
+  [98] CallFunc_GetID_ReturnValue = Quest.GetID()
+  [148] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_GetID_ReturnValue)
+  [185] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('OpenSource=', CallFunc_Conv_NameToString_ReturnValue)
+  [235] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(ScreenParameters, CallFunc_Concat_StrStr_ReturnValue)
+  [303] pop
+  [304] Params = ScreenParameters
+  [331] return nothing
+  [333] end
+
+=== NPCHas Quest Actions
+  [0] CallFunc_IsValid_ReturnValue = IsValid(NPC)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @364
+  [43] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [79] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [108] CallFunc_QueryQuestsFor_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.QueryQuestsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, false, false, true, false, true, false, 0)
+  [241] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_QueryQuestsFor_ReturnValue)
+  [300] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [334] if !(CallFunc_Greater_IntInt_ReturnValue) goto @380
+  [348] HasQuestActions = true
+  [359] goto @449
+  [364] HasQuestActions = false
+  [375] goto @449
+  [380] NPCHasQuestWithCraftingRequirement(PlayerController, NPC, NPC, CallFunc_NPCHasQuestWithCraftingRequirement_HasCraftingRequirement)
+  [430] HasQuestActions = CallFunc_NPCHasQuestWithCraftingRequirement_HasCraftingRequirement
+  [449] return nothing
+  [451] end
+
+=== NPCHasCraftableQuests
+  [0] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [65] CallFunc_GetInventory_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetInventory()
+  [107] CallFunc_GetPlayerCollectableQuestRequirementsStatus_ReturnValue = CallFunc_GetInventory_ReturnValue.GetPlayerCollectableQuestRequirementsStatus(NPC.self.SpeakerSettings.self.AssociatedSpeaker, CallFunc_GetPlayerCollectableQuestRequirementsStatus_bIsSideQuest)
+  [219] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetPlayerCollectableQuestRequirementsStatus_ReturnValue, 0)
+  [250] if !(K2Node_SwitchEnum_CmpSuccess) goto @404
+  [264] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetPlayerCollectableQuestRequirementsStatus_ReturnValue, 1)
+  [295] if !(K2Node_SwitchEnum_CmpSuccess) goto @404
+  [309] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetPlayerCollectableQuestRequirementsStatus_ReturnValue, 2)
+  [340] if !(K2Node_SwitchEnum_CmpSuccess) goto @461
+  [354] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetPlayerCollectableQuestRequirementsStatus_ReturnValue, 3)
+  [385] if !(K2Node_SwitchEnum_CmpSuccess) goto @518
+  [399] goto @570
+  [404] NothingToDo = true
+  [415] MissingRequirements = false
+  [426] CanCraft = false
+  [437] IsSideQuest = CallFunc_GetPlayerCollectableQuestRequirementsStatus_bIsSideQuest
+  [456] goto @570
+  [461] NothingToDo = false
+  [472] MissingRequirements = true
+  [483] CanCraft = false
+  [494] IsSideQuest = CallFunc_GetPlayerCollectableQuestRequirementsStatus_bIsSideQuest
+  [513] goto @570
+  [518] NothingToDo = false
+  [529] MissingRequirements = false
+  [540] CanCraft = true
+  [551] IsSideQuest = CallFunc_GetPlayerCollectableQuestRequirementsStatus_bIsSideQuest
+  [570] return nothing
+  [572] end
+
+=== NPCHasMultipleActions
+  [0] push @2973
+  [5] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [41] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [70] CallFunc_QueryQuestsFor_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.QueryQuestsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, false, false, true, false, false, false, 0)
+  [203] Available = CallFunc_QueryQuestsFor_ReturnValue
+  [230] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [266] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [295] CallFunc_QueryQuestsFor_ReturnValue_2 = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.QueryQuestsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, false, false, false, true, false, false, 0)
+  [428] Accepted = CallFunc_QueryQuestsFor_ReturnValue_2
+  [455] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [491] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [520] CallFunc_QueryQuestsFor_ReturnValue_1 = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.QueryQuestsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, false, false, false, false, true, false, 0)
+  [653] Redeemable = CallFunc_QueryQuestsFor_ReturnValue_1
+  [680] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(Accepted)
+  [739] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(Redeemable)
+  [798] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(Available)
+  [857] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(ActionCount, CallFunc_Array_Length_ReturnValue_4)
+  [903] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_2, CallFunc_Array_Length_ReturnValue_5)
+  [949] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_3, CallFunc_Array_Length_ReturnValue_3)
+  [995] ActionCount = CallFunc_Add_IntInt_ReturnValue_4
+  [1022] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(Redeemable)
+  [1081] CallFunc_EqualEqual_IntInt_ReturnValue_1 = EqualEqual_IntInt(CallFunc_Array_Length_ReturnValue_4, 1)
+  [1115] if !(CallFunc_EqualEqual_IntInt_ReturnValue_1) goto @1316
+  [1129] SingleQuest = true
+  [1140] Default__KismetArrayLibrary.Array_Get(Redeemable, 0, CallFunc_Array_Get_Item_2)
+  [1195] Quest = CallFunc_Array_Get_Item_2
+  [1214] CallFunc_EqualEqual_IntInt_ReturnValue_2 = EqualEqual_IntInt(ActionCount, 1)
+  [1248] if !(CallFunc_EqualEqual_IntInt_ReturnValue_2) goto @1737
+  [1262] HasMultipleActions = true
+  [1273] SingleQuestOption = Quest
+  [1292] HasSingleQuestAction = SingleQuest
+  [1311] goto @2973
+  [1316] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(Redeemable)
+  [1375] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_4, 0)
+  [1409] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1428
+  [1423] goto @1140
+  [1428] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(Available)
+  [1487] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_Array_Length_ReturnValue_5, 1)
+  [1521] if !(CallFunc_EqualEqual_IntInt_ReturnValue) goto @1625
+  [1535] SingleQuest = true
+  [1546] Default__KismetArrayLibrary.Array_Get(Available, 0, CallFunc_Array_Get_Item_1)
+  [1601] Quest = CallFunc_Array_Get_Item_1
+  [1620] goto @1214
+  [1625] CallFunc_Array_Length_ReturnValue_5 = Default__KismetArrayLibrary.Array_Length(Available)
+  [1684] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_5, 0)
+  [1718] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @1214
+  [1732] goto @1546
+  [1737] SingleQuest = false
+  [1748] Temp_int_Loop_Counter_Variable = 0
+  [1771] Temp_int_Array_Index_Variable = 0
+  [1794] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(NPC.self.NPC_ConditionalScreens)
+  [1875] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [1913] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @2409
+  [1927] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1954] push @2335
+  [1959] Default__KismetArrayLibrary.Array_Get(NPC.self.NPC_ConditionalScreens, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2040] CallFunc_DoesPlayerMeetRequirement_Vendor_CastInput = cast<interactable_npc_interface_C>(NPC)
+  [2076] Default__npc_function_library_C.DoesPlayerMeetRequirement(PlayerController, CallFunc_DoesPlayerMeetRequirement_Vendor_CastInput, CallFunc_Array_Get_Item.Requirements, __WorldContext, CallFunc_DoesPlayerMeetRequirement_MeetsRequirement, CallFunc_DoesPlayerMeetRequirement_FailureReason)
+  [2175] if !(CallFunc_DoesPlayerMeetRequirement_MeetsRequirement) pop
+  [2185] Default__KismetArrayLibrary.Array_Get(NPC.self.NPC_ConditionalScreens, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2266] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(NewLocalVar_0, CallFunc_Array_Get_Item)
+  [2334] pop
+  [2335] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2377] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [2404] goto @1794
+  [2409] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(NewLocalVar_0)
+  [2468] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(ActionCount, CallFunc_Array_Length_ReturnValue_1)
+  [2514] ActionCount = CallFunc_Add_IntInt_ReturnValue
+  [2541] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(ActionCount, 1)
+  [2575] if !(CallFunc_Greater_IntInt_ReturnValue_2) goto @2643
+  [2589] HasMultipleActions = true
+  [2600] SingleQuestOption = Quest
+  [2619] HasSingleQuestAction = SingleQuest
+  [2638] goto @2973
+  [2643] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(0, 0)
+  [2673] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(NewLocalVar_0)
+  [2732] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(0, CallFunc_Array_Length_ReturnValue)
+  [2766] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [2804] if !(CallFunc_BooleanAND_ReturnValue) goto @2924
+  [2818] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(EX_ArrayGetByRef(ArrayVariable=NewLocalVar_0,ArrayIndex=0).bCanOpenDirectly)
+  [2862] HasMultipleActions = CallFunc_Not_PreBool_ReturnValue
+  [2881] SingleQuestOption = Quest
+  [2900] HasSingleQuestAction = SingleQuest
+  [2919] goto @2973
+  [2924] HasMultipleActions = false
+  [2935] SingleQuestOption = Quest
+  [2954] HasSingleQuestAction = SingleQuest
+  [2973] return nothing
+  [2975] end
+
+=== NPCHasQuestWithCraftingRequirement
+  [0] push @1173
+  [5] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(PlayerController)
+  [41] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [70] CallFunc_QueryQuestsFor_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.self.QuestSystem.QueryQuestsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, false, false, false, true, false, false, 0)
+  [203] Temp_bool_True_if_break_was_hit_Variable_1 = false
+  [214] Temp_int_Loop_Counter_Variable = 0
+  [237] Temp_int_Array_Index_Variable_1 = 0
+  [260] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable_1)
+  [289] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_QueryQuestsFor_ReturnValue)
+  [348] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [386] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue_1, CallFunc_Less_IntInt_ReturnValue_1)
+  [424] if !(CallFunc_BooleanAND_ReturnValue_1) goto @979
+  [438] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [465] push @1003
+  [470] Default__KismetArrayLibrary.Array_Get(CallFunc_QueryQuestsFor_ReturnValue, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [529] CallFunc_GetObjectives_ReturnValue = CallFunc_Array_Get_Item.GetObjectives()
+  [579] Temp_bool_True_if_break_was_hit_Variable = false
+  [590] Temp_int_Loop_Counter_Variable_1 = 0
+  [613] Temp_int_Array_Index_Variable = 0
+  [636] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [665] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetObjectives_ReturnValue)
+  [724] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [762] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [800] if !(CallFunc_BooleanAND_ReturnValue) goto @1077
+  [814] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [841] push @1099
+  [846] Default__KismetArrayLibrary.Array_Get(CallFunc_GetObjectives_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [905] ObjectiveHasCraftingRequirement(CallFunc_Array_Get_Item_1, CallFunc_Array_Get_Item_1, CallFunc_ObjectiveHasCraftingRequirement_HasCraftingRequirement)
+  [946] if !(CallFunc_ObjectiveHasCraftingRequirement_HasCraftingRequirement) pop
+  [956] CraftingRequirement = true
+  [967] Temp_bool_True_if_break_was_hit_Variable = true
+  [978] pop
+  [979] HasCraftingRequirement = CraftingRequirement
+  [998] goto @1173
+  [1003] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1045] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1072] goto @260
+  [1077] if !(CraftingRequirement) pop
+  [1087] Temp_bool_True_if_break_was_hit_Variable_1 = true
+  [1098] pop
+  [1099] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1141] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1168] goto @636
+  [1173] return nothing
+  [1175] end
+
+=== ObjectiveHasCraftingRequirement
+  [0] push @1138
+  [5] CallFunc_GetObjectiveData_ReturnValue = Objective.GetObjectiveData()
+  [47] K2Node_DynamicCast_AsCollect_X_Items_Y = cast<ObjectiveData_CollectItems>(CallFunc_GetObjectiveData_ReturnValue)
+  [83] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCollect_X_Items_Y)
+  [112] if !(K2Node_DynamicCast_bSuccess_2) goto @328
+  [126] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_DynamicCast_AsCollect_X_Items_Y.self.DescriptionFormat, 0)
+  [179] if !(K2Node_SwitchEnum_CmpSuccess) goto @591
+  [193] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_DynamicCast_AsCollect_X_Items_Y.self.DescriptionFormat, 1)
+  [246] if !(K2Node_SwitchEnum_CmpSuccess) goto @449
+  [260] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_DynamicCast_AsCollect_X_Items_Y.self.DescriptionFormat, 2)
+  [313] if !(K2Node_SwitchEnum_CmpSuccess) goto @449
+  [327] pop
+  [328] CallFunc_GetObjectiveData_ReturnValue = Objective.GetObjectiveData()
+  [370] K2Node_DynamicCast_AsClaim_Hunt_Pass_Level = cast<ObjectiveData_ClaimHuntPassLevel>(CallFunc_GetObjectiveData_ReturnValue)
+  [406] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsClaim_Hunt_Pass_Level)
+  [435] if !(K2Node_DynamicCast_bSuccess_1) goto @465
+  [449] HasCraftingRequirement = true
+  [460] goto @1138
+  [465] CallFunc_GetObjectiveData_ReturnValue = Objective.GetObjectiveData()
+  [507] K2Node_DynamicCast_AsView_Weapon_Movies = cast<ObjectiveData_ViewWeaponMovies>(CallFunc_GetObjectiveData_ReturnValue)
+  [543] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsView_Weapon_Movies)
+  [572] if !(K2Node_DynamicCast_bSuccess) goto @591
+  [586] goto @449
+  [591] CallFunc_GetChildrenObjectives_ReturnValue = Objective.GetChildrenObjectives()
+  [645] Temp_bool_True_if_break_was_hit_Variable = false
+  [656] Temp_int_Loop_Counter_Variable = 0
+  [679] Temp_int_Array_Index_Variable = 0
+  [702] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetChildrenObjectives_ReturnValue)
+  [761] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [790] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [828] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [866] if !(CallFunc_BooleanAND_ReturnValue) goto @1119
+  [880] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [907] push @1045
+  [912] Default__KismetArrayLibrary.Array_Get(CallFunc_GetChildrenObjectives_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [971] ObjectiveHasCraftingRequirement(CallFunc_Array_Get_Item, CallFunc_Array_Get_Item, CallFunc_ObjectiveHasCraftingRequirement_HasCraftingRequirement)
+  [1012] if !(CallFunc_ObjectiveHasCraftingRequirement_HasCraftingRequirement) pop
+  [1022] CraftingRequirement = true
+  [1033] Temp_bool_True_if_break_was_hit_Variable = true
+  [1044] pop
+  [1045] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1087] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1114] goto @702
+  [1119] HasCraftingRequirement = CraftingRequirement
+  [1138] return nothing
+  [1140] end
+
+=== PlayAudioEventForNPC
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Event)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @552
+  [43] CallFunc_IsValid_ReturnValue_1 = IsValid(NPCIdentity)
+  [72] if !(CallFunc_IsValid_ReturnValue_1) goto @552
+  [86] CallFunc_GetAssociatedMouthComponent_ReturnValue = NPCIdentity.GetAssociatedMouthComponent(__WorldContext)
+  [137] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetAssociatedMouthComponent_ReturnValue)
+  [166] if !(CallFunc_IsValid_ReturnValue_2) goto @552
+  [180] CallFunc_GetAssociatedMouthComponent_ReturnValue = NPCIdentity.GetAssociatedMouthComponent(__WorldContext)
+  [231] CallFunc_GetAkComponent_ReturnValue = GetAkComponent(CallFunc_GetAssociatedMouthComponent_ReturnValue, CallFunc_GetAkComponent_ComponentCreated, 'mouth', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [309] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAkComponent_ReturnValue)
+  [338] if !(CallFunc_IsValid_ReturnValue_3) goto @552
+  [352] CallFunc_IsPlaying_ReturnValue = CallFunc_GetAkComponent_ReturnValue.IsPlaying()
+  [394] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsPlaying_ReturnValue)
+  [423] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue, Interrupt)
+  [461] if !(CallFunc_BooleanOR_ReturnValue) goto @552
+  [475] CallFunc_PostAkEvent_ReturnValue = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(Event, 0, Temp_delegate_Variable)
+  [552] return nothing
+  [554] end
+
+=== PlayQuestAcceptAudio
+  [0] Speaker = NPC.self.SpeakerSettings.self.AssociatedSpeaker
+  [63] CallFunc_IsValid_ReturnValue = IsValid(Speaker)
+  [92] if !(CallFunc_IsValid_ReturnValue) goto @624
+  [106] CallFunc_GetAssociatedMouthComponent_ReturnValue = Speaker.GetAssociatedMouthComponent(__WorldContext)
+  [157] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAssociatedMouthComponent_ReturnValue)
+  [186] if !(CallFunc_IsValid_ReturnValue_1) goto @624
+  [200] CallFunc_GetAssociatedMouthComponent_ReturnValue = Speaker.GetAssociatedMouthComponent(__WorldContext)
+  [251] CallFunc_GetAkComponent_ReturnValue = GetAkComponent(CallFunc_GetAssociatedMouthComponent_ReturnValue, CallFunc_GetAkComponent_ComponentCreated, 'mouth', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [329] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetAkComponent_ReturnValue)
+  [358] if !(CallFunc_IsValid_ReturnValue_2) goto @624
+  [372] CallFunc_IsValid_ReturnValue_3 = IsValid(SpecificAudioEvent)
+  [401] if !(CallFunc_IsValid_ReturnValue_3) goto @497
+  [415] CallFunc_PostAkEvent_ReturnValue_1 = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(SpecificAudioEvent, 0, Temp_delegate_Variable_1)
+  [492] goto @624
+  [497] Speaker.PickQuestAccept(CallFunc_PickQuestAccept_LineOUT)
+  [538] CallFunc_PostAkEvent_ReturnValue = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(CallFunc_PickQuestAccept_LineOUT.AudioEvent, 0, Temp_delegate_Variable)
+  [624] return nothing
+  [626] end
+
+=== PlayQuestRedeemAudio
+  [0] Speaker = NPC.self.SpeakerSettings.self.AssociatedSpeaker
+  [63] CallFunc_IsValid_ReturnValue = IsValid(Speaker)
+  [92] if !(CallFunc_IsValid_ReturnValue) goto @624
+  [106] CallFunc_GetAssociatedMouthComponent_ReturnValue = Speaker.GetAssociatedMouthComponent(__WorldContext)
+  [157] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAssociatedMouthComponent_ReturnValue)
+  [186] if !(CallFunc_IsValid_ReturnValue_1) goto @624
+  [200] CallFunc_GetAssociatedMouthComponent_ReturnValue = Speaker.GetAssociatedMouthComponent(__WorldContext)
+  [251] CallFunc_GetAkComponent_ReturnValue = GetAkComponent(CallFunc_GetAssociatedMouthComponent_ReturnValue, CallFunc_GetAkComponent_ComponentCreated, 'mouth', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [329] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetAkComponent_ReturnValue)
+  [358] if !(CallFunc_IsValid_ReturnValue_2) goto @624
+  [372] CallFunc_IsValid_ReturnValue_3 = IsValid(SpecificAudioEvent)
+  [401] if !(CallFunc_IsValid_ReturnValue_3) goto @497
+  [415] CallFunc_PostAkEvent_ReturnValue_1 = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(SpecificAudioEvent, 0, Temp_delegate_Variable_1)
+  [492] goto @624
+  [497] Speaker.PickQuestRedeem(CallFunc_PickQuestRedeem_LineOUT)
+  [538] CallFunc_PostAkEvent_ReturnValue = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(CallFunc_PickQuestRedeem_LineOUT.AudioEvent, 0, Temp_delegate_Variable)
+  [624] return nothing
+  [626] end
+
+=== ReplaceTokensInText
+  [0] CallFunc_GetTempPackage_ReturnValue = GetTempPackage()
+  [20] CallFunc_SpawnObject_ReturnValue = SpawnObject(npc_interaction_object_C, CallFunc_GetTempPackage_ReturnValue)
+  [58] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(__WorldContext, 0)
+  [92] SetObjectPropertyByName(CallFunc_SpawnObject_ReturnValue, 'PlayerController', CallFunc_GetPlayerController_ReturnValue)
+  [133] CallFunc_ReplaceTokens_ReturnValue = ReplaceTokens(__WorldContext, CallFunc_SpawnObject_ReturnValue, Text, Temp_interface_Variable)
+  [197] ReturnValue = CallFunc_ReplaceTokens_ReturnValue
+  [224] return ReturnValue
+  [234] end
+
+=== StartAcceptQuestFlow
+  [0] CallFunc_GetOriginator_ReturnValue = Quest.GetOriginator()
+  [50] CallFunc_GetEvents_ReturnValue = Quest.GetEvents(CallFunc_GetOriginator_ReturnValue, 1, false)
+  [112] Temp_int_Loop_Counter_Variable_1 = 0
+  [135] Temp_int_Array_Index_Variable_1 = 0
+  [158] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetEvents_ReturnValue)
+  [217] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [255] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @882
+  [269] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [296] Default__KismetArrayLibrary.Array_Get(CallFunc_GetEvents_ReturnValue, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [355] K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp = cast<quest_event_dialogue2_bp_C>(CallFunc_Array_Get_Item)
+  [391] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp)
+  [420] if !(K2Node_DynamicCast_bSuccess) goto @1205
+  [434] Temp_int_Loop_Counter_Variable = 0
+  [457] Temp_int_Array_Index_Variable = 0
+  [480] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines)
+  [561] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [599] if !(CallFunc_Less_IntInt_ReturnValue) goto @1205
+  [613] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [640] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [721] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item_1.AudioEvent)
+  [759] if !(CallFunc_IsValid_ReturnValue) goto @1279
+  [773] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [854] L_AcceptAudioEvent = CallFunc_Array_Get_Item_1.AudioEvent
+  [882] PlayQuestAcceptAudio(NPC, L_AcceptAudioEvent, NPC)
+  [923] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(NPC, NewQuestPanelFeature, true)
+  [962] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @1353
+  [976] K2Node_MakeStruct_NpcInteractData.SpeakerComponent = NPC.self.SpeakerSettings
+  [1026] K2Node_MakeStruct_NpcInteractData.NPCConditionalScreens = NPC.self.NPC_ConditionalScreens
+  [1084] K2Node_MakeStruct_NpcInteractData.Quest = Quest
+  [1112] NPC.self.NpcInteractData = K2Node_MakeStruct_NpcInteractData
+  [1161] NPC.CreateInteractionEvent(2, false)
+  [1200] goto @1603
+  [1205] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1247] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1274] goto @158
+  [1279] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1321] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1348] goto @480
+  [1353] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(__WorldContext, w_npc_interact_accept_quest_bpw_C, PlayerController)
+  [1422] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'Quest', Quest)
+  [1463] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'Vendor', NPC)
+  [1504] Default__UserWidgetFunctions_C.Get Screen Layer(__WorldContext, CallFunc_Get_Screen_Layer_ZOrder)
+  [1558] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder)
+  [1603] return nothing
+  [1605] end
+
+=== StartRedeemQuestFlow
+  [0] CallFunc_GetEventsFor_ReturnValue = Quest.GetEventsFor(NPC.self.SpeakerSettings.self.AssociatedSpeaker, 2, false)
+  [106] Temp_int_Loop_Counter_Variable_1 = 0
+  [129] Temp_int_Array_Index_Variable = 0
+  [152] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetEventsFor_ReturnValue)
+  [211] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [249] if !(CallFunc_Less_IntInt_ReturnValue) goto @876
+  [263] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [290] Default__KismetArrayLibrary.Array_Get(CallFunc_GetEventsFor_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [349] K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp = cast<quest_event_dialogue2_bp_C>(CallFunc_Array_Get_Item)
+  [385] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp)
+  [414] if !(K2Node_DynamicCast_bSuccess) goto @1448
+  [428] Temp_int_Loop_Counter_Variable = 0
+  [451] Temp_int_Array_Index_Variable_1 = 0
+  [474] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines)
+  [555] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [593] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1448
+  [607] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [634] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [715] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item_1.AudioEvent)
+  [753] if !(CallFunc_IsValid_ReturnValue) goto @1522
+  [767] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp.self.Lines, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [848] L_RedeemAudioEvent = CallFunc_Array_Get_Item_1.AudioEvent
+  [876] PlayQuestRedeemAudio(NPC, L_RedeemAudioEvent, NPC)
+  [917] TryGetDialogEvent(CallFunc_GetEventsFor_ReturnValue, NPC, CallFunc_TryGetDialogEvent_ChosenEvent)
+  [958] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_TryGetDialogEvent_ChosenEvent)
+  [987] if !(CallFunc_IsValid_ReturnValue_1) goto @1596
+  [1001] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_TryGetDialogEvent_ChosenEvent.self.Lines)
+  [1082] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_2, 0)
+  [1116] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1596
+  [1130] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(NPC, NewQuestPanelFeature, true)
+  [1169] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @2133
+  [1183] K2Node_MakeStruct_NpcInteractData_1.SpeakerComponent = NPC.self.SpeakerSettings
+  [1233] K2Node_MakeStruct_NpcInteractData_1.NPCConditionalScreens = NPC.self.NPC_ConditionalScreens
+  [1291] K2Node_MakeStruct_NpcInteractData_1.Quest = Quest
+  [1319] K2Node_MakeStruct_NpcInteractData_1.QuestEvents = CallFunc_GetEventsFor_ReturnValue
+  [1355] NPC.self.NpcInteractData = K2Node_MakeStruct_NpcInteractData_1
+  [1404] NPC.CreateInteractionEvent(1, false)
+  [1443] goto @2446
+  [1448] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1490] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1517] goto @152
+  [1522] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1564] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1591] goto @474
+  [1596] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(NPC, NewQuestPanelFeature, true)
+  [1635] if !(CallFunc_IsFeatureEnabled_ReturnValue_1) goto @1878
+  [1649] K2Node_MakeStruct_NpcInteractData.SpeakerComponent = NPC.self.SpeakerSettings
+  [1699] K2Node_MakeStruct_NpcInteractData.NPCConditionalScreens = NPC.self.NPC_ConditionalScreens
+  [1757] K2Node_MakeStruct_NpcInteractData.Quest = Quest
+  [1785] NPC.self.NpcInteractData = K2Node_MakeStruct_NpcInteractData
+  [1834] NPC.CreateInteractionEvent(3, false)
+  [1873] goto @2446
+  [1878] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(__WorldContext, w_npc_interact_redeem_quest_bpw_C, PlayerController)
+  [1947] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'Quest', Quest)
+  [1988] SetObjectPropertyByName(CallFunc_Create_ReturnValue, 'Vendor', NPC)
+  [2029] Default__UserWidgetFunctions_C.Get Screen Layer(__WorldContext, CallFunc_Get_Screen_Layer_ZOrder)
+  [2083] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder)
+  [2128] goto @2446
+  [2133] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(__WorldContext, w_npc_interact_dialogue_bpw_C, PlayerController)
+  [2202] SetObjectPropertyByName(CallFunc_Create_ReturnValue_1, 'Quest', Quest)
+  [2243] SetObjectPropertyByName(CallFunc_Create_ReturnValue_1, 'Vendor', NPC)
+  [2284] Default__KismetArrayLibrary.SetArrayPropertyByName(CallFunc_Create_ReturnValue_1, 'QuestEvents', CallFunc_GetEventsFor_ReturnValue)
+  [2347] Default__UserWidgetFunctions_C.Get Screen Layer(__WorldContext, CallFunc_Get_Screen_Layer_ZOrder_1)
+  [2401] CallFunc_Create_ReturnValue_1.AddToViewport(CallFunc_Get_Screen_Layer_ZOrder_1)
+  [2446] return nothing
+  [2448] end
+
+=== TryGetDialogEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp = cast<quest_event_dialogue2_bp_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Dialogue_2_Bp
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetIslandRevealEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Reveal_Island = cast<quest_event_reveal_island_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Reveal_Island)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Reveal_Island
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetMessageSlateEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Message_Slate = cast<quest_event_message_slate_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Message_Slate)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Message_Slate
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetShowTutorialEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Show_Tutorial = cast<quest_event_show_tutorial_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Show_Tutorial)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Show_Tutorial
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetUIScreenEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Open_Uiscreen_Bp = cast<quest_event_open_uiscreen_bp_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Open_Uiscreen_Bp)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] AsQuest Event Open Uiscreen Bp = K2Node_DynamicCast_AsQuest_Event_Open_Uiscreen_Bp
+  [347] goto @442
+  [352] AsQuest Event Open Uiscreen Bp = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetUserAttributeEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Set_User_Attribute = cast<quest_event_set_user_attribute_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Set_User_Attribute)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Set_User_Attribute
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetWidgetEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Widget_Bp = cast<quest_event_widget_bp_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Widget_Bp)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Widget_Bp
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryGetZoneRevealEvent
+  [0] push @442
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(QuestEvents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @352
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @368
+  [194] Default__KismetArrayLibrary.Array_Get(QuestEvents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_DynamicCast_AsQuest_Event_Reveal_Zone = cast<quest_event_reveal_zone_C>(CallFunc_Array_Get_Item)
+  [289] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuest_Event_Reveal_Zone)
+  [318] if !(K2Node_DynamicCast_bSuccess) pop
+  [328] ChosenEvent = K2Node_DynamicCast_AsQuest_Event_Reveal_Zone
+  [347] goto @442
+  [352] ChosenEvent = null
+  [363] goto @442
+  [368] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [410] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [437] goto @51
+  [442] return nothing
+  [444] end
+
+=== TryHandleUserAttributeEvent
+  [0] push @286
+  [5] push @275
+  [10] TryGetUserAttributeEvent(QuestEvents, PlayerController, CallFunc_TryGetUserAttributeEvent_ChosenEvent)
+  [51] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_TryGetUserAttributeEvent_ChosenEvent)
+  [80] if !(CallFunc_IsValid_ReturnValue) pop
+  [90] K2Node_DynamicCast_AsArchon_Player_Controller_Base = cast<ArchonPlayerControllerBase>(PlayerController)
+  [126] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller_Base)
+  [155] if !(K2Node_DynamicCast_bSuccess) pop
+  [165] K2Node_DynamicCast_AsArchon_Player_Controller_Base.SetUserAttribute(CallFunc_TryGetUserAttributeEvent_ChosenEvent.self.Attribute, CallFunc_TryGetUserAttributeEvent_ChosenEvent.self.Value)
+  [259] Handled = true
+  [270] goto @286
+  [275] Handled = false
+  [286] return nothing
+  [288] end
+
+=== TryHandleWidgetEvent
+  [0] TryGetZoneRevealEvent(QuestEvents, PlayerController, CallFunc_TryGetZoneRevealEvent_ChosenEvent)
+  [41] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_TryGetZoneRevealEvent_ChosenEvent)
+  [70] if !(CallFunc_IsValid_ReturnValue_5) goto @111
+  [84] Handled = true
+  [95] bKeepDialogOpen = false
+  [106] goto @1785
+  [111] TryGetMessageSlateEvent(QuestEvents, PlayerController, CallFunc_TryGetMessageSlateEvent_ChosenEvent)
+  [152] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_TryGetMessageSlateEvent_ChosenEvent)
+  [181] if !(CallFunc_IsValid_ReturnValue_4) goto @490
+  [195] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(__WorldContext, w_npc_interact_message_slates_bpw_C, PlayerController)
+  [264] Default__KismetArrayLibrary.SetArrayPropertyByName(CallFunc_Create_ReturnValue_1, 'Messages', CallFunc_TryGetMessageSlateEvent_ChosenEvent.self.Messages)
+  [349] SetObjectPropertyByName(CallFunc_Create_ReturnValue_1, 'Vendor', Vendor)
+  [390] CallFunc_GetScreenLayer_ReturnValue_1 = GetScreenLayer()
+  [418] CallFunc_Create_ReturnValue_1.AddToViewport(CallFunc_GetScreenLayer_ReturnValue_1)
+  [463] Handled = true
+  [474] bKeepDialogOpen = false
+  [485] goto @1785
+  [490] TryGetWidgetEvent(QuestEvents, PlayerController, CallFunc_TryGetWidgetEvent_ChosenEvent)
+  [531] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_TryGetWidgetEvent_ChosenEvent)
+  [560] if !(CallFunc_IsValid_ReturnValue_3) goto @765
+  [574] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(__WorldContext, CallFunc_TryGetWidgetEvent_ChosenEvent.self.Widget, PlayerController)
+  [665] CallFunc_GetScreenLayer_ReturnValue = GetScreenLayer()
+  [693] CallFunc_Create_ReturnValue.AddToViewport(CallFunc_GetScreenLayer_ReturnValue)
+  [738] Handled = true
+  [749] bKeepDialogOpen = false
+  [760] goto @1785
+  [765] TryGetShowTutorialEvent(QuestEvents, PlayerController, CallFunc_TryGetShowTutorialEvent_ChosenEvent)
+  [806] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_TryGetShowTutorialEvent_ChosenEvent)
+  [835] if !(CallFunc_IsValid_ReturnValue_2) goto @1097
+  [849] CallFunc_GetComponentByClass_ReturnValue = PlayerController.GetComponentByClass(TutorialComponent)
+  [900] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [929] if !(CallFunc_IsValid_ReturnValue_1) goto @1763
+  [943] CallFunc_GetComponentByClass_ReturnValue = PlayerController.GetComponentByClass(TutorialComponent)
+  [994] CallFunc_ShowTutorialByID_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.ShowTutorialByID(CallFunc_TryGetShowTutorialEvent_ChosenEvent.self.TutorialID, false, EX_TextConst(Value={'SourceString': ''}))
+  [1070] Handled = true
+  [1081] bKeepDialogOpen = false
+  [1092] goto @1785
+  [1097] TryGetUIScreenEvent(QuestEvents, PlayerController, PlayerController, CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp)
+  [1147] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp)
+  [1176] if !(CallFunc_IsValid_ReturnValue) goto @1736
+  [1190] CallFunc_GetArchonGlobalUI_ReturnValue = GetArchonGlobalUI(__WorldContext)
+  [1219] GetScreenParameters(CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp, Quest, __WorldContext, CallFunc_GetScreenParameters_Params)
+  [1269] Temp_int_Variable = 1
+  [1292] Temp_int_Variable_1 = 2
+  [1315] Temp_bool_Variable = CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp.self.bKeepDialogOpen
+  [1356] K2Node_MakeStruct_UIScreenData.MajorScreen = CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp.self.UIScreen
+  [1414] K2Node_MakeStruct_UIScreenData.MinorScreen = CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp.self.UIMinorScreen
+  [1472] K2Node_MakeStruct_UIScreenData.bShowScreen = true
+  [1492] K2Node_MakeStruct_UIScreenData.bForceShowScreen = false
+  [1512] K2Node_MakeStruct_UIScreenData.ZOrder = switch(Temp_bool_Variable){false: Temp_int_Variable, true: Temp_int_Variable_1, default: K2Node_Select_Default}
+  [1592] K2Node_MakeStruct_UIScreenData.Parameters = CallFunc_GetScreenParameters_Params
+  [1628] CallFunc_ShowUIScreenAsync_ReturnValue = CallFunc_GetArchonGlobalUI_ReturnValue.ShowUIScreenAsync(K2Node_MakeStruct_UIScreenData)
+  [1679] Handled = true
+  [1690] bKeepDialogOpen = CallFunc_TryGetUIScreenEvent_AsQuest_Event_Open_Uiscreen_Bp.self.bKeepDialogOpen
+  [1731] goto @1785
+  [1736] Handled = false
+  [1747] bKeepDialogOpen = false
+  [1758] goto @1785
+  [1763] Handled = false
+  [1774] bKeepDialogOpen = false
+  [1785] return nothing
+  [1787] end

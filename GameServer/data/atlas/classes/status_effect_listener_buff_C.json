@@ -1,0 +1,380 @@
+{
+ "name": "status_effect_listener_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": 1984,
+ "sdk_header": "status_effect_listener_buff_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TagToStatusDisplayInfo",
+   "type": "TArray<Fstatus_display_info>",
+   "offset": "0x6F8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_FoundInfo",
+   "type": "Fstatus_display_info",
+   "offset": "0x708",
+   "size": 88,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<status_display_info>"
+  },
+  {
+   "name": "StatusAvailabilityTime",
+   "type": "TMap<FGameplayTag, double>",
+   "offset": "0x760",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MapProperty"
+  },
+  {
+   "name": "L_OnlyAllowRefreshes",
+   "type": "bool",
+   "offset": "0x7B0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "L_Tex",
+   "type": "UTexture2D*",
+   "offset": "0x7B8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Texture2D>"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CheckCooldownAndShowEffect",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientShowEffectIndex",
+   "flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "StatusDisplayInfoIndex",
+     "type": "int32"
+    },
+    {
+     "name": "OptionalReferenceName",
+     "type": "FName"
+    }
+   ],
+   "rpc": "client",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "status_effect_listener_buff_C.ExecuteUbergraph_status_effect_listener_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_status_effect_listener_buff",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 63,
+   "reads": [
+    "L_OnlyAllowRefreshes",
+    "L_Tex",
+    "OnStatusWorthHUDNotifyingOccured",
+    "StatusAvailabilityTime",
+    "TagToStatusDisplayInfo"
+   ],
+   "sets": [
+    "L_OnlyAllowRefreshes",
+    "L_Tex"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.OnTagAdded",
+    "BlueprintMapLibrary.Map_Add",
+    "BlueprintMapLibrary.Map_Find",
+    "ClientShowEffectIndex",
+    "FindDisplayInfoIndexByTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.LoadAsset",
+    "None",
+    "TryShowEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "Texture2D hud_statuseffect_icon_maxdanger"
+   ]
+  },
+  {
+   "name": "FindDisplayInfoIndexByTag",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Tag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "TagToStatusDisplayInfo"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.MatchesTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_5DF31BAC4A179C17D1658897FDEE021E",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "UObject*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "status_effect_listener_buff_C.ExecuteUbergraph_status_effect_listener_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTagAdded",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Tag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "status_effect_listener_buff_C.ExecuteUbergraph_status_effect_listener_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryShowEffect",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "status_display_info",
+     "type": "Fstatus_display_info"
+    },
+    {
+     "name": "OptionalReferenceName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "status_effect_listener_buff_C.ExecuteUbergraph_status_effect_listener_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/status_effect_listener_buff",
+ "pseudo_file": "pseudo/status_effect_listener_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,177 @@
+lavaroller_bt  blackboard=BlackboardData lavaroller_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true, Interval=0.25)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    6) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      1) Sequence
+        1) bttask_enter_aethercharge_state  (Montage=AnimMontage lavaroller_aethercharge_enter_mot)
+        2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        3) BehemothAction  (Montage=AnimMontage b_mcr_pers_rawr_long)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if not check_nemesis_decorator  (bInverseCondition=true)]
+      2) Selector
+        1) bttask_exit_aethercharge_state  (Montage=AnimMontage b_mcr_exit_aethercharge_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      3) bttask_enter_rage_state  (Montage=AnimMontage lavaroller_rage_enter_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      [if not check_nemesis_decorator  (bInverseCondition=true)]
+      4) bttask_exit_rage_state  (Montage=AnimMontage b_mcr_pers_exitrage_mot)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      5) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        1) Sequence "AttackThenTurnAroundIfOptimal"
+          [if Blackboard  (TopScore Is Greater Than 0.000000)]
+          1) Sequence
+            1) Selector
+              1) Selector
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass lavaroller_burrow_atk_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+                [if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=IsBurrowing, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+                [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+                1) Sequence
+                  1) BehemothAction "Burrow"  (Montage=AnimMontage b_tp_lavaroller_atk_burrow_00_mot, ActionClassToCooldown=BlueprintGeneratedClass lavaroller_burrow_atk_C, bShowPropertyDetails=false)
+                  [if ForceSuccess]
+                  2) Sequence
+                    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindClosestVisiblePlayerToPatrolPoint", "QueryConfig": [{"ParamName": "Distance", "ParamType": "EAIParamType::Float", "Value": 4500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+                  [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+                  3) Sequence
+                    {service hide_behemoth_bttask}
+                    1) Sequence
+                      1) Wait  (WaitTime=1, RandomDeviation=0.5)
+                      2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+                    [if ForceSuccess]
+                    2) nav_trace_bttask  (TraceEndBBKey=MoveDestination, TraceResultBBKey=MoveDestination)
+                    3) Wait  (WaitTime=0.2)
+                    4) teleport_bttask  (FacingTargetKeyName=AttackTarget)
+                    5) BehemothAction  (Montage=AnimMontage b_tp_lavaroller_atk_burrowup_00_mot, bShowPropertyDetails=false)
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass lavaroller_burrow_atk_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+                [if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=IsBurrowing, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+                2) Sequence
+                  1) BehemothAction "Burrow"  (Montage=AnimMontage b_tp_lavaroller_atk_burrow_00_mot, ActionClassToCooldown=BlueprintGeneratedClass lavaroller_burrow_atk_C, bShowPropertyDetails=false)
+                  [if ForceSuccess]
+                  2) Sequence
+                    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lavaroller_alpha_find_live_players_random", "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+                  [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+                  3) Sequence
+                    {service hide_behemoth_bttask}
+                    1) Sequence
+                      1) Wait  (WaitTime=1, RandomDeviation=0.5)
+                      2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lavaroller_alpha_find_nearby_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+                    [if ForceSuccess]
+                    2) nav_trace_bttask  (TraceEndBBKey=MoveDestination, TraceResultBBKey=MoveDestination)
+                    3) teleport_bttask  (FacingTargetKeyName=AttackTarget)
+                    4) Wait  (WaitTime=0.2)
+                    5) Selector
+                      [if actor_has_gameplaytags_btdeco  (RequireTags=["Behemoth.Lavaroller.Heroic"], ActorBBKey=SelfActor)]
+                      1) BehemothAction  (Montage=AnimMontage b_tp_lavaroller_atk_heroic_burrowup_00_mot, MontagePlayRate=1.2, bShowPropertyDetails=false)
+                      2) BehemothAction  (Montage=AnimMontage b_tp_lavaroller_atk_burrowup_00_mot, MontagePlayRate=1.2, bShowPropertyDetails=false)
+              2) Sequence
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass lavaroller_backpedal_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                1) PerformActionClass  (ActionClass=BlueprintGeneratedClass lavaroller_backpedal_atk_C, bShowPropertyDetails=false)
+                [if ForceSuccess]
+                2) Sequence
+                  1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass mcr_shouldercheck_l_atk_C", "BlueprintGeneratedClass mcr_shouldercheck_r_atk_C"], ChosenActionKey=bb.TempAction)
+                  2) Selector
+                    [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+                    1) Selector
+                      1) PerformActionClass  (ActionBlackboardKeyName=TempAction)
+                    [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Nemesis"}, bShowPropertyDetails=false)]
+                    2) Selector
+                      1) PerformActionClass  (ActionBlackboardKeyName=TempAction)
+              [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+              3) Sequence
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass lavaroller_tailslam_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                1) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslam_mot, ActionClassToCooldown=BlueprintGeneratedClass lavaroller_tailslam_atk_C, bShowPropertyDetails=false)
+                [if ForceSuccess]
+                2) Sequence
+                  [if behemoth_in_state_btdeco  (State=Rage)]
+                  1) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslamfast_mot)
+                  [if behemoth_in_state_btdeco  (State=Rage)]
+                  2) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslamfast_mot)
+              4) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+              [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Nemesis"}, bShowPropertyDetails=false)]
+              5) Sequence
+                [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass lavaroller_tailslam_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+                1) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslam_mot, ActionClassToCooldown=BlueprintGeneratedClass lavaroller_tailslam_atk_C, bShowPropertyDetails=false)
+                [if ForceSuccess]
+                2) Sequence
+                  [if behemoth_in_state_btdeco  (State=Rage)]
+                  1) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslamfast_mot)
+                  [if behemoth_in_state_btdeco  (State=Rage)]
+                  2) BehemothAction  (Montage=AnimMontage lavaroller_alpha_tailslamfast_mot)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shared_mcr_postattack_repo_bt)
+          3) Selector
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+            [if btdeco_variablecooldown  (Cooldown_Min=120, Cooldown_Max=170, StartTime=120)]
+            1) Sequence
+              {service clear_forcepersonalityanim_ondeact_btservice}
+              [if ForceSuccess]
+              1) Sequence
+                [if current_target_is_down_btdeco]
+                1) set_blackboard_key_bttask "Set ForcePersonalityAnim to True"  (ResultKey=bb.ForcePersonalityAnim, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+              2) get_player_target_bttask
+              3) RotateTowardsTarget  (Target=bb.AttackTarget)
+              [if ForceSuccess]
+              4) Sequence
+                1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.5}, {"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.25}, {"Montage": "AnimMontage b_mcr_pers_rawr_long", "Chance": 1.0}])
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+            [if btdeco_variablecooldown  (Cooldown_Min=70, Cooldown_Max=130, StartTime=120)]
+            2) Sequence
+              {service clear_forcepersonalityanim_ondeact_btservice}
+              [if ForceSuccess]
+              1) Sequence
+                [if current_target_is_down_btdeco]
+                1) set_blackboard_key_bttask "Set ForcePersonalityAnim to True"  (ResultKey=bb.ForcePersonalityAnim, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+              2) get_player_target_bttask
+              3) RotateTowardsTarget  (Target=bb.AttackTarget)
+              [if ForceSuccess]
+              4) Sequence
+                1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.5}, {"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage b_mcr_pers_headscratch_mot", "Chance": 1.0}], PersonalityAnims_Tired=[{"Montage": "AnimMontage b_mcr_pers_rawr", "Chance": 0.25}, {"Montage": "AnimMontage b_mcr_pers_rawr_long", "Chance": 1.0}])
+        [if Blackboard  (TopScore Is Equal To 0.000000)]
+        2) Selector "Reposition"
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfActor, ConeDirection=bb.BackPoint, Observed=bb.CurrentHelper)]
+          1) Selector "Target is Behind"
+            1) Sequence
+              1) TestCollisionForSpecificAction "Test Backstep collision"  (ActionClassToTest=BlueprintGeneratedClass mcr_backstep_atk_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)
+              [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MaxDistance=1500)]
+              2) Selector
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_pers_backstepinjured_bwd_mot, bShowPropertyDetails=false)
+                2) BehemothAction "BackStep"  (Montage=AnimMontage b_mcr_atk_backstep_mot)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          [if Blackboard  (CurrentHelper is Is Not Set)]
+          3) Selector "No Helper GOTO AttackTarget"
+            [if Cooldown  (CooldownTime=10)]
+            1) Selector
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": -1260.0, "Z": 0.0}])]
+              1) Selector "Left Sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepL_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_left_mot, RecoveryTime=0.1, bShowPropertyDetails=false)
+                2) BehemothAction "SidestepL"  (Montage=AnimMontage b_mcr_loco_sidestep_left_mot, RecoveryTime=0.1, bShowPropertyDetails=false)
+              [if navtest_btdeco  (Displacement=[{"X": 0.0, "Y": 0.0, "Z": 0.0}, {"X": 0.0, "Y": 1260.0, "Z": 0.0}])]
+              2) Selector "Right sidestep"
+                [if Blackboard  (IsInjured is Is Set)]
+                1) BehemothAction "SidestepR_injured"  (Montage=AnimMontage b_mcr_pers_sidestepinjured_right_mot, RecoveryTime=0.1, bShowPropertyDetails=false)
+                2) BehemothAction "SidestepR"  (Montage=AnimMontage b_mcr_loco_sidestep_right_mot, RecoveryTime=0.1, bShowPropertyDetails=false)
+      2) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_stalkedge_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

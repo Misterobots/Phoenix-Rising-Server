@@ -1,0 +1,82 @@
+habanero_normal_bt  blackboard=BlackboardData moonface_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_mf_deaggro_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      1) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_habanero_state_aether_exit_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state "Exit Aether Charge State"  (Montage=AnimMontage b_habanero_state_aether_exit_mot)
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      3) bttask_enter_aethercharge_state  (Montage=AnimMontage b_habanero_state_aether_enter_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      4) bttask_exit_rage_state  (Montage=AnimMontage b_habanero_state_rage_exit_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      5) bttask_enter_rage_state  (Montage=AnimMontage b_habanero_state_rage_enter_mot)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    [if Cooldown]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    9) Selector
+      [if BTDeco_ArchonCooldown  (CooldownTime=30, StartTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+      1) Sequence
+        1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.75, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree habanero_blazerocket_bt)
+      [if BTDeco_ArchonCooldown  (CooldownTime=20, StartTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+      2) Sequence
+        1) RunEQSQuery "Try to get the best player around"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": -1.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        [if Cooldown  (CooldownTime=20)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree habanero_blazeimpact_bt)
+    [if BTDeco_ArchonCooldown  (CooldownTime=15, StartTime=20, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+    10) Sequence
+      1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 400.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+      2) Selector
+        [if Blackboard  (InRageState is Is Set)]
+        1) RunBehavior  (BehaviorAsset=BehaviorTree habanero_heatvision_hover_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree habanero_heatvision_turret_bt)
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    11) Selector
+      [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass atk_moonface_jump_behind_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+      1) Sequence
+        1) PerformActionClass "Jump Behind"  (ActionClass=BlueprintGeneratedClass atk_moonface_jump_behind_C, bShowPropertyDetails=false)
+        2) Selector
+          [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass atk_moonface_4swipes_C, bShowPropertyDetails=false)]
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) PerformActionClass "FourSwipes"  (ActionClass=BlueprintGeneratedClass atk_moonface_4swipes_C, bShowPropertyDetails=false)
+          [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass habanero_normal_action_turtleprojectiles_C, bShowPropertyDetails=false)]
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          2) PerformActionClass "Scorching Swipes"  (ActionClass=BlueprintGeneratedClass habanero_normal_action_scorchingswipes_C, bShowPropertyDetails=false)
+          [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass habanero_normal_action_turtleprojectiles_C, bShowPropertyDetails=false)]
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          3) PerformActionClass "Turtle Projectiles"  (ActionClass=BlueprintGeneratedClass habanero_normal_action_turtleprojectiles_C, bShowPropertyDetails=false)
+      2) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    12) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if cooldown_btdeco  (CooldownStartTimeBlackboardName=CurrentFightStateSt, MinCooldown={"ConstantFloat": 25.0}, MaxCooldown={"ConstantFloat": 35.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+    13) Sequence
+      1) perform_action_montage_bttask  (Montage=AnimMontage b_habanero_pers_roar_mot)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    14) Sequence "Backup Attacks"
+      1) Sequence
+        1) RunEQSQuery "Try to get the best player around"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": -1.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        [if Cooldown  (CooldownTime=20)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree habanero_blazeimpact_bt)
+    15) RunBehavior  (BehaviorAsset=BehaviorTree mf_genus_combat_repo_with_strafing_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    16) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

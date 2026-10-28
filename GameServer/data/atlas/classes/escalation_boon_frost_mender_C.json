@@ -1,0 +1,318 @@
+{
+ "name": "escalation_boon_frost_mender_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_periodic_global_effect_hunt_modifier_C",
+  "base_hunt_modifier_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentBehemoth",
+   "type": "ObjectProperty<ArchonBehemoth>",
+   "bp_type": "ObjectProperty<ArchonBehemoth>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActorstoIgnore",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ResetFrostbiteResistBuff",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "FrostbiteBuffResetHandle",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Spawn location",
+   "type": "StructProperty<Transform>",
+   "bp_type": "StructProperty<Transform>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Get position",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ActivateEffect",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_boon_frost_mender_C.ExecuteUbergraph_escalation_boon_frost_mender"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Cast to audio",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Location",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_boon_frost_mender_C.ExecuteUbergraph_escalation_boon_frost_mender"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_escalation_boon_frost_mender",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetQueryResultsAsLocations_ResultLocations",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 55,
+   "reads": [
+    "ActorstoIgnore",
+    "CurrentBehemoth",
+    "OnQueryFinishedEvent"
+   ],
+   "sets": [
+    "CurrentBehemoth"
+   ],
+   "calls": [
+    "AkGameplayStatics.PostEventAtLocation",
+    "Cast to audio",
+    "EnvQueryInstanceBlueprintWrapper.GetQueryResultsAsLocations",
+    "EnvQueryManager.RunEQSQuery",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetGameMode",
+    "GetCurrentSpawnedBehemoths",
+    "GetGroundPosAndNormal",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "SetupTimerForNextActivation",
+    "base_periodic_global_effect_hunt_modifier_C.ActivateEffect"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_SFX_Frost_Mendor_Spawn",
+    "BlueprintGeneratedClass escalation_frost_mender_actor_C",
+    "EnvQuery eqs_danger_zones_island"
+   ]
+  },
+  {
+   "name": "OnQueryFinishedEvent",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "QueryInstance",
+     "type": "ObjectProperty<EnvQueryInstanceBlueprintWrapper>"
+    },
+    {
+     "name": "QueryStatus",
+     "type": "ByteProperty<EEnvQueryStatus>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_boon_frost_mender_C.ExecuteUbergraph_escalation_boon_frost_mender"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpherePopped",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Instigator",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "ShieldSphere",
+     "type": "ObjectProperty<escalation_shieldsphere_actor_C>"
+    },
+    {
+     "name": "CallFunc_GetLivePlayerCharacters_LiveCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetLivePlayerCharacters_LiveCharacters_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 47,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "ApplySpec",
+    "AuthRemoveGameplayEffectByClass",
+    "GetLivePlayerCharacters",
+    "IsWithinDistanceFast",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveBuffByClass",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_shield_sphere_ico_ge_C",
+    "BlueprintGeneratedClass escalation_team_shield_sphere_warden_ge_C"
+   ]
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/HuntModifiers/FrostEscalation/escalation_boon_frost_mender",
+ "pseudo_file": "pseudo/escalation_boon_frost_mender_C.txt",
+ "game_data": {}
+}

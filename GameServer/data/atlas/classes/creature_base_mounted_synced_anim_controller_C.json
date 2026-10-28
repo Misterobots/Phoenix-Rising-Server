@@ -1,0 +1,425 @@
+{
+ "name": "creature_base_mounted_synced_anim_controller_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseSyncedAnimationControllerTask",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": 240,
+ "sdk_header": "creature_base_mounted_synced_anim_controller_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xD0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "DismountDamageRow",
+   "type": "FName",
+   "offset": "0xD8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "NameProperty"
+  },
+  {
+   "name": "DismountDamageScale",
+   "type": "double",
+   "offset": "0xE0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "StaminaDepletedDismountDamageRow",
+   "type": "FName",
+   "offset": "0xE8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "NameProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "Authority_TryApplyDismountDamage",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [
+    "DismountDamageRow",
+    "DismountDamageScale"
+   ],
+   "sets": [],
+   "calls": [
+    "Authority_TryDamagePartner",
+    "PhxBaseGameplayTask.HasAuthority"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Authority_TryDamagePartner",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DamageRow",
+     "type": "FName"
+    },
+    {
+     "name": "DamageScale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 39,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "ApplyDamageFromRow_Flexible",
+    "GameplayStatics.MakeHitResult",
+    "GetDamageRow",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GetDirectionUnitVector",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetSystemLibrary.IsValid",
+    "Pawn.GetController",
+    "PhxBaseGameplayTask.GetOwningActor",
+    "PhxBaseGameplayTask.HasAuthority",
+    "PhxBaseSyncedAnimationControllerTask.GetPartnerControllerTask"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DamageAndDismountOccupant",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DamageRow",
+     "type": "FName"
+    },
+    {
+     "name": "DamageScale",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 16,
+   "reads": [
+    "DismountType"
+   ],
+   "sets": [
+    "DismountDamageRow",
+    "DismountDamageScale",
+    "DismountType"
+   ],
+   "calls": [
+    "PhxBaseGameplayTask.HasAuthority",
+    "PhxBaseSyncedAnimationControllerTask.GetPartnerControllerTask",
+    "Server_Dismount"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_creature_base_mounted_synced_anim_controller",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 15,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Internal_OnFinished",
+    "Internal_OnStarted",
+    "Internal_OnTick",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnFinished",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnStarted",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnTick"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnFinished",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 24,
+   "reads": [
+    "DismountDamageRow",
+    "DismountType",
+    "StaminaDepletedDismountDamageRow"
+   ],
+   "sets": [
+    "DismountDamageRow",
+    "DismountDamageScale"
+   ],
+   "calls": [
+    "Authority_TryApplyDismountDamage",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "PhxBaseGameplayTask.HasAuthority",
+    "PhxBaseSyncedAnimationControllerTask.GetPartnerControllerTask"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnStarted",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnTick",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaTime",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_base_mounted_synced_anim_controller_C.ExecuteUbergraph_creature_base_mounted_synced_anim_controller"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnStarted",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_base_mounted_synced_anim_controller_C.ExecuteUbergraph_creature_base_mounted_synced_anim_controller"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnTick",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaTime_ReceiveOnTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "creature_base_mounted_synced_anim_controller_C.ExecuteUbergraph_creature_base_mounted_synced_anim_controller"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/_shared/blueprints/creature_base_mounted_synced_anim_controller",
+ "pseudo_file": "pseudo/creature_base_mounted_synced_anim_controller_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,22 @@
+terramane_wallchokeandpounce_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if btdeco_lock_target]
+  [root if current_target_is_down_btdeco  (bInverseCondition=true, FlowAbortMode=Self)]
+  Sequence
+    1) audio_exit_flee_state_bttask
+    2) Selector
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1500, MaxDistance=99999)]
+      1) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          1) BehemothAction  (Montage=AnimMontage b_aq_terramane_atk_wallchoke_fwd_mot, StopMontageOnAbort=false, bShowPropertyDetails=false)
+        2) SimpleParallel
+          1) wait_for_distance_bttask  (TargetKey=bb.AttackTarget, MinDistanceData={"ConstantFloat": 1800.0}, MaxDistanceData={"ConstantFloat": 99999.0}, TimeInFutureToPredictTargetPos=0.5, BlackboardKeyNameToCheck=CanTransitToNextAnim, RequiredBlackboardKeyType=Bool, BlackboardCompareData={"ConstantBool": true})
+          2) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      2) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs"}, BlackboardKey=bb.PounceLocation)
+        3) set_blackboard_key_bttask  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true})
+        4) BehemothAction  (Montage=AnimMontage b_leRawr_loco_pounceing_reposition_mot)
+    3) BehemothAction  (Montage=AnimMontage b_aq_terramane_atk_pounce_to_headram_fwd_mot)

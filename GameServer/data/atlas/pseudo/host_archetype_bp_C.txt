@@ -1,0 +1,302 @@
+# host_archetype_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthApplyHostShield
+  [0] NewLocalVar_0 = 0
+  [23] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [44] if !(CallFunc_IsServer_ReturnValue) goto @766
+  [58] AuthRemoveHostShield()
+  [72] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(self.ArchonAbilitySystem, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [187] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [216] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.BaseHealth)
+  [262] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 3400.0)
+  [308] CallFunc_MakeOutgoingSpec_ReturnValue_1 = self.AbilitySystemComponent.MakeOutgoingSpec(cell_shield_ge_C, 0.0, GameplayEffectContextHandle{})
+  [390] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [419] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue_1, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1)
+  [478] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue_1 = self.AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1)
+  [537] CallFunc_MakeOutgoingSpec_ReturnValue = self.AbilitySystemComponent.MakeOutgoingSpec(host_shield_ge_C, 0.0, GameplayEffectContextHandle{})
+  [619] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.ShieldDamageMitigation)
+  [648] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [707] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = self.AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [766] return nothing
+  [768] end
+
+=== AuthRemoveHostShield
+  [0] return nothing
+  [2] end
+
+=== BehemothStateChanged
+  [0] frame.K2Node_Event_StateThatChanged = StateThatChanged
+  [18] frame.K2Node_Event_WhatHappened = WhatHappened
+  [36] ExecuteUbergraph_host_archetype_bp(2609)
+  [51] return nothing
+  [53] end
+
+=== BndEvt__host_radiant_bp_Head_K2Node_ComponentBoundEvent_1_OnSevered__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_Part = Part
+  [18] ExecuteUbergraph_host_archetype_bp(4245)
+  [33] return nothing
+  [35] end
+
+=== CallBehemothSpecificFunction
+  [0] frame.K2Node_Event_FunctionName = FunctionName
+  [18] ExecuteUbergraph_host_archetype_bp(4140)
+  [33] return nothing
+  [35] end
+
+=== EQSActorSpawned
+  [0] frame.K2Node_Event_Actor = Actor
+  [18] frame.K2Node_Event_GUID = GUID
+  [36] ExecuteUbergraph_host_archetype_bp(3214)
+  [51] return nothing
+  [53] end
+
+=== ExecuteUbergraph_host_archetype_bp
+  [0] push @4270
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self)
+  [36] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBlackboard_ReturnValue)
+  [65] if !(CallFunc_IsValid_ReturnValue) goto @276
+  [79] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self)
+  [100] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('NextAetherChargeHealthThreshold')
+  [141] Default__KismetArrayLibrary.Array_Get(self.AetherChargeHealthThresholds, 0, CallFunc_Array_Get_Item_1)
+  [196] CallFunc_SetValueAsFloat_FloatValue_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Array_Get_Item_1)
+  [225] CallFunc_GetBlackboard_ReturnValue.SetValueAsFloat(CallFunc_MakeLiteralName_ReturnValue, CallFunc_SetValueAsFloat_FloatValue_ImplicitCast)
+  [275] pop
+  [276] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=15), -526498926, 'ExecuteUbergraph_host_archetype_bp', self})
+  [330] pop
+  [331] SpawnSeverablePart(self.SeverableRightHorn, 'r_horn_jnt')
+  [367] pop
+  [368] OnRep_ShieldActive()
+  [382] InternalUpdateShieldStatus()
+  [396] pop
+  [397] MarkPropertyDirtyFromRepIndex(self, 73, 'ShieldActive')
+  [426] goto @368
+  [431] FlushNetDormancy()
+  [441] self.ShieldActive = false
+  [452] goto @397
+  [457] OnRep_ShieldActive()
+  [471] InternalUpdateShieldStatus()
+  [485] MulticastAetherChange(true)
+  [500] Delay(self, 3.0, LatentActionInfo{EX_SkipOffsetConst(Value=555), 810276621, 'ExecuteUbergraph_host_archetype_bp', self})
+  [554] pop
+  [555] AuthApplyHostShield()
+  [569] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(self.NumAetherCharges, 1)
+  [611] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [638] self.NumAetherCharges = Temp_int_Variable_1
+  [665] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AetherChargeHealthThresholds)
+  [724] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [766] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('NextAetherChargeHealthThreshold')
+  [807] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(self)
+  [828] CallFunc_Min_ReturnValue = Min(Temp_int_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [874] Default__KismetArrayLibrary.Array_Get(self.AetherChargeHealthThresholds, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item_2)
+  [933] CallFunc_SetValueAsFloat_FloatValue_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Array_Get_Item_2)
+  [962] CallFunc_GetBlackboard_ReturnValue_1.SetValueAsFloat(CallFunc_MakeLiteralName_ReturnValue_1, CallFunc_SetValueAsFloat_FloatValue_ImplicitCast_1)
+  [1012] pop
+  [1013] MarkPropertyDirtyFromRepIndex(self, 73, 'ShieldActive')
+  [1042] goto @457
+  [1047] FlushNetDormancy()
+  [1057] self.ShieldActive = true
+  [1068] goto @1013
+  [1073] CallFunc_PostEvent_ReturnValue_5 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Ice_Encase, self, 0, Temp_delegate_Variable_5, false)
+  [1148] CallFunc_PostEvent_ReturnValue_4 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Ice_Persistent_Large, self, 0, Temp_delegate_Variable_4, false)
+  [1223] CallFunc_PostEvent_ReturnValue_3 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Ice_Persistent_Frost, self, 0, Temp_delegate_Variable_2, false)
+  [1298] pop
+  [1299] push @1503
+  [1304] Default__KismetArrayLibrary.Array_Get(self.SpawnedSeverPartActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_3)
+  [1363] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_Array_Get_Item_3)
+  [1392] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1402] Default__KismetArrayLibrary.Array_Get(self.SpawnedSeverPartActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_3)
+  [1461] CallFunc_Array_Get_Item_3.SetLifeSpan(10.0)
+  [1502] pop
+  [1503] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1545] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1572] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.SpawnedSeverPartActors)
+  [1631] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [1669] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1715
+  [1683] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1710] goto @1299
+  [1715] Default__KismetArrayLibrary.Array_Clear(self.SpawnedSeverPartActors)
+  [1756] pop
+  [1757] Temp_int_Loop_Counter_Variable = 0
+  [1780] Temp_int_Array_Index_Variable = 0
+  [1803] goto @1572
+  [1808] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1829] if !(CallFunc_IsServer_ReturnValue) pop
+  [1839] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(self.AbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentShield'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [1958] CallFunc_MakeOutgoingSpec_ReturnValue = self.AbilitySystemComponent.MakeOutgoingSpec(cell_shield_ge_C, 0.0, GameplayEffectContextHandle{})
+  [2040] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [2069] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, -1.0)
+  [2115] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2144] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [2203] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = self.AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [2262] self.AbilitySystemComponent.RemoveActiveGameplayEffectBySourceEffect(host_shield_ge_C, self.AbilitySystemComponent, -1)
+  [2321] goto @431
+  [2326] if !(self.Head.self.HasBeenSeveredOnce) goto @2449
+  [2362] self.host_shield_broken_horn.SetScalarParameterValueOnMaterials('EnterAether', self.Timeline_2_DissolveValue_68C09EBB4C76A43367DE089FC3FE3BB4)
+  [2416] self.Timeline_1_0.Play()
+  [2448] pop
+  [2449] self.host_shield_00.SetScalarParameterValueOnMaterials('EnterAether', self.Timeline_2_DissolveValue_68C09EBB4C76A43367DE089FC3FE3BB4)
+  [2503] pop
+  [2504] pop
+  [2505] self.Timeline_1_0.Reverse()
+  [2537] pop
+  [2538] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [2558] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [2568] SpawnSeverablePart(self.SeverableLeftHorn, 'l_horn_jnt')
+  [2604] goto @331
+  [2609] BehemothStateChanged(K2Node_Event_StateThatChanged, K2Node_Event_WhatHappened)
+  [2637] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_Event_WhatHappened, 0)
+  [2668] if !(K2Node_SwitchEnum_CmpSuccess) goto @2728
+  [2682] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_Event_WhatHappened, 1)
+  [2713] if !(K2Node_SwitchEnum_CmpSuccess) goto @2774
+  [2727] pop
+  [2728] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(K2Node_Event_StateThatChanged, 2)
+  [2759] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @1047
+  [2773] pop
+  [2774] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_Event_StateThatChanged, 2)
+  [2805] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @2820
+  [2819] pop
+  [2820] MulticastAetherChange(false)
+  [2835] StaggerBehemoth(3, 10, false, false, null, null, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)})
+  [2885] pop
+  [2886] if !(K2Node_CustomEvent_StateActive) goto @2933
+  [2900] self.Timeline_2.PlayFromStart()
+  [2932] pop
+  [2933] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Ice_Destroy_Large_B, self, 0, Temp_delegate_Variable, false)
+  [3008] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Ice_Persistent_Large, self, 0, Temp_delegate_Variable_3, false)
+  [3083] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Ice_Persistent_Frost, self, 0, Temp_delegate_Variable_1, false)
+  [3158] goto @2505
+  [3163] ShieldBroken(K2Node_Event_PartThatShieldWasBrokenBy)
+  [3182] TrySetState(2, 1, CallFunc_TrySetState_Success)
+  [3209] goto @1808
+  [3214] K2Node_DynamicCast_AsBase_Host_Minion_Bp = cast<base_host_minion_bp_C>(K2Node_Event_Actor)
+  [3250] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_Host_Minion_Bp)
+  [3279] if !(K2Node_DynamicCast_bSuccess) pop
+  [3289] K2Node_CreateDelegate_OutputDelegate = bind(self.OnMinionKilled)
+  [3312] K2Node_CreateDelegate_OutputDelegate += None
+  [3353] pop
+  [3354] self.ActionSet.GetActionsMatchingTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'BehemothAction.ActorSpawnTable'})}, 0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, CallFunc_GetActionsMatchingTags_ActionsMatchingTags)
+  [3484] Temp_int_Variable = 0
+  [3507] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetActionsMatchingTags_ActionsMatchingTags)
+  [3566] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Variable, CallFunc_Array_Length_ReturnValue)
+  [3604] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [3614] Default__KismetArrayLibrary.Array_Get(CallFunc_GetActionsMatchingTags_ActionsMatchingTags, Temp_int_Variable, CallFunc_Array_Get_Item)
+  [3673] CallFunc_Array_Get_Item.AuthModifyCurrentCooldowntime(-2.5)
+  [3718] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Variable, 1)
+  [3760] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [3787] goto @3507
+  [3792] ReceivedArchonAbilityDamage(K2Node_Event_DamageReceived, K2Node_Event_InstigatedBy, K2Node_Event_DamageCauser, K2Node_Event_DamageInfo)
+  [3838] CallFunc_HasTag_ReturnValue = HasTag(K2Node_Event_DamageInfo.Payload.InstigatorTags, GameplayTag{'Creature.Host_Bomber.Attack.Explode'}, false)
+  [3913] if !(CallFunc_HasTag_ReturnValue) pop
+  [3923] StaggerBehemoth(3, 6, false, false, null, K2Node_Event_DamageCauser, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)})
+  [3981] pop
+  [3982] ReceiveBeginPlay()
+  [3992] self.host_shield_00.SetLeaderPoseComponent(self.Mesh, true, false)
+  [4035] self.host_shield_broken_horn.SetLeaderPoseComponent(self.Mesh, true, false)
+  [4078] goto @15
+  [4083] SetScalarParameterOnMaterials(self.DynamicMaterialCollection, 'AetherEnterSwitch', self.Timeline_1_0_ChargeValue_004C989F4967E3D74E7382BBB477F2B0)
+  [4124] pop
+  [4125] AuthRemoveHostShield()
+  [4139] pop
+  [4140] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_Event_FunctionName, 'Remove Host Shield')
+  [4182] if !(K2Node_SwitchName_CmpSuccess) goto @4125
+  [4196] CallBehemothSpecificFunction(K2Node_Event_FunctionName)
+  [4215] pop
+  [4216] goto @4083
+  [4221] ReceiveEndPlay(K2Node_Event_EndPlayReason)
+  [4240] goto @1757
+  [4245] StartSeverVFX(K2Node_ComponentBoundEvent_Part)
+  [4264] goto @2538
+  [4269] pop
+  [4270] return nothing
+  [4272] end
+
+=== InternalUpdateShieldStatus
+  [0] if !(self.Head.self.HasBeenSeveredOnce) goto @83
+  [36] self.host_shield_broken_horn.SetVisibility(self.ShieldActive, true)
+  [78] goto @1200
+  [83] self.host_shield_00.SetVisibility(self.ShieldActive, true)
+  [125] if !(self.ShieldActive) goto @144
+  [139] goto @1200
+  [144] CallFunc_SpawnEmitterAttached_ReturnValue_7 = SpawnEmitterAttached(vfx_shatter_horn, self.Mesh, 'vfx_horn_r', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [276] CallFunc_SpawnEmitterAttached_ReturnValue_6 = SpawnEmitterAttached(vfx_shatter_horn, self.Mesh, 'vfx_horn_l', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [408] CallFunc_SpawnEmitterAttached_ReturnValue_5 = SpawnEmitterAttached(vfx_shatter_wing, self.Mesh, 'vfx_wing_r', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [540] CallFunc_SpawnEmitterAttached_ReturnValue_4 = SpawnEmitterAttached(vfx_shatter_wing, self.Mesh, 'vfx_wing_l', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [672] CallFunc_SpawnEmitterAttached_ReturnValue_3 = SpawnEmitterAttached(vfx_shatter_wing, self.Mesh, 'vfx_wing_l', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [804] CallFunc_SpawnEmitterAttached_ReturnValue_2 = SpawnEmitterAttached(vfx_shatter_body, self.Mesh, 'vfx_neck', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [936] CallFunc_SpawnEmitterAttached_ReturnValue_1 = SpawnEmitterAttached(vfx_shatter_body, self.Mesh, 'vfx_pelvis', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1068] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(vfx_shatter_tail, self.Mesh, 'vfx_tail_01', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1200] return nothing
+  [1202] end
+
+=== MulticastAetherChange
+  [0] frame.K2Node_CustomEvent_StateActive = StateActive
+  [18] ExecuteUbergraph_host_archetype_bp(2886)
+  [33] return nothing
+  [35] end
+
+=== OnMinionKilled
+  [0] frame.K2Node_CustomEvent_Killer = Killer
+  [18] frame.K2Node_CustomEvent_HasHitResult = HasHitResult
+  [36] frame.K2Node_CustomEvent_Context = Context
+  [54] frame.K2Node_CustomEvent_KillReasonTags = KillReasonTags
+  [72] frame.K2Node_CustomEvent_DamageEventTags = DamageEventTags
+  [90] ExecuteUbergraph_host_archetype_bp(3354)
+  [105] return nothing
+  [107] end
+
+=== OnRep_ShieldActive
+  [0] InternalUpdateShieldStatus()
+  [14] return nothing
+  [16] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_host_archetype_bp(3982)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_host_archetype_bp(4221)
+  [33] return nothing
+  [35] end
+
+=== ReceivedArchonAbilityDamage
+  [0] frame.K2Node_Event_DamageReceived = DamageReceived
+  [18] frame.K2Node_Event_InstigatedBy = InstigatedBy
+  [36] frame.K2Node_Event_DamageCauser = DamageCauser
+  [54] frame.K2Node_Event_DamageInfo = DamageInfo
+  [72] ExecuteUbergraph_host_archetype_bp(3792)
+  [87] return nothing
+  [89] end
+
+=== ShieldBroken
+  [0] frame.K2Node_Event_PartThatShieldWasBrokenBy = PartThatShieldWasBrokenBy
+  [18] ExecuteUbergraph_host_archetype_bp(3163)
+  [33] return nothing
+  [35] end
+
+=== Timeline_1_0__FinishedFunc
+  [0] ExecuteUbergraph_host_archetype_bp(4269)
+  [15] return nothing
+  [17] end
+
+=== Timeline_1_0__UpdateFunc
+  [0] ExecuteUbergraph_host_archetype_bp(4216)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__FinishedFunc
+  [0] ExecuteUbergraph_host_archetype_bp(2504)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__SoundTrigger__EventFunc
+  [0] ExecuteUbergraph_host_archetype_bp(1073)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__UpdateFunc
+  [0] ExecuteUbergraph_host_archetype_bp(2326)
+  [15] return nothing
+  [17] end

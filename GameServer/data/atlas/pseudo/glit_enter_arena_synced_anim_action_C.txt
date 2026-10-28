@@ -1,0 +1,117 @@
+# glit_enter_arena_synced_anim_action_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthSelectRandomSkeletalMeshIndex
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @233
+  [34] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.SkeletalMeshesToUse)
+  [93] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [135] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, CallFunc_Subtract_IntInt_ReturnValue)
+  [177] self.SkeletalMeshToUseIndex = CallFunc_RandomIntegerInRange_ReturnValue
+  [204] MarkPropertyDirtyFromRepIndex(self, 5, 'SkeletalMeshToUseIndex')
+  [233] return nothing
+  [235] end
+
+=== Authority_SelectMontage
+  [0] K2Node_MakeStruct_PhxAnimMontageSelection.Montage = b_glit_00_pers_combatenter_fwd_00_mot
+  [28] K2Node_MakeStruct_PhxAnimMontageSelection.PlayRate = 1.0
+  [60] K2Node_MakeStruct_PhxAnimMontageSelection.StartTime = 0.0
+  [92] K2Node_MakeStruct_PhxAnimMontageSelection.StartSection = 'None'
+  [132] ReturnValue = K2Node_MakeStruct_PhxAnimMontageSelection
+  [159] return ReturnValue
+  [169] end
+
+=== DestroyVictim
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.VictimCharacter)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @160
+  [43] self.VictimCharacter.SetActorHiddenInGame(true)
+  [80] self.VictimCharacter.SetActorEnableCollision(false)
+  [113] self.VictimCharacter.K2_DestroyActor()
+  [149] self.VictimCharacter = null
+  [160] return nothing
+  [162] end
+
+=== ExecuteUbergraph_glit_enter_arena_synced_anim_action
+  [0] push @159
+  [5] goto computed(EntryPoint)
+  [15] AuthSelectRandomSkeletalMeshIndex()
+  [29] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=84), 1977641053, 'ExecuteUbergraph_glit_enter_arena_synced_anim_action', self})
+  [83] pop
+  [84] ReceiveOnStarted()
+  [94] Internal_OnStarted()
+  [108] pop
+  [109] goto @15
+  [114] ReceiveOnTick(K2Node_Event_DeltaTime)
+  [133] pop
+  [134] ReceiveOnFinished()
+  [144] Internal_OnFinished()
+  [158] pop
+  [159] return nothing
+  [161] end
+
+=== Internal_OnFinished
+  [0] DestroyVictim()
+  [14] return nothing
+  [16] end
+
+=== Internal_OnStarted
+  [0] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [20] K2Node_DynamicCast_AsCharacter = cast<Character>(CallFunc_GetOwningActor_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @1010
+  [99] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsCharacter.GetTransform()
+  [149] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, glit_sq_enter_arena_skeletal_mesh_actor_C, CallFunc_GetTransform_ReturnValue, 1, K2Node_DynamicCast_AsCharacter)
+  [199] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsCharacter)
+  [240] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsCharacter.GetTransform()
+  [290] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_GetTransform_ReturnValue)
+  [328] self.VictimCharacter = CallFunc_FinishSpawningActor_ReturnValue
+  [347] Default__KismetArrayLibrary.Array_Get(self.SkeletalMeshesToUse, self.SkeletalMeshToUseIndex, CallFunc_Array_Get_Item)
+  [406] self.VictimCharacter.self.Mesh.SetSkinnedAssetAndUpdate(CallFunc_Array_Get_Item, true)
+  [474] self.VictimCharacter.self.Mesh.SetHiddenInGame(true, false)
+  [530] CallFunc_GetAnimInstance_ReturnValue = self.VictimCharacter.self.Mesh.GetAnimInstance()
+  [594] CallFunc_Montage_Play_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_Play(b_glit_00_pers_combatenter_sq_fwd_00_mot, 1.0, 0, 0.0, true)
+  [666] self.VictimCharacter.K2_AttachToComponent(K2Node_DynamicCast_AsCharacter.self.Mesh, 'attach_jnt', 2, 2, 2, false)
+  [749] CallFunc_NegateVector_ReturnValue = NegateVector(self.VictimCharacter.self.Mesh.self.RelativeLocation)
+  [830] self.VictimCharacter.K2_SetActorRelativeLocation(CallFunc_NegateVector_ReturnValue, false, CallFunc_K2_SetActorRelativeLocation_SweepHitResult, false)
+  [882] K2Node_CreateDelegate_OutputDelegate = bind(self.OnVictimMontageBlendingOut)
+  [905] CallFunc_GetAnimInstance_ReturnValue = self.VictimCharacter.self.Mesh.GetAnimInstance()
+  [969] K2Node_CreateDelegate_OutputDelegate += None
+  [1010] return nothing
+  [1012] end
+
+=== OnVictimMontageBlendingOut
+  [0] if !(bInterrupted) goto @19
+  [14] goto @33
+  [19] DestroyVictim()
+  [33] return nothing
+  [35] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_glit_enter_arena_synced_anim_action(134)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_glit_enter_arena_synced_anim_action(109)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTick
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_glit_enter_arena_synced_anim_action(114)
+  [33] return nothing
+  [35] end
+
+=== StartConsumeVictim
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.VictimCharacter)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @461
+  [43] CallFunc_IsValid_ReturnValue_1 = IsValid(self.VictimCharacter.self.Mesh)
+  [94] if !(CallFunc_IsValid_ReturnValue_1) goto @461
+  [108] CallFunc_GetAnimInstance_ReturnValue = self.VictimCharacter.self.Mesh.GetAnimInstance()
+  [172] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetAnimInstance_ReturnValue)
+  [201] if !(CallFunc_IsValid_ReturnValue_2) goto @461
+  [215] CallFunc_GetAnimInstance_ReturnValue = self.VictimCharacter.self.Mesh.GetAnimInstance()
+  [279] CallFunc_Montage_Play_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.Montage_Play(b_glit_00_pers_combatenter_sq_fwd_00_mot, 1.0, 0, 0.0, true)
+  [351] CallFunc_GetAnimInstance_ReturnValue = self.VictimCharacter.self.Mesh.GetAnimInstance()
+  [415] CallFunc_GetAnimInstance_ReturnValue.Montage_JumpToSection('Consume', null)
+  [461] return nothing
+  [463] end

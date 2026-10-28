@@ -1,0 +1,33 @@
+mint_pillar_sync_bt  blackboard=BlackboardData mint_bb_new
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  SimpleParallel
+    1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionClassChooser_0)
+    [if PhxHasCompletedSyncedAnimInstanceEntrance  (ControllerClass=BlueprintGeneratedClass mint_pillar_synced_anim_controller_C)]
+    2) Sequence
+      1) Selector
+        1) Sequence
+          [if mint_has_pillar_divebomb_target_btdeco]
+          1) Sequence
+            {service mint_calculate_divebomb_target_location_bts  (OutputBlackboardKey=TempLocation, Interval=0.001)}
+            1) Wait  (WaitTime=0.15, RandomDeviation=0.05)
+            [if ForceSuccess]
+            2) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+        2) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_players_in_arc_2D", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 1250.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.6, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+          2) Sequence
+            [if ForceSuccess]
+            1) Selector
+              1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            2) Wait  (WaitTime=0.15, RandomDeviation=0.05)
+            [if ForceSuccess]
+            3) Selector
+              1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+        3) Sequence
+          1) Wait  (WaitTime=0.15, RandomDeviation=0.05)
+          [if ForceSuccess]
+          2) Selector
+            1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+      [if ForceSuccess]
+      2) PhxEndSyncedAnimation  (ControllerClass=BlueprintGeneratedClass mint_pillar_synced_anim_controller_C)
+      3) Wait  (WaitTime=100)

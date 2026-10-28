@@ -1,0 +1,640 @@
+{
+ "_about": "Layer 5: behaviour confirmed on the live stock client or read directly from the game's own code/data. Hand-written; `python -m tools.atlas build` never touches this file. Each entry: fact, classes/props it concerns, source (commit, file, or capture), date confirmed.",
+ "entries": [
+  {
+   "id": "hitresult-layout",
+   "fact": "Dauntless FHitResult differs from stock UE 5.1.1: Flags are 16 bits (bit 8 always set) and an extra FVector_NetQuantize follows ImpactNormal, before TraceStart. A stock 8-bit hit makes the client drop the whole RPC silently.",
+   "classes": [
+    "HitResult",
+    "ArchonCharacter"
+   ],
+   "source": "commit 69bb604; GameServer/mpgs/repl/structs.py (FHitResult section); 9 live ServerTryDoDamage payloads in logs/rpc_capture.jsonl",
+   "date": "2026-10-21"
+  },
+  {
+   "id": "bleedout-state",
+   "fact": "A downed player is player_bleedout_bpc.CurrentBleedoutState (replicated, OnRep_CurrentBleedoutState; declared on native ArchonBleedoutComponent).",
+   "classes": [
+    "player_bleedout_bpc_C",
+    "ArchonBleedoutComponent"
+   ],
+   "props": [
+    "CurrentBleedoutState"
+   ],
+   "source": "commit 8a22141 (live test)",
+   "date": "2026-10-22"
+  },
+  {
+   "id": "revive-multicast",
+   "fact": "Revive sends the multicast BP_PlayerCharacter.InternalReviveFromBleedOut so the client clears its downed marker; the get-up montage plays on revive.",
+   "classes": [
+    "BP_PlayerCharacter_C"
+   ],
+   "functions": [
+    "InternalReviveFromBleedOut"
+   ],
+   "source": "commits fa3ff39, 3450652 (live test)",
+   "date": "2026-10-25"
+  },
+  {
+   "id": "potion-heal",
+   "fact": "Healing potion: heals Heal Amount at once, then Heal Amount / HoTTime per second for HoTTime seconds (Ability_QuickItem_Healing_Potion_Flask CDO: Heal Amount 425, HoTTime 20).",
+   "classes": [
+    "Ability_QuickItem_Healing_Potion_Flask_C"
+   ],
+   "props": [
+    "Heal Amount",
+    "HoTTime"
+   ],
+   "source": "commit 1e5a407; ability CDO values",
+   "date": "2026-10-25"
+  },
+  {
+   "id": "part-break",
+   "fact": "Part break = monsterpart_bpc_C.CurrentBreakStage set to 1 (OnRep_CurrentBreakStage switches to the scarred material); sever = PartSevered true (OnRep hides the part's bones). Server side the Blueprint writes CurrentBreakStage in AuthSetBreakStage and PartSevered in AuthHandleBreak.",
+   "classes": [
+    "monsterpart_bpc_C"
+   ],
+   "props": [
+    "CurrentBreakStage",
+    "PartSevered"
+   ],
+   "source": "commit 97bb68b (live test); atlas who-sets CurrentBreakStage, PartSevered",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "sever-spawn",
+   "fact": "A sever spawns the part's severable actor (BP_MonsterSeverablePart subclass) at the sever socket's transform, as monsterpart_bpc.AuthSpawnSeveredPartActor does; breaks also send MulticastSpawnBreakImpulses.",
+   "classes": [
+    "monsterpart_bpc_C",
+    "BP_MonsterSeverablePart_C"
+   ],
+   "functions": [
+    "AuthSpawnSeveredPartActor",
+    "MulticastSpawnBreakImpulses"
+   ],
+   "source": "commits bd3c7ed, 45a4af8",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "auth-handle-break",
+   "fact": "monsterpart_bpc.AuthHandleBreak (server only, IsServer): on a stage change calls MulticastSpawnBreakImpulses(); for a sever stage sets PartSevered=true (rep index 18), runs OnRep_PartSevered, then AuthSpawnSeveredPartActor, then sets the owner's blackboard SeveredPartBBKey=true.",
+   "classes": [
+    "monsterpart_bpc_C"
+   ],
+   "props": [
+    "PartSevered",
+    "SeveredPartBBKey"
+   ],
+   "functions": [
+    "AuthHandleBreak",
+    "MulticastSpawnBreakImpulses",
+    "OnRep_PartSevered",
+    "AuthSpawnSeveredPartActor"
+   ],
+   "source": "Blueprint bytecode (atlas pseudo/monsterpart_bpc_C.txt); server implementation commit 45a4af8",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "auth-spawn-severed-part",
+   "fact": "monsterpart_bpc.AuthSpawnSeveredPartActor spawns 'Severable Actor To Spawn' at GetSocketTransform('Severable Spawn Socket') on the owner Character's mesh; it sets no other properties.",
+   "classes": [
+    "monsterpart_bpc_C"
+   ],
+   "props": [
+    "Severable Actor To Spawn",
+    "Severable Spawn Socket"
+   ],
+   "functions": [
+    "AuthSpawnSeveredPartActor"
+   ],
+   "source": "Blueprint bytecode (atlas pseudo/monsterpart_bpc_C.txt)",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "severable-part-beginplay",
+   "fact": "BP_MonsterSeverablePart.ReceiveBeginPlay runs on clients too: line-traces down 1000 (or up 4000, then +100) to the ground, calls SetAllBodiesSimulatePhysics(true), then AddImpulse(ImpulseOnSpawn) and AddTorqueInRadians(TorqueOnSpawn). The server only needs to spawn the actor.",
+   "classes": [
+    "BP_MonsterSeverablePart_C"
+   ],
+   "props": [
+    "ImpulseOnSpawn",
+    "TorqueOnSpawn"
+   ],
+   "functions": [
+    "ReceiveBeginPlay"
+   ],
+   "source": "Blueprint bytecode (atlas pseudo/BP_MonsterSeverablePart_C.txt)",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "lerawr-beta-sever-data",
+   "fact": "Lerawr beta severs: Tail -> lerawr_beta_tail_sever_bp at socket tail_sever_socket (bone tail_05_jnt, rel loc (-1.39,0,-0.74), rot pitch -2 yaw 180). Head -> beta_lerawr_horn_sever_bp at 'socket' horn_jnt, which is really a bone (the skeleton has no socket by that name).",
+   "classes": [
+    "lerawr_normal_bp_C",
+    "lerawr_beta_tail_sever_bp_C",
+    "beta_lerawr_horn_sever_bp_C"
+   ],
+   "source": "Lerawr Blueprint defaults + skeleton; server implementation commit 45a4af8",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "weapon-loadout-visibility",
+   "fact": "Superseded for the Loadout assign lists (see loadout-list-filter): their code has no quest check. Original note: a weapon only shows in the loadout list when the catalog item's RequireQuestStatuses are met. RequireQuestStatuses may still gate other screens (crafting/unlock); not re-verified.",
+   "classes": [
+    "ArchonInventoryItem_Weapon",
+    "ArchonInventory"
+   ],
+   "props": [
+    "RequireQuestStatuses"
+   ],
+   "source": "commit 57f55aa (live test); GameServer/mpgs/quests.py; contradicted by disassembly 2026-10-26 (CanEquipItem 0x287A900)",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "inventory-v2-hash",
+   "fact": "Inventory V2: the client's HandleItemStateUpdates builds sorted 16-byte records (instance CRC, catalog CRC, quantity, custom-data CRC) and compares CityHash64 of them with PostOperationHash; full sync and template build verified live.",
+   "classes": [
+    "ArchonInventory"
+   ],
+   "props": [
+    "PostOperationHash"
+   ],
+   "source": "GameServer/mpgs/inventory_v2.py (static analysis of the client); live sync 2026-10-13",
+   "date": "2026-10-14"
+  },
+  {
+   "id": "loadout-list-filter",
+   "fact": "Loadout assign lists read UArchonInventoryData.Items, the container V2 AddItem fills via AddInstancedItem; ReplicatedItems is not needed. An item is listed only if it is the slot's class (weapon/armour), passes AArchonInventory::CanEquipItem, and its WeaponType (+0x131) or ArmorType (+0x171) matches the tab/slot. CanEquipItem hides items missing from the client catalog or tagged 'hidden' or 'legacy'; there is no quest, journey-node, recruit or level check. All 21 test-kit weapons (WP_<type>_LERAWR/_SHOCKMANE/_ROCK) are tagged 'legacy' in the 2.1.1 gear catalogs, so they never list. Usable 2.1.1 weapon ids are the elemental lines (e.g. WP_EB_SHOCK_01, WP_AC_TERRA_01, WP_GA_BLAZE_01, WP_IH_FROST_01) and exotics.",
+   "classes": [
+    "ArchonInventory",
+    "LoadoutViewModel",
+    "LoadoutGearScreen",
+    "LoadoutAssignGearPanel",
+    "ArchonInventoryData",
+    "ArchonInventoryItem_Weapon",
+    "ArchonInventoryItem_Armour"
+   ],
+   "props": [
+    "Items",
+    "ReplicatedItems",
+    "WeaponType",
+    "ArmorType",
+    "Tags"
+   ],
+   "functions": [
+    "CanEquipItem",
+    "AddInstancedItem",
+    "ClientHandleItemStateUpdates"
+   ],
+   "source": "capstone disassembly of the 2.1.1 client (0x287A900, 0x2CD96B0, 0x2CB7060, 0x2CD33F0, 0x2878000; see native_notes.json); tags from debug/exports/all-datatables-211 gear catalogs",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "armor-resistance-source",
+   "fact": "Each equipped armor actor applies armour_ge_C (server only), adding SetByCaller Global/Flame/Frost/Shock/Radiant/Umbral/Terra Resistance to ArchonHealthAttributeSet. The values come from the row named by the armor's ItemId at its CurrentLevel in ArchonArmor.ResistanceTable, which bp_archon_global_tuning sets to armour_progression_rework_resistance_table while ArmourProgressionReworkFeature is on (the local default). AR_LERAWR_* pieces at level 0: Global 10, Flame 2, Frost -2 each.",
+   "classes": [
+    "ArchonArmor",
+    "ArchonArmorSetItem",
+    "ArchonGlobalTuning",
+    "ArchonHealthAttributeSet",
+    "armour_ge_C"
+   ],
+   "props": [
+    "ResistanceTable",
+    "ItemId",
+    "CurrentLevel",
+    "GlobalResistance"
+   ],
+   "functions": [
+    "LookupResistanceTableRow",
+    "GetArmourResistanceTable"
+   ],
+   "source": "disassembly 0x269E1C0, 0x26A1290, 0x27FA650, 0x26CDA70; armour_ge and bp_archon_global_tuning defaults; data table export; see topics/armor.md",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "player-damage-formula",
+   "fact": "Damage to a player (ArchonDamage execution of behemoth_damage_ge): per element, delta = attacker Power(+ElementalPower) * target MultiplicativeResistance + attacker GlobalPower - target (Resistance + ElementalResistance + GlobalResistance); multiplier = the attacker ASC DamageCurve (physical) or ElementalDamageCurve (elements) at delta; then additive-stacked post-mitigation multipliers (target *SelfPostMigation*, attacker *TargetPostMigation*); total = sum + RawDamage + TrueDamage; the shield absorbs first, then CurrentHealth.",
+   "classes": [
+    "ArchonDamage",
+    "ArchonDamageStatics",
+    "ArchonHealthAttributeSet",
+    "ArchonDamageAttributeSet",
+    "ArchonAbilitySystemComponent"
+   ],
+   "props": [
+    "DamageCurve",
+    "ElementalDamageCurve",
+    "GlobalResistance",
+    "GlobalPower",
+    "CurrentShield",
+    "CurrentHealth"
+   ],
+   "functions": [
+    "ComputeResistanceDeltas",
+    "ComputeDamageMultipliers",
+    "ComputePostMitigationDamages"
+   ],
+   "source": "disassembly 0x261CB70, 0x2615E70, 0x26153C0, 0x26DED40; see topics/armor.md",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "behemoth-damage-curve",
+   "fact": "The behemoth ASC's DamageCurve and ElementalDamageCurve = behemoth_to_player_damage_curve_cr20 (linear; delta -500 -> 0.5, -100 -> 0.8, 0 -> 1.0, 100 -> 1.5, 200 -> 3.0, 350 -> 5.3, 500 -> 10.0). base_creature_bp uses creature_to_player_damage_curve_cr20 (same keys). The exploration game state override curves are off (bShouldOverrideDamageCurves not set).",
+   "classes": [
+    "Bp_Behemoth_C",
+    "base_creature_bp_C",
+    "ArchonAbilitySystemComponent",
+    "BPGS_ArchonExploration_GameState_C"
+   ],
+   "props": [
+    "DamageCurve",
+    "ElementalDamageCurve",
+    "EnemyDamageCurveOverrides"
+   ],
+   "source": "Bp_Behemoth and base_creature_bp ASC subobject defaults; /Game/shared/curves dumps",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "armor-perks-and-sets",
+   "fact": "Armor catalog rows carry PermanentCellsPerLevel (keyword perks; Embermane level 0: helm and arms KW_DODGE_IFRAME x1, chest and legs KW_KILL_FAUNA_DMG x1), a PrimaryGearStat (Embermane crit damage 0.2 + 0.01/level or crit chance 0.05 + 0.005/level) and a GearSetBonusId. Cells are applied server side through cell_manager_bpc.ApplyCellBonuses (BlueprintAuthorityOnly) with ArchonCharacter.GetAllEquippedCellEffects. The LERAWR set bonus entries are empty in 2.1.1. KW_DODGE_IFRAME needs rank 4 for +0.4 EvadeInvulnerabilityMultiplier.",
+   "classes": [
+    "ArchonCharacter",
+    "cell_manager_bpc_C",
+    "GearSetBonusComponent",
+    "ArchonInventoryItem_Armour"
+   ],
+   "props": [
+    "CurrentEffectsBeingApplied",
+    "EquippedGearSets",
+    "EvadeInvulnerabilityMultiplier"
+   ],
+   "functions": [
+    "ApplyCellBonuses",
+    "GetAllEquippedCellEffects"
+   ],
+   "source": "armour_gameplay_catalog, gear_set_bonus_table, keyword_cell_effects_composite and cell_effect_table exports; disassembly 0x2694A20, 0x2680E00",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "progression-bonus-zero",
+   "fact": "player_progression_ge (GlobalPower/GlobalResistance from the player level) adds nothing in 2.1.1: player_progression_tuning ONLY_ROW has BasePower, BaseResistance, AddedPowerPerLevel and AddedResistancePerLevel all 0.",
+   "classes": [
+    "ArchonCharacter",
+    "ArchonGlobalTuning"
+   ],
+   "functions": [
+    "GetPlayerProgressionTuningData"
+   ],
+   "source": "disassembly 0x2686380; player_progression_tuning export",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "behemoth-tuning-presets",
+   "fact": "Bp_Behemoth.RefreshTuningPresets (authority only) multiplies HealthScale, PartHealthScale, ExposeHealthScale, StaggerHealthScale and DamageScale over all TuningPresetData entries and sums the two BonusPct fields. MaxHealth = BaseHealthScale * BaseHealth * H * (1 + (players - 1) * PerPlayerHealthIncRatio). Stagger thresholds and temporary armor scale by S * BaseStaggerScale. The DamageScale product goes on the behemoth as behemoth_preset_damage_scale_ge (GlobalTargetPostMigationMultiplier x SetByCaller Magnitude), a post-mitigation multiplier on every hit it deals. Threat-level rows (threat_level_table_newtuning when new_health_scaling_bpff is on, default true) become presets through threat_level_library.GetTuningPresetFromThreatLevelRow.",
+   "classes": [
+    "Bp_Behemoth_C",
+    "bp_gamemode_behemoth_spawner_component_C",
+    "threat_level_library_C"
+   ],
+   "functions": [
+    "RefreshTuningPresets",
+    "AddTuningPresets",
+    "GetTuningPresetFromThreatLevelRow",
+    "CalculateMaxHealth"
+   ],
+   "source": "Bp_Behemoth / spawner / threat_level_library bytecode; behemoth_preset_damage_scale_ge CDO; threat_level_table(_newtuning) and behemoth_tuning_presets exports",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "behemoth-power-override",
+   "fact": "Threat levels and presets never change behemoth power. Power and resistance are the behemoth class defaults unless bp_gamemode_behemoth_spawner_component.SetBehemothPowerOverride runs, which sets GlobalPower and GlobalResistance both to the value and calls UpdateBasePowers/UpdateBaseResists. Sources: the matchmaker hunt PowerOverride (TrySetBehemothPowerOverride), a challenge row RecommendedPower, or exploration_enemy_level_table RecommendedPower. override_player_power_and_resist_ge is a player-side cheat/exploration effect, not a behemoth one.",
+   "classes": [
+    "bp_gamemode_behemoth_spawner_component_C",
+    "ArchonBehemoth",
+    "BPGM_ArchonExploration_C"
+   ],
+   "functions": [
+    "SetBehemothPowerOverride",
+    "TrySetBehemothPowerOverride",
+    "UpdateBasePowers",
+    "UpdateBaseResists"
+   ],
+   "source": "spawner bytecode; disassembly 0x265AFC0, 0x265B2C0; matchmaker hunt exports",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "star-tuning-unused",
+   "fact": "exploration_enemy_star_tuning_table is referenced by no package in the 2.1.1 paks and by no string in the exe; star levels do not scale behemoths. GetBehemothStarLevel only reads the metadata row.",
+   "classes": [
+    "Bp_Behemoth_C"
+   ],
+   "functions": [
+    "GetBehemothStarLevel"
+   ],
+   "source": "byte search over every pak package and the exe strings",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "shield-damage-reduction",
+   "fact": "ShieldDamageReduction only affects behemoth shields: monsterpart_bpc.OnPreMitigateDamageBP uses BaseDamage * lerp(max(1 - ShieldDamageReduction, 0), 1, ShieldDamageReductionPenetration) as shield damage (x1 with Combat.DamageProperties.IgnoreShieldDamageReduction) and absorbs the hit. ChanceToReduceIncomingDamage, DamageReturnPercent and IncomingShieldMultiplier have no reader in the paks or the exe besides replication/OnRep, so they do nothing in 2.1.1.",
+   "classes": [
+    "ArchonHealthAttributeSet",
+    "monsterpart_bpc_C",
+    "ArchonDamageAttributeSet"
+   ],
+   "props": [
+    "ShieldDamageReduction",
+    "ShieldDamageReductionPenetration",
+    "ChanceToReduceIncomingDamage",
+    "DamageReturnPercent",
+    "IncomingShieldMultiplier"
+   ],
+   "functions": [
+    "OnPreMitigateDamageBP"
+   ],
+   "source": "monsterpart_bpc bytecode; pak-wide byte search; exe string xrefs and ArchonHealthAttributeSet vtable scan",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "damage-premitigation-hooks",
+   "fact": "The damage execution's \"extended branch\" (0x262E1B0) only copies back an FDamageEventData that a pre-mitigation hook overrode. Small creatures always override (M *= 1 + max(ConsideringLevel - 1, 0) * 0.03). Behemoths override only when behemoth_eventdispatcher_bpc has a registered outgoing modifier, and players only when player_eventdispatcher_bpc has a registered incoming modifier (registered by buffs). Otherwise A = 0 and M = 1.",
+   "classes": [
+    "ArchonCharacter",
+    "BP_PlayerCharacter_C",
+    "Bp_Behemoth_C",
+    "base_creature_bp_C",
+    "player_eventdispatcher_bpc_C"
+   ],
+   "functions": [
+    "OnPreMitigateDamageBP",
+    "OnPreMitigateOutgoingDamageBP",
+    "OnPremitigateDamageNonNative",
+    "TryModifyAnyIncomingDamagePremit"
+   ],
+   "source": "disassembly 0x261E6BD-0x261EE06, 0x262E1B0, 0x268AC70; Blueprint bytecode; base_creature_bp CDO",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "gear-stats-and-set-bonuses",
+   "fact": "Gear stats and set bonuses are applied by AArchonEquipment::AddGearStatsToOwner (server only, from HandleEquipForGameplay), gated by GearCells2Feature, whose constructor sets bEnabled = false. Gear stats are ApplyModToAttribute(Additive, Magnitude) base-value adds; set tiers apply their GameplayModifiers once the count of distinct pieces (SourceIds) reaches RequiredSources.",
+   "classes": [
+    "ArchonEquipment",
+    "GearSetBonusComponent",
+    "ArchonCharacter",
+    "GearCells2Feature"
+   ],
+   "props": [
+    "AppliedGearStats",
+    "AppliedGearSetBonusId",
+    "EquippedGearSets"
+   ],
+   "functions": [
+    "AddGearStatsToOwner",
+    "RemoveGearStatsFromOwner"
+   ],
+   "source": "disassembly 0x27F1400, 0x276A960, 0x26728D0, 0x2292B10; SDK structs FGearStatData, FGearSetBonus, FEquippedGearSetData",
+   "date": "2026-10-26"
+  },
+  {
+   "id": "behemoth-action-scoring",
+   "fact": "evaluate_action_btservice picks the action with the highest BP_BehemothAction.Evaluate score (ForceAction blackboard key = 99999). Score = sum over live players in the hit areas of GetAttackTargetScore x BaseValue x AttackWeighting x RuntimeWeightingPercent, then randomized by RandomWeightPercent. Players: AttackTargetScore x max(AggroMultiplier, 0). Available only if not on cooldown, BaseValue > 0, intensity in range, requirements and states met, attack path clear of the navmesh edge to 90%.",
+   "classes": [
+    "evaluate_action_btservice_C",
+    "BP_BehemothAction_C",
+    "Bp_BehemothActionSet_C",
+    "BP_PlayerCharacter_C"
+   ],
+   "functions": [
+    "BP_BehemothAction_C.Evaluate",
+    "BP_BehemothAction_C.ScoreTargetArray",
+    "BP_BehemothAction_C.IsActionAvailable"
+   ],
+   "source": "Blueprint bytecode + class defaults/behavior tree/montages read with tools.atlas assets; topics/behemoth_design.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "behemoth-damage-windows",
+   "fact": "Behemoth attack damage comes from archon_damage_window montage notifies: PhysicsBodyNameMap lists the behemoth physics bodies that deal damage, DamageKeys names the damage table row, BehemothRequirements gates it (state, part state). Runs on the dedicated server; ShouldApplyDamage (the requirements) is checked once at window start; the sweep runs natively in DamageComponent (see damage-window-sweep).",
+   "classes": [
+    "archon_damage_window_C",
+    "DamageNotifyState"
+   ],
+   "source": "Blueprint bytecode + class defaults/behavior tree/montages read with tools.atlas assets; topics/behemoth_design.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "hitvolumes-editor-only",
+   "fact": "HitVolumes<attack>_Capsule tables (debug_capsuleinfo_struct) are editor captures of the damage-window capsules (radius/half-height match lerawr_phat bodies); only drawn in the editor or with bDebugAreaPrimitivesInPIE, recorded by BTTask_PerformALLActionsInSet. Not used at runtime.",
+   "classes": [
+    "lerawr_sidegore_r_atk_C",
+    "BTTask_PerformALLActionsInSet_C"
+   ],
+   "source": "Blueprint bytecode + class defaults/behavior tree/montages read with tools.atlas assets; topics/behemoth_design.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "behemoth-rage-meter",
+   "fact": "Rage meter: RageCDMax = MaxHealth x 0.33; damage taken lowers RageCooldown 1:1, a part break by 15% of max; refills 140 every 5 s; max decays 1% per 5 s in combat to a 65% floor; at 0 the blackboard ReadyForRageState is set. Rage lasts RageDuration (Embermane 9 s, alpha 15, default 25), +10 s per rage up to 90.",
+   "classes": [
+    "Bp_Behemoth_C",
+    "behemoth_received_damage_ab_C",
+    "lerawr_archetype_bp_C"
+   ],
+   "functions": [
+    "Bp_Behemoth_C.DecreaseRageCD",
+    "Bp_Behemoth_C.RefillRageCD",
+    "Bp_Behemoth_C.UpdateRageValuesWithPercentOfMaxRage",
+    "Bp_Behemoth_C.EnterRageState"
+   ],
+   "source": "Blueprint bytecode + class defaults/behavior tree/montages read with tools.atlas assets; topics/behemoth_design.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "embermane-never-tires",
+   "fact": "Actions drain StaminaDrainAmount, and 0 stamina means 90 s tired, but Bp_Behemoth MaxStamina is 99999 and the lerawr classes do not override it, so Embermane never tires in practice.",
+   "classes": [
+    "Bp_Behemoth_C",
+    "lerawr_normal_bp_C"
+   ],
+   "functions": [
+    "Bp_Behemoth_C.DecreaseStamina"
+   ],
+   "source": "Blueprint bytecode + class defaults/behavior tree/montages read with tools.atlas assets; topics/behemoth_design.md",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "damage-window-sweep",
+   "fact": "DamageNotifyState overrides only NotifyBegin/NotifyEnd; NotifyBegin registers one damager per weapon role with the owner's DamageComponent (role -> registered mesh). DamageComponent::TickComponent sweeps every physics-asset shape of each listed body from last tick's pose to this tick's, in sub-steps of at most MaxStepAngle (45 deg) rotation, as SweepSingleByObjectType (\"DamageNotifySweep\", DamageComponent.ObjectTypes). One shared actor -> last-hit map: first contact uses DamageKeys; a repeat needs MultipleHitLockoutPerTarget > 0 and uses DamageKeysAfterFirstHitPerTarget if set. The map is cleared on montage start, and at window end unless bExcludedHitActorsForDurationOfMontage. Defaults (lockout -1, exclude true) = each target hit at most once per montage.",
+   "classes": [
+    "DamageNotifyState",
+    "DamageComponent",
+    "archon_damage_window_C"
+   ],
+   "source": "capstone disassembly of the 2.1.1 client (NotifyBegin 0x2742C00, TickComponent 0x2722960, AcceptHit 0x2724400, OnMontageStarted 0x2710A20); topics/behemoth_design.md section 5",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "damage-hit-processing",
+   "fact": "Accepted damage-window hits are sorted (hits not starting inside the target first, then nearest first) and each key goes through DamageComponent TryDoDamage -> InternalTryDoDamage -> RespondToHit: the row Effect (or DefaultEffect) is applied to the hit component and/or actor. On a server with ClientAuthoritativeDamageFeature, a player target gets ClientTryHit (ArchonHittableComponent, pending under a GUID) and the hit applies on ServerAcceptHit. AcceptHit also asks ArchonDamageTakerInterface.OnSweepHit, which every implementation answers true.",
+   "classes": [
+    "DamageComponent",
+    "ArchonHittableComponent",
+    "ArchonDamageTakerInterface"
+   ],
+   "source": "capstone disassembly of the 2.1.1 client (ProcessHits 0x26FC840, sort 0x26F5A00, TryDoDamage 0x2719190, InternalTryDoDamage 0x270E9A0, RespondToHit 0x26FBCB0, ApplyEffectToTarget 0x26FC250, TryHit 0x2724140); topics/behemoth_design.md section 5",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "dodge-tag",
+   "fact": "The dodge tag checked during a damage window's DodgeDetectPreDamageWindow is State.InvulnerableDodge (native tag table 0x8890A10 + 0x240). A target with it is added to the hit map without damage; no hit is accepted during that time either way.",
+   "classes": [
+    "DamageComponent",
+    "DamageNotifyState"
+   ],
+   "source": "capstone disassembly of the 2.1.1 client (AcceptHit 0x2724400, tag table init 0x2601EF9-0x2601F34)",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "behemoth-sweep-channels",
+   "fact": "Bp_Behemoth DamageComponent.ObjectTypes = ObjectTypeQuery3 (Pawn) and ObjectTypeQuery7 = ECC_GameTraceChannel1 \"Player\" (first custom object channel in DefaultEngine.ini). BP_PlayerCharacter's PlayerCollision capsule has object type ECC_GameTraceChannel1.",
+   "classes": [
+    "Bp_Behemoth_C",
+    "DamageComponent",
+    "BP_PlayerCharacter_C"
+   ],
+   "source": "DefaultEngine.ini [/Script/Engine.CollisionProfile] from archonkit's extract of the 2.1.1 paks (D:/Dauntless_Revival/archonkit-extracted/archonkit-toolkit/extracted/Config); BP_PlayerCharacter cooked package",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "damage-window-overrides",
+   "fact": "Across all 1,133 behemoth damage windows (1,579 montages): 100 set bExcludedHitActorsForDurationOfMontage false (hit once per window), 2 set MultipleHitLockoutPerTarget 0.5 (aq/shadowcat), 4 set DodgeDetectPreDamageWindow (aq/amber 0.05, tp/host 0.1), 6 use SkelPhysicsBodies (ap/crudge); none set LastChancePhysicsBody, DamageKeysAfterFirstHitPerTarget, UseCurrentWeapon or bUsePreAttackRaycastTest. PhysicsBodies and SkelPhysicsBodies are merged natively.",
+   "classes": [
+    "DamageNotifyState",
+    "archon_damage_window_C"
+   ],
+   "source": "python -m tools.atlas damage-windows (data/atlas/damage_windows.json); NotifyBegin 0x2742C00",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "spawned-damage-row-lookup",
+   "fact": "Area effects (aoe_base_bp, row from the notify's OverrideDamageRowName or the class DamageRow) and projectiles (projectile_base_bp.CalculateDamageRow, DamageKey) get their damage row from the instigating behemoth through damage_interface.GetDamageRow -> Bp_Behemoth.DamageTableLookup: GetDamageInfo (the behemoth's own table) first, then DamageTable_Generic. If neither has the row the projectile gets an empty row with DamageScale 0 (Succeeded false) and the AoE logs \"Damage row ... not found!\". behemoths.txt lists 23 roster rows whose attacks name such rows (e.g. beaver_frost BellyDive/IceSpike rows, bugbear Flashbang, crowbear/randall umbral_toss, rock ShellSlam_AOE which only rock_ice_damage_table has).",
+   "classes": [
+    "aoe_base_bp_C",
+    "aoe_simple_C",
+    "projectile_base_bp_C",
+    "Bp_Behemoth_C",
+    "spawn_aoe_class_bpn_C"
+   ],
+   "source": "Blueprint bytecode (pseudo/aoe_base_bp_C.txt, aoe_simple_C.txt, projectile_base_bp_C.txt CalculateDamageRow, Bp_Behemoth_C.txt DamageTableLookup, spawn_aoe_class_bpn_C.txt); data/atlas/behemoths.txt. Effect in game not checked live.",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "frost-gnasher-missing-rows",
+   "fact": "beaver_frost (frost Gnasher; live content: gauntlet specs, escalation backup encounters, weekly bounties) inherits DamageComp.DamageTable = beaver_damage_table (the normal Gnasher's physical/terra table) from mcbeaver_archetype_bp, and nothing in the 2.1.1 client changes it. Its frost attacks name rows that are in no damage table in the game: BellyDive_Slam (window), BellyDive.Slam(.Aether), BellyDrift.Body/.Slam(.Aether), Somersault.Tail (window), Somersault.Slam(.Aether), IceSpike.Slam/SecondSlam(.Aether), IceToss.IceProjectile, plus ShoulderDrop(.Aether) and shoulderslam_body (in beaver_blaze / lavaroller / beaver_easy tables only). In BellyDive only the bite_lunge window (row present: 100 physical, 100 terra) can damage. Behemoth damage ran on the live dedicated server, whose data we do not have, so whether it had these rows is unknown.",
+   "classes": [
+    "mcbeaver_frost_bp_C",
+    "mcbeaver_archetype_bp_C",
+    "DamageComponent"
+   ],
+   "source": "data/atlas/behemoths/beaver_frost.txt, behemoths.txt; raw cooked mcbeaver_frost_bp (only beaver_frost_action_set_table referenced); all 981 exported tables searched; GetDamageInfo 0x2645100",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "behemoth-requirements-static",
+   "fact": "BehemothRequirements archetype and classification checks (Bp_Behemoth): an empty name passes; otherwise Require passes when the name equals ArchetypeName / ClassificationName (case-insensitive) and Exclude when it does not. Shared montages rely on this, e.g. Charrogg (sally) plays Quillshot-style tackle windows that require archetype Bullseye, so they never fire on it. The behemoth sheets evaluate these and mark the rest (state, intact part, function, blackboard, part states, tags) as depending on the fight.",
+   "classes": [
+    "Bp_Behemoth_C",
+    "archon_damage_window_C"
+   ],
+   "source": "pseudo/Bp_Behemoth_C.txt (requirement check, statements 597-1065); tools/atlas/behemoths.py _req_check",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "weapon-type-prefixes",
+   "fact": "The game names each weapon type by a prefix, matching the native enum EWeaponType: IHAMMER=1 (ih/ihammer, war hammer), GAXE=2 (ga/gaxe, axe), EBLADE=3 (eb/eblade, sword), CBLADES=4 (cb/cblades, chain blades), MSPEAR=5 (ms/mspear, war pike), DP=6 (dp, repeaters), AC=7 (ac/acasters/astrikers, aether strikers), BOW=8 (bow, unreleased). Part and power-table rows use EB, GA, IH, CB, MS, DP, AC; catalogs use weapon_<eblade|gaxe|ihammer|cblades|mspear|dp|ac|bow>_gameplay_catalog. Base weapon actors: BP_EB_Weapon, BP_Axe_Weapon, bp_ihammer_weapon, cblades_weapon_bp, bp_mspear_weapon, dp_weapon_bp, ac_weapon_bp, bow_weapon_bp (under base_ranged_weapon_bp), all under BP_BaseArchonWeapon.",
+   "classes": [
+    "BP_BaseArchonWeapon_C",
+    "BP_EB_Weapon_C",
+    "BP_Axe_Weapon_C",
+    "bp_ihammer_weapon_C",
+    "cblades_weapon_bp_C",
+    "bp_mspear_weapon_C",
+    "dp_weapon_bp_C",
+    "ac_weapon_bp_C",
+    "bow_weapon_bp_C"
+   ],
+   "source": "data/2.1.1/enums.json (EWeaponType); data/atlas/weapons.txt, weapons/<key>.txt",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "weapon-item-part-ability-chain",
+   "fact": "A weapon item is a row of its gameplay catalog (FPlayFabWeaponCatalogTableData): ItemClass = the skin actor, WeaponPartSlots = slot types with default part ids. Each part is a weapon_part_catalog row (PART_<CODE>_*; WeaponPartType Weapon_Part_<CODE>_Special/Passive/Legendary, or Barrel/Grip/Receiver/Mod/Prism for repeaters) naming a PartComponent class, Abilities and Buffs (sword passives are buffs on weapon_part_base_bpc). weapon_power_table rows (WP_<CODE>_<item>) carry power, element, RefAbilities and RefSpecialAbilities1-5 (e.g. the sword element abilities eb_q_projectile_*_ab, eb_*_cone_ab) and the type settings (EBlade_*, Axe_*, IHammer_*, CBlade_*, MSpear_*).",
+   "classes": [
+    "weapon_part_base_bpc_C",
+    "legendary_weapon_part_base_bpc_C",
+    "ArchonEquipmentPart"
+   ],
+   "source": "weapon_<x>_gameplay_catalog, weapon_part_catalog, weapon_power_table assets; weapons/<key>.txt",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "weapon-damage-key-level-suffix",
+   "fact": "Notify_WeaponChargeDamageState and Notify_MSComboLevelDamageState complete their damage keys at runtime: ModifyWeaponDamageKeys appends the current charge level (axe: GA.X1.LVL -> GA.X1.LVL0-4) or combo level (war pike: MS.X -> MS.X1-5) as a number. The montages name only the stem.",
+   "classes": [
+    "Notify_WeaponChargeDamageState_C",
+    "Notify_MSComboLevelDamageState_C"
+   ],
+   "source": "pseudo/Notify_WeaponChargeDamageState_C.txt and Notify_MSComboLevelDamageState_C.txt (ModifyWeaponDamageKeys: Conv_IntToString + BuildString_Name); DamageTable rows",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "sword-slicer-damage-key",
+   "fact": "The sword's ranged slicer (eb_rework_slicer_projectile_bp) defaults to DamageKey EBRework.Y4_RangedAttack, which no table has, but BP_EB_Weapon (FireSlicer) always sets DamageKey at spawn to EBRework.Y1_RangedAttack or EBRework.Y1_RangedAttack_Up, both in DamageTable.",
+   "classes": [
+    "BP_EB_Weapon_C",
+    "eb_rework_slicer_projectile_bp_C"
+   ],
+   "source": "pseudo/BP_EB_Weapon_C.txt statements 2461-2994",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "sword-two-montage-sets",
+   "fact": "The sword has two montage sets with the same names: Character/Player/Anims/EmberBlade/Rework (used by BP_EB_Weapon through eblade_rework_base_animstateset; rows EBRework.*) and the pre-rework set in Anims/EmberBlade (eblade_base_animstateset; rows EB.*), still used by eblade_crowbear_exotic_00_bp and eblade_radiant_01_bp. The atlas files the old copies as <name>~EmberBlade.",
+   "classes": [
+    "BP_EB_Weapon_C",
+    "eblade_crowbear_exotic_00_bp_C",
+    "eblade_radiant_01_bp_C"
+   ],
+   "source": "index_assets.json used_by of eblade_base_animstateset / eblade_rework_base_animstateset; weapons/sword.txt",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "set-bonus-rows-with-effects",
+   "fact": "gear_set_bonus_table has 27 sets; only five tiers grant anything: BUGBEAR 2 (sb_bugbear_2_revive_orb_buff), CROWBEAR 2 (sb_crowbear_2_cheat_death_buff), ELECTROQUILL 4 (sb_electroquill_4_pylon_infinite_range_ge), FULGAR 4 (sb_fulgar_4_full_health_damage_buff), SNOWFLAKE 4 (sb_snowflake_4_dodge_clear_buff). The other tiers are placeholders with no effects; BEGINNER has no tiers.",
+   "classes": [
+    "GearSetBonusComponent"
+   ],
+   "source": "assets/gear_set_bonus_table.json; weapons/armor.txt",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "cell-stop-row-by-rank",
+   "fact": "cell_dodge_stagger_aoe defaults to damage row Cell.Stop (in no table); its own code sets 'Damage Row Name' to Cell.Stop1-6 before ApplyAoEDamage, and those rows are in DamageTable.",
+   "classes": [
+    "cell_dodge_stagger_aoe_C",
+    "cell_dodge_stagger_buff_C"
+   ],
+   "source": "pseudo/cell_dodge_stagger_aoe_C.txt",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "area-rows-not-in-tables",
+   "fact": "Rows the 2.1.1 item, reward and island tables name that exist in no dumped table (the full lists are at the end of items.txt, rewards.txt and islands.txt): behemoth_metadata_table rows beaver_beta, bullseye_beta, fulgar_beta, host_beta and lerawr_terramane (named by hunt behemoth lists/choosers); player_hunts_table rows such as ShatteredIsles_IslandA-E and CR19_PlayerHunt_* (25, named by player journey/progression rows); 41 player_journey_table nodes; lantern cell effects CELL_EFFECT_LT_ACTIVE_* (6) and obsolete_cell_catalog[CELL_LT_ACTIVE_PING_C]; weapon_talent_catalog[WTP_EBLADE_TALENT1/2]; crafting_unlock_criteria ISLAND_N/S/U. These are references to content removed before 2.1.1 or kept only on the live backend; the client data does not have them.",
+   "classes": [],
+   "source": "python -m tools.atlas areas (data/atlas/areas.json unresolved lists)",
+   "date": "2026-10-28"
+  }
+ ]
+}

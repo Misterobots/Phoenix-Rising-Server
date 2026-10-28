@@ -1,0 +1,2755 @@
+{
+ "name": "shadowcat_nemesis_bt",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/shadowcat_nemesis_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "BP_PatrolCenterPoint_C",
+  "EQS_NextPointAroundTargetPoint",
+  "b_leRawr_state_aether_exit_mot",
+  "b_leRawr_state_rage_exit_mot",
+  "b_shadowcat_fall_into_portal_mot",
+  "eqs_get_some_space_reposition",
+  "eqs_live_player_prioritize_clumped_up",
+  "eqs_passive_patrol_pt",
+  "eqs_point_near_nextpatrolpoint",
+  "eqs_shadowcat_portal_entry_setup",
+  "eqs_shadowcat_rage_portal",
+  "lerawr_deaggro_bt",
+  "next_patrolpoint_eqs",
+  "shadowcat_backup_if_close_bt",
+  "shadowcat_bb",
+  "shadowcat_enter_arena_portal_bt",
+  "shadowcat_enter_combat_pounce_bt",
+  "shadowcat_exit_portal_if_not_visible",
+  "shadowcat_flee_mot",
+  "shadowcat_ground_dive",
+  "shadowcat_ground_dive_atk_C",
+  "shadowcat_infinitycharge_attackexit_mot",
+  "shadowcat_infinitycharge_attackexit_repeating",
+  "shadowcat_infinitycharge_enter_mot",
+  "shadowcat_infinitycharge_loop_mot",
+  "shadowcat_portal_attack",
+  "shadowcat_portal_enter",
+  "shadowcat_portal_exit",
+  "shadowcat_portal_patternaim_2s_C",
+  "shadowcat_portal_pounce_atk_C",
+  "shadowcat_try_enter_aether",
+  "shared_combat_reposition_bt",
+  "shared_death_bt",
+  "shared_flee_despawn_bt",
+  "shared_flee_prep_bt",
+  "shared_generic_ai_coordination_bt",
+  "shared_handle_stagger_bt",
+  "shared_manage_target_lost_bt",
+  "shared_patrol_bt",
+  "sub_flee_arrive",
+  "sub_puppetmode_bt"
+ ],
+ "exports": {
+  "shadowcat_nemesis_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_46",
+    "BlackboardAsset": "BlackboardData shadowcat_bb"
+   }
+  },
+  "behemoth_in_state_btdeco_C_10": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "NodeName": "In Combat",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "behemoth_in_state_btdeco_C_14": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::AtherCharged",
+    "NodeName": "Aether Charged",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "behemoth_in_state_btdeco_C_22": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::ReadyToEnterFinalForm",
+    "NodeName": "Ready to Enter Final Form",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "behemoth_in_state_btdeco_C_25": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::CustomState",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_20"
+   }
+  },
+  "behemoth_in_state_btdeco_C_26": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::ReadyToEnterFinalForm",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "NodeName": "Not ready to enter final form",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "behemoth_in_state_btdeco_C_35": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "NodeName": "Is In Combat",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "behemoth_specific_function_bts_C_0": {
+   "type": "behemoth_specific_function_bts_C",
+   "props": {
+    "LeaveFunction": "CleanupInfinityCharge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "behemoth_specific_function_bts_C_1": {
+   "type": "behemoth_specific_function_bts_C",
+   "props": {
+    "LeaveFunction": "CleanupThunderdome",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "blackboard_math_bttask_C_0": {
+   "type": "blackboard_math_bttask_C",
+   "props": {
+    "LeftSideKey": "bb.NumSpecialAttacksRemaining",
+    "Type": "blackboard_comparable_key_type::Int",
+    "Operator": "blackboard_math_operators::-",
+    "RightSideData": {
+     "ConstantInt": 1
+    },
+    "ResultKeyName": "NumSpecialAttacksRemaining",
+    "bShowPropertyDetails": false,
+    "NodeName": "NumSpecialAttacksRemaining--",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "blackboard_math_bttask_C_1": {
+   "type": "blackboard_math_bttask_C",
+   "props": {
+    "LeftSideKey": "bb.TempInt",
+    "Type": "blackboard_comparable_key_type::Int",
+    "Operator": "blackboard_math_operators::-",
+    "RightSideData": {
+     "ConstantInt": 1
+    },
+    "ResultKeyName": "TempInt",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempInt--",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_11"
+   }
+  },
+  "blackboard_math_bttask_C_2": {
+   "type": "blackboard_math_bttask_C",
+   "props": {
+    "LeftSideKey": "bb.TempInt",
+    "Type": "blackboard_comparable_key_type::Float",
+    "Operator": "blackboard_math_operators::/",
+    "RightSideData": {
+     "ConstantFloat": 2.0
+    },
+    "ResultKeyName": "TempInt",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempInt /= 2",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_31"
+   }
+  },
+  "blackboard_math_bttask_C_3": {
+   "type": "blackboard_math_bttask_C",
+   "props": {
+    "LeftSideKey": "bb.TempInt",
+    "Type": "blackboard_comparable_key_type::Int",
+    "RightSideData": {
+     "ConstantInt": 3
+    },
+    "ResultKeyName": "TempInt",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempInt += 3",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_31"
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_3",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_24"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_3",
+      "ChildTask": null,
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_22",
+       "@behemoth_in_state_btdeco_C_14",
+       "@multi_behemoth_active_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_10",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_322"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Selector_12": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_23",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_11"
+   }
+  },
+  "BTComposite_Selector_13": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_33",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTComposite_Selector_15": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_7",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_11"
+   }
+  },
+  "BTComposite_Selector_17": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_37",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_36",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Selector_18": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_17",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_36"
+   }
+  },
+  "BTComposite_Selector_2": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_13",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@try_pick_new_target_bts_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Selector_3": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_16",
+      "ChildTask": null,
+      "Decorators": [
+       "@set_state_btdeco_C_11"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Selector_4": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_19",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_26",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_4"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_5"
+   }
+  },
+  "BTComposite_Selector_46": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_29",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_9",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_22",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_10",
+       "@behemoth_in_state_btdeco_C_26"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_35",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDeco_MemberOfClassIsPresent_C_2",
+       "@BTDecorator_Blackboard_18",
+       "@check_nemesis_decorator_C_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_15",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_50",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_17",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_10"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_30",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@BTService_UpdateDirections_C_5",
+     "@distance_from_target_service_C_0",
+     "@calc_knowntargetavgpos_btservice_C_0",
+     "@try_pick_new_target_bts_C_0",
+     "@evaluate_action_btservice_C_0"
+    ],
+    "NodeName": "RealRoot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt"
+   }
+  },
+  "BTComposite_Selector_5": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_4",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_17",
+       "@set_state_btdeco_C_16"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "BTComposite_Selector_50": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_24",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_exit_aethercharge_state_C_0",
+      "Decorators": [
+       "@BTDecorator_Blackboard_99"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_exit_rage_state_C_3",
+      "Decorators": [
+       "@BTDecorator_Blackboard_102"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_13",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_6",
+       "@behemoth_in_state_btdeco_C_35"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "StateChange",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Selector_57": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_6",
+      "Decorators": [
+       "@BTDeco_CheckChosenAction_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_1",
+      "Decorators": [
+       "@BTDeco_CheckChosenAction_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_PerformActionClass_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "StateGate",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_10"
+   }
+  },
+  "BTComposite_Selector_7": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_2",
+      "Decorators": [
+       "@BTDecorator_Blackboard_15"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_action_bbvar_from_behemoth_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTComposite_Selector_8": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_3",
+      "Decorators": [
+       "@BTDecorator_Blackboard_12"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_action_bbvar_from_behemoth_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTComposite_Sequence_10": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_57",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_11": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@blackboard_math_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_15",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_12",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_11"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@debug_arrow_btservice_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_9"
+   }
+  },
+  "BTComposite_Sequence_13": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_18",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_10",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTComposite_Sequence_14": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_25",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_19"
+   }
+  },
+  "BTComposite_Sequence_15": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_1",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_15"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_17",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_8",
+       "@BTDecorator_Blackboard_9"
+      ],
+      "DecoratorOps": [
+       {
+        "Operation": "EBTDecoratorLogic::Or",
+        "Number": 2
+       },
+       {
+        "Operation": "EBTDecoratorLogic::Test",
+        "Number": 0
+       },
+       {
+        "Operation": "EBTDecoratorLogic::Test",
+        "Number": 1
+       }
+      ]
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "BTComposite_Sequence_16": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_15",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_6"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_5",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_8"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@blackboard_math_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_3"
+   }
+  },
+  "BTComposite_Sequence_17": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@call_specific_behemoth_function_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_random_blackboard_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_15"
+   }
+  },
+  "BTComposite_Sequence_19": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_8",
+      "ChildTask": null,
+      "Decorators": [
+       "@set_blackboard_while_active_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_14",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_9"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_4"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_8",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_current_location_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_random_blackboard_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@predict_future_location_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@spawn_gameplay_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@call_specific_behemoth_function_bttask_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_WaitBlackboardTime_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_15"
+   }
+  },
+  "BTComposite_Sequence_20": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_21",
+      "ChildTask": null,
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_25"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTComposite_Sequence_21": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_28",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_20"
+   }
+  },
+  "BTComposite_Sequence_22": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_0",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_7"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Sequence_23": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_5",
+      "Decorators": [
+       "@Compare_btdeco_C_2"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_12"
+   }
+  },
+  "BTComposite_Sequence_24": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_100",
+       "@set_state_btdeco_C_32"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTComposite_Sequence_29": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_27",
+      "Decorators": [
+       "@btdeco_percentchance_C_1"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "BTComposite_Sequence_3": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_enter_rage_state_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@call_specific_behemoth_function_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@call_specific_behemoth_function_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_31",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@behemoth_specific_function_bts_C_0",
+     "@debug_print_bts_C_0"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Sequence_31": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_num_monsterparts_in_bbvar_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@blackboard_math_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@blackboard_math_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_9",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_5"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTComposite_Sequence_33": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_8",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_8",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_13"
+   }
+  },
+  "BTComposite_Sequence_35": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_13",
+      "ChildTask": null,
+      "Decorators": [
+       "@set_state_btdeco_C_14"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_12",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_36",
+      "ChildTask": null,
+      "Decorators": [
+       "@set_state_btdeco_C_9"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_23",
+      "Decorators": [
+       "@set_state_btdeco_C_19"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_16",
+      "Decorators": [
+       "@set_behemoth_loco_mode_btdeco_C_4"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_3"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTComposite_Sequence_36": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_14",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_18",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTComposite_Sequence_4": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@call_specific_behemoth_function_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_7",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@execute_pattern_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@execute_pattern_bttask_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_20",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_4"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_8",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@execute_pattern_bttask_C_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@execute_pattern_bttask_C_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@set_music_override_bts_C_0"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "BTComposite_Sequence_7": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_21",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_15"
+   }
+  },
+  "BTComposite_Sequence_8": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_stop_executing_pattern_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_29",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_12"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_4",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@behemoth_specific_function_bts_C_1",
+     "@debug_arrow_btservice_C_0"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_19"
+   }
+  },
+  "BTComposite_Sequence_9": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_11",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ConditionalLoop_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_31"
+   }
+  },
+  "BTDeco_CheckChosenAction_C_0": {
+   "type": "BTDeco_CheckChosenAction_C",
+   "props": {
+    "ActionClass": "BlueprintGeneratedClass shadowcat_ground_dive_atk_C",
+    "bShowPropertyDetails": false,
+    "NodeName": "GroundDive",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_57"
+   }
+  },
+  "BTDeco_CheckChosenAction_C_1": {
+   "type": "BTDeco_CheckChosenAction_C",
+   "props": {
+    "ActionClass": "BlueprintGeneratedClass shadowcat_portal_pounce_atk_C",
+    "bShowPropertyDetails": false,
+    "NodeName": "PortalPounce",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_57"
+   }
+  },
+  "BTDeco_MemberOfClassIsPresent_C_2": {
+   "type": "BTDeco_MemberOfClassIsPresent_C",
+   "props": {
+    "ClassToTest": "BlueprintGeneratedClass BP_PatrolCenterPoint_C",
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "btdeco_percentchance_C_1": {
+   "type": "btdeco_percentchance_C",
+   "props": {
+    "PercentChance": 0.5,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_29"
+   }
+  },
+  "BTDecorator_Blackboard_10": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ForceAction is Is Set",
+    "BlackboardKey": "bb.ForceAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTDecorator_Blackboard_100": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyForRageState is Is Set",
+    "BlackboardKey": "bb.ReadyForRageState",
+    "NodeName": "Ready For Rage",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_24"
+   }
+  },
+  "BTDecorator_Blackboard_102": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToExitRageState is Is Set",
+    "BlackboardKey": "bb.ReadyToExitRageState",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_11": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "TempBool is Is Not Set",
+    "OperationType": 1,
+    "BlackboardKey": "bb.TempBool",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_11"
+   }
+  },
+  "BTDecorator_Blackboard_12": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ForceAction is Is Set",
+    "BlackboardKey": "bb.ForceAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_8"
+   }
+  },
+  "BTDecorator_Blackboard_15": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ForceAction is Is Set",
+    "BlackboardKey": "bb.ForceAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_7"
+   }
+  },
+  "BTDecorator_Blackboard_17": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "IntValue": 1,
+    "StringValue": "shadowcat_special_attack_type::PortalThunderDome",
+    "CachedDescription": "CurrentSpecialAttack Is Equal To PortalThunderDome",
+    "BlackboardKey": "bb.CurrentSpecialAttack",
+    "NodeName": "In the Thunderdome?",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_5"
+   }
+  },
+  "BTDecorator_Blackboard_18": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "InFleeState is Is Set",
+    "BlackboardKey": "bb.InFleeState",
+    "NodeName": "Flee State?",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTDecorator_Blackboard_322": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "TopScore Is Greater Than 0.000000",
+    "OperationType": 4,
+    "BlackboardKey": "bb.TopScore",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_Blackboard_6": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToEnterAetherCharge is Is Set",
+    "BlackboardKey": "bb.ReadyToEnterAetherCharge",
+    "NodeName": "Ready To Enter Aether Charge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_Blackboard_8": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "StringValue": "shadowcat_special_attack_type::None",
+    "CachedDescription": "CurrentSpecialAttack Is Equal To None",
+    "BlackboardKey": "bb.CurrentSpecialAttack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_15"
+   }
+  },
+  "BTDecorator_Blackboard_9": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "NumSpecialAttacksRemaining Is Less Than Or Equal To 0",
+    "OperationType": 3,
+    "BlackboardKey": "bb.NumSpecialAttacksRemaining",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_15"
+   }
+  },
+  "BTDecorator_Blackboard_99": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToExitAetherCharge is Is Set",
+    "BlackboardKey": "bb.ReadyToExitAetherCharge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTDecorator_ConditionalLoop_0": {
+   "type": "BTDecorator_ConditionalLoop",
+   "props": {
+    "CachedDescription": "TempBool is Is Not Set",
+    "OperationType": 1,
+    "BlackboardKey": "bb.TempBool",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_9"
+   }
+  },
+  "BTDecorator_ForceSuccess_12": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "BTDecorator_ForceSuccess_15": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_15"
+   }
+  },
+  "BTDecorator_ForceSuccess_4": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTDecorator_ForceSuccess_6": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "BTDecorator_ForceSuccess_7": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_22"
+   }
+  },
+  "BTDecorator_ForceSuccess_8": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "BTDecorator_ForceSuccess_9": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_19"
+   }
+  },
+  "BTService_UpdateDirections_C_5": {
+   "type": "BTService_UpdateDirections_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_shadowcat_fall_into_portal_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "BTTask_BehemothAction_C_2": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage shadowcat_infinitycharge_loop_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTTask_BehemothAction_C_3": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage shadowcat_infinitycharge_attackexit_repeating",
+    "NodeName": "Normal Speed Spin Attack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_12"
+   }
+  },
+  "BTTask_BehemothAction_C_4": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage shadowcat_infinitycharge_attackexit_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_23"
+   }
+  },
+  "BTTask_BehemothAction_C_5": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage shadowcat_flee_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTTask_BehemothAction_C_8": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_shadowcat_fall_into_portal_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "bttask_enter_rage_state_C_1": {
+   "type": "bttask_enter_rage_state_C",
+   "props": {
+    "Montage": "AnimMontage shadowcat_infinitycharge_enter_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "bttask_exit_aethercharge_state_C_0": {
+   "type": "bttask_exit_aethercharge_state_C",
+   "props": {
+    "Montage": "AnimMontage b_leRawr_state_aether_exit_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "bttask_exit_rage_state_C_3": {
+   "type": "bttask_exit_rage_state_C",
+   "props": {
+    "Montage": "AnimMontage b_leRawr_state_rage_exit_mot",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_50"
+   }
+  },
+  "BTTask_PerformActionClass_C_0": {
+   "type": "BTTask_PerformActionClass_C",
+   "props": {
+    "ActionBlackboardKeyName": "ChosenAttack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_57"
+   }
+  },
+  "BTTask_RunBehavior_0": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_handle_stagger_bt",
+    "NodeName": "Shared Stagger Behavior",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunBehavior_1": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_attack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_57"
+   }
+  },
+  "BTTask_RunBehavior_10": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_attack",
+    "NodeName": "Portal Attack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_13"
+   }
+  },
+  "BTTask_RunBehavior_12": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_flee_prep_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTTask_RunBehavior_13": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_patrol_bt",
+    "NodeName": "Patrol",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTTask_RunBehavior_14": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_enter",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_36"
+   }
+  },
+  "BTTask_RunBehavior_15": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree lerawr_deaggro_bt",
+    "NodeName": "Deaggro",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunBehavior_16": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree sub_flee_arrive",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTTask_RunBehavior_17": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_flee_despawn_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_18"
+   }
+  },
+  "BTTask_RunBehavior_18": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_try_enter_aether",
+    "NodeName": "Try Aether Charge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_13"
+   }
+  },
+  "BTTask_RunBehavior_2": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_generic_ai_coordination_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_17"
+   }
+  },
+  "BTTask_RunBehavior_21": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_exit_portal_if_not_visible",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_7"
+   }
+  },
+  "BTTask_RunBehavior_23": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_exit",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTTask_RunBehavior_25": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_exit_portal_if_not_visible",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_14"
+   }
+  },
+  "BTTask_RunBehavior_26": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_exit_portal_if_not_visible",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_4"
+   }
+  },
+  "BTTask_RunBehavior_27": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_backup_if_close_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_29"
+   }
+  },
+  "BTTask_RunBehavior_28": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_portal_enter",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_21"
+   }
+  },
+  "BTTask_RunBehavior_29": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_enter_arena_portal_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunBehavior_3": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_exit_portal_if_not_visible",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "BTTask_RunBehavior_30": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_combat_reposition_bt",
+    "Services": [
+     "@evaluate_action_btservice_C_1"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunBehavior_36": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_manage_target_lost_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_17"
+   }
+  },
+  "BTTask_RunBehavior_37": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_enter_combat_pounce_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_17"
+   }
+  },
+  "BTTask_RunBehavior_4": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_exit_portal_if_not_visible",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_RunBehavior_5": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_death_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunBehavior_6": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shadowcat_ground_dive",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_57"
+   }
+  },
+  "BTTask_RunBehavior_9": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree sub_puppetmode_bt",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint",
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery next_patrolpoint_eqs"
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "NodeName": "Find Patrol point",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_18"
+   }
+  },
+  "BTTask_RunEQSQuery_1": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_get_some_space_reposition",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1000.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 2000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "BTTask_RunEQSQuery_3": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_live_player_prioritize_clumped_up",
+     "QueryConfig": [
+      {
+       "ParamName": "Distance.FloatValueMin",
+       "ParamType": "EAIParamType::Float",
+       "Value": 0.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Distance.FloatValueMax",
+       "ParamType": "EAIParamType::Float",
+       "Value": 15000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTTask_RunEQSQuery_4": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint",
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "NodeName": "Find Patrol point",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "BTTask_RunEQSQuery_5": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_shadowcat_rage_portal",
+     "QueryConfig": [
+      {
+       "ParamName": "OnCircle.CircleRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 2000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTTask_RunEQSQuery_7": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_shadowcat_portal_entry_setup",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1000.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1500.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_13"
+   }
+  },
+  "BTTask_RunEQSQuery_8": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_passive_patrol_pt",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 800.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1500.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "BTTask_Wait_4": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 2.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTTask_Wait_5": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 4.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTTask_Wait_6": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 2.5,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTTask_Wait_7": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "BTTask_Wait_8": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.2,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTTask_WaitBlackboardTime_0": {
+   "type": "BTTask_WaitBlackboardTime",
+   "props": {
+    "BlackboardKey": "bb.NextTelegraphTime",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "calc_knowntargetavgpos_btservice_C_0": {
+   "type": "calc_knowntargetavgpos_btservice_C",
+   "props": {
+    "Interval": 2.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "call_specific_behemoth_function_bttask_C_0": {
+   "type": "call_specific_behemoth_function_bttask_C",
+   "props": {
+    "SpecificFunction": "SetCurrentSpecialAttack",
+    "bShowPropertyDetails": false,
+    "NodeName": "Set CurrentSpecialAttack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_17"
+   }
+  },
+  "call_specific_behemoth_function_bttask_C_1": {
+   "type": "call_specific_behemoth_function_bttask_C",
+   "props": {
+    "SpecificFunction": "SetupPortalThunderdome",
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "call_specific_behemoth_function_bttask_C_2": {
+   "type": "call_specific_behemoth_function_bttask_C",
+   "props": {
+    "SpecificFunction": "SetupInfinityCharge",
+    "bShowPropertyDetails": false,
+    "NodeName": "SetupInfinityCharge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "call_specific_behemoth_function_bttask_C_3": {
+   "type": "call_specific_behemoth_function_bttask_C",
+   "props": {
+    "SpecificFunction": "CleanupInfinityCharge",
+    "bShowPropertyDetails": false,
+    "NodeName": "CleanupInfinityCharge",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "call_specific_behemoth_function_bttask_C_4": {
+   "type": "call_specific_behemoth_function_bttask_C",
+   "props": {
+    "SpecificFunction": "TelegraphLatestPortal",
+    "bShowPropertyDetails": false,
+    "NodeName": "TelegraphLatestPortal",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "check_nemesis_decorator_C_3": {
+   "type": "check_nemesis_decorator_C",
+   "props": {
+    "bInverseCondition": true,
+    "NodeName": "Not Nemesis?",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "Compare_btdeco_C_2": {
+   "type": "Compare_btdeco_C",
+   "props": {
+    "LeftSideKey": "bb.TempInt",
+    "CompareOperator": "Enum_CompareOperators::<=",
+    "CompareType": "blackboard_comparable_key_type::Int",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempInt <= 0",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_23"
+   }
+  },
+  "debug_arrow_btservice_C_0": {
+   "type": "debug_arrow_btservice_C",
+   "props": {
+    "ArrowStartKey": "PlayerThunderdomeSpawnCenter",
+    "ArrowEndKey": "PatternAimLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  },
+  "debug_arrow_btservice_C_1": {
+   "type": "debug_arrow_btservice_C",
+   "props": {
+    "ArrowEndKey": "TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_11"
+   }
+  },
+  "debug_print_bts_C_0": {
+   "type": "debug_print_bts_C",
+   "props": {
+    "KeyToDisplay": "TempInt",
+    "Type": "blackboard_comparable_key_type::Int",
+    "Enabled": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "distance_from_target_service_C_0": {
+   "type": "distance_from_target_service_C",
+   "props": {
+    "Distance_key": "bb.TargetActor",
+    "Target_key": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "evaluate_action_btservice_C_0": {
+   "type": "evaluate_action_btservice_C",
+   "props": {
+    "AttackTargetKey": "bb.AttackTarget",
+    "TopScoreKey": "bb.TopScore",
+    "ChosenActionKey": "bb.ChosenAttack",
+    "EvaluateOnlyOnSearchStart": true,
+    "Interval": 0.25,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "evaluate_action_btservice_C_1": {
+   "type": "evaluate_action_btservice_C",
+   "props": {
+    "AttackTargetKey": "bb.AttackTarget",
+    "TopScoreKey": "bb.TopScore",
+    "ChosenActionKey": "bb.ChosenAttack",
+    "Interval": 0.2,
+    "bCallTickOnSearchStart": true,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "execute_pattern_bttask_C_1": {
+   "type": "execute_pattern_bttask_C",
+   "props": {
+    "ActionBlackboardKey": "CurrentAction",
+    "PatternExecutionType": "pattern_execution_type::PlayOnlySelectedIndex",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "execute_pattern_bttask_C_4": {
+   "type": "execute_pattern_bttask_C",
+   "props": {
+    "PatternStartIndex": 1,
+    "ActionBlackboardKey": "CurrentAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "execute_pattern_bttask_C_5": {
+   "type": "execute_pattern_bttask_C",
+   "props": {
+    "ActionBlackboardKey": "CurrentAction",
+    "PatternExecutionType": "pattern_execution_type::PlayOnlySelectedIndex",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "execute_pattern_bttask_C_6": {
+   "type": "execute_pattern_bttask_C",
+   "props": {
+    "PatternStartIndex": 1,
+    "ActionBlackboardKey": "CurrentAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "hide_behemoth_bttask_C_1": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "HideOnStart": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "hide_behemoth_bttask_C_3": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "HideOnStart": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "hide_behemoth_bttask_C_4": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "HideOnStart": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_4"
+   }
+  },
+  "hide_behemoth_bttask_C_5": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "ShowOnDeactivate": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_31"
+   }
+  },
+  "multi_behemoth_active_btdeco_C_0": {
+   "type": "multi_behemoth_active_btdeco_C",
+   "props": {
+    "bInverseCondition": true,
+    "NodeName": "Only One Behemoth",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "predict_future_location_bttask_C_2": {
+   "type": "predict_future_location_bttask_C",
+   "props": {
+    "TargetKey": "bb.TargetActor",
+    "TimeInFuture": -1.0,
+    "TimeInFutureKey": "NextTelegraphTime",
+    "ResultKeyName": "PatternAimLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "set_action_bbvar_from_behemoth_C_1": {
+   "type": "set_action_bbvar_from_behemoth_C",
+   "props": {
+    "ResultBBKey": "CurrentAction",
+    "PickAnyAvailableActionWithTags": [
+     "BehemothAction.PatternAction"
+    ],
+    "ExcludeActionsWithAnyTags": [
+     "BehemothAction.Pattern.Unique"
+    ],
+    "MinBaseValue": 0.0,
+    "bShowPropertyDetails": false,
+    "NodeName": "Pick a random available pattern",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_7"
+   }
+  },
+  "set_action_bbvar_from_behemoth_C_3": {
+   "type": "set_action_bbvar_from_behemoth_C",
+   "props": {
+    "ResultBBKey": "CurrentAction",
+    "PickAnyAvailableActionWithTags": [
+     "BehemothAction.PatternAction"
+    ],
+    "ExcludeActionsWithAnyTags": [
+     "BehemothAction.Pattern.Unique"
+    ],
+    "ExcludeActionBBKey": "LastPatternAction",
+    "bShowPropertyDetails": false,
+    "NodeName": "Pick a random available pattern, not LastPatternAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_8"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_4": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Walk",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "set_blackboard_key_bttask_C_0": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.CurrentAction",
+    "DataType": "blackboard_comparable_key_type::Object",
+    "SourceData": {
+     "BlackboardKeyName": "ChosenAttack"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "CurrentAction = ChosenAttack",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_10"
+   }
+  },
+  "set_blackboard_key_bttask_C_1": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.LastPatternAction",
+    "DataType": "blackboard_comparable_key_type::Object",
+    "SourceData": {
+     "BlackboardKeyName": "CurrentAction"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "LastPatternAction = CurrentAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "set_blackboard_key_bttask_C_2": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.CurrentAction",
+    "DataType": "blackboard_comparable_key_type::Object",
+    "SourceData": {
+     "BlackboardKeyName": "ForceAction"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "CurrentAction = ForceAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_7"
+   }
+  },
+  "set_blackboard_key_bttask_C_3": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.CurrentAction",
+    "DataType": "blackboard_comparable_key_type::Object",
+    "SourceData": {
+     "BlackboardKeyName": "ForceAction"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "CurrentAction = ForceAction",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_8"
+   }
+  },
+  "set_blackboard_key_bttask_C_4": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.TempBool",
+    "DataType": "blackboard_comparable_key_type::Bool",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempBool = False",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_9"
+   }
+  },
+  "set_blackboard_key_bttask_C_5": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.TempBool",
+    "DataType": "blackboard_comparable_key_type::Bool",
+    "SourceData": {
+     "ConstantBool": true
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "TempBool = True",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_23"
+   }
+  },
+  "set_blackboard_key_bttask_C_7": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.TempBool",
+    "DataType": "blackboard_comparable_key_type::Bool",
+    "SourceData": {
+     "ConstantBool": true
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "TempBool = true",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_7"
+   }
+  },
+  "set_blackboard_while_active_btdeco_C_0": {
+   "type": "set_blackboard_while_active_btdeco_C",
+   "props": {
+    "BlackboardResultKeyName": "ExecutingPattern",
+    "ValueType": "blackboard_comparable_key_type::Bool",
+    "ValueToSetOnActivate": {
+     "ConstantBool": true
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Set ExecutingPattern While Active",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_19"
+   }
+  },
+  "set_music_override_bts_C_0": {
+   "type": "set_music_override_bts_C",
+   "props": {
+    "MusicOverrideName": "Special",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "set_random_blackboard_bttask_C_0": {
+   "type": "set_random_blackboard_bttask_C",
+   "props": {
+    "VariableType": "set_random_blackboard_type::Int",
+    "MinValue": 2.0,
+    "MaxValue": 4.0,
+    "BlackboardValue": "bb.NumSpecialAttacksRemaining",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_17"
+   }
+  },
+  "set_random_blackboard_bttask_C_1": {
+   "type": "set_random_blackboard_bttask_C",
+   "props": {
+    "MinValue": 0.5,
+    "BlackboardValue": "bb.NextTelegraphTime",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "set_state_btdeco_C_11": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::FinalForm",
+    "NodeName": "Is in Final Form?",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_3"
+   }
+  },
+  "set_state_btdeco_C_14": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::CustomState",
+    "ModifyStateOnActivate": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "set_state_btdeco_C_16": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::CustomState",
+    "ModifyStateOnActivate": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_5"
+   }
+  },
+  "set_state_btdeco_C_19": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Successfully Fled",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "set_state_btdeco_C_32": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::CustomState",
+    "ModifyStateOnActivate": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_24"
+   }
+  },
+  "set_state_btdeco_C_9": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::ActivelyFleeing",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_35"
+   }
+  },
+  "spawn_gameplay_bttask_C_1": {
+   "type": "spawn_gameplay_bttask_C",
+   "props": {
+    "GameplayData": {
+     "ManualTargetting": [
+      {
+       "X": 300.0,
+       "Y": 0.0,
+       "Z": 0.0
+      }
+     ],
+     "GameplayType": "eqs_gameplay_type::Actor",
+     "ActorInfo": {
+      "ActorClass": "BlueprintGeneratedClass shadowcat_portal_patternaim_2s_C",
+      "EQSGameplayData": {
+       "NumToSpawnPerTick": 1
+      },
+      "AlignWithGround": false
+     }
+    },
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "store_current_location_bttask_C_1": {
+   "type": "store_current_location_bttask_C",
+   "props": {
+    "ResultLocationKey": "PatternLocation",
+    "RelativeOffset": {
+     "X": 300.0,
+     "Y": 0.0,
+     "Z": 0.0
+    },
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "store_num_monsterparts_in_bbvar_C_0": {
+   "type": "store_num_monsterparts_in_bbvar_C",
+   "props": {
+    "OnlyThesePartTypes": [
+     "behemoth_part_type::Broken",
+     "behemoth_part_type::Scarred"
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_31"
+   }
+  },
+  "teleport_bttask_C_0": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "teleport_bttask_C_1": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PatternLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "teleport_bttask_C_4": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "teleport_bttask_C_6": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "PatternAimLocation",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "teleport_bttask_C_7": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "try_pick_new_target_bts_C_0": {
+   "type": "try_pick_new_target_bts_C",
+   "props": {
+    "OnSearchStart": true,
+    "OnTick": false,
+    "Interval": 2.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_46"
+   }
+  },
+  "try_pick_new_target_bts_C_1": {
+   "type": "try_pick_new_target_bts_C",
+   "props": {
+    "Interval": 2.0,
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_0": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::ReadyToEnterFinalForm",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_22"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_1": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::ReadyToEnterFinalForm",
+    "StateChangeType": "behemoth_state_event::End",
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_15"
+   }
+  },
+  "try_stop_executing_pattern_bttask_C_0": {
+   "type": "try_stop_executing_pattern_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_nemesis_bt",
+    "ParentNode": "@BTComposite_Sequence_8"
+   }
+  }
+ }
+}

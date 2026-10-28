@@ -1,0 +1,25 @@
+shared_deaggro_burrow_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if set_state_btdeco  (State=Deaggroing)]
+  [root if Blackboard  (ReadyToDeaggro is Is Set)]
+  Sequence "Deaggroing"
+    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_aetherconsume_position", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 300.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+    2) Selector
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.MoveDestination, MinDistance=2200, MaxDistance=99999)]
+      1) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination, BlendOutTime=0.25, MinAngleToTriggerPivot=45)
+        2) Sequence
+          {service hide_behemoth_bttask  (HideOnStart=false)}
+          1) generic_action_bttask  (ActionType=Burrow, RequireThatActionExists=true)
+          2) Wait  (WaitTime=3)
+          3) teleport_bttask  (FacingTargetKeyName=CurrentPatrolPoint)
+        3) generic_action_bttask  (ActionType=Unburrow)
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.MoveDestination, MinDistance=200, MaxDistance=99999)]
+      2) MoveTo  (AcceptableRadius=200, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+    [if ForceSuccess]
+    3) Sequence
+      [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Set)]
+      1) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.CurrentPatrolPoint, BlendOutTime=0.25, MinAngleToTriggerPivot=45)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_cleanup_bt)

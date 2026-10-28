@@ -1,0 +1,268 @@
+# hold_the_zone_area_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Auth Add Score
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @360
+  [35] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.ScoreFrozen)
+  [64] if !(CallFunc_Not_PreBool_ReturnValue) goto @360
+  [78] FlushNetDormancy()
+  [88] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.Score, ScoreToAdd)
+  [134] CallFunc_FMin_ReturnValue = FMin(self.HoldTheZoneSpecification.self.TotalPointsRequired, CallFunc_Add_DoubleDouble_ReturnValue)
+  [202] self.Score = CallFunc_FMin_ReturnValue
+  [229] MarkPropertyDirtyFromRepIndex(self, 14, 'Score')
+  [258] OnRep_Score()
+  [272] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(self.Score, self.HoldTheZoneSpecification.self.TotalPointsRequired)
+  [332] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @360
+  [346] AuthOnTargetScoreReached()
+  [360] return nothing
+  [362] end
+
+=== AuthOnFinishedCleanup__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== AuthOnSucceeded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== AuthOnTargetScoreReached
+  [0] AuthOnSucceeded__DelegateSignature(self)
+  [20] return nothing
+  [22] end
+
+=== AuthRemoveScore
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @250
+  [35] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.ScoreFrozen)
+  [64] if !(CallFunc_Not_PreBool_ReturnValue) goto @250
+  [78] FlushNetDormancy()
+  [88] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.Score, ScoreToRemove)
+  [134] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [180] self.Score = CallFunc_FMax_ReturnValue
+  [207] MarkPropertyDirtyFromRepIndex(self, 14, 'Score')
+  [236] OnRep_Score()
+  [250] return nothing
+  [252] end
+
+=== AuthStartCleanup
+  [0] frame.K2Node_CustomEvent_Result = Result
+  [18] ExecuteUbergraph_hold_the_zone_area_bp(2763)
+  [33] return nothing
+  [35] end
+
+=== AuthTickScore
+  [0] ExecuteUbergraph_hold_the_zone_area_bp(1921)
+  [15] return nothing
+  [17] end
+
+=== AuthUpdatePlayerCount
+  [0] ExecuteUbergraph_hold_the_zone_area_bp(1800)
+  [15] return nothing
+  [17] end
+
+=== CharactersInZoneChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ExecuteUbergraph_hold_the_zone_area_bp
+  [0] push @2807
+  [5] goto computed(EntryPoint)
+  [15] MarkPropertyDirtyFromRepIndex(self, 15, 'IsBeingHeld')
+  [44] OnRep_IsBeingHeld()
+  [58] if !(self.IsBeingHeld) pop
+  [68] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [97] self.LastStartedHoldingTimestamp = CallFunc_GetGameTimeInSeconds_ReturnValue
+  [124] pop
+  [125] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [146] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLocalArchonCharacter_ReturnValue)
+  [175] if !(CallFunc_IsValid_ReturnValue) pop
+  [185] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [206] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_GetLocalArchonCharacter_ReturnValue)
+  [242] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [271] CallFunc_K2_GetComponentLocation_ReturnValue = K2Node_DynamicCast_AsBP_Player_Character.self.FollowCamera.K2_GetComponentLocation()
+  [343] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.TextWidgetComponent.K2_GetComponentLocation()
+  [393] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetComponentLocation_ReturnValue_1, CallFunc_K2_GetComponentLocation_ReturnValue)
+  [439] CallFunc_RLerp_ReturnValue = RLerp(self.TextWidgetComponent.self.RelativeRotation, CallFunc_FindLookAtRotation_ReturnValue, 0.05, true)
+  [513] self.TextWidgetComponent.K2_SetRelativeRotation(CallFunc_RLerp_ReturnValue, false, CallFunc_K2_SetRelativeRotation_SweepHitResult, false)
+  [565] pop
+  [566] FlushNetDormancy()
+  [576] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [635] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(CallFunc_Array_Length_ReturnValue_2, self.HoldTheZoneSpecification.self.MinPlayersToCapture)
+  [695] self.IsBeingHeld = CallFunc_GreaterEqual_IntInt_ReturnValue_1
+  [714] goto @15
+  [719] Temp_int_Loop_Counter_Variable = 0
+  [742] Temp_int_Array_Index_Variable = 0
+  [765] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetLivePlayerCharacters_LiveCharacters)
+  [824] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [862] if !(CallFunc_Less_IntInt_ReturnValue) goto @1170
+  [876] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [903] push @1443
+  [908] Default__KismetArrayLibrary.Array_Get(CallFunc_GetLivePlayerCharacters_LiveCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [967] Default__archon_function_library_C.ActorsWithinDistanceFast(CallFunc_Array_Get_Item, self, self.Radius, self, CallFunc_ActorsWithinDistanceFast_IsWithinDistance)
+  [1032] if !(CallFunc_ActorsWithinDistanceFast_IsWithinDistance) pop
+  [1042] Default__KismetArrayLibrary.Array_Get(CallFunc_GetLivePlayerCharacters_LiveCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1101] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.CharactersInZone, CallFunc_Array_Get_Item)
+  [1169] pop
+  [1170] push @1517
+  [1175] push @1271
+  [1180] CallFunc_Array_Identical_ReturnValue = Default__KismetArrayLibrary.Array_Identical(self.L_PreviousCharacters, self.CharactersInZone)
+  [1240] if !(CallFunc_Array_Identical_ReturnValue) pop
+  [1250] CharactersInZoneChanged__DelegateSignature(self)
+  [1270] pop
+  [1271] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [1330] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(CallFunc_Array_Length_ReturnValue_2, self.HoldTheZoneSpecification.self.MinPlayersToCapture)
+  [1390] CallFunc_NotEqual_BoolBool_ReturnValue = NotEqual_BoolBool(CallFunc_GreaterEqual_IntInt_ReturnValue_1, self.IsBeingHeld)
+  [1428] if !(CallFunc_NotEqual_BoolBool_ReturnValue) pop
+  [1438] goto @566
+  [1443] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1485] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1512] goto @765
+  [1517] AuthTickScore()
+  [1531] pop
+  [1532] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1553] if !(CallFunc_IsServer_ReturnValue) pop
+  [1563] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthUpdatePlayerCount)
+  [1586] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.UpdateFrequency)
+  [1615] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [1672] pop
+  [1673] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1694] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @125
+  [1708] pop
+  [1709] ReceiveBeginPlay()
+  [1719] self.DynamicDecal.SetVisibility(self.ZoneActive, true)
+  [1761] self.TextWidgetComponent.SetVisibility(false, false)
+  [1795] goto @1532
+  [1800] self.L_PreviousCharacters = self.CharactersInZone
+  [1827] Default__KismetArrayLibrary.Array_Clear(self.CharactersInZone)
+  [1868] Default__archon_function_library_C.GetLivePlayerCharacters(self, false, self, CallFunc_GetLivePlayerCharacters_LiveCharacters)
+  [1916] goto @719
+  [1921] if !(self.ZoneActive) pop
+  [1931] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [1990] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Array_Length_ReturnValue_1, self.HoldTheZoneSpecification.self.MinPlayersToCapture)
+  [2050] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @2601
+  [2064] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [2123] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, self.HoldTheZoneSpecification.self.MinPlayersToCapture)
+  [2191] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(self.HoldTheZoneSpecification.self.MaxPlayersThatCanGainValue, self.HoldTheZoneSpecification.self.MinPlayersToCapture)
+  [2281] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [2327] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(CallFunc_Min_ReturnValue, self.HoldTheZoneSpecification.self.PointsPerSecondForAdditionalPlayers)
+  [2395] CallFunc_Multiply_IntFloat_ReturnValue_1 = Multiply_IntFloat(self.HoldTheZoneSpecification.self.MinPlayersToCapture, self.HoldTheZoneSpecification.self.BasePointsPerSecond)
+  [2485] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_IntFloat_ReturnValue_1, CallFunc_Multiply_IntFloat_ReturnValue)
+  [2531] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, self.UpdateFrequency)
+  [2577] Auth Add Score(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2600] pop
+  [2601] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.HoldTheZoneSpecification.self.ScoreDegenPerSecondIfNotEnoughPlayers, 0.0)
+  [2661] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [2671] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.HoldTheZoneSpecification.self.ScoreDegenPerSecondIfNotEnoughPlayers, self.UpdateFrequency)
+  [2739] AuthRemoveScore(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [2762] pop
+  [2763] AuthOnFinishedCleanup__DelegateSignature()
+  [2782] pop
+  [2783] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [2802] goto @1673
+  [2807] return nothing
+  [2809] end
+
+=== FreezeScore
+  [0] self.ScoreFrozen = true
+  [11] return nothing
+  [13] end
+
+=== GetMarkerComponent
+  [0] ReturnValue = self.Marker
+  [19] return ReturnValue
+  [29] end
+
+=== OnHeldStateChanged
+  [0] return nothing
+  [2] end
+
+=== OnRep_CharactersInZone
+  [0] RefreshStatus()
+  [14] return nothing
+  [16] end
+
+=== OnRep_IsBeingHeld
+  [0] OnHeldStateChanged()
+  [14] return nothing
+  [16] end
+
+=== OnRep_Score
+  [0] RefreshStatus()
+  [14] return nothing
+  [16] end
+
+=== OnRep_ZoneActive
+  [0] self.DynamicDecal.SetVisibility(self.ZoneActive, true)
+  [42] return nothing
+  [44] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_hold_the_zone_area_bp(1709)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_hold_the_zone_area_bp(2783)
+  [33] return nothing
+  [35] end
+
+=== RefreshStatus
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [59] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [93] self.TextWidgetComponent.SetVisibility(CallFunc_Greater_IntInt_ReturnValue, false)
+  [135] CallFunc_GetUserWidgetObject_ReturnValue = self.TextWidgetComponent.GetUserWidgetObject()
+  [177] K2Node_DynamicCast_AsRamsgate_Signage_Bpw = cast<ramsgate_signage_bpw_C>(CallFunc_GetUserWidgetObject_ReturnValue)
+  [213] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsRamsgate_Signage_Bpw)
+  [242] if !(K2Node_DynamicCast_bSuccess) goto @1426
+  [256] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.Score, self.HoldTheZoneSpecification.self.TotalPointsRequired)
+  [324] CallFunc_Conv_IntToInt64_ReturnValue = Conv_IntToInt64(self.MaxPlayers)
+  [361] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 100.0)
+  [407] K2Node_MakeStruct_FormatArgumentData.ArgumentName = 'max_players'
+  [447] K2Node_MakeStruct_FormatArgumentData.ArgumentValueType = 0
+  [476] K2Node_MakeStruct_FormatArgumentData.ArgumentValue = EX_TextConst(Value={'SourceString': ''})
+  [505] K2Node_MakeStruct_FormatArgumentData.ArgumentValueInt = CallFunc_Conv_IntToInt64_ReturnValue
+  [541] K2Node_MakeStruct_FormatArgumentData.ArgumentValueFloat = 0.0
+  [573] K2Node_MakeStruct_FormatArgumentData.ArgumentValueDouble = 0.0
+  [609] K2Node_MakeStruct_FormatArgumentData.ArgumentValueGender = 0
+  [638] CallFunc_Round_ReturnValue = Round(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [675] CallFunc_Conv_IntToInt64_ReturnValue_1 = Conv_IntToInt64(CallFunc_Round_ReturnValue)
+  [712] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.CharactersInZone)
+  [771] K2Node_MakeStruct_FormatArgumentData_1.ArgumentName = 'percent_captured'
+  [816] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueType = 0
+  [845] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValue = EX_TextConst(Value={'SourceString': ''})
+  [874] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueInt = CallFunc_Conv_IntToInt64_ReturnValue_1
+  [910] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueFloat = 0.0
+  [942] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueDouble = 0.0
+  [978] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueGender = 0
+  [1007] CallFunc_Conv_IntToInt64_ReturnValue_2 = Conv_IntToInt64(CallFunc_Array_Length_ReturnValue)
+  [1044] K2Node_MakeStruct_FormatArgumentData_2.ArgumentName = 'num_players'
+  [1084] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueType = 0
+  [1113] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValue = EX_TextConst(Value={'SourceString': ''})
+  [1142] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueInt = CallFunc_Conv_IntToInt64_ReturnValue_2
+  [1178] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueFloat = 0.0
+  [1210] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueDouble = 0.0
+  [1246] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueGender = 0
+  [1275] array{K2Node_MakeStruct_FormatArgumentData_1, K2Node_MakeStruct_FormatArgumentData_2, K2Node_MakeStruct_FormatArgumentData}
+  [1313] CallFunc_Format_ReturnValue = Format(self.TextForZone, K2Node_MakeArray_Array)
+  [1359] K2Node_DynamicCast_AsRamsgate_Signage_Bpw.self.display_board_text.SetText(CallFunc_Format_ReturnValue)
+  [1426] return nothing
+  [1428] end
+
+=== UnfreezeScore
+  [0] self.ScoreFrozen = false
+  [11] return nothing
+  [13] end
+
+=== UserConstructionScript
+  [0] UserConstructionScript()
+  [10] CallFunc_CreateDynamicMaterialInstance_ReturnValue = CreateDynamicMaterialInstance(self, self.DynamicDecal.self.DecalMaterial, 'None', 0)
+  [77] self.DynamicMaterial = CallFunc_CreateDynamicMaterialInstance_ReturnValue
+  [96] self.DynamicMaterial.SetVectorParameterValue('Color', self.DecalColor)
+  [150] self.DynamicDecal.SetDecalMaterial(self.DynamicMaterial)
+  [191] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.Radius, 100.0)
+  [237] BreakVector(self.DynamicDecal.self.RelativeScale3D, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [305] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [360] self.DynamicDecal.SetRelativeScale3D(CallFunc_MakeVector_ReturnValue)
+  [401] return nothing
+  [403] end

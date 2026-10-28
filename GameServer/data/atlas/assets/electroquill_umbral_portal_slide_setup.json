@@ -1,0 +1,189 @@
+{
+ "name": "electroquill_umbral_portal_slide_setup",
+ "package": "Archon/Content/Monsters/sq/electroquill/ai/electroquill_umbral_portal_slide_setup",
+ "type": "BehaviorTree",
+ "refs": [
+  "electroquill_bb",
+  "eqs_live_player_prioritize_clumped_up",
+  "eqs_shadowcat_rage_portal"
+ ],
+ "exports": {
+  "electroquill_umbral_portal_slide_setup": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_5",
+    "BlackboardAsset": "BlackboardData electroquill_bb"
+   }
+  },
+  "BTComposite_Sequence_5": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_8",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_current_location_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@predict_future_location_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_0"
+    ],
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup"
+   }
+  },
+  "BTTask_RunEQSQuery_1": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_live_player_prioritize_clumped_up",
+     "QueryConfig": [
+      {
+       "ParamName": "Distance.FloatValueMin",
+       "ParamType": "EAIParamType::Float",
+       "Value": 0.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Distance.FloatValueMax",
+       "ParamType": "EAIParamType::Float",
+       "Value": 15000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTTask_RunEQSQuery_5": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_shadowcat_rage_portal",
+     "QueryConfig": [
+      {
+       "ParamName": "OnCircle.CircleRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 2000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "BTTask_Wait_8": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.2,
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "hide_behemoth_bttask_C_0": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "ShowOnDeactivate": false,
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "predict_future_location_bttask_C_1": {
+   "type": "predict_future_location_bttask_C",
+   "props": {
+    "TargetKey": "bb.TargetActor",
+    "TimeInFuture": 1.0,
+    "ResultKeyName": "PatternAimLocation",
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "store_current_location_bttask_C_1": {
+   "type": "store_current_location_bttask_C",
+   "props": {
+    "ResultLocationKey": "PatternLocation",
+    "RelativeOffset": {
+     "X": 300.0,
+     "Y": 0.0,
+     "Z": 0.0
+    },
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "teleport_bttask_C_6": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "PatternAimLocation",
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  },
+  "teleport_bttask_C_7": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "TargetActor",
+    "TreeAsset": "BehaviorTree electroquill_umbral_portal_slide_setup",
+    "ParentNode": "@BTComposite_Sequence_5"
+   }
+  }
+ }
+}

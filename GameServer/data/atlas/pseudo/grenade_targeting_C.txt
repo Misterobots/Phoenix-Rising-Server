@@ -1,0 +1,354 @@
+# grenade_targeting_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateSplinePoints
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TargettingStyle, 0)
+  [31] if !(K2Node_SwitchEnum_CmpSuccess) goto @95
+  [45] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TargettingStyle, 1)
+  [76] if !(K2Node_SwitchEnum_CmpSuccess) goto @376
+  [90] goto @786
+  [95] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.NumSegments, self.PathLifeTime)
+  [141] array{self.Character}
+  [161] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_SimFrequency_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [190] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_MaxSimTime_ImplicitCast = cast<CST_DoubleToFloat>(self.PathLifeTime)
+  [219] array{}
+  [230] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_ReturnValue = Blueprint_PredictProjectilePath_ByTraceChannel(self, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutHit, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutPathPositions, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutLastTraceDestination, self.StartLocation, self.VectorVelocity, true, 10.0, 21, false, K2Node_MakeArray_Array, 0, 0.0, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_SimFrequency_ImplicitCast, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_MaxSimTime_ImplicitCast, -980.0)
+  [344] SplinePoints = CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutPathPositions
+  [371] goto @786
+  [376] CallFunc_K2_GetComponentRotation_ReturnValue = self.FollowCam.K2_GetComponentRotation()
+  [426] CallFunc_GreaterGreater_VectorRotator_ReturnValue = GreaterGreater_VectorRotator(self.DesiredRelativeEndPosition_Location, CallFunc_K2_GetComponentRotation_ReturnValue)
+  [472] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(self.StartLocation, CallFunc_GreaterGreater_VectorRotator_ReturnValue)
+  [518] Default__archon_function_library_C.FindLobbedProjectileAim(self.StartLocation, CallFunc_Add_VectorVector_ReturnValue, self.DesiredEndPosition_LateralSpeed, self.DesiredEndPosition_MaxHeight, self, CallFunc_FindLobbedProjectileAim_Velocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [609] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OverrideGravityZ_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [638] array{}
+  [649] CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_ReturnValue_1 = Blueprint_PredictProjectilePath_ByTraceChannel(self, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutHit_1, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutPathPositions_1, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutLastTraceDestination_1, self.StartLocation, CallFunc_FindLobbedProjectileAim_Velocity, true, 10.0, 21, false, Temp_object_Variable, 0, 0.0, 15.0, 2.0, CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OverrideGravityZ_ImplicitCast)
+  [759] SplinePoints = CallFunc_Blueprint_PredictProjectilePath_ByTraceChannel_OutPathPositions_1
+  [786] return nothing
+  [788] end
+
+=== DrawProjectileTrajectory
+  [0] ExecuteUbergraph_grenade_targeting(1328)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_grenade_targeting
+  [0] push @3053
+  [5] goto computed(EntryPoint)
+  [15] Temp_int_Loop_Counter_Variable = 0
+  [38] Temp_int_Array_Index_Variable = 0
+  [61] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ArcSplineParticleFX)
+  [120] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [158] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @310
+  [172] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [199] push @394
+  [204] Default__KismetArrayLibrary.Array_Get(self.ArcSplineParticleFX, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [263] Default__archon_function_library_C.TryDestroyComponent(CallFunc_Array_Get_Item_1, self)
+  [309] pop
+  [310] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_ui_crafting_salvage_loop, self.Character, 0, Temp_delegate_Variable_1, false)
+  [393] pop
+  [394] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [436] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [463] goto @61
+  [468] Temp_bool_Has_Been_Initd_Variable = true
+  [479] if !(false) pop
+  [481] Temp_bool_IsClosed_Variable = true
+  [492] pop
+  [493] if !(Temp_bool_Has_Been_Initd_Variable) goto @468
+  [507] pop
+  [508] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [528] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetInstigator_ReturnValue)
+  [564] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [593] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [603] K2Node_DynamicCast_AsPlayer_Interface.GetFollowCamera(CallFunc_GetFollowCamera_FollowCamera)
+  [649] self.FollowCam = CallFunc_GetFollowCamera_FollowCamera
+  [668] if !(self.InstantThrow) pop
+  [678] self.ArcVelocity = self.MaxArcVelocity
+  [705] pop
+  [706] if !(self.ShouldDrawTrajectory) pop
+  [716] DrawProjectileTrajectory()
+  [730] if !(self.InstantThrow) goto @745
+  [744] pop
+  [745] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.ArcVelocity, self.MaxArcVelocity)
+  [783] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [793] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.ArcVelocity, 25.0)
+  [839] self.ArcVelocity = CallFunc_Add_DoubleDouble_ReturnValue
+  [866] pop
+  [867] Default__archon_function_library_C.TryDestroyComponent(self.GroundEffect, self)
+  [913] Default__archon_function_library_C.TryDestroyComponent(self.GrenadeSparkles, self)
+  [959] Temp_int_Loop_Counter_Variable_1 = 0
+  [982] Temp_int_Array_Index_Variable_1 = 0
+  [1005] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ArcSplineMeshes)
+  [1064] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1102] if !(CallFunc_Less_IntInt_ReturnValue) goto @15
+  [1116] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [1143] push @1254
+  [1148] Default__KismetArrayLibrary.Array_Get(self.ArcSplineMeshes, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1207] Default__archon_function_library_C.TryDestroyComponent(CallFunc_Array_Get_Item, self)
+  [1253] pop
+  [1254] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1296] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1323] goto @1005
+  [1328] self.FollowCam.GetCameraView(0.0, CallFunc_GetCameraView_DesiredView)
+  [1378] GetStartLocationAndVelocity(self.Character, CallFunc_GetCameraView_DesiredView, self.FollowCam, CallFunc_GetStartLocationAndVelocity_StartLocation, CallFunc_GetStartLocationAndVelocity_Velocity)
+  [1437] self.StartLocation = CallFunc_GetStartLocationAndVelocity_StartLocation
+  [1464] self.VectorVelocity = CallFunc_GetStartLocationAndVelocity_Velocity
+  [1491] CalculateSplinePoints(CallFunc_CalculateSplinePoints_SplinePoints)
+  [1514] self.TargetingSpline.SetSplinePoints(CallFunc_CalculateSplinePoints_SplinePoints, 0, true)
+  [1558] RenderSplineArc()
+  [1572] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(CallFunc_CalculateSplinePoints_SplinePoints)
+  [1631] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(self.StartLocation, EX_ArrayGetByRef(ArrayVariable=CallFunc_CalculateSplinePoints_SplinePoints,ArrayIndex=CallFunc_Array_LastIndex_ReturnValue))
+  [1687] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [1724] self.SplineVectorLength = CallFunc_VSize_ReturnValue
+  [1751] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(CallFunc_CalculateSplinePoints_SplinePoints)
+  [1810] UpdateGroundEffect(EX_ArrayGetByRef(ArrayVariable=CallFunc_CalculateSplinePoints_SplinePoints,ArrayIndex=CallFunc_Array_LastIndex_ReturnValue))
+  [1843] pop
+  [1844] CallFunc_IsValid_ReturnValue = IsValid(self.GroundEffect)
+  [1873] if !(CallFunc_IsValid_ReturnValue) pop
+  [1883] self.GroundEffect.K2_SetWorldLocation(K2Node_CustomEvent_Location, false, CallFunc_K2_SetWorldLocation_SweepHitResult, false)
+  [1935] pop
+  [1936] self.ShouldDrawTrajectory = false
+  [1947] Default__archon_function_library_C.TryDestroyComponent(self.GroundEffect, self)
+  [1993] Default__archon_function_library_C.TryDestroyComponent(self.GrenadeSparkles, self)
+  [2039] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_ui_crafting_salvage_loop, self.Character, 0, Temp_delegate_Variable, false)
+  [2122] pop
+  [2123] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(self.Character)
+  [2159] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [2188] if !(K2Node_DynamicCast_bSuccess) goto @2497
+  [2202] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [2248] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(K2Node_CustomEvent_HeldSparkleEffect, CallFunc_GetMesh_SkeletalMesh, 'weapon_hook_righthSocket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [2380] self.GrenadeSparkles = CallFunc_SpawnEmitterAttached_ReturnValue
+  [2399] CallFunc_IsValid_ReturnValue_2 = IsValid(self.GrenadeSparkles)
+  [2428] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2438] self.GrenadeSparkles.SetVectorParameter('SparkleColor', K2Node_CustomEvent_HeldSparkleColor)
+  [2496] pop
+  [2497] CallFunc_GetMesh_SkeletalMesh = null
+  [2508] goto @2248
+  [2513] push @2523
+  [2518] goto @493
+  [2523] if !(Temp_bool_IsClosed_Variable) goto @2538
+  [2537] pop
+  [2538] Temp_bool_IsClosed_Variable = true
+  [2549] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [2569] self.Character = CallFunc_GetInstigator_ReturnValue_1
+  [2588] push @2603
+  [2593] push @2754
+  [2598] goto @2123
+  [2603] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(self.Character)
+  [2632] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [2642] CallFunc_FTrunc_ReturnValue = FTrunc(self.NumSegments)
+  [2679] SetupSplineArc(CallFunc_FTrunc_ReturnValue, self.StaticMesh.self.StaticMesh, K2Node_CustomEvent_SplineColor)
+  [2742] self.ShouldDrawTrajectory = true
+  [2753] pop
+  [2754] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(self.Character)
+  [2783] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [2793] CallFunc_K2_GetActorLocation_ReturnValue = self.Character.K2_GetActorLocation()
+  [2843] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, K2Node_CustomEvent_GroundEffect, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [2936] self.GroundEffect = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [2955] CallFunc_IsValid_ReturnValue_1 = IsValid(self.GroundEffect)
+  [2984] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2994] self.GroundEffect.SetVectorParameter('HeldColor', K2Node_CustomEvent_GroundEffectColor)
+  [3052] pop
+  [3053] return nothing
+  [3055] end
+
+=== GetStartLocationAndVelocity
+  [0] CallFunc_GetRightVector_ReturnValue = FollowCam.GetRightVector()
+  [50] CallFunc_GetForwardVector_ReturnValue = FollowCam.GetForwardVector()
+  [100] BreakVector(CallFunc_GetForwardVector_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [146] BreakRotator(Camera View.Rotation, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [201] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 0.0)
+  [256] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [306] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_MakeVector_ReturnValue)
+  [343] BreakRotator(CallFunc_Conv_VectorToRotator_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [389] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(self.FixedVerticalPitchAmount)
+  [418] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll_1, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_BreakRotator_Yaw_1)
+  [473] Temp_bool_Variable = self.FixedVerticalPitch
+  [492] CallFunc_GetForwardVector_ReturnValue_1 = GetForwardVector(CallFunc_MakeRotator_ReturnValue)
+  [529] BreakRotator(self.ReleaseRotationOffset, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [575] BreakVector(self.ReleasePositionOffset, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [621] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [650] CallFunc_Add_DoubleDouble_B_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_2)
+  [679] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, CallFunc_Add_DoubleDouble_B_ImplicitCast_2)
+  [725] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_BreakVector_Z_1)
+  [780] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetRightVector_ReturnValue, CallFunc_BreakVector_Y_1)
+  [826] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, CallFunc_BreakVector_X_1)
+  [872] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [901] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_2)
+  [930] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [976] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [1022] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll)
+  [1051] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_2)
+  [1080] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1126] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1172] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [1201] CallFunc_MakeRotator_Pitch_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [1230] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [1259] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, CallFunc_MakeRotator_Pitch_ImplicitCast_1, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [1314] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue_1)
+  [1360] CallFunc_GetForwardVector_ReturnValue_2 = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [1397] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(switch(Temp_bool_Variable){false: CallFunc_GetForwardVector_ReturnValue_2, true: CallFunc_GetForwardVector_ReturnValue_1, default: K2Node_Select_Default}, self.ArcVelocity)
+  [1487] StartLocation = CallFunc_Add_VectorVector_ReturnValue_2
+  [1514] Velocity = CallFunc_Multiply_VectorFloat_ReturnValue_2
+  [1541] return nothing
+  [1543] end
+
+=== PrimeEffects
+  [0] frame.K2Node_CustomEvent_HeldSparkleEffect = HeldSparkleEffect
+  [18] frame.K2Node_CustomEvent_HeldSparkleColor = HeldSparkleColor
+  [36] frame.K2Node_CustomEvent_GroundEffect = GroundEffect
+  [54] frame.K2Node_CustomEvent_GroundEffectColor = GroundEffectColor
+  [72] frame.K2Node_CustomEvent_PrimedGrenadeSound = PrimedGrenadeSound
+  [90] frame.K2Node_CustomEvent_SplineColor = SplineColor
+  [108] ExecuteUbergraph_grenade_targeting(2513)
+  [123] return nothing
+  [125] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_grenade_targeting(508)
+  [15] return nothing
+  [17] end
+
+=== ReceiveEndPlay
+  [0] frame.K2Node_Event_EndPlayReason = EndPlayReason
+  [18] ExecuteUbergraph_grenade_targeting(867)
+  [33] return nothing
+  [35] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_grenade_targeting(706)
+  [33] return nothing
+  [35] end
+
+=== RenderSplineArc
+  [0] push @893
+  [5] CallFunc_GetNumberOfSplinePoints_ReturnValue = self.TargetingSpline.GetNumberOfSplinePoints()
+  [55] NumSplinePoints = CallFunc_GetNumberOfSplinePoints_ReturnValue
+  [82] push @391
+  [87] Temp_int_Loop_Counter_Variable = 0
+  [110] Temp_int_Array_Index_Variable = 0
+  [133] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ArcSplineMeshes)
+  [192] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [230] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @769
+  [272] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(NumSplinePoints, 1)
+  [314] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Array_Index_Variable, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [352] if !(CallFunc_Less_IntInt_ReturnValue) goto @843
+  [366] RenderSplineArcMesh(true, Temp_int_Array_Index_Variable)
+  [390] pop
+  [391] Temp_int_Loop_Counter_Variable_1 = 0
+  [414] Temp_int_Array_Index_Variable_1 = 0
+  [437] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ArcSplineParticleFX)
+  [496] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [534] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [544] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [571] push @695
+  [576] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(NumSplinePoints, 2)
+  [618] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Array_Index_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [656] if !(CallFunc_Less_IntInt_ReturnValue_3) goto @868
+  [670] RenderSplineArcFX(true, Temp_int_Array_Index_Variable_1)
+  [694] pop
+  [695] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [737] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [764] goto @437
+  [769] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [811] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [838] goto @133
+  [843] RenderSplineArcMesh(false, Temp_int_Array_Index_Variable)
+  [867] pop
+  [868] RenderSplineArcFX(false, Temp_int_Array_Index_Variable_1)
+  [892] pop
+  [893] return nothing
+  [895] end
+
+=== RenderSplineArcFX
+  [0] if !(ShowFX) goto @228
+  [14] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(FXIndex, 1)
+  [56] Default__KismetArrayLibrary.Array_Get(self.ArcSplineParticleFX, FXIndex, CallFunc_Array_Get_Item_2)
+  [115] self.TargetingSpline.GetLocationAndTangentAtSplinePoint(CallFunc_Add_IntInt_ReturnValue, CallFunc_GetLocationAndTangentAtSplinePoint_Location, CallFunc_GetLocationAndTangentAtSplinePoint_Tangent, 0)
+  [176] CallFunc_Array_Get_Item_2.K2_SetWorldLocation(CallFunc_GetLocationAndTangentAtSplinePoint_Location, false, CallFunc_K2_SetWorldLocation_SweepHitResult, false)
+  [228] Default__KismetArrayLibrary.Array_Get(self.ArcSplineParticleFX, FXIndex, CallFunc_Array_Get_Item_1)
+  [287] CallFunc_Array_Get_Item_1.SetVisibility(ShowFX, false)
+  [329] if !(self.DebugArc) goto @526
+  [343] Default__KismetArrayLibrary.Array_Get(self.ArcSplineParticleFX, FXIndex, CallFunc_Array_Get_Item)
+  [402] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [452] DrawDebugSphere(self, CallFunc_K2_GetComponentLocation_ReturnValue, 50.0, 12, LinearColor{0.053136, 0.255208, 0.014621, 1.0}, 0.0, 5.0)
+  [526] return nothing
+  [528] end
+
+=== RenderSplineArcMesh
+  [0] if !(ShowMesh) goto @306
+  [14] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(MeshIndex, 1)
+  [56] self.TargetingSpline.GetLocationAndTangentAtSplinePoint(CallFunc_Add_IntInt_ReturnValue, CallFunc_GetLocationAndTangentAtSplinePoint_Location, CallFunc_GetLocationAndTangentAtSplinePoint_Tangent, 0)
+  [117] self.TargetingSpline.GetLocationAndTangentAtSplinePoint(MeshIndex, CallFunc_GetLocationAndTangentAtSplinePoint_Location_1, CallFunc_GetLocationAndTangentAtSplinePoint_Tangent_1, 0)
+  [178] Default__KismetArrayLibrary.Array_Get(self.ArcSplineMeshes, MeshIndex, CallFunc_Array_Get_Item_2)
+  [237] CallFunc_Array_Get_Item_2.SetStartAndEnd(CallFunc_GetLocationAndTangentAtSplinePoint_Location_1, CallFunc_GetLocationAndTangentAtSplinePoint_Tangent_1, CallFunc_GetLocationAndTangentAtSplinePoint_Location, CallFunc_GetLocationAndTangentAtSplinePoint_Tangent, true)
+  [306] Default__KismetArrayLibrary.Array_Get(self.ArcSplineMeshes, MeshIndex, CallFunc_Array_Get_Item_1)
+  [365] CallFunc_Array_Get_Item_1.SetVisibility(ShowMesh, false)
+  [407] if !(self.DebugArc) goto @658
+  [421] Default__KismetArrayLibrary.Array_Get(self.ArcSplineMeshes, MeshIndex, CallFunc_Array_Get_Item)
+  [480] CallFunc_GetEndPosition_ReturnValue = CallFunc_Array_Get_Item.GetEndPosition()
+  [530] CallFunc_GetStartPosition_ReturnValue = CallFunc_Array_Get_Item.GetStartPosition()
+  [580] DrawDebugArrow(self, CallFunc_GetStartPosition_ReturnValue, CallFunc_GetEndPosition_ReturnValue, 2.0, LinearColor{1.0, 0.89767, 0.054146, 1.0}, 0.0, 2.0)
+  [658] return nothing
+  [660] end
+
+=== SetupSplineArc
+  [0] push @1541
+  [5] push @970
+  [10] push @527
+  [15] CallFunc_IsValid_ReturnValue = IsValid(MeshToUse)
+  [44] if !(CallFunc_IsValid_ReturnValue) pop
+  [54] Temp_int_Variable = 1
+  [77] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(Temp_int_Variable, NumSegmentsToAdd)
+  [115] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) goto @1432
+  [129] push @1467
+  [134] Temp_struct_Variable = EX_TransformConst(Value={'Rotation': {'X': 0.0, 'Y': -0.0, 'Z': 0.0, 'W': 1.0, 'IsNormalized': True, 'Size': 1.0, 'SizeSquared': 1.0}, 'Translation': {'X': 0.0, 'Y': 0.0, 'Z': 0.0}, 'Scale3D': {'X': 1.0, 'Y': 1.0, 'Z': 1.0}, 'IsRotationNormalized': True})
+  [233] CallFunc_AddComponent_ReturnValue = AddComponent('NODE_AddSplineMeshComponent-1', false, Temp_struct_Variable, self, false)
+  [278] CallFunc_SetStaticMesh_ReturnValue = CallFunc_AddComponent_ReturnValue.SetStaticMesh(MeshToUse)
+  [333] CallFunc_AddComponent_ReturnValue.SetVectorParameterValueOnMaterials('Color', MeshColor)
+  [387] CallFunc_K2_AttachToComponent_ReturnValue = CallFunc_AddComponent_ReturnValue.K2_AttachToComponent(self.TargetingSpline, 'None', 0, 0, 0, true)
+  [458] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.ArcSplineMeshes, CallFunc_AddComponent_ReturnValue)
+  [526] pop
+  [527] CallFunc_IsValid_ReturnValue_1 = IsValid(self.ParticleFXForSplineArc)
+  [556] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [566] Temp_int_Variable_1 = 1
+  [589] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(NumSegmentsToAdd, 1)
+  [631] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [669] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [679] push @896
+  [684] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.ParticleFXForSplineArc, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [793] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.ArcSplineParticleFX, CallFunc_SpawnEmitterAtLocation_ReturnValue)
+  [861] CallFunc_SpawnEmitterAtLocation_ReturnValue.SetVisibility(false, false)
+  [895] pop
+  [896] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Variable_1, 1)
+  [938] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [965] goto @589
+  [970] if !(self.DebugArc) pop
+  [980] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ArcSplineMeshes)
+  [1039] CallFunc_Conv_IntToString_ReturnValue_1 = Conv_IntToString(CallFunc_Array_Length_ReturnValue_1)
+  [1076] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Total SplineMesh:', CallFunc_Conv_IntToString_ReturnValue_1)
+  [1132] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{1.0, 0.89767, 0.054146, 1.0}, 5.0, 'None')
+  [1206] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ArcSplineParticleFX)
+  [1265] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(CallFunc_Array_Length_ReturnValue)
+  [1302] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Total SplineFX: ', CallFunc_Conv_IntToString_ReturnValue)
+  [1357] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{1.0, 0.89767, 0.054146, 1.0}, 5.0, 'None')
+  [1431] pop
+  [1432] self.TargetingSpline.SetVisibility(false, true)
+  [1466] pop
+  [1467] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [1509] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1536] goto @77
+  [1541] return nothing
+  [1543] end
+
+=== TurnOffTrajectory
+  [0] ExecuteUbergraph_grenade_targeting(1936)
+  [15] return nothing
+  [17] end
+
+=== UpdateGroundEffect
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] ExecuteUbergraph_grenade_targeting(1844)
+  [33] return nothing
+  [35] end

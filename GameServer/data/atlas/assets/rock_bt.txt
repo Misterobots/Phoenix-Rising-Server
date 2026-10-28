@@ -1,0 +1,135 @@
+rock_bt  blackboard=BlackboardData bullseye_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=0.1)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Selector
+      1) BehemothAction "DIE!!!"  (Montage=AnimMontage b_sq_rok_00_state_death_fwd_00_mot)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    [if behemoth_in_state_btdeco  (State=Rage)]
+    [if behemoth_in_state_btdeco  (State=CustomState)]
+    [if behemoth_in_state_btdeco  (State=ReadyToExitRage)]
+    4) Sequence
+      1) set_blackboard_key_bttask  (ResultKey=bb.RockForm, DataType=Bool, bShowPropertyDetails=false)
+      2) try_set_behemoth_state_bttask  (State=CustomState, StateChangeType=End)
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_sq_rock_00_atk_concealedstrike_rage_exit_mot)
+      [if btdeco_variablecooldown  (Cooldown_Min=180, Cooldown_Max=240, StartTime=350, bShowPropertyDetails=false)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      4) PerformActionClass  (ActionClass=BlueprintGeneratedClass rock_alpha_whirlingfortress_atk_C, bShowPropertyDetails=false)
+    5) Selector
+      [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=ReadyToEnterRage)]
+      1) Sequence
+        1) set_blackboard_key_bttask  (ResultKey=bb.RockForm, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+        2) Selector
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+          1) bttask_enter_rage_state "ENTER ROCK FORM"  (Montage=AnimMontage b_sq_rock_00_atk_concealedstrike_rage_enter_mot, WhenInterrupted=CancelStateButStayReadyToTransition)
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          2) bttask_enter_rage_state "ENTER ROCK FORM"  (Montage=AnimMontage b_sq_rok_00_state_rage_alpha_enter_00_mot, WhenInterrupted=CancelStateButStayReadyToTransition)
+        3) try_set_behemoth_state_bttask  (State=CustomState, WhenInterruptedChangeState=CustomState)
+      [if behemoth_in_state_btdeco  (State=Rage)]
+      [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+      2) Sequence
+        1) try_set_behemoth_state_bttask  (State=CustomState, WhenInterruptedChangeState=CustomState)
+    [if behemoth_in_state_btdeco  (State=Overloaded)]
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    6) Sequence
+      [if ForceSuccess]
+      1) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+    7) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+      [if Blackboard  (InFleeState is Is Set)]
+      [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+      2) Sequence
+        [if ForceSuccess]
+        1) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+      3) Selector "StateChange"
+        1) Selector "StateChange"
+          [if behemoth_in_state_btdeco  (State=ReadyToEnterRage)]
+          1) Sequence
+            1) bttask_enter_rage_state  (Montage=AnimMontage b_sq_sal_00_state_rageenter_fwd_00_mot)
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+            2) BehemothAction  (Montage=AnimMontage b_sq_rock_00_atk_concealedstrike_rage_enter_mot)
+            [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+            3) BehemothAction  (Montage=AnimMontage b_sq_rok_00_state_rage_alpha_enter_00_mot)
+        [if Blackboard  (ReadyForTiredState is Is Set)]
+        2) bttask_enter_tired_state  (Montage=AnimMontage b_mcr_pers_entertired_mot)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      5) Selector
+        [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+        [if current_target_is_valid_btdeco]
+        [if enter_combat_check_btdeco "In EnterCombatRange, or ForceEnterCombat"  (Origin=bb.SelfPos, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, ObservedKeyNames=["SelfPos", "AttackTarget"], bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+        1) Sequence
+          1) bttask_set_boolean  (Key=bb.TempBool)
+          [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Not Set)]
+          [if ForceSuccess]
+          2) Selector
+            1) bttask_set_boolean  (Key=bb.TempBool, Value=true)
+          [if ForceSuccess]
+          [if behemoth_in_state_btdeco  (State=Flying)]
+          3) Sequence
+            [if ForceSuccess]
+            1) try_set_behemoth_state_bttask  (State=Flying, StateChangeType=End)
+            2) generic_action_bttask  (ActionType=PreEnterCombat)
+            3) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+          4) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+          5) generic_action_bttask  (ActionType=EnterCombat)
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          [if btdeco_variablecooldown  (Cooldown_Min=180, Cooldown_Max=240, StartTime=350, bShowPropertyDetails=false)]
+          6) PerformActionClass  (ActionClass=BlueprintGeneratedClass rock_alpha_whirlingfortress_atk_C, bShowPropertyDetails=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+        3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+      [if btdeco_variablecooldown  (Cooldown_Min=60, Cooldown_Max=120, StartTime=120)]
+      6) Sequence
+        1) generic_action_bttask  (ActionType=Growl)
+    8) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      1) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=CustomState, StateRequirement=ExcludedByState)]
+      2) Selector
+        [if behemoth_in_state_btdeco  (State=Combat)]
+        1) Sequence "Reposition"
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+            {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+          [if btdeco_variablecooldown  (Cooldown_Min=20, Cooldown_Max=15)]
+          2) generic_action_bttask  (ActionType=Growl)
+        2) Selector "Reposition"
+        3) Selector
+          {service try_pick_new_target_bts  (Interval=2)}
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+          [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+          [if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+          [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+          [if behemoth_in_state_btdeco  (State=Alerted, StateRequirement=ExcludedByState)]
+          [if not is_island_gamemode_btdeco  (IslandGameMode=Trials, bInverseCondition=true)]
+          2) Sequence "No Enemy - Patrol"
+            1) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_passive_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+            [if TimeLimit  (TimeLimit=10)]
+            2) Sequence
+              1) MoveTo  (bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+            [if ForceSuccess]
+            3) Selector
+              [if is_island_gamemode_btdeco  (IslandGameMode=Hunt)]
+              1) Sequence
+                1) try_set_behemoth_state_bttask  (State=Flying)
+                2) BehemothAction  (Montage=AnimMontage b_sq_rok_00_pers_patrol_fwd_00_mot, StopMontageOnAbort=false)
+              [if is_island_gamemode_btdeco  (IslandGameMode=Activities)]
+              2) Sequence
+                1) try_set_behemoth_state_bttask  (State=Flying)
+                2) BehemothAction  (Montage=AnimMontage b_sq_rok_00_pers_patrol_fwd_00_mot, StopMontageOnAbort=false)
+            4) Wait  (WaitTime=1)

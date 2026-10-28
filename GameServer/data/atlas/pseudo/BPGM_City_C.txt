@@ -1,0 +1,307 @@
+# BPGM_City_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ChoosePlayerStartGroup
+  [0] CallFunc_GetCurrentServerTimeUTC_ReturnValue = Player.GetCurrentServerTimeUTC()
+  [50] CallFunc_IsScheduledItemActive_ReturnValue = IsScheduledItemActive(self, 'Ramsgate_HuntPass_Starts', CallFunc_GetCurrentServerTimeUTC_ReturnValue)
+  [93] if !(CallFunc_IsScheduledItemActive_ReturnValue) goto @744
+  [107] CallFunc_MakeGameplayTagQuery_ReturnValue = MakeGameplayTagQuery(GameplayTagQuery{0, EX_ArrayConst(InnerProperty={'Path': ['TagDictionary', 'TagDictionary'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagQuery'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'CohortTreatment.CityHuntPassStarts.B'}), EX_ArrayConst(InnerProperty={'Path': ['QueryTokenStream', 'QueryTokenStream'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagQuery'", 'ObjectPath': '/Script/GameplayTags'}},Values=0, 1, 2, 1, 0), 'Should Use Hunt Pass Dynamic Spawn', ' ALL( CohortTreatment.CityHuntPassStarts.B )'})
+  [301] CallFunc_EvaluateCohortTreatmentQuery_ReturnValue = Player.self.CohortsComponent.EvaluateCohortTreatmentQuery(CallFunc_MakeGameplayTagQuery_ReturnValue)
+  [374] if !(CallFunc_EvaluateCohortTreatmentQuery_ReturnValue) goto @744
+  [388] CallFunc_GetQuest_ReturnValue = Player.self.QuestSystem.GetQuest('CR19_S1_Q1B_TalkToMoyra')
+  [465] CallFunc_IsRedeemed_ReturnValue = CallFunc_GetQuest_ReturnValue.IsRedeemed()
+  [507] if !(CallFunc_IsRedeemed_ReturnValue) goto @744
+  [521] CallFunc_GetProgressionComponent_ReturnValue = Player.GetProgressionComponent()
+  [563] CallFunc_GetCurrentHuntPassSeasonTrackId_ReturnValue = GetCurrentHuntPassSeasonTrackId(self)
+  [592] CallFunc_GetTrackProgression_ReturnValue = CallFunc_GetProgressionComponent_ReturnValue.GetTrackProgression(CallFunc_GetCurrentHuntPassSeasonTrackId_ReturnValue, CallFunc_GetTrackProgression_OutDetails)
+  [652] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_GetTrackProgression_OutDetails.ProgressDetails.bHasPremium)
+  [699] if !(CallFunc_Not_PreBool_ReturnValue) goto @744
+  [713] ReturnValue = 'Bazaar'
+  [744] return ReturnValue
+  [754] end
+
+=== DidSetupIntroCinematic
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end
+
+=== ExecuteUbergraph_BPGM_City
+  [0] push @4044
+  [5] goto computed(EntryPoint)
+  [15] K2Node_ClassDynamicCast_AsAtmosphere_Base = cast<AtmosphereBase>(Temp_class_Variable)
+  [51] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsAtmosphere_Base)
+  [80] if !(K2Node_ClassDynamicCast_bSuccess) goto @128
+  [94] self.SelectedTODClass = K2Node_ClassDynamicCast_AsAtmosphere_Base
+  [113] SpawnAtmosphere()
+  [127] pop
+  [128] self.SelectedTODClass = atmospheres_misty_city_00_bp_C
+  [147] goto @113
+  [152] Temp_class_Variable = K2Node_CustomEvent_Loaded_3
+  [171] goto @15
+  [176] StackTrace()
+  [186] pop
+  [187] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [216] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [266] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [308] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'player_interface cast failed bpgm_city login')
+  [391] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [465] goto @176
+  [470] pop
+  [471] pop
+  [472] pop
+  [473] pop
+  [474] Default__atmospheres_library_C.GetAtmosphereSpawner(self, self, CallFunc_GetAtmosphereSpawner_AtmosphereSpawner, CallFunc_GetAtmosphereSpawner_AirshipAtmosphereSpawner)
+  [530] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAtmosphereSpawner_AtmosphereSpawner)
+  [559] if !(CallFunc_IsValid_ReturnValue) goto @596
+  [573] SetAtmosphereSpawner(CallFunc_GetAtmosphereSpawner_AtmosphereSpawner)
+  [596] self.gatherable_manager.SpawnGatherables()
+  [632] pop
+  [633] K2Node_DynamicCast_AsPlayer_State_Bp = cast<player_state_bp_C>(K2Node_Event_NewPlayer.self.PlayerState)
+  [691] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPlayer_State_Bp)
+  [720] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [730] K2Node_DynamicCast_AsPlayer_State_Bp.FlushNetDormancy()
+  [762] K2Node_DynamicCast_AsPlayer_State_Bp.self.InCity = true
+  [795] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsPlayer_State_Bp, 46, 'InCity')
+  [832] K2Node_DynamicCast_AsPlayer_Controller_Interface_1 = cast<player_controller_interface_C>(K2Node_Event_NewPlayer)
+  [868] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface_1)
+  [897] if !(K2Node_DynamicCast_bSuccess_1) goto @187
+  [911] Default__global_function_library_C.Get Global Event Dispatcher(K2Node_Event_NewPlayer, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [966] ServerPlayerControllerGameModeLogin__DelegateSignature(K2Node_DynamicCast_AsPlayer_Controller_Interface_1, true)
+  [1017] pop
+  [1018] K2Node_DynamicCast_AsPlayer_Controller_Interface = cast<player_controller_interface_C>(K2Node_Event_ExitingController)
+  [1054] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Controller_Interface)
+  [1083] if !(K2Node_DynamicCast_bSuccess) goto @1204
+  [1097] Default__global_function_library_C.Get Global Event Dispatcher(K2Node_Event_ExitingController, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher_1)
+  [1152] ServerPlayerControllerGameModeLogout__DelegateSignature(K2Node_DynamicCast_AsPlayer_Controller_Interface, true)
+  [1203] pop
+  [1204] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [1233] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue_1)
+  [1283] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ') =')
+  [1325] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'player_controller_interface cast failed in city logout')
+  [1418] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [1492] StackTrace()
+  [1502] pop
+  [1503] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [1523] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [1533] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_Event_NewState, 'WaitingToStart')
+  [1575] if !(K2Node_SwitchName_CmpSuccess) goto @1590
+  [1589] pop
+  [1590] array{}
+  [1601] GetAllActorsOfClass(self, ai_poi_primary_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [1630] self.CityPointsOfInterest_Primary = CallFunc_GetAllActorsOfClass_OutActors
+  [1657] array{}
+  [1668] GetAllActorsOfClass(self, ai_poi_secondary_bp_C, CallFunc_GetAllActorsOfClass_OutActors_1)
+  [1697] self.CityPointsOfInterest_Secondary = CallFunc_GetAllActorsOfClass_OutActors_1
+  [1724] array{}
+  [1735] GetAllActorsOfClass(self, ai_poi_start_bp_C, CallFunc_GetAllActorsOfClass_OutActors_2)
+  [1764] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors_2, 0, CallFunc_Array_Get_Item)
+  [1819] self.CityPOI_Start = CallFunc_Array_Get_Item
+  [1838] pop
+  [1839] CallFunc_GetGameInstance_ReturnValue_1 = GetGameInstance(self)
+  [1860] K2Node_DynamicCast_AsArchon_Game_Instance_1 = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue_1)
+  [1896] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance_1)
+  [1925] if !(K2Node_DynamicCast_bSuccess_4) goto @1995
+  [1939] CallFunc_HasQueriedProgressionConfiguration_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance_1.HasQueriedProgressionConfiguration()
+  [1981] if !(CallFunc_HasQueriedProgressionConfiguration_ReturnValue) goto @2019
+  [1995] TriggerSetAtmpsphereSpawner(K2Node_Event_AtmosphereSpawner)
+  [2018] pop
+  [2019] K2Node_CreateDelegate_OutputDelegate = bind(self.WaitForSetAtmosphereSpawner)
+  [2042] K2Node_CreateDelegate_OutputDelegate += None
+  [2083] pop
+  [2084] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnLoaded_7C702E104B0B584C240AED9E30DFAC00)
+  [2107] CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetFeatureFlagCurrentHuntPassSeasonData(CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassRowId, CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassData)
+  [2167] LoadAssetClass(self, CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassData.Assets.self.CityAtmosphere, K2Node_CreateDelegate_OutputDelegate_1, LatentActionInfo{-1, -1422384766, 'ExecuteUbergraph_BPGM_City', self})
+  [2265] pop
+  [2266] CallFunc_IsValid_ReturnValue_1 = IsValid(self.CurrentAtmosphereSpawner)
+  [2295] if !(CallFunc_IsValid_ReturnValue_1) goto @2310
+  [2309] pop
+  [2310] self.CurrentAtmosphereSpawner = K2Node_CustomEvent_AtmosphereSpawner
+  [2329] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [2350] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [2386] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [2415] if !(K2Node_DynamicCast_bSuccess_3) goto @128
+  [2429] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, hunt_pass_s08b_saints_bond_bpff_C, true)
+  [2460] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @2684
+  [2474] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.OnLoaded_7916114F47324F51E49A288949879423)
+  [2497] LoadAssetClass(self, EX_SoftObjectConst(Value='/Game/World/atmospheres/blueprints/atmospheres/events/atmospheres_city_winter_melt_00_bp.atmospheres_city_winter_melt_00_bp_C'), K2Node_CreateDelegate_OutputDelegate_4, LatentActionInfo{-1, -1703765829, 'ExecuteUbergraph_BPGM_City', self})
+  [2683] pop
+  [2684] CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetFeatureFlagCurrentHuntPassSeasonData(CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassRowId, CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassData)
+  [2744] if !(CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_ReturnValue) goto @128
+  [2758] CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetFeatureFlagCurrentHuntPassSeasonData(CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassRowId, CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassData)
+  [2818] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetFeatureFlagCurrentHuntPassSeasonData_HuntPassData.Assets)
+  [2856] if !(CallFunc_IsValid_ReturnValue_2) goto @128
+  [2870] CallFunc_IsFeatureEnabled_ReturnValue_1 = IsFeatureEnabled(self, city_event_dark_harvest_bpff_C, true)
+  [2901] if !(CallFunc_IsFeatureEnabled_ReturnValue_1) goto @3121
+  [2915] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnLoaded_CB047176483E6DBC3B9FA1A31481BAF7)
+  [2938] LoadAssetClass(self, EX_SoftObjectConst(Value='/Game/World/atmospheres/blueprints/atmospheres/experimental/atmospheres_night_ramsgate_01.atmospheres_night_ramsgate_01_C'), K2Node_CreateDelegate_OutputDelegate_3, LatentActionInfo{-1, -943125699, 'ExecuteUbergraph_BPGM_City', self})
+  [3120] pop
+  [3121] CallFunc_IsFeatureEnabled_ReturnValue_2 = IsFeatureEnabled(self, enable_city_event_frostfall_bpff_C, true)
+  [3152] if !(CallFunc_IsFeatureEnabled_ReturnValue_2) goto @2084
+  [3166] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnLoaded_DB255E6F48B377D35EE73980C0C534C1)
+  [3189] LoadAssetClass(self, EX_SoftObjectConst(Value='/Game/World/atmospheres/blueprints/atmospheres/experimental/atmospheres_frostfall_ramsgate_01.atmospheres_frostfall_ramsgate_01_C'), K2Node_CreateDelegate_OutputDelegate_2, LatentActionInfo{-1, -1613443795, 'ExecuteUbergraph_BPGM_City', self})
+  [3379] pop
+  [3380] Temp_class_Variable_1 = K2Node_CustomEvent_Loaded
+  [3399] K2Node_ClassDynamicCast_AsAtmosphere_Base_1 = cast<AtmosphereBase>(Temp_class_Variable_1)
+  [3435] K2Node_ClassDynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsAtmosphere_Base_1)
+  [3464] if !(K2Node_ClassDynamicCast_bSuccess_1) goto @128
+  [3478] self.SelectedTODClass = K2Node_ClassDynamicCast_AsAtmosphere_Base_1
+  [3497] goto @113
+  [3502] K2Node_ClassDynamicCast_AsAtmosphere_Base_2 = cast<AtmosphereBase>(Temp_class_Variable_2)
+  [3538] K2Node_ClassDynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsAtmosphere_Base_2)
+  [3567] if !(K2Node_ClassDynamicCast_bSuccess_2) goto @128
+  [3581] self.SelectedTODClass = K2Node_ClassDynamicCast_AsAtmosphere_Base_2
+  [3600] goto @113
+  [3605] Temp_class_Variable_2 = K2Node_CustomEvent_Loaded_1
+  [3624] goto @3502
+  [3629] goto @2266
+  [3634] K2Node_ClassDynamicCast_AsAtmosphere_Base_3 = cast<AtmosphereBase>(Temp_class_Variable_3)
+  [3670] K2Node_ClassDynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsAtmosphere_Base_3)
+  [3699] if !(K2Node_ClassDynamicCast_bSuccess_3) goto @128
+  [3713] self.SelectedTODClass = K2Node_ClassDynamicCast_AsAtmosphere_Base_3
+  [3732] goto @113
+  [3737] Default__atmospheres_library_C.GetAtmosphereSpawner(self, self, CallFunc_GetAtmosphereSpawner_AtmosphereSpawner_1, CallFunc_GetAtmosphereSpawner_AirshipAtmosphereSpawner_1)
+  [3793] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAtmosphereSpawner_AtmosphereSpawner_1)
+  [3822] if !(CallFunc_IsValid_ReturnValue_3) goto @3859
+  [3836] TriggerSetAtmpsphereSpawner(CallFunc_GetAtmosphereSpawner_AtmosphereSpawner_1)
+  [3859] CallFunc_GetGameInstance_ReturnValue_2 = GetGameInstance(self)
+  [3880] K2Node_DynamicCast_AsArchon_Game_Instance_2 = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue_2)
+  [3916] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance_2)
+  [3945] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [3955] K2Node_CreateDelegate_OutputDelegate = bind(self.WaitForSetAtmosphereSpawner)
+  [3978] K2Node_CreateDelegate_OutputDelegate -= None
+  [4019] pop
+  [4020] Temp_class_Variable_3 = K2Node_CustomEvent_Loaded_2
+  [4039] goto @3634
+  [4044] return nothing
+  [4046] end
+
+=== GetCurrentSpawnedBehemoths
+  [0] CurrentSpawnedBehemoths = EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "Function'BPGM_City_C:GetCurrentSpawnedBehemoths'", 'ObjectPath': '/Game/Blueprints/GameMode/BPGM_City.5'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'CurrentSpawnedBehemoths', 'Flags': 'RF_Public', 'ElementSize': 16, 'PropertyFlags': 'Parm | OutParm', 'Inner': {'Type': 'ObjectProperty', 'Name': 'CurrentSpawnedBehemoths', 'Flags': 'RF_Public', 'ElementSize': 8, 'PropertyClass': {'ObjectName': "Class'ArchonBehemoth'", 'ObjectPath': '/Script/Archon'}}}},Values=)
+  [32] return nothing
+  [34] end
+
+=== GetGameModeType
+  [0] GameModeType = 1
+  [20] return nothing
+  [22] end
+
+=== GetMusicSystem
+  [0] MusicSystem = EX_NoInterface()
+  [19] return nothing
+  [21] end
+
+=== IsIntroCinematicEnabled
+  [0] Enabled = false
+  [11] return nothing
+  [13] end
+
+=== K2_OnLogout
+  [0] frame.K2Node_Event_ExitingController = ExitingController
+  [18] ExecuteUbergraph_BPGM_City(1018)
+  [33] return nothing
+  [35] end
+
+=== K2_OnSetMatchState
+  [0] frame.K2Node_Event_NewState = NewState
+  [18] ExecuteUbergraph_BPGM_City(1503)
+  [33] return nothing
+  [35] end
+
+=== K2_PostLogin
+  [0] frame.K2Node_Event_NewPlayer = NewPlayer
+  [18] ExecuteUbergraph_BPGM_City(633)
+  [33] return nothing
+  [35] end
+
+=== MoveCharactersToArrival
+  [0] ExecuteUbergraph_BPGM_City(472)
+  [15] return nothing
+  [17] end
+
+=== OnLoaded_7916114F47324F51E49A288949879423
+  [0] frame.K2Node_CustomEvent_Loaded_3 = Loaded
+  [18] ExecuteUbergraph_BPGM_City(152)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_7C702E104B0B584C240AED9E30DFAC00
+  [0] frame.K2Node_CustomEvent_Loaded = Loaded
+  [18] ExecuteUbergraph_BPGM_City(3380)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_CB047176483E6DBC3B9FA1A31481BAF7
+  [0] frame.K2Node_CustomEvent_Loaded_2 = Loaded
+  [18] ExecuteUbergraph_BPGM_City(4020)
+  [33] return nothing
+  [35] end
+
+=== OnLoaded_DB255E6F48B377D35EE73980C0C534C1
+  [0] frame.K2Node_CustomEvent_Loaded_1 = Loaded
+  [18] ExecuteUbergraph_BPGM_City(3605)
+  [33] return nothing
+  [35] end
+
+=== PlayerCharacterSpawned
+  [0] frame.K2Node_Event_PlayerCharacter = PlayerCharacter
+  [18] ExecuteUbergraph_BPGM_City(473)
+  [33] return nothing
+  [35] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_BPGM_City(474)
+  [15] return nothing
+  [17] end
+
+=== SetAtmosphereSpawner
+  [0] frame.K2Node_Event_AtmosphereSpawner = AtmosphereSpawner
+  [18] ExecuteUbergraph_BPGM_City(1839)
+  [33] return nothing
+  [35] end
+
+=== SpawnAtmosphere
+  [0] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.SelectedTODClass)
+  [29] if !(CallFunc_IsValidClass_ReturnValue) goto @71
+  [43] SpawnAtmosphereFromClass(self.SelectedTODClass)
+  [66] goto @301
+  [71] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp = cast<atmosphere_spawner_bp_C>(self.CurrentAtmosphereSpawner)
+  [107] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp)
+  [136] Default__atmospheres_library_C.GetRandomAtmosphereIndex(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp, self, CallFunc_GetRandomAtmosphereIndex_NewAtmosphereIndex)
+  [191] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp = cast<atmosphere_spawner_bp_C>(self.CurrentAtmosphereSpawner)
+  [227] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp)
+  [256] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp.ServerRequestAtmosphereByIndex(CallFunc_GetRandomAtmosphereIndex_NewAtmosphereIndex)
+  [301] return nothing
+  [303] end
+
+=== SpawnAtmosphereFromClass
+  [0] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp = cast<atmosphere_spawner_bp_C>(self.CurrentAtmosphereSpawner)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAtmosphere_Spawner_Bp)
+  [65] K2Node_DynamicCast_AsAtmosphere_Spawner_Bp.ServerRequestAtmosphereByClass(In Class)
+  [110] return nothing
+  [112] end
+
+=== TriggerEndOfHuntSequence
+  [0] ExecuteUbergraph_BPGM_City(471)
+  [15] return nothing
+  [17] end
+
+=== TriggerIntroCinematic
+  [0] frame.K2Node_Event_Player = Player
+  [18] ExecuteUbergraph_BPGM_City(470)
+  [33] return nothing
+  [35] end
+
+=== TriggerSetAtmpsphereSpawner
+  [0] frame.K2Node_CustomEvent_AtmosphereSpawner = AtmosphereSpawner
+  [18] ExecuteUbergraph_BPGM_City(3629)
+  [33] return nothing
+  [35] end
+
+=== UserConstructionScript
+  [0] PrintString(self, 'City Game Mode Construction Called', false, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [101] return nothing
+  [103] end
+
+=== WaitForSetAtmosphereSpawner
+  [0] ExecuteUbergraph_BPGM_City(3737)
+  [15] return nothing
+  [17] end

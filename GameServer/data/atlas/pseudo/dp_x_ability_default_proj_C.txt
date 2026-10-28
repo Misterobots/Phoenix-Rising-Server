@@ -1,0 +1,249 @@
+# dp_x_ability_default_proj_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AudioSetIsLocal
+  [0] ExecuteUbergraph_dp_x_ability_default_proj(1379)
+  [15] return nothing
+  [17] end
+
+=== CanDamageThisTarget
+  [0] CallFunc_GetCollisionObjectType_ReturnValue = OtherComponent.GetCollisionObjectType()
+  [54] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCollisionObjectType_ReturnValue, 29)
+  [85] Can = CallFunc_EqualEqual_ByteByte_ReturnValue
+  [104] return nothing
+  [106] end
+
+=== CanExplodeOnThisTarget
+  [0] CallFunc_GetCollisionObjectType_ReturnValue = OtherComponent.GetCollisionObjectType()
+  [54] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(CallFunc_GetCollisionObjectType_ReturnValue, 29)
+  [85] Can = CallFunc_NotEqual_ByteByte_ReturnValue
+  [104] return nothing
+  [106] end
+
+=== CleanupProjectileVFX
+  [0] ExecuteUbergraph_dp_x_ability_default_proj(1720)
+  [15] return nothing
+  [17] end
+
+=== DealDamage
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @479
+  [35] CallFunc_MakeTransform_ReturnValue = MakeTransform(DamagePos, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [122] Temp_class_Variable = BP_AoE_dp_explosive_shot_empowered_C
+  [141] Temp_class_Variable_1 = BP_AoE_dp_explosive_shot_C
+  [160] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [180] Temp_bool_Variable = self.Empowered
+  [199] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, switch(Temp_bool_Variable){false: Temp_class_Variable_1, true: Temp_class_Variable, default: K2Node_Select_Default}, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetInstigator_ReturnValue)
+  [293] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [313] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [354] CallFunc_MakeTransform_ReturnValue = MakeTransform(DamagePos, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [441] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [479] return nothing
+  [481] end
+
+=== ExecuteUbergraph_dp_x_ability_default_proj
+  [0] push @1725
+  [5] goto computed(EntryPoint)
+  [15] CleanupProjectileVFX()
+  [29] pop
+  [30] ReceiveBeginPlay()
+  [40] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [60] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(CallFunc_GetInstigator_ReturnValue)
+  [96] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [125] if !(K2Node_DynamicCast_bSuccess) goto @1036
+  [139] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [185] K2Node_DynamicCast_AsDp_Weapon_Bp = cast<dp_weapon_bp_C>(CallFunc_GetOwnedWeapon_Weapon)
+  [221] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsDp_Weapon_Bp)
+  [250] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [260] self.ElementalType = K2Node_DynamicCast_AsDp_Weapon_Bp.self.ElementalType
+  [309] PlayStartAudio()
+  [323] K2Node_DynamicCast_AsDp_Weapon_Bp.Get VFXLocation(0, CallFunc_Get_VFXLocation_Position, CallFunc_Get_VFXLocation_Rotation, CallFunc_Get_VFXLocation_AttachableComponent, CallFunc_Get_VFXLocation_SocketName)
+  [397] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [417] Default__vfx_function_library_C.FindElementalVFXFromOwner(self.MuzzleVFX, CallFunc_GetInstigator_ReturnValue_2, self, CallFunc_FindElementalVFXFromOwner_ParticleSystem)
+  [481] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, CallFunc_FindElementalVFXFromOwner_ParticleSystem, CallFunc_Get_VFXLocation_Position, CallFunc_Get_VFXLocation_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [558] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_SpawnEmitterAtLocation_ReturnValue)
+  [587] if !(CallFunc_IsValid_ReturnValue_2) goto @658
+  [601] CallFunc_SpawnEmitterAtLocation_ReturnValue.SetWorldScale3D(EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [658] CallFunc_IsValid_ReturnValue_1 = IsValid(self.ParticleSystem)
+  [687] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [697] CallFunc_GetInstigator_ReturnValue_3 = GetInstigator()
+  [717] Default__vfx_function_library_C.FindElementalVFXFromOwner(self.ProjectileVFX, CallFunc_GetInstigator_ReturnValue_3, self, CallFunc_FindElementalVFXFromOwner_ParticleSystem_1)
+  [781] self.ParticleSystem.SetTemplate(CallFunc_FindElementalVFXFromOwner_ParticleSystem_1)
+  [822] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [868] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLocalController_ArchonPlayerController)
+  [897] if !(CallFunc_IsValid_ReturnValue) pop
+  [907] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [953] CallFunc_GetLocalController_ArchonPlayerController.ClientStartCameraShake(BP_CameraShake_Medium_C, 1.0, 1.0, 0, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}))
+  [1035] pop
+  [1036] CallFunc_GetOwnedWeapon_Weapon = null
+  [1047] goto @185
+  [1052] push @1097
+  [1057] if !(Temp_bool_Has_Been_Initd_Variable) goto @1072
+  [1071] pop
+  [1072] Temp_bool_Has_Been_Initd_Variable = true
+  [1083] if !(false) pop
+  [1085] Temp_bool_IsClosed_Variable = true
+  [1096] pop
+  [1097] if !(Temp_bool_IsClosed_Variable) goto @1112
+  [1111] pop
+  [1112] Temp_bool_IsClosed_Variable = true
+  [1123] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [1151] DealDamage(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1174] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [1202] ShowImpactVFX(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1225] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [1253] ShowDebrisVFX(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1276] PlayStopAudio()
+  [1290] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [1318] PlayExplosiveAudio(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1341] goto @15
+  [1346] ProjectileExploded(K2Node_Event_ExplosionLocation, K2Node_Event_ExplodeType)
+  [1374] goto @1052
+  [1379] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [1399] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetInstigator_ReturnValue_1)
+  [1435] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1464] if !(K2Node_DynamicCast_bSuccess_2) goto @1543
+  [1478] K2Node_DynamicCast_AsPlayer_Interface.GetIsLocalPlayerAudioEnabled(CallFunc_GetIsLocalPlayerAudioEnabled_Out)
+  [1524] self.IsLocalPlayerAudioEnabled = CallFunc_GetIsLocalPlayerAudioEnabled_Out
+  [1543] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [1580] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, self, 'Gameplay_Created_By_Player')
+  [1641] pop
+  [1642] self.ParticleSystem.K2_DestroyComponent(self)
+  [1675] pop
+  [1676] CallFunc_IsValid_ReturnValue_3 = IsValid(self.ParticleSystem)
+  [1705] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [1715] goto @1642
+  [1720] goto @1676
+  [1725] return nothing
+  [1727] end
+
+=== PlayExplosiveAudio
+  [0] push @865
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ExplodeAudioStruct)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @791
+  [190] Default__KismetArrayLibrary.Array_Get(self.ExplodeAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.RequireElementType, self.ElementalType)
+  [296] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [306] Default__KismetArrayLibrary.Array_Get(self.ExplodeAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [365] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_Array_Get_Item.AKAudioEvent)
+  [403] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [413] Default__KismetArrayLibrary.Array_Get(self.ExplodeAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [472] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, CallFunc_Array_Get_Item.AKAudioEvent, ExplosionPos, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [571] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue)
+  [600] if !(CallFunc_IsValid_ReturnValue) pop
+  [610] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled_0)
+  [647] CallFunc_SpawnAkComponentAtLocation_ReturnValue.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, 'Gameplay_Created_By_Player')
+  [722] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [790] pop
+  [791] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [833] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [860] goto @51
+  [865] return nothing
+  [867] end
+
+=== PlayStartAudio
+  [0] push @1262
+  [5] push @562
+  [10] Temp_int_Loop_Counter_Variable = 0
+  [33] Temp_int_Array_Index_Variable = 0
+  [56] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.PersistentAudioStruct)
+  [115] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [153] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [163] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [190] push @1188
+  [195] Default__KismetArrayLibrary.Array_Get(self.PersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [254] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_Array_Get_Item_1.RequireElementType, self.ElementalType)
+  [301] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) pop
+  [311] Default__KismetArrayLibrary.Array_Get(self.PersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [370] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_Array_Get_Item_1.AKAudioEvent)
+  [408] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [418] Default__KismetArrayLibrary.Array_Get(self.PersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [477] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(CallFunc_Array_Get_Item_1.AKAudioEvent, self, 0, Temp_delegate_Variable_1, false)
+  [561] pop
+  [562] Temp_int_Loop_Counter_Variable_1 = 0
+  [585] Temp_int_Array_Index_Variable_1 = 0
+  [608] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PassbyAudioStruct)
+  [667] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [705] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [715] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [742] push @1114
+  [747] Default__KismetArrayLibrary.Array_Get(self.PassbyAudioStruct, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [806] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.ElementalType, CallFunc_Array_Get_Item.RequireElementType)
+  [853] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [863] Default__KismetArrayLibrary.Array_Get(self.PassbyAudioStruct, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [922] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item.AKAudioEvent)
+  [960] if !(CallFunc_IsValid_ReturnValue) pop
+  [970] Default__KismetArrayLibrary.Array_Get(self.PassbyAudioStruct, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1029] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(CallFunc_Array_Get_Item.AKAudioEvent, self, 0, Temp_delegate_Variable, false)
+  [1113] pop
+  [1114] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1156] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1183] goto @608
+  [1188] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1230] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1257] goto @56
+  [1262] return nothing
+  [1264] end
+
+=== PlayStopAudio
+  [0] push @631
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StopPersistentAudioStruct)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @557
+  [190] Default__KismetArrayLibrary.Array_Get(self.StopPersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.RequireElementType, self.ElementalType)
+  [296] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [306] Default__KismetArrayLibrary.Array_Get(self.StopPersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [365] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item.AKAudioEvent)
+  [403] if !(CallFunc_IsValid_ReturnValue) pop
+  [413] Default__KismetArrayLibrary.Array_Get(self.StopPersistentAudioStruct, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [472] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(CallFunc_Array_Get_Item.AKAudioEvent, self, 0, Temp_delegate_Variable, false)
+  [556] pop
+  [557] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [599] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [626] goto @51
+  [631] return nothing
+  [633] end
+
+=== ProjectileExploded
+  [0] frame.K2Node_Event_ExplosionLocation = ExplosionLocation
+  [18] frame.K2Node_Event_ExplodeType = ExplodeType
+  [36] ExecuteUbergraph_dp_x_ability_default_proj(1346)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_dp_x_ability_default_proj(30)
+  [15] return nothing
+  [17] end
+
+=== ShowDebrisVFX
+  [0] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(ImpactPos, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [62] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(ImpactPos, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [124] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 0, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [260] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [441] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_BreakHitResult_PhysMat)
+  [470] if !(CallFunc_IsValid_ReturnValue) goto @1121
+  [484] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [665] Default__vfx_and_sound_bpfl_C.GetDebrisData(CallFunc_BreakHitResult_PhysMat.self.SurfaceType, self, CallFunc_GetDebrisData_FoundVFX, CallFunc_GetDebrisData_HasFound, CallFunc_GetDebrisData_SurfaceName)
+  [760] if !(CallFunc_GetDebrisData_HasFound) goto @1121
+  [774] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [955] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDebrisData_FoundVFX.vfx_asset, 5, CallFunc_Array_Get_Item)
+  [1019] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, CallFunc_Array_Get_Item.particle_system, CallFunc_BreakHitResult_ImpactPoint, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1121] return nothing
+  [1123] end
+
+=== ShowImpactVFX
+  [0] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [20] Default__vfx_function_library_C.FindElementalVFXFromOwner(self.ImpactVFX, CallFunc_GetInstigator_ReturnValue, self, CallFunc_FindElementalVFXFromOwner_ParticleSystem)
+  [84] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, CallFunc_FindElementalVFXFromOwner_ParticleSystem, ImpactPos, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [177] return nothing
+  [179] end

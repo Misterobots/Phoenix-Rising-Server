@@ -1,0 +1,40 @@
+shared_inalert_protectvent_strafeandlook_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  Sequence
+    {service try_pick_new_target_bts  (Interval=2)}
+    1) Selector
+      [if not navtrace_btdeco  (TraceTargetBlackboardKey=CurrentPatrolPoint, bInverseCondition=true)]
+      [if TimeLimit]
+      [if Cooldown]
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      1) Sequence
+        1) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentPatrolPoint)
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      [if Cooldown  (CooldownTime=10)]
+      [if TimeLimit]
+      [if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.CurrentPatrolPoint, MinDistance={"ConstantFloat": 3000.0}, MaxDistance={"ConstantFloat": 99999.0}, bShowPropertyDetails=false)]
+      2) Sequence
+        1) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentPatrolPoint)
+      3) Sequence
+        [if Blackboard  (AttackTarget is Is Set)]
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=25)
+        2) Selector
+          [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.CurrentPatrolPoint)]
+          1) generic_action_bttask  (ActionType=StrafeLeft, RequireThatActionExists=true)
+          [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.CurrentPatrolPoint)]
+          2) generic_action_bttask  (ActionType=StrafeRight, RequireThatActionExists=true)
+          [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.CurrentPatrolPoint)]
+          3) Sequence
+            1) generic_action_bttask  (ActionType=BackUp, RequireThatActionExists=true)
+          4) Selector
+            [if btdeco_percentchance  (PercentChance=0.333)]
+            1) generic_action_bttask  (ActionType=StrafeLeft, RequireThatActionExists=true)
+            [if btdeco_percentchance  (PercentChance=0.333)]
+            2) generic_action_bttask  (ActionType=StrafeRight, RequireThatActionExists=true)
+            3) Selector
+              1) generic_action_bttask  (ActionType=Suspicious, RequireThatActionExists=true)
+              2) generic_action_bttask  (ActionType=LookAround)

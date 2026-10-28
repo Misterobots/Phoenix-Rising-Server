@@ -1,0 +1,883 @@
+{
+ "name": "electroquill_archetype_bp",
+ "package": "Archon/Content/Monsters/sq/electroquill/electroquill_archetype_bp",
+ "type": "ClassDefaults",
+ "class": "electroquill_archetype_bp_C",
+ "refs": [
+  "AlignmentComponent",
+  "CharMoveComp",
+  "CharacterEventDispatcherComponent",
+  "CharacterMesh0",
+  "CollisionCylinder",
+  "EncounterThreatComponent",
+  "GameplayActionComponent",
+  "GameplayActionComponent.PhxComboGameplayActionActorData_0",
+  "GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0",
+  "PartCollisionComponent",
+  "PhxGameplayPropertyOverrideComponent",
+  "Play_Generic_Elemental_Shock_Persistent_Shock_01",
+  "Stop_Generic_Elemental_Shock_Persistent_Shock_01",
+  "SyncedAnimationComponent",
+  "behemoth_base_loco_table_C",
+  "behemoth_metadata_table",
+  "behemoth_rage_electroquill_p",
+  "electroquill_action_set",
+  "electroquill_bt",
+  "electroquill_charged_p",
+  "electroquill_damage_table",
+  "electroquill_generic_action_table_C",
+  "electroquill_loco_table_C",
+  "electroquill_modifier_vines_nodustin_bp_C",
+  "electroquill_projectile_C",
+  "electroquill_stagger_table_C",
+  "electroquill_tesla_projectile_C",
+  "electroquill_tower_vines_bp_C",
+  "quills_tough_ptpreset_C",
+  "rage_eye_trails_p",
+  "sq_electroquill_00",
+  "sq_electroquill_00_player_phat",
+  "sq_electroquill_tail_sever_bp_C",
+  "sq_genus_generic_action_table_C",
+  "sq_genus_loco_table_C",
+  "standard_part_bspreset_C",
+  "unbreakable_standard_ptpreset_C"
+ ],
+ "exports": {
+  "behemoth_statemanager_bpc_GEN_VARIABLE": {
+   "type": "behemoth_statemanager_bpc_C",
+   "props": {
+    "StateInfos": [
+     {
+      "State": "behemoth_states_enum::ReadyToAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::Combat",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         70.0,
+         55.0,
+         30.0
+        ],
+        "ConditionRequirements": []
+       },
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::End",
+        "ScalingDelay": [
+         70.0,
+         55.0,
+         30.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [
+       "behemoth_states_enum::AtherCharged",
+       "behemoth_states_enum::Injured/PrepToFlee",
+       "behemoth_states_enum::ReadyToFlee"
+      ],
+      "RequiredStates": []
+     },
+     {
+      "State": "behemoth_states_enum::ReadyToExitAetherCharge",
+      "EntryConditions": [
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::ActivelyFleeing",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [],
+        "ConditionRequirements": []
+       },
+       {
+        "ConditionType": "behemoth_statecondition_type::BehemothStateChanged",
+        "StateVar": "behemoth_states_enum::AtherCharged",
+        "StateChangeType": "behemoth_state_event::Begin",
+        "ScalingDelay": [
+         120.0,
+         180.0,
+         240.0,
+         500.0
+        ],
+        "ConditionRequirements": []
+       }
+      ],
+      "DisallowedStates": [],
+      "RequiredStates": [
+       "behemoth_states_enum::AtherCharged"
+      ]
+     }
+    ]
+   }
+  },
+  "DamageComp_GEN_VARIABLE": {
+   "type": "DamageComponent",
+   "props": {
+    "DamageTable": "DataTable electroquill_damage_table"
+   }
+  },
+  "Default__electroquill_archetype_bp_C": {
+   "type": "electroquill_archetype_bp_C",
+   "props": {
+    "UberGraphFrame": {},
+    "AbsorbingQuillsTimer": {
+     "Handle": 0
+    },
+    "ReadyToSetupQuillsTimer": {
+     "Handle": 0
+    },
+    "ReadyToAbsorbQuillsTimer": {
+     "Handle": 0
+    },
+    "UnchargedQuillLength": -0.10000000149011612,
+    "ChargeTowerTotalIterations": 6,
+    "LightningStrikeToTowerTimer": {
+     "Handle": 0
+    },
+    "ChargeTowerFrequency": 0.33329999446868896,
+    "ChargeTowerStartPos": {
+     "X": 0.0,
+     "Y": 0.0,
+     "Z": 0.0
+    },
+    "ChargeTowerGUID": "00000000-00000000-00000000-00000000",
+    "CurrentTelsaQuillFrequency": 10.0,
+    "TeslaQuillRange": 4000.0,
+    "ACProjTimer": {
+     "Handle": 0
+    },
+    "TeslaQuillShootTimer": {
+     "Handle": 0
+    },
+    "TeslaACCooldown": 50.0,
+    "TeslaRageFrequency": 8.0,
+    "InitialTeslaQuillFrequency": 11.0,
+    "TeslaQuillClass": "BlueprintGeneratedClass electroquill_tesla_projectile_C",
+    "TelsaQuillsAllowedInAC": 7,
+    "TeslaQuillsAllowed": 5,
+    "DestroyingQuillNextStun": true,
+    "TeslaQuillsAddedToPlayerCountForTotal": 1,
+    "L_TeslaProjectilesGUID": "00000000-00000000-00000000-00000000",
+    "NemesisRequirements": {
+     "StateRequirement": "behemoth_states_enum::None",
+     "StateRequirementType": "behemoth_req_state_type::RequiresState",
+     "ServerBlackboardKey": "None",
+     "ServerBlackboardKeyCompareOperator": "Enum_CompareOperators::==",
+     "ServerBlackboardKeyCompareType": "blackboard_comparable_key_type::Bool",
+     "ServerBlackboardKeyComparerValue": {
+      "BlackboardKeyName": "None",
+      "ConstantBool": true,
+      "ConstantInt": 0,
+      "ConstantFloat": 0.0,
+      "ConstantObject": null,
+      "ConstantClass": null,
+      "ConstantName": "None",
+      "ConstantVector": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      }
+     },
+     "RequireBehemothArchetypeName": "",
+     "ArchetypeCondition": "require_or_exclude::Require",
+     "RequireBehemothClassificationName": "Nemesis",
+     "ClassificationCondition": "require_or_exclude::Exclude",
+     "RequireBehemothFunctionSuccess": "None",
+     "RequireIntactPartName": "None",
+     "PartRequirements": {
+      "PartNamesToCheck": [],
+      "PartListRequirementType": "boolean_combine_type::RequireAll",
+      "PartStateRequirements": [],
+      "PartStateExclusions": []
+     },
+     "RequireTagsOnBehemothAbilitySystem": [],
+     "ExcludeTagsOnBehemothAbilitySystem": [],
+     "MetadataTagQuery": {
+      "TokenStreamVersion": 0,
+      "TagDictionary": [],
+      "QueryTokenStream": [],
+      "UserDescription": "",
+      "AutoDescription": ""
+     },
+     "BehemothTagQueries": {
+      "Queries": []
+     }
+    },
+    "QuillProjectileClass": "BlueprintGeneratedClass electroquill_projectile_C",
+    "UseRandomQuillIndex": false,
+    "BaseHealth": 30000.0,
+    "Rage Vfx": [
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "l_eye_socket_electroquill",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     },
+     {
+      "Vfx": "ParticleSystem rage_eye_trails_p",
+      "Socket_Name": "r_eye_socket_electroquill",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     },
+     {
+      "Vfx": "ParticleSystem behemoth_rage_electroquill_p",
+      "Socket_Name": "None",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     }
+    ],
+    "BehaviorTree": "BehaviorTree electroquill_bt",
+    "Behemoth Name - Voice": "Electroquill",
+    "AetherVFX": [
+     {
+      "Vfx": "ParticleSystem electroquill_charged_p",
+      "Socket_Name": "spine_02_jnt",
+      "Offset": {
+       "X": 0.0,
+       "Y": 0.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Scale": {
+       "X": 1.0,
+       "Y": 1.0,
+       "Z": 1.0
+      },
+      "AttachToComponent": "attach_or_not_type::AttachToComponent",
+      "UseComponentRotation": false
+     }
+    ],
+    "EoM_LootID": "",
+    "Aether Charge - Start Event": "AkAudioEvent Play_Generic_Elemental_Shock_Persistent_Shock_01",
+    "Aether Charge - Stop Event": "AkAudioEvent Stop_Generic_Elemental_Shock_Persistent_Shock_01",
+    "Behemoth Music": "Bullseye",
+    "ArchetypeName": "Electroquill",
+    "GenericActionLists": [
+     "BlueprintGeneratedClass sq_genus_generic_action_table_C",
+     "BlueprintGeneratedClass electroquill_generic_action_table_C"
+    ],
+    "StaggerLists": [
+     "BlueprintGeneratedClass electroquill_stagger_table_C"
+    ],
+    "BehemothLocoTypes": [
+     "BlueprintGeneratedClass behemoth_base_loco_table_C",
+     "BlueprintGeneratedClass sq_genus_loco_table_C",
+     "BlueprintGeneratedClass electroquill_loco_table_C"
+    ],
+    "BehemothElementalResistAndPowerSet": "behemoth_resistset_type::ShockWeakToTerra",
+    "HasEnterArenaBehavior": true,
+    "ActionSetTable": "DataTable electroquill_action_set",
+    "PrimaryOffenseElementType": "EArchonElementType::ElementType_SHOCK",
+    "FrostResistance": -0.5,
+    "ShockResistance": 0.5,
+    "BehemothDataRow": "behemoth_metadata_table[electroquill_normal]",
+    "OwnedTagsContainer": [],
+    "GameplayActionComponent": "PhxGameplayActionComponent GameplayActionComponent",
+    "AlignmentComponent": "PhxAlignmentComponent AlignmentComponent",
+    "SyncedAnimationComponent": "PhxSyncedAnimationComponent SyncedAnimationComponent",
+    "EncounterThreatComponent": "EncounterThreatComponent EncounterThreatComponent",
+    "PartCollisionComponent": "ArchonPartCollisionComponent PartCollisionComponent",
+    "PhxGameplayPropertyOverrideComponent": "PhxGameplayPropertyOverrideComponent PhxGameplayPropertyOverrideComponent",
+    "CharacterEventDispatcherComponent": "ArchonCharacterEventDispatcherComponent CharacterEventDispatcherComponent",
+    "Mesh": "SkeletalMeshComponentBudgeted CharacterMesh0",
+    "CharacterMovement": "ArchonBehemothMovementComponent CharMoveComp",
+    "CapsuleComponent": "CapsuleComponent CollisionCylinder",
+    "RootComponent": "CapsuleComponent CollisionCylinder"
+   }
+  },
+  "elemental_health_updated_bpc_GEN_VARIABLE": {
+   "type": "elemental_health_updated_bpc_C",
+   "props": {
+    "DebuffsOnProc": [],
+    "ElementalHealthStageData": {
+     "StageData": [
+      {
+       "Key": "EArchonElementType::ElementType_FROST",
+       "Value": {
+        "Health": 6000.0,
+        "RegenRate": 50.0,
+        "TimeBeforeRegenStarts": 10.0,
+        "PercentIncreasePerState": 0.25,
+        "PercentIncreasePerPlayer": [
+         0.0,
+         0.5,
+         1.0,
+         1.5
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "BackLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "BackRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "Body_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "FrontLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat"
+   }
+  },
+  "FrontRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat"
+   }
+  },
+  "HeadLeft_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartPreset": null,
+    "PartBreakPreset": null,
+    "Severable Actor To Spawn": null,
+    "PhATBones": [],
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [],
+    "RatioOfBehemothHealth": 0.09,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "HeadRight_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "PartBreakPreset": "BlueprintGeneratedClass standard_part_bspreset_C",
+    "SeverPartOnPartBreak": true,
+    "Severable Spawn Socket": "None",
+    "Severable Actor To Spawn": null,
+    "PhATBones": [
+     "neck_01_jnt",
+     "neck_02_jnt",
+     "l_face_jnt",
+     "neck_quills_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "RatioOfBehemothHealth": 0.09,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "Tail_GEN_VARIABLE": {
+   "type": "monsterpart_bpc_C",
+   "props": {
+    "SeveredPartBBKey": "Tail Severed",
+    "Severable Actor To Spawn": "BlueprintGeneratedClass sq_electroquill_tail_sever_bp_C",
+    "PhATBones": [
+     "tail_00_jnt",
+     "tail_02_jnt",
+     "tail_04_jnt",
+     "tail_06_jnt",
+     "tail_08_jnt"
+    ],
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "tail_00_jnt",
+     "tail_01_jnt",
+     "tail_02_jnt",
+     "tail_03_jnt",
+     "tail_04_jnt",
+     "tail_05_jnt",
+     "tail_06_jnt",
+     "tail_07_jnt",
+     "tail_08_jnt",
+     "tail_09_jnt",
+     "tail_10_jnt"
+    ],
+    "RatioOfBehemothHealth": 0.125
+   }
+  },
+  "GameplayActionComponent": {
+   "type": "PhxGameplayActionComponent",
+   "props": {
+    "GameplayActionData": [
+     "PhxComboGameplayActionActorData GameplayActionComponent.PhxComboGameplayActionActorData_0",
+     "PhxMoveAndDoGameplayActionActorData GameplayActionComponent.PhxMoveAndDoGameplayActionActorData_0"
+    ]
+   }
+  },
+  "QuillsHead_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "Quills": [
+     {
+      "BlendShapeName": "geo_quills_head_long",
+      "BoneName": "neck_03_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": false,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     }
+    ],
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass quills_tough_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "neck_quills_jnt"
+    ],
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsLeftArm_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass quills_tough_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "RatioOfBehemothHealth": 0.1,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsRightArm_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass quills_tough_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "RatioOfBehemothHealth": 0.1,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsTail_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass quills_tough_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "PhATBones": [
+     "tail_03_jnt",
+     "tail_06_jnt",
+     "tail_08_jnt"
+    ],
+    "MovementPhATAsset": null,
+    "MovementPhATBones": [],
+    "RatioOfBehemothHealth": 0.15,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsUpperBackLeft_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "Quills": [
+     {
+      "BlendShapeName": "geo_quills_left_back_00_long",
+      "BoneName": "l_thigh_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": false,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_01_long",
+      "BoneName": "quills_left_back_01_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_02_long",
+      "BoneName": "quills_left_back_02_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_03_long",
+      "BoneName": "quills_left_back_03_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_04_long",
+      "BoneName": "quills_left_back_04_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_05_long",
+      "BoneName": "quills_left_back_05_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_back_06_long",
+      "BoneName": "quills_left_back_06_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     }
+    ],
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass unbreakable_standard_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "l_back_quills_jnt",
+     "l_back_quills_00_jnt",
+     "l_back_quills_01_jnt"
+    ],
+    "RatioOfBehemothHealth": 9999.0,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsUpperBackRight_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "Quills": [
+     {
+      "BlendShapeName": "geo_quills_right_back_00_long",
+      "BoneName": "r_thigh_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": false,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_back_01_long",
+      "BoneName": "quills_right_back_01_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_back_02_long",
+      "BoneName": "quills_right_back_02_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_back_03_long",
+      "BoneName": "quills_right_back_03_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_back_04_long",
+      "BoneName": "quills_right_back_04_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_back_05_long",
+      "BoneName": "quills_right_back_05_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     }
+    ],
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass unbreakable_standard_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "r_back_quills_jnt",
+     "r_back_quills_00_jnt",
+     "r_back_quills_01_jnt"
+    ],
+    "RatioOfBehemothHealth": 9999.0,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsUpperFrontLeft_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "Quills": [
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_00_long",
+      "BoneName": "l_upper_arm_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": false,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_01_long",
+      "BoneName": "quills_left_shoulder_01_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_02_long",
+      "BoneName": "quills_left_shoulder_02_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_03_long",
+      "BoneName": "quills_left_shoulder_03_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_04_long",
+      "BoneName": "quills_left_shoulder_04_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_05_long",
+      "BoneName": "quills_left_shoulder_05_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_left_shoulder_06_long",
+      "BoneName": "quills_left_shoulder_06_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     }
+    ],
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass unbreakable_standard_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "l_front_quills_jnt",
+     "l_front_quills_00_jnt",
+     "l_front_quills_01_jnt"
+    ],
+    "RatioOfBehemothHealth": 9999.0,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "QuillsUpperFrontRight_GEN_VARIABLE": {
+   "type": "quillpart_bpc_C",
+   "props": {
+    "Quills": [
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_00_long",
+      "BoneName": "r_upper_arm_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": false,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_01_long",
+      "BoneName": "quills_right_shoulder_01_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_02_long",
+      "BoneName": "quills_right_shoulder_02_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_03_long",
+      "BoneName": "quills_right_shoulder_03_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_04_long",
+      "BoneName": "quills_right_shoulder_04_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     },
+     {
+      "BlendShapeName": "geo_quills_right_shoulder_05_long",
+      "BoneName": "quills_right_shoulder_05_jnt",
+      "CurrentBlendValue": 0.0,
+      "IsShootable": true,
+      "DesiredBlendValue": 0.0,
+      "InterpSpeed": 0.0,
+      "BlendDelayTime": 0.0
+     }
+    ],
+    "FullQuillBlendValue": -0.10000000149011612,
+    "PartPreset": "BlueprintGeneratedClass unbreakable_standard_ptpreset_C",
+    "CurrentBreakStage": 1,
+    "MovementPhATAsset": "PhysicsAsset sq_electroquill_00_player_phat",
+    "MovementPhATBones": [
+     "r_front_quills_jnt",
+     "r_front_quills_00_jnt",
+     "r_front_quills_01_jnt"
+    ],
+    "RatioOfBehemothHealth": 9999.0,
+    "MonsterDamagableShapesScale": 1.125
+   }
+  },
+  "CharacterMesh0": {
+   "type": "SkeletalMeshComponentBudgeted",
+   "props": {
+    "SkeletalMesh": "SkeletalMesh sq_electroquill_00",
+    "SkinnedAsset": "SkeletalMesh sq_electroquill_00",
+    "OverrideMaterials": [
+     null,
+     null,
+     null
+    ],
+    "AttachParent": "CapsuleComponent CollisionCylinder",
+    "RelativeLocation": {
+     "X": 0.0,
+     "Y": 30.0,
+     "Z": -250.0
+    },
+    "RelativeScale3D": {
+     "X": 0.75,
+     "Y": 0.75,
+     "Z": 0.75
+    }
+   }
+  },
+  "gameobject_manager_bpc_GEN_VARIABLE": {
+   "type": "spawnedactor_manager_bpc_C",
+   "props": {
+    "ActorData": [
+     {
+      "ActorClass": "BlueprintGeneratedClass electroquill_tesla_projectile_C",
+      "MaxAllowedAmount": 4,
+      "WhatToDoIfOverMaxAllowed": "too_many_actors_strategy::DestroyOldest",
+      "SpawnPoolsThisIsRestrictedBy": []
+     },
+     {
+      "ActorClass": "BlueprintGeneratedClass electroquill_tower_vines_bp_C",
+      "MaxAllowedAmount": 1,
+      "WhatToDoIfOverMaxAllowed": "too_many_actors_strategy::DestroyOldest",
+      "SpawnPoolsThisIsRestrictedBy": []
+     },
+     {
+      "ActorClass": "BlueprintGeneratedClass electroquill_modifier_vines_nodustin_bp_C",
+      "MaxAllowedAmount": 2,
+      "WhatToDoIfOverMaxAllowed": "too_many_actors_strategy::DestroyOldest",
+      "SpawnPoolsThisIsRestrictedBy": []
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,106 @@
+# onfire_debuff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_onfire_debuff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] Default__buff_function_library_C.AdjustBuffTempStacks(CallFunc_GetBuffOwner_ReturnValue, -1, 0, false, self)
+  [84] goto @812
+  [89] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [118] CallFunc_UpdateExpireTime_NewDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeRemaining)
+  [147] UpdateExpireTime(CallFunc_UpdateExpireTime_NewDuration_ImplicitCast, true)
+  [167] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.TimeRemaining, 0.0)
+  [205] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @812
+  [219] UpdateEffectTime(self.TimeRemaining)
+  [242] goto @812
+  [247] FlushNetDormancy()
+  [257] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.TimeRemaining, self.TimeToRemoveOnRoll)
+  [303] self.TimeRemaining = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [330] goto @89
+  [335] FlushNetDormancy()
+  [345] K2Node_VariableSet_TimeRemaining_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [374] self.TimeRemaining = K2Node_VariableSet_TimeRemaining_ImplicitCast
+  [401] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [430] UpdateEffectTime(self.TimeRemaining)
+  [453] goto @812
+  [458] FlushNetDormancy()
+  [468] self.MaxDuration = 6.0
+  [491] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxDuration')
+  [520] goto @10
+  [525] MulticastOnAdded()
+  [535] ProcessOnFireEffectiveness()
+  [549] goto @812
+  [554] OnGameplayEventTriggered(K2Node_Event_Payload)
+  [573] goto @247
+  [578] MulticastOnRefreshed()
+  [588] goto @335
+  [593] ReceiveDestroyed()
+  [603] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [623] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [652] CallFunc_RemoveActiveEffectsWithGrantedTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveEffectsWithGrantedTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Buffs.OnFire'})})
+  [757] goto @812
+  [762] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, status_effect_changes_bpff_C, true)
+  [793] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @812
+  [807] goto @458
+  [812] return nothing
+  [814] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_onfire_debuff(525)
+  [15] return nothing
+  [17] end
+
+=== MulticastOnRefreshed
+  [0] ExecuteUbergraph_onfire_debuff(578)
+  [15] return nothing
+  [17] end
+
+=== OnGameplayEventTriggered
+  [0] frame.K2Node_Event_Payload = Payload
+  [18] ExecuteUbergraph_onfire_debuff(554)
+  [33] return nothing
+  [35] end
+
+=== ProcessOnFireEffectiveness
+  [0] OnFireEffectivenessMultiplier = 0.0
+  [27] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [47] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [76] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:StatusOnFireEffectivenessMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [217] if !(CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute) goto @1002
+  [231] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [251] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [280] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:StatusOnFireEffectivenessMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [421] K2Node_VariableSet_OnFireEffectivenessMultiplier_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [450] OnFireEffectivenessMultiplier = K2Node_VariableSet_OnFireEffectivenessMultiplier_ImplicitCast
+  [477] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, status_effect_changes_bpff_C, true)
+  [508] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @714
+  [522] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.FlameDamageAmount, OnFireEffectivenessMultiplier)
+  [568] self.FlameDamageAmount = CallFunc_Multiply_DoubleDouble_ReturnValue_1
+  [595] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(self.FlameDamageAmount, 0.0)
+  [633] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @1002
+  [647] FlushNetDormancy()
+  [657] self.MaxDuration = 0.0
+  [680] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxDuration')
+  [709] goto @1002
+  [714] FlushNetDormancy()
+  [724] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [753] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(OnFireEffectivenessMultiplier, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [799] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [828] self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [855] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxDuration')
+  [884] FlushNetDormancy()
+  [894] K2Node_VariableSet_TimeRemaining_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [923] self.TimeRemaining = K2Node_VariableSet_TimeRemaining_ImplicitCast
+  [950] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [979] UpdateEffectTime(self.TimeRemaining)
+  [1002] return nothing
+  [1004] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_onfire_debuff(762)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_onfire_debuff(593)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,34 @@
+kimchi_bt  blackboard=BlackboardData kimchi_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.IsAirborne, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    1) Sequence
+      1) set_blackboard_key_bttask  (ResultKey=bb.UltimateGoLoop, DataType=Bool, SourceData={"ConstantBool": true})
+      2) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_Intro_fwd_Montage)
+      [if Loop  (NumLoops=7)]
+      3) Selector
+        [if BTD_RandomChoice  (RandomChoice=0.5)]
+        1) Sequence
+          [if Blackboard  (UltimateGoLoop is Is Not Set)]
+          [if ForceSuccess]
+          1) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_StopToGo_fwd_Montage)
+          2) set_blackboard_key_bttask  (ResultKey=bb.UltimateGoLoop, DataType=Bool, SourceData={"ConstantBool": true})
+          3) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_GoLoop_fwd_Montage)
+        2) Sequence
+          [if Blackboard  (UltimateGoLoop is Is Set)]
+          [if ForceSuccess]
+          1) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_GoToStop_fwd_Montage)
+          2) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_StopLoop_fwd_Montage)
+          3) set_blackboard_key_bttask  (ResultKey=bb.UltimateGoLoop, DataType=Bool)
+      4) Sequence
+        [if Blackboard  (UltimateGoLoop is Is Not Set)]
+        [if ForceSuccess]
+        1) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_StopToGo_fwd_Montage)
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_bp_kimchi_00_atk_aoe_ultimate_Exit_fwd__00_Montage)
+    2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=20)
+    3) MoveTo  (AcceptableRadius=800, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)

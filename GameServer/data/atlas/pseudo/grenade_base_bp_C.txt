@@ -1,0 +1,453 @@
+# grenade_base_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AudioSetIsLocal
+  [0] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [20] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetInstigator_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @164
+  [99] K2Node_DynamicCast_AsPlayer_Interface.GetIsLocalPlayerAudioEnabled(CallFunc_GetIsLocalPlayerAudioEnabled_Out)
+  [145] self.IsLocalPlayerAudioEnabled = CallFunc_GetIsLocalPlayerAudioEnabled_Out
+  [164] return nothing
+  [166] end
+
+=== BndEvt__Capsule_K2Node_ComponentBoundEvent_0_ComponentBeginOverlapSignature__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_OverlappedComponent = OverlappedComponent
+  [18] frame.K2Node_ComponentBoundEvent_OtherActor = OtherActor
+  [36] frame.K2Node_ComponentBoundEvent_OtherComp = OtherComp
+  [54] frame.K2Node_ComponentBoundEvent_OtherBodyIndex = OtherBodyIndex
+  [72] frame.K2Node_ComponentBoundEvent_bFromSweep = bFromSweep
+  [90] frame.K2Node_ComponentBoundEvent_SweepResult = SweepResult
+  [108] ExecuteUbergraph_grenade_base_bp(6541)
+  [123] return nothing
+  [125] end
+
+=== BndEvt__ProjectileMovement_K2Node_ComponentBoundEvent_0_OnProjectileBounceDelegate__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_ImpactResult = ImpactResult
+  [18] frame.K2Node_ComponentBoundEvent_ImpactVelocity = ImpactVelocity
+  [36] ExecuteUbergraph_grenade_base_bp(1264)
+  [51] return nothing
+  [53] end
+
+=== BndEvt__ProjectileMovement_K2Node_ComponentBoundEvent_246_OnProjectileStopDelegate__DelegateSignature
+  [0] frame.K2Node_ComponentBoundEvent_ImpactResult_1 = ImpactResult
+  [18] ExecuteUbergraph_grenade_base_bp(5859)
+  [33] return nothing
+  [35] end
+
+=== Detonate
+  [0] push @1292
+  [5] Location = ExplosionLocation
+  [32] if !(self.Detonated) goto @47
+  [46] pop
+  [47] self.Detonated = true
+  [58] ExplosionVFXandAudio(Location)
+  [81] if !(self.SpawnAOEConsumableBase) goto @602
+  [95] CallFunc_MakeTransform_ReturnValue = MakeTransform(Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [182] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [202] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, BP_AoE_Consumable_Grenade_Base_C, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetInstigator_ReturnValue)
+  [252] SetNamePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageTableName', self.DamageTableName)
+  [293] SetBoolPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'ScaleWithPower', self.ScaleWithPower)
+  [334] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageMultiplier', self.DamageMultiplier)
+  [375] SetIntPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'PointsToHit', self.Points to Hit)
+  [416] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [436] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [477] CallFunc_MakeTransform_ReturnValue = MakeTransform(Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [564] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [602] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(Location, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 800.0}))
+  [664] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(Location, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [726] CallFunc_LineTraceSingle_ReturnValue = LineTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Subtract_VectorVector_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_LineTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [862] if !(self.Cluster) goto @999
+  [876] Temp_int_Variable = 1
+  [899] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, self.ClusterCount)
+  [937] if !(CallFunc_LessEqual_IntInt_ReturnValue) goto @999
+  [951] push @1218
+  [956] SeedRandomStream(self.ClusterStream)
+  [975] ServerCreateCluster(Location)
+  [998] pop
+  [999] BreakHitResult(CallFunc_LineTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1180] HandleBonusEffects(CallFunc_BreakHitResult_Location)
+  [1203] Multi_DestoyActor()
+  [1217] pop
+  [1218] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [1260] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1287] goto @899
+  [1292] return nothing
+  [1294] end
+
+=== DrawDebugPositions
+  [0] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [21] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @113
+  [35] CallFunc_K2_GetComponentLocation_ReturnValue = self.Capsule.K2_GetComponentLocation()
+  [85] Mutli_DrawSphere(CallFunc_K2_GetComponentLocation_ReturnValue)
+  [108] goto @237
+  [113] CallFunc_K2_GetComponentLocation_ReturnValue = self.Capsule.K2_GetComponentLocation()
+  [163] DrawDebugSphere(self, CallFunc_K2_GetComponentLocation_ReturnValue, 50.0, 5, LinearColor{0.0, 1.0, 0.098495, 1.0}, 0.2, 1.0)
+  [237] return nothing
+  [239] end
+
+=== DrawDebugVectors
+  [0] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [21] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @72
+  [35] Multi_DrawLine(Start, End)
+  [67] goto @145
+  [72] DrawDebugLine(self, Start, End, LinearColor{0.021752, 1.0, 0.0, 1.0}, 10.0, 3.0)
+  [145] return nothing
+  [147] end
+
+=== ExecuteUbergraph_grenade_base_bp
+  [0] push @6885
+  [5] goto computed(EntryPoint)
+  [15] FlushNetDormancy()
+  [25] CallFunc_RandomFloatInRangeFromStream_ReturnValue = RandomFloatInRangeFromStream(-0.5, 0.5, self.LifeAndSpeedStream)
+  [72] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_RandomFloatInRangeFromStream_ReturnValue)
+  [101] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(self.MaxLifetime, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [147] self.MaxLifetime = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [174] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxLifetime')
+  [203] pop
+  [204] CallFunc_IsValid_ReturnValue_3 = IsValid(self)
+  [225] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [235] Temp_bool_IsClosed_Variable_2 = false
+  [246] Temp_bool_Has_Been_Initd_Variable_2 = true
+  [257] pop
+  [258] FlushNetDormancy()
+  [268] self.BehemothHit = true
+  [279] MarkPropertyDirtyFromRepIndex(self, 12, 'BehemothHit')
+  [308] CallFunc_K2_GetComponentLocation_ReturnValue = self.Capsule.K2_GetComponentLocation()
+  [358] Detonate(CallFunc_K2_GetComponentLocation_ReturnValue)
+  [381] pop
+  [382] FlushNetDormancy()
+  [392] self.BehemothHit = true
+  [403] MarkPropertyDirtyFromRepIndex(self, 12, 'BehemothHit')
+  [432] CallFunc_K2_GetComponentLocation_ReturnValue_2 = self.Capsule.K2_GetComponentLocation()
+  [482] Detonate(CallFunc_K2_GetComponentLocation_ReturnValue_2)
+  [505] pop
+  [506] FlushNetDormancy()
+  [516] self.HitBehemoth = K2Node_DynamicCast_AsArchon_Behemoth_1
+  [535] MarkPropertyDirtyFromRepIndex(self, 13, 'HitBehemoth')
+  [564] goto @258
+  [569] FlushNetDormancy()
+  [579] self.HitBehemoth = K2Node_DynamicCast_AsArchon_Behemoth
+  [598] MarkPropertyDirtyFromRepIndex(self, 13, 'HitBehemoth')
+  [627] goto @258
+  [632] FlushNetDormancy()
+  [642] self.HitBehemoth = K2Node_DynamicCast_AsArchon_Behemoth_3
+  [661] MarkPropertyDirtyFromRepIndex(self, 13, 'HitBehemoth')
+  [690] goto @382
+  [695] FlushNetDormancy()
+  [705] CallFunc_GetRandomClusterRotation_ReturnValue = GetRandomClusterRotation()
+  [737] CallFunc_MakeTransform_ReturnValue = MakeTransform(K2Node_CustomEvent_Location_2, CallFunc_GetRandomClusterRotation_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [808] self.ClusterTransform = CallFunc_MakeTransform_ReturnValue
+  [835] MarkPropertyDirtyFromRepIndex(self, 14, 'ClusterTransform')
+  [864] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [884] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, self.ClusterClass, self.ClusterTransform, 0, CallFunc_GetInstigator_ReturnValue)
+  [934] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [954] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', CallFunc_GetInstigator_ReturnValue)
+  [995] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, self.ClusterTransform)
+  [1033] K2Node_DynamicCast_AsGrenade_Base_Bp = cast<grenade_base_bp_C>(CallFunc_FinishSpawningActor_ReturnValue)
+  [1069] K2Node_DynamicCast_bSuccess_9 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsGrenade_Base_Bp)
+  [1098] if !(K2Node_DynamicCast_bSuccess_9) pop
+  [1108] K2Node_DynamicCast_AsGrenade_Base_Bp.FlushNetDormancy()
+  [1140] K2Node_DynamicCast_AsGrenade_Base_Bp.self.BehemothHit = self.BehemothHit
+  [1181] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsGrenade_Base_Bp, 12, 'BehemothHit')
+  [1218] K2Node_DynamicCast_AsGrenade_Base_Bp.SetDamageMultiplier(self.DamageMultiplier)
+  [1263] pop
+  [1264] push @1768
+  [1269] if !(self.ExplodesOnBehemoth) pop
+  [1279] BreakHitResult(K2Node_ComponentBoundEvent_ImpactResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1460] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_BreakHitResult_HitActor)
+  [1489] if !(CallFunc_IsValid_ReturnValue) goto @2177
+  [1503] BreakHitResult(K2Node_ComponentBoundEvent_ImpactResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1684] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(CallFunc_BreakHitResult_HitActor)
+  [1720] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [1749] if !(K2Node_DynamicCast_bSuccess_1) goto @2192
+  [1763] goto @506
+  [1768] push @1788
+  [1773] if !(Temp_bool_Has_Been_Initd_Variable_2) goto @2495
+  [1787] pop
+  [1788] if !(Temp_bool_IsClosed_Variable_2) goto @1803
+  [1802] pop
+  [1803] Temp_bool_IsClosed_Variable_2 = true
+  [1814] CallFunc_IsValid_ReturnValue_4 = IsValid(self)
+  [1835] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [1845] CallFunc_VSize_ReturnValue = VSize(K2Node_ComponentBoundEvent_ImpactVelocity)
+  [1882] CallFunc_SetRTPCValue_Value_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_VSize_ReturnValue)
+  [1911] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast, 0, self, 'Items_Grenades_Bounce_Velocity')
+  [1972] K2Node_DynamicCast_AsAk_Audio_Event_2 = cast<AkAudioEvent>(self.GrenadeBounceAudio)
+  [2008] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_2)
+  [2037] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [2047] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(K2Node_DynamicCast_AsAk_Audio_Event_2, self, 0, Temp_delegate_Variable_2, false)
+  [2122] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=204), 1502041369, 'ExecuteUbergraph_grenade_base_bp', self})
+  [2176] pop
+  [2177] OnBounce_NotBehemoth()
+  [2191] pop
+  [2192] BreakHitResult(K2Node_ComponentBoundEvent_ImpactResult, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [2373] CallFunc_GetOwner_ReturnValue = CallFunc_BreakHitResult_HitActor.GetOwner()
+  [2415] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [2451] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [2480] if !(K2Node_DynamicCast_bSuccess) pop
+  [2490] goto @569
+  [2495] Temp_bool_Has_Been_Initd_Variable_2 = true
+  [2506] if !(false) pop
+  [2508] Temp_bool_IsClosed_Variable_2 = true
+  [2519] pop
+  [2520] push @2565
+  [2525] if !(Temp_bool_Has_Been_Initd_Variable_1) goto @2540
+  [2539] pop
+  [2540] Temp_bool_Has_Been_Initd_Variable_1 = true
+  [2551] if !(false) pop
+  [2553] Temp_bool_IsClosed_Variable = true
+  [2564] pop
+  [2565] if !(Temp_bool_IsClosed_Variable) goto @2580
+  [2579] pop
+  [2580] Temp_bool_IsClosed_Variable = true
+  [2591] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.ExplosionEffect, K2Node_CustomEvent_ExplodeLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [2684] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_SpawnEmitterAtLocation_ReturnValue)
+  [2713] if !(CallFunc_IsValid_ReturnValue_2) goto @2823
+  [2727] CallFunc_MakeVector_ReturnValue = MakeVector(self.ExplosionScale, self.ExplosionScale, self.ExplosionScale)
+  [2782] CallFunc_SpawnEmitterAtLocation_ReturnValue.SetWorldScale3D(CallFunc_MakeVector_ReturnValue)
+  [2823] PlayWorldCameraShake(self, camerashake_grenade_bp_C, K2Node_CustomEvent_ExplodeLocation, 0.0, 3000.0, 1.0, false)
+  [2868] K2Node_DynamicCast_AsAk_Audio_Event = cast<AkAudioEvent>(self.ExplosionAudio)
+  [2904] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event)
+  [2933] if !(K2Node_DynamicCast_bSuccess_2) goto @3260
+  [2947] CallFunc_SpawnAkComponentAtLocation_ReturnValue = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, K2Node_DynamicCast_AsAk_Audio_Event, K2Node_CustomEvent_ExplodeLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [3037] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue)
+  [3066] if !(CallFunc_IsValid_ReturnValue_1) goto @3260
+  [3080] CallFunc_Conv_BoolToFloat_ReturnValue = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [3117] CallFunc_SpawnAkComponentAtLocation_ReturnValue.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue, 0, 'Gameplay_Created_By_Player')
+  [3192] CallFunc_PostAssociatedAkEvent_ReturnValue = CallFunc_SpawnAkComponentAtLocation_ReturnValue.PostAssociatedAkEvent(0, Temp_delegate_Variable)
+  [3260] K2Node_DynamicCast_AsAk_Audio_Event_3 = cast<AkAudioEvent>(self.Detail Sound)
+  [3296] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_3)
+  [3325] if !(K2Node_DynamicCast_bSuccess_5) goto @3652
+  [3339] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1 = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, K2Node_DynamicCast_AsAk_Audio_Event_3, K2Node_CustomEvent_ExplodeLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [3429] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue_1)
+  [3458] if !(CallFunc_IsValid_ReturnValue_5) goto @3652
+  [3472] CallFunc_Conv_BoolToFloat_ReturnValue_2 = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [3509] CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue_2, 0, 'Gameplay_Created_By_Player')
+  [3584] CallFunc_PostAssociatedAkEvent_ReturnValue_1 = CallFunc_SpawnAkComponentAtLocation_ReturnValue_1.PostAssociatedAkEvent(0, Temp_delegate_Variable_3)
+  [3652] K2Node_DynamicCast_AsAk_Audio_Event_5 = cast<AkAudioEvent>(self.TailSound)
+  [3688] K2Node_DynamicCast_bSuccess_10 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_5)
+  [3717] if !(K2Node_DynamicCast_bSuccess_10) goto @4044
+  [3731] CallFunc_SpawnAkComponentAtLocation_ReturnValue_3 = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, K2Node_DynamicCast_AsAk_Audio_Event_5, K2Node_CustomEvent_ExplodeLocation, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [3821] CallFunc_IsValid_ReturnValue_8 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue_3)
+  [3850] if !(CallFunc_IsValid_ReturnValue_8) goto @4044
+  [3864] CallFunc_Conv_BoolToFloat_ReturnValue_3 = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [3901] CallFunc_SpawnAkComponentAtLocation_ReturnValue_3.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue_3, 0, 'Gameplay_Created_By_Player')
+  [3976] CallFunc_PostAssociatedAkEvent_ReturnValue_3 = CallFunc_SpawnAkComponentAtLocation_ReturnValue_3.PostAssociatedAkEvent(0, Temp_delegate_Variable_4)
+  [4044] if !(self.SurroundReflectionAudio?) pop
+  [4054] K2Node_DynamicCast_AsAk_Audio_Event_4 = cast<AkAudioEvent>(self.SurroundReflectionAudio)
+  [4090] K2Node_DynamicCast_bSuccess_8 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_4)
+  [4119] if !(K2Node_DynamicCast_bSuccess_8) pop
+  [4129] CallFunc_GetPlayerCharacter_ReturnValue = GetPlayerCharacter(self, 0)
+  [4155] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [4183] CallFunc_GetHorizontalDistanceTo_ReturnValue = GetHorizontalDistanceTo(CallFunc_GetPlayerCharacter_ReturnValue)
+  [4220] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetPlayerCharacter_ReturnValue.K2_GetActorLocation()
+  [4270] CallFunc_FClamp_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHorizontalDistanceTo_ReturnValue)
+  [4299] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_FClamp_Value_ImplicitCast, 3000.0, 9999999.0)
+  [4354] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [4400] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_FindLookAtRotation_ReturnValue)
+  [4437] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, CallFunc_FClamp_ReturnValue)
+  [4483] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [4529] CallFunc_SpawnAkComponentAtLocation_ReturnValue_2 = Default__AkGameplayStatics.SpawnAkComponentAtLocation(self, K2Node_DynamicCast_AsAk_Audio_Event_4, CallFunc_Add_VectorVector_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), false, '', true)
+  [4619] CallFunc_IsValid_ReturnValue_7 = IsValid(CallFunc_SpawnAkComponentAtLocation_ReturnValue_2)
+  [4648] if !(CallFunc_IsValid_ReturnValue_7) pop
+  [4658] CallFunc_Conv_BoolToFloat_ReturnValue_1 = Conv_BoolToFloat(self.IsLocalPlayerAudioEnabled)
+  [4695] CallFunc_SpawnAkComponentAtLocation_ReturnValue_2.SetRTPCValue(null, CallFunc_Conv_BoolToFloat_ReturnValue_1, 0, 'Gameplay_Created_By_Player')
+  [4770] CallFunc_PostAssociatedAkEvent_ReturnValue_2 = CallFunc_SpawnAkComponentAtLocation_ReturnValue_2.PostAssociatedAkEvent(0, Temp_delegate_Variable_1)
+  [4838] pop
+  [4839] push @5339
+  [4844] push @5543
+  [4849] SeedRandomStream(self.LifeAndSpeedStream)
+  [4868] CallFunc_Normal_ReturnValue = Normal(self.ProjectileMovement.self.Velocity, 0.0001)
+  [4932] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Normal_ReturnValue, self.InitialSpeed)
+  [4978] self.ProjectileMovement.self.Velocity = CallFunc_Multiply_VectorFloat_ReturnValue_1
+  [5027] if !(self.DeviateSpeed) goto @5256
+  [5041] CallFunc_RandomFloatInRangeFromStream_ReturnValue_1 = RandomFloatInRangeFromStream(-500.0, 500.0, self.LifeAndSpeedStream)
+  [5088] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_RandomFloatInRangeFromStream_ReturnValue_1)
+  [5117] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(self.MaxSpeed, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [5163] K2Node_VariableSet_MaxSpeed_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [5192] self.ProjectileMovement.self.MaxSpeed = K2Node_VariableSet_MaxSpeed_ImplicitCast_1
+  [5241] if !(self.DeviateLifespan) pop
+  [5251] goto @15
+  [5256] K2Node_VariableSet_MaxSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.MaxSpeed)
+  [5285] self.ProjectileMovement.self.MaxSpeed = K2Node_VariableSet_MaxSpeed_ImplicitCast
+  [5334] goto @5241
+  [5339] CallFunc_CreateDynamicMaterialInstance_ReturnValue = self.p_grenade_trail.CreateDynamicMaterialInstance(0, grenade_trail_generic_m, 'None')
+  [5412] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_CreateDynamicMaterialInstance_ReturnValue)
+  [5441] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [5451] CallFunc_Conv_VectorToLinearColor_ReturnValue = Conv_VectorToLinearColor(self.GrenadeTrailColor)
+  [5488] CallFunc_CreateDynamicMaterialInstance_ReturnValue.SetVectorParameterValue('TrailColor', CallFunc_Conv_VectorToLinearColor_ReturnValue)
+  [5542] pop
+  [5543] AudioSetIsLocal()
+  [5557] pop
+  [5558] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.Capsule.K2_GetComponentLocation()
+  [5608] Detonate(CallFunc_K2_GetComponentLocation_ReturnValue_1)
+  [5631] pop
+  [5632] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(self.TimeElapsed, self.MaxLifetime)
+  [5670] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [5680] if !(self.ExplodeOnMaxLifetime) goto @5699
+  [5694] goto @5558
+  [5699] Fizzle()
+  [5713] pop
+  [5714] goto @695
+  [5719] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [5748] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, self.TimeElapsed)
+  [5794] self.TimeElapsed = CallFunc_Add_DoubleDouble_ReturnValue
+  [5821] if !(self.DrawDebugLoc) goto @5632
+  [5835] DrawDebugPositions()
+  [5849] goto @5632
+  [5854] goto @2520
+  [5859] if !(self.ExplodeOnStop) goto @6078
+  [5873] BreakHitResult(K2Node_ComponentBoundEvent_ImpactResult_1, CallFunc_BreakHitResult_bBlockingHit_1, CallFunc_BreakHitResult_bInitialOverlap_1, CallFunc_BreakHitResult_Time_1, CallFunc_BreakHitResult_Distance_1, CallFunc_BreakHitResult_Location_1, CallFunc_BreakHitResult_ImpactPoint_1, CallFunc_BreakHitResult_Normal_1, CallFunc_BreakHitResult_ImpactNormal_1, CallFunc_BreakHitResult_PhysMat_1, CallFunc_BreakHitResult_HitActor_1, CallFunc_BreakHitResult_HitComponent_1, CallFunc_BreakHitResult_HitBoneName_1, CallFunc_BreakHitResult_BoneName_1, CallFunc_BreakHitResult_HitItem_1, CallFunc_BreakHitResult_ElementIndex_1, CallFunc_BreakHitResult_FaceIndex_1, CallFunc_BreakHitResult_TraceStart_1, CallFunc_BreakHitResult_TraceEnd_1)
+  [6054] Detonate(CallFunc_BreakHitResult_Location_1)
+  [6077] pop
+  [6078] Fizzle()
+  [6092] pop
+  [6093] if !(false) pop
+  [6095] Temp_bool_IsClosed_Variable_1 = true
+  [6106] pop
+  [6107] push @6143
+  [6112] if !(Temp_bool_Has_Been_Initd_Variable) goto @6127
+  [6126] pop
+  [6127] Temp_bool_Has_Been_Initd_Variable = true
+  [6138] goto @6093
+  [6143] if !(Temp_bool_IsClosed_Variable_1) goto @6158
+  [6157] pop
+  [6158] Temp_bool_IsClosed_Variable_1 = true
+  [6169] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, self.FizzleEffect, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [6262] K2Node_DynamicCast_AsAk_Audio_Event_1 = cast<AkAudioEvent>(self.FizzleAudio)
+  [6298] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_1)
+  [6327] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [6337] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(K2Node_DynamicCast_AsAk_Audio_Event_1, K2Node_CustomEvent_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [6431] pop
+  [6432] self.K2_DestroyActor()
+  [6460] pop
+  [6461] DrawDebugSphere(self, K2Node_CustomEvent_Location_1, 40.0, 8, LinearColor{1.0, 0.041135, 0.0, 1.0}, 0.2, 1.0)
+  [6535] pop
+  [6536] goto @6107
+  [6541] if !(self.ExplodesOnBehemoth) pop
+  [6551] K2Node_DynamicCast_AsArchon_Behemoth_2 = cast<ArchonBehemoth>(K2Node_ComponentBoundEvent_OtherActor)
+  [6587] K2Node_DynamicCast_bSuccess_6 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_2)
+  [6616] if !(K2Node_DynamicCast_bSuccess_6) goto @6631
+  [6630] pop
+  [6631] CallFunc_GetOwner_ReturnValue_1 = K2Node_ComponentBoundEvent_OtherActor.GetOwner()
+  [6673] K2Node_DynamicCast_AsArchon_Behemoth_3 = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue_1)
+  [6709] K2Node_DynamicCast_bSuccess_7 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_3)
+  [6738] if !(K2Node_DynamicCast_bSuccess_7) goto @6757
+  [6752] goto @632
+  [6757] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(K2Node_ComponentBoundEvent_OtherActor, creature_bpi_C)
+  [6795] if !(CallFunc_DoesImplementInterface_ReturnValue) pop
+  [6805] goto @432
+  [6810] DrawDebugLine(self, K2Node_CustomEvent_Start, K2Node_CustomEvent_End, LinearColor{1.0, 0.030093, 0.010197, 1.0}, 10.0, 3.0)
+  [6883] pop
+  [6884] pop
+  [6885] return nothing
+  [6887] end
+
+=== ExplosionVFXandAudio
+  [0] frame.K2Node_CustomEvent_ExplodeLocation = ExplodeLocation
+  [18] ExecuteUbergraph_grenade_base_bp(5854)
+  [33] return nothing
+  [35] end
+
+=== Fizzle
+  [0] CallFunc_K2_GetComponentLocation_ReturnValue = self.Capsule.K2_GetComponentLocation()
+  [50] FizzleVFXAndAudio(CallFunc_K2_GetComponentLocation_ReturnValue)
+  [73] Multi_DestoyActor()
+  [87] return nothing
+  [89] end
+
+=== FizzleVFXAndAudio
+  [0] frame.K2Node_CustomEvent_Location = Location
+  [18] ExecuteUbergraph_grenade_base_bp(6536)
+  [33] return nothing
+  [35] end
+
+=== GetRandomClusterRotation
+  [0] if !(self.BehemothHit) goto @1121
+  [14] CallFunc_K2_GetActorLocation_ReturnValue = self.HitBehemoth.K2_GetActorLocation()
+  [64] CallFunc_K2_GetComponentLocation_ReturnValue_2 = self.Capsule.K2_GetComponentLocation()
+  [114] CallFunc_GetDirectionUnitVector_ReturnValue = GetDirectionUnitVector(CallFunc_K2_GetComponentLocation_ReturnValue_2, CallFunc_K2_GetActorLocation_ReturnValue)
+  [160] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 3.0}), CallFunc_GetDirectionUnitVector_ReturnValue)
+  [222] CallFunc_Normal_ReturnValue = Normal(CallFunc_Add_VectorVector_ReturnValue_1, 0.0001)
+  [264] LVectorToUse = CallFunc_Normal_ReturnValue
+  [291] if !(self.DrawDebugLoc) goto @529
+  [305] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(LVectorToUse, 1000.0)
+  [351] CallFunc_K2_GetComponentLocation_ReturnValue = self.Capsule.K2_GetComponentLocation()
+  [401] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [447] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.Capsule.K2_GetComponentLocation()
+  [497] DrawDebugVectors(CallFunc_K2_GetComponentLocation_ReturnValue_1, CallFunc_Add_VectorVector_ReturnValue)
+  [529] BreakVector(LVectorToUse, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [575] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.ClusterAngleMax, -1.0)
+  [621] CallFunc_RandomFloatInRangeFromStream_Min_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [650] CallFunc_RandomFloatInRangeFromStream_Max_ImplicitCast = cast<CST_DoubleToFloat>(self.ClusterAngleMax)
+  [679] CallFunc_RandomFloatInRangeFromStream_ReturnValue = RandomFloatInRangeFromStream(CallFunc_RandomFloatInRangeFromStream_Min_ImplicitCast, CallFunc_RandomFloatInRangeFromStream_Max_ImplicitCast, self.ClusterStream)
+  [734] CallFunc_RandomFloatInRangeFromStream_Min_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [763] CallFunc_RandomFloatInRangeFromStream_Max_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.ClusterAngleMax)
+  [792] CallFunc_RandomFloatInRangeFromStream_ReturnValue_1 = RandomFloatInRangeFromStream(CallFunc_RandomFloatInRangeFromStream_Min_ImplicitCast_1, CallFunc_RandomFloatInRangeFromStream_Max_ImplicitCast_1, self.ClusterStream)
+  [847] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_RandomFloatInRangeFromStream_ReturnValue)
+  [876] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_X, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [922] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_RandomFloatInRangeFromStream_ReturnValue_1)
+  [951] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_BreakVector_Y, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [997] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_BreakVector_Z)
+  [1052] CallFunc_Conv_VectorToRotator_ReturnValue = Conv_VectorToRotator(CallFunc_MakeVector_ReturnValue)
+  [1089] ReturnValue = CallFunc_Conv_VectorToRotator_ReturnValue
+  [1116] goto @1169
+  [1121] LVectorToUse = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0})
+  [1164] goto @529
+  [1169] return ReturnValue
+  [1179] end
+
+=== HandleBonusEffects
+  [0] return nothing
+  [2] end
+
+=== Multi_DestoyActor
+  [0] ExecuteUbergraph_grenade_base_bp(6432)
+  [15] return nothing
+  [17] end
+
+=== Multi_DrawLine
+  [0] frame.K2Node_CustomEvent_Start = Start
+  [18] frame.K2Node_CustomEvent_End = End
+  [36] ExecuteUbergraph_grenade_base_bp(6810)
+  [51] return nothing
+  [53] end
+
+=== Mutli_DrawSphere
+  [0] frame.K2Node_CustomEvent_Location_1 = Location
+  [18] ExecuteUbergraph_grenade_base_bp(6461)
+  [33] return nothing
+  [35] end
+
+=== OnBounce_NotBehemoth
+  [0] ExecuteUbergraph_grenade_base_bp(6884)
+  [15] return nothing
+  [17] end
+
+=== OnRep_InitialSpeed
+  [0] K2Node_VariableSet_InitialSpeed_ImplicitCast = cast<CST_DoubleToFloat>(self.InitialSpeed)
+  [29] self.ProjectileMovement.self.InitialSpeed = K2Node_VariableSet_InitialSpeed_ImplicitCast
+  [78] return nothing
+  [80] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_grenade_base_bp(4839)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_grenade_base_bp(5719)
+  [33] return nothing
+  [35] end
+
+=== ServerCreateCluster
+  [0] frame.K2Node_CustomEvent_Location_2 = Location
+  [18] ExecuteUbergraph_grenade_base_bp(5714)
+  [33] return nothing
+  [35] end
+
+=== SetDamageMultiplier
+  [0] self.DamageMultiplier = NewDamageMultiplier
+  [27] return nothing
+  [29] end

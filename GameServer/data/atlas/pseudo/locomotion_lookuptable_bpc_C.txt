@@ -1,0 +1,89 @@
+# locomotion_lookuptable_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_locomotion_lookuptable_bpc
+  [0] push @386
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [35] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(CharacterMovementComponent)
+  [86] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [115] if !(CallFunc_IsValid_ReturnValue) goto @204
+  [129] GetLocomotionData(self.DefaultLocomotionState, CallFunc_GetLocomotionData_LocoData, CallFunc_GetLocomotionData_FoundData)
+  [170] if !(CallFunc_GetLocomotionData_FoundData) pop
+  [180] SetLocomotionState(self.DefaultLocomotionState)
+  [203] pop
+  [204] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), 548306007, 'ExecuteUbergraph_locomotion_lookuptable_bpc', self})
+  [258] pop
+  [259] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [279] CallFunc_SpawnObject_ReturnValue = SpawnObject(behemoth_loco_lookup_table_C, CallFunc_GetOwner_ReturnValue)
+  [317] self.LocomotionLookupTable = CallFunc_SpawnObject_ReturnValue
+  [336] self.LocomotionLookupTable.GenerateDataFromClassList(self.LocomotionTypesClasses)
+  [381] goto @15
+  [386] return nothing
+  [388] end
+
+=== GetCharacterScale
+  [0] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [47] CallFunc_K2_GetComponentScale_ReturnValue = CallFunc_GetOwnerMesh_SkeletalMeshComponent.K2_GetComponentScale()
+  [97] Scale = CallFunc_K2_GetComponentScale_ReturnValue
+  [124] return nothing
+  [126] end
+
+=== GetLocomotionData
+  [0] self.LocomotionLookupTable.GetBehemothLocoData(LocoType, CallFunc_GetBehemothLocoData_ActionData, CallFunc_GetBehemothLocoData_FoundData)
+  [63] LocoData = CallFunc_GetBehemothLocoData_ActionData
+  [90] FoundData = CallFunc_GetBehemothLocoData_FoundData
+  [109] return nothing
+  [111] end
+
+=== GetLocomotionState
+  [0] CurrentLocoState = self.CurrentLocoState
+  [27] return nothing
+  [29] end
+
+=== GetMovementComponent
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @243
+  [99] CallFunc_GetMovementComponent_ReturnValue = K2Node_DynamicCast_AsPawn.GetMovementComponent()
+  [145] K2Node_DynamicCast_AsCharacter_Movement_Component = cast<CharacterMovementComponent>(CallFunc_GetMovementComponent_ReturnValue)
+  [181] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter_Movement_Component)
+  [210] if !(K2Node_DynamicCast_bSuccess_1) goto @243
+  [224] Character Movement Component = K2Node_DynamicCast_AsCharacter_Movement_Component
+  [243] return nothing
+  [245] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_locomotion_lookuptable_bpc(259)
+  [15] return nothing
+  [17] end
+
+=== SetLocomotionState
+  [0] GetLocomotionData(LocomotionState, CallFunc_GetLocomotionData_LocoData, CallFunc_GetLocomotionData_FoundData)
+  [41] if !(CallFunc_GetLocomotionData_FoundData) goto @461
+  [55] self.CurrentLocoState = CallFunc_GetLocomotionData_LocoData.LocoType
+  [91] MarkPropertyDirtyFromRepIndex(self, 2, 'CurrentLocoState')
+  [120] GetCharacterScale(CallFunc_GetCharacterScale_Scale)
+  [143] GetMovementComponent(CallFunc_GetMovementComponent_Character_Movement_Component)
+  [166] BreakVector(CallFunc_GetCharacterScale_Scale, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [212] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(1.0, CallFunc_BreakVector_X)
+  [258] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetLocomotionData_LocoData.MovementSpeed)
+  [296] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [342] K2Node_VariableSet_MaxWalkSpeed_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [371] CallFunc_GetMovementComponent_Character_Movement_Component.self.MaxWalkSpeed = K2Node_VariableSet_MaxWalkSpeed_ImplicitCast
+  [420] self.PathFollowingPivotSet = CallFunc_GetLocomotionData_LocoData.PathFollowingPivotSet
+  [456] goto @896
+  [461] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(behemoth_loco_type, LocomotionState)
+  [507] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('loco state ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [557] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' not found')
+  [606] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [635] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [685] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, '}: ')
+  [727] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Concat_StrStr_ReturnValue_1)
+  [773] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [847] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [867] if !(CallFunc_IsShipping_ReturnValue) goto @886
+  [881] goto @896
+  [886] StackTrace()
+  [896] return nothing
+  [898] end

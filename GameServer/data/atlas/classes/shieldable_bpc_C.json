@@ -1,0 +1,1398 @@
+{
+ "name": "shieldable_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 400,
+ "sdk_header": "shieldable_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "ShieldData",
+   "type": "TArray<Fshield_data>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "OnShieldRemoved",
+   "type": "TMulticastInlineDelegate<void(const FGameplayTag& RemovedReasonTag, const FGuid& ShieldGUID)>",
+   "offset": "0xB8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "OwnerAbilitySystem",
+   "type": "UAbilitySystemComponent*",
+   "offset": "0xC8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<AbilitySystemComponent>"
+  },
+  {
+   "name": "OnShieldAdded",
+   "type": "TMulticastInlineDelegate<void(const Fshield_data& ShieldData)>",
+   "offset": "0xD0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "ShowDebug",
+   "type": "bool",
+   "offset": "0xE0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "L_TagStr",
+   "type": "FString",
+   "offset": "0xE8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StrProperty"
+  },
+  {
+   "name": "CachedShieldValue",
+   "type": "double",
+   "offset": "0xF8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "ShieldActive",
+   "type": "bool",
+   "offset": "0x100",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_ShieldActive",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "BoolProperty",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "ShieldVFXRef",
+   "type": "UParticleSystemComponent*",
+   "offset": "0x108",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "L_TempIndex",
+   "type": "int32",
+   "offset": "0x110",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "ImpulsesOnShieldApplied",
+   "type": "TArray<Farchon_impulse>",
+   "offset": "0x118",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "OnShieldRefreshed",
+   "type": "TMulticastInlineDelegate<void(const Fshield_data& ShieldData)>",
+   "offset": "0x128",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "ShieldBreakParticle",
+   "type": "UParticleSystemComponent*",
+   "offset": "0x138",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ParticleSystemComponent>"
+  },
+  {
+   "name": "ShieldParameters",
+   "type": "TMap<FName, Fshield_parameters>",
+   "offset": "0x140",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MapProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "OwnerAbilitySystem",
+   "class": "UAbilitySystemComponent",
+   "source": "property"
+  },
+  {
+   "name": "ShieldVFXRef",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  },
+  {
+   "name": "ShieldBreakParticle",
+   "class": "UParticleSystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AddShield",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldAmount",
+     "type": "double"
+    },
+    {
+     "name": "ShieldPriority",
+     "type": "double"
+    },
+    {
+     "name": "ShieldTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "ShieldDuration",
+     "type": "double"
+    },
+    {
+     "name": "MaxShields",
+     "type": "double"
+    },
+    {
+     "name": "SuppressShieldFX",
+     "type": "bool"
+    },
+    {
+     "name": "AddedShieldSuccessfully",
+     "type": "bool"
+    },
+    {
+     "name": "Guid",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 117,
+   "reads": [
+    "OnShieldAdded",
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "ActorComponent.GetOwner",
+    "ApplyShieldParameters",
+    "BlueprintGameplayTagLibrary.BreakGameplayTagContainer",
+    "GetShieldValueFromTaggedShields",
+    "InternalAdjustShield",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Insert",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.SelectFloat",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MulticastAddShieldFX",
+    "None",
+    "RefreshShieldsWithTags"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AddShieldValueToExisingShield",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldGUID",
+     "type": "FGuid"
+    },
+    {
+     "name": "AmountToAdd",
+     "type": "double"
+    },
+    {
+     "name": "AlsoRefreshDuration",
+     "type": "bool"
+    },
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    },
+    {
+     "name": "NewShieldAmount",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 52,
+   "reads": [
+    "OnShieldAdded",
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "ActorComponent.GetOwner",
+    "GetShieldWithGUID",
+    "InternalAdjustShield",
+    "InternalRefreshShieldByIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyShieldParameters",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldData",
+     "type": "Fshield_data"
+    },
+    {
+     "name": "ShouldApplyShield",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 55,
+   "reads": [
+    "ShieldParameters"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAbilitySystemBlueprintLibrary.GetNameFromTag",
+    "BlueprintGameplayTagLibrary.BreakGameplayTagContainer",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromTag",
+    "BlueprintMapLibrary.Map_Find",
+    "GetShieldValueFromTaggedShields",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "RefreshShieldsWithTags"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CheckShieldExpiry",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugDraw",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugShieldRemoved",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldData",
+     "type": "Fshield_data"
+    },
+    {
+     "name": "RemovalReason",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_shieldable_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 228,
+   "reads": [
+    "ImpulsesOnShieldApplied",
+    "L_TagStr",
+    "L_TempIndex",
+    "ShieldBreakParticle",
+    "ShieldData",
+    "ShieldVFXRef",
+    "ShowDebug"
+   ],
+   "sets": [
+    "L_TagStr",
+    "L_TempIndex",
+    "OwnerAbilitySystem",
+    "ShieldBreakParticle"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "AkGameplayStatics.PostEvent",
+    "ArchonGameplayStatics.IsInCity",
+    "ArchonGameplayStatics.IsShipping",
+    "BlueprintGameplayTagLibrary.BreakGameplayTagContainer",
+    "BlueprintGameplayTagLibrary.GetDebugStringFromGameplayTag",
+    "BlueprintGameplayTagLibrary.GetDebugStringFromGameplayTagContainer",
+    "DebugDraw",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "GetMesh",
+    "GetOwnerMesh",
+    "InternalRemoveShieldByIndex",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "KismetTextLibrary.Conv_DoubleToText",
+    "KismetTextLibrary.Conv_TextToString",
+    "ParticleSystemComponent.DeactivateSystem",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.K2_SetWorldLocation",
+    "ShieldBreak",
+    "SpawnImpulse"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Gameplay_Buff_Shield_Destroy",
+    "AkAudioEvent Play_Gameplay_Buff_Shield_Start",
+    "ParticleSystem buff_health_shield_small_broken_pulse_p",
+    "ParticleSystem buff_health_shield_small_pulse_p"
+   ]
+  },
+  {
+   "name": "GetShieldValueFromTaggedShields",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TagRequired",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "TotalShieldValue",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.HasTag",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetShieldWithGUID",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Guid",
+     "type": "FGuid"
+    },
+    {
+     "name": "ShieldIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "InternalAdjustShield",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Amount",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 25,
+   "reads": [
+    "OwnerAbilitySystem"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "InternalUpdateShieldActive",
+    "KismetMathLibrary.EqualEqual_DoubleDouble",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass cell_shield_ge_C"
+   ]
+  },
+  {
+   "name": "InternalRefreshShieldByIndex",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "OnShieldRefreshed",
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "InternalRemoveShieldByIndex",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Index_0",
+     "type": "int32"
+    },
+    {
+     "name": "RemovedReasonTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "AdjustAbilitySystemShield",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 19,
+   "reads": [
+    "OnShieldRemoved",
+    "ShieldData",
+    "ShowDebug"
+   ],
+   "sets": [],
+   "calls": [
+    "DebugShieldRemoved",
+    "InternalAdjustShield",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "InternalUpdateShieldActive",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 24,
+   "reads": [
+    "ShieldActive"
+   ],
+   "sets": [
+    "ShieldActive"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.NotEqual_BoolBool",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_ShieldActive"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastAddShieldFX",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_ShieldActive",
+   "flags": [
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 43,
+   "reads": [
+    "RelativeLocation",
+    "ShieldActive",
+    "ShieldVFXRef"
+   ],
+   "sets": [
+    "ShieldVFXRef",
+    "bAbsoluteRotation"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetMesh",
+    "IsInCity",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetSystemLibrary.DoesImplementInterface",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimer",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "ShieldBreak",
+    "TryDeactivateComponent"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_interface_C",
+    "ParticleSystem buff_health_shield_small_p"
+   ]
+  },
+  {
+   "name": "OnShieldAdded__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldData",
+     "type": "Fshield_data"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnShieldRefreshed__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldData",
+     "type": "Fshield_data"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnShieldRemoved__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RemovedReasonTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "ShieldGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshShieldsWithTags",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RequiredTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.GetNumGameplayTagsInContainer",
+    "BlueprintGameplayTagLibrary.HasAllTags",
+    "InternalRefreshShieldByIndex",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShieldBreak",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "shieldable_bpc_C.ExecuteUbergraph_shieldable_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopShieldVFX",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "ShieldVFXRef"
+   ],
+   "sets": [],
+   "calls": [
+    "TryDeactivateComponent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryRemoveShieldByGUID",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Guid",
+     "type": "FGuid"
+    },
+    {
+     "name": "RemovedReasonTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 11,
+   "reads": [
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "GetShieldWithGUID",
+    "InternalRemoveShieldByIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.IsValid_Guid",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryRemoveShieldsByTagQuery",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "TagQuery",
+     "type": "FGameplayTagQuery"
+    },
+    {
+     "name": "RemovedReasonTag",
+     "type": "FGameplayTag"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 19,
+   "reads": [
+    "ShieldData"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintGameplayTagLibrary.DoesContainerMatchTagQuery",
+    "InternalRemoveShieldByIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Subtract_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateShieldDataFromAbilitySystem",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 66,
+   "reads": [
+    "CachedShieldValue",
+    "OwnerAbilitySystem",
+    "ShieldData"
+   ],
+   "sets": [
+    "CachedShieldValue"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "InternalRemoveShieldByIndex",
+    "InternalUpdateShieldActive",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/shieldable_bpc",
+ "pseudo_file": "pseudo/shieldable_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

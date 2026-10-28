@@ -1,0 +1,62 @@
+snowflake_nemesis_bt  blackboard=BlackboardData moonface_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_fly_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_mf_deaggro_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    6) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_fly_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      1) bttask_enter_rage_state  (Montage=AnimMontage b_mf_01_state_ragealpha_enter_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      2) bttask_exit_rage_state  (Montage=AnimMontage moonface_exit_rage_mot)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    [if Blackboard  (TopScore Is Greater Than 0.000000)]
+    9) Selector "StateGate"
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"MetadataTagQuery": {"TagDictionary": [{"TagName": "Behemoth.Snowflake.Story"}], "QueryTokenStream": [0, 1, 2, 1, 0], "AutoDescription": " ALL( Behemoth.Snowflake.Story )"}}, bShowPropertyDetails=false)]
+      1) Sequence
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TopScoreKey=bb.TargetActor, bShowPropertyDetails=false)]
+        1) PerformActionClass "Barrel charge"  (ActionClass=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+        2) LoopMontageUntilPastTarget "ChargeUntilPasttarget"  (Montage=AnimMontage moonface_combo_charge_dynamic, RecoveryTime=0, LoopingSection=Charge, InjuredLoopingSection=Charge_Injured, TimeLimit=5, CollisionTest_XLenght=1000, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+        3) Selector "GetTarget"
+          1) Sequence
+            1) RunEQSQuery "PickTarget"  (QueryTemplate=EnvQuery EQ_FindPlayerTarget, QueryConfig=[{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTarget", "QueryConfig": [{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.AttackTarget)
+          2) Sequence "ClearTarget"
+            1) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.AttackTarget)
+        [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+        [if Blackboard  (AttackTarget is Is Set)]
+        4) Sequence
+          1) Selector "Spin"
+            [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+            1) BehemothAction "Spin Left"  (Montage=AnimMontage moonface_combo_spinout_l_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+            2) BehemothAction "spin right"  (Montage=AnimMontage moonface_combo_spinout_r_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+          2) PerformActionClass  (ActionClass=BlueprintGeneratedClass atk_snowflake_ice_cut_C, bShowPropertyDetails=false)
+      2) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    10) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    [if cooldown_btdeco  (MinCooldown={"ConstantFloat": 90.0}, MaxCooldown={"ConstantFloat": 180.0}, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"])]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    11) Sequence
+      1) RotateTowardsTarget  (Target=bb.AttackTarget)
+      [if ForceSuccess]
+      2) Sequence
+        1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage moonface_loco_personality_04_mot", "Chance": 0.15}, {"Montage": "AnimMontage moonface_loco_personality_05_mot", "Chance": 0.4}, {"Montage": "AnimMontage moonface_loco_personality_02_mot", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_03_mot", "Chance": 1.0}], PersonalityAnims_Rage=[{"Montage": "AnimMontage moonface_loco_personality_02_mot", "Chance": 0.75}, {"Montage": "AnimMontage moonface_loco_personality_04_mot", "Chance": 1.0}])
+    12) RunBehavior  (BehaviorAsset=BehaviorTree mf_genus_combat_repo_with_strafing_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    13) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

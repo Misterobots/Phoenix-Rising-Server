@@ -1,0 +1,392 @@
+{
+ "name": "glit_enter_arena_synced_anim_action_C",
+ "kind": "blueprint",
+ "parents": [
+  "creature_enter_arena_montage_action_C",
+  "PhxMontageGameplayAction",
+  "PhxBaseGameplayAction",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SkeletalMeshesToUse",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SkeletalMeshToUseIndex",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 5
+  },
+  {
+   "name": "VictimCharacter",
+   "type": "ObjectProperty<PhxCharacterBase>",
+   "bp_type": "ObjectProperty<PhxCharacterBase>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AuthSelectRandomSkeletalMeshIndex",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "SkeletalMeshesToUse"
+   ],
+   "sets": [
+    "SkeletalMeshToUseIndex"
+   ],
+   "calls": [
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.RandomIntegerInRange",
+    "KismetMathLibrary.Subtract_IntInt",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "PhxBaseGameplayTask.HasAuthority"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Authority_SelectMontage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<PhxAnimMontageSelection>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage b_glit_00_pers_combatenter_fwd_00_mot"
+   ]
+  },
+  {
+   "name": "DestroyVictim",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [
+    "VictimCharacter"
+   ],
+   "sets": [
+    "VictimCharacter"
+   ],
+   "calls": [
+    "Actor.SetActorEnableCollision",
+    "K2_DestroyActor",
+    "KismetSystemLibrary.IsValid",
+    "SetActorHiddenInGame"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_glit_enter_arena_synced_anim_action",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 16,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AuthSelectRandomSkeletalMeshIndex",
+    "Internal_OnFinished",
+    "Internal_OnStarted",
+    "KismetSystemLibrary.Delay",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnFinished",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnStarted",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnTick"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "DestroyVictim"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnStarted",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CallFunc_GetTransform_ReturnValue",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 23,
+   "reads": [
+    "Mesh",
+    "OnMontageBlendingOut",
+    "RelativeLocation",
+    "SkeletalMeshToUseIndex",
+    "SkeletalMeshesToUse",
+    "VictimCharacter"
+   ],
+   "sets": [
+    "VictimCharacter"
+   ],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.K2_AttachToComponent",
+    "Actor.K2_SetActorRelativeLocation",
+    "AnimInstance.Montage_Play",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.NegateVector",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "PhxBaseGameplayTask.GetOwningActor",
+    "SceneComponent.SetHiddenInGame",
+    "SetSkinnedAssetAndUpdate",
+    "SkeletalMeshComponent.GetAnimInstance"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage b_glit_00_pers_combatenter_sq_fwd_00_mot",
+    "BlueprintGeneratedClass glit_sq_enter_arena_skeletal_mesh_actor_C"
+   ]
+  },
+  {
+   "name": "OnVictimMontageBlendingOut",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Montage",
+     "type": "ObjectProperty<AnimMontage>"
+    },
+    {
+     "name": "bInterrupted",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "DestroyVictim"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "glit_enter_arena_synced_anim_action_C.ExecuteUbergraph_glit_enter_arena_synced_anim_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnStarted",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "glit_enter_arena_synced_anim_action_C.ExecuteUbergraph_glit_enter_arena_synced_anim_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaTime",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "glit_enter_arena_synced_anim_action_C.ExecuteUbergraph_glit_enter_arena_synced_anim_action"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartConsumeVictim",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [
+    "Mesh",
+    "VictimCharacter"
+   ],
+   "sets": [],
+   "calls": [
+    "AnimInstance.Montage_JumpToSection",
+    "AnimInstance.Montage_Play",
+    "KismetSystemLibrary.IsValid",
+    "SkeletalMeshComponent.GetAnimInstance"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage b_glit_00_pers_combatenter_sq_fwd_00_mot"
+   ]
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/gt/_shared/EnterArena/glit_enter_arena_synced_anim_action",
+ "pseudo_file": "pseudo/glit_enter_arena_synced_anim_action_C.txt",
+ "game_data": {}
+}

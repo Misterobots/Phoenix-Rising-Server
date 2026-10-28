@@ -1,0 +1,70 @@
+# meter_gaining_rules_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CanProcOnDamageEffects
+  [0] DamageTagsCanProcOnDamageEffects(DamageTags, TargetActor, CallFunc_DamageTagsCanProcOnDamageEffects_TagsCanProcOnDamageEffects)
+  [41] if !(CallFunc_DamageTagsCanProcOnDamageEffects_TagsCanProcOnDamageEffects) goto @120
+  [55] TargetCanProcOnDamageEffects(TargetActor, TargetActor, CallFunc_TargetCanProcOnDamageEffects_TargetCanProcOnDamageEffects)
+  [96] CanProcOnDamageEffects = CallFunc_TargetCanProcOnDamageEffects_TargetCanProcOnDamageEffects
+  [115] goto @131
+  [120] CanProcOnDamageEffects = false
+  [131] return nothing
+  [133] end
+
+=== DamageTagsCanProcOnDamageEffects
+  [0] CallFunc_MakeLiteralGameplayTagContainer_ReturnValue = MakeLiteralGameplayTagContainer(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'DamageType.PartToCoreTransfer'})})
+  [83] CallFunc_HasTag_ReturnValue = HasTag(DamageTags, GameplayTag{'Combat.Weapon.ProcOnDamageEffects'}, true)
+  [140] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(DamageTags, CallFunc_MakeLiteralGameplayTagContainer_ReturnValue, true)
+  [179] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasAnyTags_ReturnValue)
+  [208] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasTag_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [246] TagsCanProcOnDamageEffects = CallFunc_BooleanAND_ReturnValue
+  [265] return nothing
+  [267] end
+
+=== TargetCanProcOnDamageEffects
+  [0] push @818
+  [5] push @160
+  [10] CallFunc_IsValid_ReturnValue = IsValid(Target)
+  [39] if !(CallFunc_IsValid_ReturnValue) pop
+  [49] push @614
+  [54] push @409
+  [59] push @329
+  [64] push @176
+  [69] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(Target)
+  [105] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [134] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [144] TargetCanProcOnDamageEffects = true
+  [155] goto @818
+  [160] TargetCanProcOnDamageEffects = false
+  [171] goto @818
+  [176] K2Node_DynamicCast_AsArchon_Ability_Character = cast<ArchonAbilityCharacter>(Target)
+  [212] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_Character)
+  [241] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [251] Default__archon_function_library_C.ActorIsAlive(K2Node_DynamicCast_AsArchon_Ability_Character, K2Node_DynamicCast_AsArchon_Ability_Character, CallFunc_ActorIsAlive_IsAlive)
+  [314] if !(CallFunc_ActorIsAlive_IsAlive) pop
+  [324] goto @144
+  [329] K2Node_DynamicCast_AsBase_Gameobject_Bp = cast<base_gameobject_bp_C>(Target)
+  [365] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_Gameobject_Bp)
+  [394] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [404] goto @144
+  [409] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(Target, meter_gain_bpi_C)
+  [447] if !(CallFunc_DoesImplementInterface_ReturnValue) pop
+  [457] K2Node_DynamicCast_AsMeter_Gain_Bpi = cast<meter_gain_bpi_C>(Target)
+  [493] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsMeter_Gain_Bpi)
+  [522] if !(K2Node_DynamicCast_bSuccess) goto @598
+  [536] CallFunc_CanProcOnDamageEffects_ReturnValue = K2Node_DynamicCast_AsMeter_Gain_Bpi.CanProcOnDamageEffects()
+  [583] if !(CallFunc_CanProcOnDamageEffects_ReturnValue) pop
+  [593] goto @144
+  [598] CallFunc_CanProcOnDamageEffects_ReturnValue = false
+  [609] goto @583
+  [614] CallFunc_DoesImplementInterface_ReturnValue_1 = DoesImplementInterface(Target, projectile_bpi_C)
+  [652] if !(CallFunc_DoesImplementInterface_ReturnValue_1) pop
+  [662] K2Node_DynamicCast_AsProjectile_Bpi = cast<projectile_bpi_C>(Target)
+  [698] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsProjectile_Bpi)
+  [727] if !(K2Node_DynamicCast_bSuccess_1) goto @802
+  [741] K2Node_DynamicCast_AsProjectile_Bpi.CanGainMeterLifestealAndLanternFromHittingThis(CallFunc_CanGainMeterLifestealAndLanternFromHittingThis_CanGainTheseEffects)
+  [787] if !(CallFunc_CanGainMeterLifestealAndLanternFromHittingThis_CanGainTheseEffects) pop
+  [797] goto @144
+  [802] CallFunc_CanGainMeterLifestealAndLanternFromHittingThis_CanGainTheseEffects = false
+  [813] goto @787
+  [818] return nothing
+  [820] end

@@ -1,0 +1,151 @@
+# cooldown_manager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetCooldownTimeRemaining
+  [0] GetIndexOfCooldown(CooldownName, CallFunc_GetIndexOfCooldown_Index)
+  [32] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.CooldownData, CallFunc_GetIndexOfCooldown_Index)
+  [92] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @367
+  [106] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [135] Default__KismetArrayLibrary.Array_Get(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, CallFunc_Array_Get_Item)
+  [194] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.CooldownFinishedTimestamp)
+  [232] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [278] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [324] CooldownExists = true
+  [335] TimeRemaining = CallFunc_FMax_ReturnValue
+  [362] goto @405
+  [367] CooldownExists = false
+  [378] TimeRemaining = -1.0
+  [405] return nothing
+  [407] end
+
+=== GetIndexOfCooldown
+  [0] push @444
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.CooldownData)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @342
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @370
+  [194] Default__KismetArrayLibrary.Array_Get(self.CooldownData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item.CooldownName, CooldownName)
+  [300] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [310] Index = Temp_int_Array_Index_Variable
+  [337] goto @444
+  [342] Index = -1
+  [365] goto @444
+  [370] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [412] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [439] goto @51
+  [444] return nothing
+  [446] end
+
+=== IsCooldownReady
+  [0] GetIndexOfCooldown(CooldownName, CallFunc_GetIndexOfCooldown_Index)
+  [32] if !(RequireExists) goto @282
+  [46] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [80] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @351
+  [94] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [123] Default__KismetArrayLibrary.Array_Get(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, CallFunc_Array_Get_Item)
+  [182] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.CooldownFinishedTimestamp)
+  [220] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [258] CooldownReady = CallFunc_GreaterEqual_DoubleDouble_ReturnValue
+  [277] goto @686
+  [282] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [316] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @335
+  [330] goto @94
+  [335] CooldownReady = true
+  [346] goto @686
+  [351] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [380] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [430] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [472] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, "querying cooldown that doesn't exist")
+  [547] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [621] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [641] if !(CallFunc_IsShipping_ReturnValue) goto @671
+  [655] CooldownReady = false
+  [666] goto @686
+  [671] StackTrace()
+  [681] goto @655
+  [686] return nothing
+  [688] end
+
+=== Refresh Cooldown
+  [0] GetIndexOfCooldown(Cooldown Name, CallFunc_GetIndexOfCooldown_Index)
+  [32] if !(Require Exists) goto @277
+  [46] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [80] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @330
+  [94] Default__KismetArrayLibrary.Array_Get(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, CallFunc_Array_Get_Item)
+  [153] CallFunc_Array_Get_Item.CooldownFinishedTimestamp = -1.0
+  [185] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [212] Default__KismetArrayLibrary.Array_Set(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, K2Node_SetFieldsInStruct_StructOut, false)
+  [272] goto @658
+  [277] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [311] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @658
+  [325] goto @94
+  [330] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [359] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [409] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [451] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, "trying to refresh cooldown that doesn't exist")
+  [535] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [609] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [629] if !(CallFunc_IsShipping_ReturnValue) goto @648
+  [643] goto @658
+  [648] StackTrace()
+  [658] return nothing
+  [660] end
+
+=== RegisterCooldown
+  [0] GetIndexOfCooldown(CooldownName, CallFunc_GetIndexOfCooldown_Index)
+  [32] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, -1)
+  [66] if !(CallFunc_EqualEqual_IntInt_ReturnValue) goto @484
+  [80] Temp_bool_Variable = StartOnCooldown
+  [99] Temp_real_Variable = -1.0
+  [126] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [155] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, TotalTime)
+  [201] K2Node_MakeStruct_cooldown_data.CooldownName = CooldownName
+  [237] K2Node_MakeStruct_CooldownFinishedTimestamp_9_763EC180417E1021A44A908A7D9BC2E4_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: Temp_real_Variable, true: CallFunc_Add_DoubleDouble_ReturnValue, default: K2Node_Select_Default})
+  [310] K2Node_MakeStruct_cooldown_data.CooldownFinishedTimestamp = K2Node_MakeStruct_CooldownFinishedTimestamp_9_763EC180417E1021A44A908A7D9BC2E4_ImplicitCast
+  [346] K2Node_MakeStruct_TotalCooldown_8_33C8C7E0418BC45C46B7B38155720676_ImplicitCast = cast<CST_DoubleToFloat>(TotalTime)
+  [375] K2Node_MakeStruct_cooldown_data.TotalCooldown = K2Node_MakeStruct_TotalCooldown_8_33C8C7E0418BC45C46B7B38155720676_ImplicitCast
+  [411] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.CooldownData, K2Node_MakeStruct_cooldown_data)
+  [479] goto @824
+  [484] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [513] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [563] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [605] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'trying to register a cooldown that is already registered!')
+  [701] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [775] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [795] if !(CallFunc_IsShipping_ReturnValue) goto @814
+  [809] goto @824
+  [814] StackTrace()
+  [824] return nothing
+  [826] end
+
+=== ResetCooldown
+  [0] GetIndexOfCooldown(CooldownName, CallFunc_GetIndexOfCooldown_Index)
+  [32] if !(RequireExists) goto @423
+  [46] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [80] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @476
+  [94] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [123] Default__KismetArrayLibrary.Array_Get(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, CallFunc_Array_Get_Item)
+  [182] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TotalCooldown)
+  [220] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [266] K2Node_SetFieldsInStruct_CooldownFinishedTimestamp_9_763EC180417E1021A44A908A7D9BC2E4_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [295] CallFunc_Array_Get_Item.CooldownFinishedTimestamp = K2Node_SetFieldsInStruct_CooldownFinishedTimestamp_9_763EC180417E1021A44A908A7D9BC2E4_ImplicitCast
+  [331] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [358] Default__KismetArrayLibrary.Array_Set(self.CooldownData, CallFunc_GetIndexOfCooldown_Index, K2Node_SetFieldsInStruct_StructOut, false)
+  [418] goto @802
+  [423] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfCooldown_Index, 0)
+  [457] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @802
+  [471] goto @94
+  [476] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [505] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [555] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [597] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, "trying to reset cooldown that doesn't exist")
+  [679] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [753] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [773] if !(CallFunc_IsShipping_ReturnValue) goto @792
+  [787] goto @802
+  [792] StackTrace()
+  [802] return nothing
+  [804] end

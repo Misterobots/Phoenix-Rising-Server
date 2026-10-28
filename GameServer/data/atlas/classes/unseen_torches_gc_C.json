@@ -1,0 +1,791 @@
+{
+ "name": "unseen_torches_gc_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseGameContent",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Damage_GE_Handle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Resistance_GE_Handle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Behemoth",
+   "type": "ObjectProperty<Actor>",
+   "bp_type": "ObjectProperty<Actor>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TorchStacks",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_TorchStacks",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 12
+  },
+  {
+   "name": "NewVar_0",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "QueryParams",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherableClassLoaded",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GatherableClass",
+   "type": "SoftClassProperty<Class>",
+   "bp_type": "SoftClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Torches",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_Torches",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 13
+  },
+  {
+   "name": "CurrentTorchIndex",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "InitialTorchLoop",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothKilled",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HUDWidget",
+   "type": "ObjectProperty<HUDGameContentEventWidget>",
+   "bp_type": "ObjectProperty<HUDGameContentEventWidget>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "FinishedContentDelay",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MissionFailed",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_unseen_torches_gc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_GetQueryResultsAsLocations_ResultLocations",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "Temp_delegate_Variable_1",
+     "type": "DelegateProperty"
+    },
+    {
+     "name": "CallFunc_K2_GetComponentsByClass_ReturnValue",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_K2_GetComponentsByClass_ReturnValue_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_ShowFailedPopup_Duration_ImplicitCast",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 294,
+   "reads": [
+    "Behemoth",
+    "BehemothKilled",
+    "CurrentTorchIndex",
+    "Damage_GE_Handle",
+    "FinishedContentDelay",
+    "GatherableClass",
+    "GatherableClassLoaded",
+    "GlobalPower",
+    "HUDWidget",
+    "InitialTorchLightDelays",
+    "InitialTorchLoop",
+    "MissionFailed",
+    "OnBehemothDeath",
+    "OnBehemothReceivedDamage",
+    "OnExtinguished",
+    "OnLit",
+    "OnQueryFinishedEvent",
+    "QueryParams",
+    "TorchDamageMultMax",
+    "TorchRelightTimerMax",
+    "TorchRelightTimerMin",
+    "TorchResistMultMax",
+    "TorchStacks",
+    "Torches"
+   ],
+   "sets": [
+    "Behemoth",
+    "BehemothKilled",
+    "CurrentTorchIndex",
+    "Damage_GE_Handle",
+    "GatherableClassLoaded",
+    "InitialTorchLoop",
+    "MissionFailed",
+    "RelightDelayMax",
+    "RelightDelayMin",
+    "Resistance_GE_Handle",
+    "TorchStacks"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "Actor.K2_GetComponentsByClass",
+    "AkGameplayStatics.PostEvent",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "AuthHandleConditionalLoot",
+    "EnvQueryInstanceBlueprintWrapper.GetQueryResultsAsLocations",
+    "EnvQueryManager.RunEQSQuery",
+    "FinishCleanup",
+    "FinishContent",
+    "FinishLoadingContent",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetPlayerController",
+    "GetAbilitySystemComponent",
+    "GetBehemothLevel",
+    "GetCurrentSpawnedBehemoths",
+    "HUDGameContentEventWidget.ShowFailedPopup",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MapRangeClamped",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.Min",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.SelectInt",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.LoadAssetClass",
+    "LightItUp",
+    "MakeOutgoingSpec",
+    "MulticastOnAllTorchesLit",
+    "MulticastOnStartedLightingTorches",
+    "Pawn.GetController",
+    "PhxBaseGameContent.GetContentSpecification",
+    "Prepare HUD",
+    "RemoveActiveGameplayEffect",
+    "RemoveActiveGameplayEffectBySourceEffect",
+    "UpdateTorchBuffStacks",
+    "UtilityMethods.ArchonLogError"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_ui_events_dark_harvest_lose_stinger",
+    "AkAudioEvent Stop_Music_Island",
+    "BlueprintGeneratedClass multiply_incoming_dmg_ge_C",
+    "BlueprintGeneratedClass scale_alldamage_ge_C",
+    "EnvQuery eqs_dark_harvest_torch_ring"
+   ]
+  },
+  {
+   "name": "HandleBeginContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleCleanupContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleLoadingContent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LightATorch",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAllTorchesLit",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnStartedLightingTorches",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBehemothDeath",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnExtinguished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLit",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_8168EE944D9F01FD321F80B72C788F8F",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "ClassProperty<Class>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnQueryFinished_SpawnTorches",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "QueryInstance",
+     "type": "ObjectProperty<EnvQueryInstanceBlueprintWrapper>"
+    },
+    {
+     "name": "QueryStatus",
+     "type": "ByteProperty<EEnvQueryStatus>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_TorchStacks",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "UpdateTorchesCount"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_Torches",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "UpdateTorchesCount"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Prepare HUD",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [
+    "HUDWidget"
+   ],
+   "sets": [
+    "HUDWidget"
+   ],
+   "calls": [
+    "ArchonGameplayStatics.GetArchonLocalPlayerController",
+    "ArchonHUDWidget.AddFullScreenWidget",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "PlayerController.GetHUD",
+    "UpdateTorchesCount"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "WidgetBlueprintGeneratedClass game_content_event_hud_bpw_C"
+   ]
+  },
+  {
+   "name": "StartLightingTorches",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Behemoth",
+     "type": "ObjectProperty<ArchonBehemoth>"
+    },
+    {
+     "name": "Instigator",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageAmount",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateTorchBuffStacks",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "unseen_torches_gc_C.ExecuteUbergraph_unseen_torches_gc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateTorchesCount",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "HUDWidget",
+    "TorchStacks",
+    "Torches"
+   ],
+   "sets": [],
+   "calls": [
+    "HUDGameContentEventWidget.SetTorchesCount",
+    "KismetArrayLibrary.Array_Length",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/gamemodes/_game_content/story_missions/unseen_torches_gc",
+ "pseudo_file": "pseudo/unseen_torches_gc_C.txt",
+ "game_data": {}
+}

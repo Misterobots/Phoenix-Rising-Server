@@ -1,0 +1,59 @@
+# apply_chill_to_player_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CreateAndSendChilledEventData
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [40] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'None'}
+  [94] K2Node_MakeStruct_GameplayEventData.Instigator = self.Instigator
+  [122] K2Node_MakeStruct_GameplayEventData.Target = CallFunc_GetBuffOwner_ReturnValue_1
+  [150] K2Node_MakeStruct_GameplayEventData.OptionalObject = null
+  [170] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [190] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [231] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [286] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [341] K2Node_MakeStruct_GameplayEventData.EventMagnitude = self.MaxDuration
+  [377] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [418] SendGameplayEventToActor(CallFunc_GetBuffOwner_ReturnValue, GameplayTag{'State.Chilled'}, K2Node_MakeStruct_GameplayEventData)
+  [473] return nothing
+  [475] end
+
+=== ExecuteUbergraph_apply_chill_to_player_buff
+  [0] goto computed(EntryPoint)
+  [10] OnAdded()
+  [20] CallFunc_IsChillImmune_ReturnValue = IsChillImmune()
+  [44] if !(CallFunc_IsChillImmune_ReturnValue) goto @256
+  [58] CreateAndSendChilledEventData()
+  [72] goto @256
+  [77] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [97] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [126] CallFunc_RemoveActiveEffectsWithGrantedTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveEffectsWithGrantedTags(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'State.Chilled'})})
+  [231] goto @256
+  [236] OnRefreshed()
+  [246] goto @20
+  [251] goto @77
+  [256] return nothing
+  [258] end
+
+=== IsChillImmune
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [49] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Buffs.Chilled.Immune'})
+  [123] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [152] ReturnValue = CallFunc_Not_PreBool_ReturnValue
+  [171] return ReturnValue
+  [181] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_apply_chill_to_player_buff(10)
+  [15] return nothing
+  [17] end
+
+=== OnRefreshed
+  [0] ExecuteUbergraph_apply_chill_to_player_buff(236)
+  [15] return nothing
+  [17] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_apply_chill_to_player_buff(251)
+  [15] return nothing
+  [17] end

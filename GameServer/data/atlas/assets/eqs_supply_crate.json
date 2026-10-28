@@ -1,0 +1,126 @@
+{
+ "name": "eqs_supply_crate",
+ "package": "Archon/Content/blueprints/InventoryItems/Abilities/eqs_supply_crate",
+ "type": "EnvQuery",
+ "refs": [
+  "EnvQueryContext_Item",
+  "EnvQueryContext_Querier",
+  "eqs_context_supply_crate_02_C",
+  "eqs_context_supply_crate_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.InnerRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.OuterRadius"
+   }
+  },
+  "eqs_supply_crate": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "SupplyCrate",
+    "Options": [
+     "@EnvQueryOption_0"
+    ]
+   }
+  },
+  "EnvQueryGenerator_Donut_0": {
+   "type": "EnvQueryGenerator_Donut",
+   "props": {
+    "InnerRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "OuterRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "NumberOfRings": {
+     "DefaultValue": 2
+    },
+    "PointsPerRing": {
+     "DefaultValue": 10
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_0": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_Donut_0",
+    "Tests": [
+     "@EnvQueryTest_Dot_0",
+     "@EnvQueryTest_Distance_0",
+     "@EnvQueryTest_Trace_0"
+    ]
+   }
+  },
+  "EnvQueryTest_Distance_0": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestOrder": 1,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "FloatValueMin": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Dot_0": {
+   "type": "EnvQueryTest_Dot",
+   "props": {
+    "LineA": {
+     "LineFrom": "Class EnvQueryContext_Querier",
+     "LineTo": "Class EnvQueryContext_Item",
+     "Rotation": "BlueprintGeneratedClass eqs_context_supply_crate_C",
+     "DirMode": "EEnvDirection::TwoPoints"
+    },
+    "LineB": {
+     "LineTo": "BlueprintGeneratedClass eqs_context_supply_crate_02_C",
+     "Rotation": "Class EnvQueryContext_Querier",
+     "DirMode": "EEnvDirection::Rotation"
+    },
+    "TestMode": "EEnvTestDot::Dot2D",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "FloatValueMax": {
+     "DefaultValue": 1.0
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Trace_0": {
+   "type": "EnvQueryTest_Trace",
+   "props": {
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "TestOrder": 2,
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

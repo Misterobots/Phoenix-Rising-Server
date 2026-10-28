@@ -1,0 +1,12 @@
+habanero_blazeimpact_bt  blackboard=BlackboardData moonface_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (TargetActor is Is Set)]
+  Selector
+    [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget)]
+    1) Sequence "Forward Roll"
+      1) LoopMontageUntilPastTarget "ChargeUntilPasttarget"  (Montage=AnimMontage b_habanero_state_fwd_roll_mot, RecoveryTime=0, LoopingSection=Rolling, TimeLimit=5, CollisionTest_XLenght=600, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}], DistanceToTargetToEndEarly=2500, TriggerCooldownOnSuccess=false, DelayAfterPassingTarget=0.1, TargetBlackboardName=TargetActor, bShowPropertyDetails=false)
+      2) BehemothAction "Roll Slam"  (Montage=AnimMontage b_habanero_normal_atk_blazeimpact_fwd_slam_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+    2) Sequence
+      1) LoopMontageUntilPastTarget "ChargeUntilPasttarget"  (Montage=AnimMontage b_habanero_state_bwd_roll_mot, RecoveryTime=0, LoopingSection=Rolling, TimeLimit=5, CollisionTest_XLenght=600, OffsetLocationsToNavTest=[{"X": 0.0, "Y": -200.0, "Z": 0.0}], DistanceToTargetToEndEarly=1200, TriggerCooldownOnSuccess=false, DelayAfterPassingTarget=5, TargetBlackboardName=TargetActor, bShowPropertyDetails=false)
+      2) BehemothAction "Roll - > Idle"  (Montage=AnimMontage b_habanero_state_bwd_roll_to_idle_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)

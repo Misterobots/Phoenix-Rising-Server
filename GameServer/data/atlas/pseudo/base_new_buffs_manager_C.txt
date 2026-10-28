@@ -1,0 +1,426 @@
+# base_new_buffs_manager_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AdjustHeldStacks
+  [0] push @4790
+  [5] L_RemainingStackTime = 0.0
+  [28] self.HeldStacksChange = StacksChange
+  [55] CallFunc_Add_IntInt_ReturnValue_10 = Add_IntInt(self.CurrentTempStacks, self.CurrentHeldStacks)
+  [101] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(self.MaxStacks, CallFunc_Add_IntInt_ReturnValue_10)
+  [147] CallFunc_Clamp_ReturnValue_4 = Clamp(self.HeldStacksChange, self.MinStacks, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [202] L_StacksDiff = CallFunc_Clamp_ReturnValue_4
+  [229] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.HeldStacksChange, self.CurrentHeldStacks)
+  [275] CallFunc_Clamp_ReturnValue = Clamp(CallFunc_Add_IntInt_ReturnValue, self.MinStacks, self.MaxStacks)
+  [330] CallFunc_Add_IntInt_ReturnValue_6 = Add_IntInt(self.CurrentTempStacks, CallFunc_Clamp_ReturnValue)
+  [376] CallFunc_Clamp_ReturnValue_3 = Clamp(CallFunc_Add_IntInt_ReturnValue_6, self.MinStacks, self.MaxStacks)
+  [431] self.StacksToAdjustTo = CallFunc_Clamp_ReturnValue_3
+  [458] push @572
+  [463] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.CurrentTempGESpecHandle)
+  [492] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @2297
+  [506] CallFunc_GetActiveGameplayEffectRemainingDuration_ReturnValue = GetActiveGameplayEffectRemainingDuration(self, self.CurrentTempGESpecHandle)
+  [544] L_RemainingStackTime = CallFunc_GetActiveGameplayEffectRemainingDuration_ReturnValue
+  [571] pop
+  [572] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [592] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_6, CallFunc_GetBuffOwner_ReturnValue_6, self.BenefitGameEffectTemp, -1, self)
+  [661] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [681] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_6, CallFunc_GetBuffOwner_ReturnValue_6, self.BenefitGameEffectPerm, -1, self)
+  [750] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [770] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_5, CallFunc_GetBuffOwner_ReturnValue_5, self.PenaltyGameEffectTemp, -1, self)
+  [839] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [859] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_5, CallFunc_GetBuffOwner_ReturnValue_5, self.PenaltyGameEffectPerm, -1, self)
+  [928] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [948] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_5, CallFunc_GetBuffOwner_ReturnValue_5, self.ZeroStackGameEffectTemp, -1, self)
+  [1017] push @1643
+  [1022] GetDynamicStackDuration(self.StacksToAdjustTo, CallFunc_GetDynamicStackDuration_AdjustedStackDuration)
+  [1054] L_AdjustedStackTime = CallFunc_GetDynamicStackDuration_AdjustedStackDuration
+  [1081] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(self.CurrentTempStacks, 0)
+  [1115] if !(CallFunc_NotEqual_IntInt_ReturnValue) goto @2321
+  [1129] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.HeldStacksChange, self.CurrentHeldStacks)
+  [1175] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Add_IntInt_ReturnValue_1, self.MinStacks)
+  [1213] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(self.MaxStacks, CallFunc_Add_IntInt_ReturnValue_1)
+  [1251] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_1, CallFunc_Greater_IntInt_ReturnValue)
+  [1289] if !(CallFunc_BooleanAND_ReturnValue) goto @3108
+  [1303] CallFunc_Greater_IntInt_ReturnValue_5 = Greater_IntInt(self.StacksToAdjustTo, 0)
+  [1337] if !(CallFunc_Greater_IntInt_ReturnValue_5) goto @3388
+  [1351] self.BenefitAdded = true
+  [1362] Temp_int_Variable_1 = 1
+  [1385] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, self.StacksToAdjustTo)
+  [1423] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [1433] push @4088
+  [1438] CallFunc_SelectFloat_B_ImplicitCast_1 = cast<CST_FloatToDouble>(L_RemainingStackTime)
+  [1467] CallFunc_SelectFloat_ReturnValue = SelectFloat(L_AdjustedStackTime, CallFunc_SelectFloat_B_ImplicitCast_1, RefreshStackTimer)
+  [1522] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1542] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue_2, self.BenefitGameEffectTemp, CallFunc_SelectFloat_ReturnValue, self, CallFunc_ApplySpecWithDuration_SpecHandle_1)
+  [1615] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle_1
+  [1642] pop
+  [1643] CallFunc_Add_IntInt_ReturnValue_11 = Add_IntInt(self.CurrentHeldStacks, self.HeldStacksChange)
+  [1689] self.CurrentHeldStacks = CallFunc_Add_IntInt_ReturnValue_11
+  [1716] CallFunc_Clamp_ReturnValue_2 = Clamp(self.CurrentHeldStacks, self.MinStacks, self.MaxStacks)
+  [1771] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.StacksToAdjustTo, CallFunc_Clamp_ReturnValue_2)
+  [1817] self.CurrentTempStacks = CallFunc_Subtract_IntInt_ReturnValue
+  [1844] self.StacksToAdjustTo = 0
+  [1867] K2_ClearAndInvalidateTimerHandle(self, self.StackDrainTimerHandle)
+  [1887] CallFunc_SelectFloat_B_ImplicitCast = cast<CST_FloatToDouble>(L_RemainingStackTime)
+  [1916] CallFunc_SelectFloat_ReturnValue_1 = SelectFloat(L_AdjustedStackTime, CallFunc_SelectFloat_B_ImplicitCast, RefreshStackTimer)
+  [1971] BeginStackTimer(CallFunc_SelectFloat_ReturnValue_1)
+  [1994] push @2136
+  [1999] if !(self.BenefitAdded) goto @4162
+  [2013] if !(HideVFX) goto @4531
+  [2027] OnBenefitAdded(L_StacksDiff)
+  [2050] self.BenefitAdded = false
+  [2061] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher_1)
+  [2084] OnStackBuffChanged__DelegateSignature(self.BuffType, true)
+  [2135] pop
+  [2136] CallFunc_NotEqual_IntInt_ReturnValue_3 = NotEqual_IntInt(StacksChange, 0)
+  [2170] if !(CallFunc_NotEqual_IntInt_ReturnValue_3) pop
+  [2180] CallFunc_Greater_IntInt_ReturnValue_6 = Greater_IntInt(StacksChange, 0)
+  [2214] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [2237] OnStackBuffChanged__DelegateSignature(self.BuffType, CallFunc_Greater_IntInt_ReturnValue_6)
+  [2296] pop
+  [2297] L_RemainingStackTime = 0.0
+  [2320] pop
+  [2321] CallFunc_Add_IntInt_ReturnValue_8 = Add_IntInt(self.CurrentHeldStacks, self.HeldStacksChange)
+  [2367] CallFunc_NotEqual_IntInt_ReturnValue_2 = NotEqual_IntInt(CallFunc_Add_IntInt_ReturnValue_8, 0)
+  [2401] if !(CallFunc_NotEqual_IntInt_ReturnValue_2) pop
+  [2411] CallFunc_Greater_IntInt_ReturnValue_4 = Greater_IntInt(self.StacksToAdjustTo, 0)
+  [2445] if !(CallFunc_Greater_IntInt_ReturnValue_4) goto @2743
+  [2459] self.BenefitAdded = true
+  [2470] Temp_int_Variable_2 = 1
+  [2493] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(Temp_int_Variable_2, self.StacksToAdjustTo)
+  [2531] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) pop
+  [2541] push @2669
+  [2546] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2566] Default__gameplay_ability_function_library_C.ApplySpec(CallFunc_GetBuffOwner_ReturnValue_1, self.BenefitGameEffectPerm, self, CallFunc_ApplySpec_SpecHandle_1)
+  [2630] self.CurrentTempGESpecHandle = ActiveGameplayEffectHandle{-1, false}
+  [2668] pop
+  [2669] CallFunc_Add_IntInt_ReturnValue_7 = Add_IntInt(Temp_int_Variable_2, 1)
+  [2711] Temp_int_Variable_2 = CallFunc_Add_IntInt_ReturnValue_7
+  [2738] goto @2493
+  [2743] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.StacksToAdjustTo, 0)
+  [2777] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2787] self.PenaltyAdded = true
+  [2798] Temp_int_Variable_3 = 1
+  [2821] CallFunc_Abs_Int_ReturnValue = Abs_Int(self.StacksToAdjustTo)
+  [2858] CallFunc_LessEqual_IntInt_ReturnValue_3 = LessEqual_IntInt(Temp_int_Variable_3, CallFunc_Abs_Int_ReturnValue)
+  [2896] if !(CallFunc_LessEqual_IntInt_ReturnValue_3) pop
+  [2906] push @3034
+  [2911] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2931] Default__gameplay_ability_function_library_C.ApplySpec(CallFunc_GetBuffOwner_ReturnValue_1, self.PenaltyGameEffectPerm, self, CallFunc_ApplySpec_SpecHandle)
+  [2995] self.CurrentTempGESpecHandle = ActiveGameplayEffectHandle{-1, false}
+  [3033] pop
+  [3034] CallFunc_Add_IntInt_ReturnValue_9 = Add_IntInt(Temp_int_Variable_3, 1)
+  [3076] Temp_int_Variable_3 = CallFunc_Add_IntInt_ReturnValue_9
+  [3103] goto @2821
+  [3108] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(self.HeldStacksChange, self.CurrentHeldStacks)
+  [3154] CallFunc_Clamp_ReturnValue_1 = Clamp(CallFunc_Add_IntInt_ReturnValue_3, self.MinStacks, self.MaxStacks)
+  [3209] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(self.CurrentTempStacks, CallFunc_Clamp_ReturnValue_1)
+  [3255] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(CallFunc_Add_IntInt_ReturnValue_4, self.MinStacks)
+  [3293] CallFunc_Greater_IntInt_ReturnValue_3 = Greater_IntInt(self.MaxStacks, CallFunc_Add_IntInt_ReturnValue_4)
+  [3331] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_3, CallFunc_Greater_IntInt_ReturnValue_2)
+  [3369] if !(CallFunc_BooleanAND_ReturnValue_1) goto @2321
+  [3383] goto @1303
+  [3388] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(self.StacksToAdjustTo, 0)
+  [3422] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @3839
+  [3436] self.PenaltyAdded = true
+  [3447] Temp_int_Variable = 1
+  [3470] CallFunc_Abs_Int_ReturnValue_1 = Abs_Int(self.StacksToAdjustTo)
+  [3507] CallFunc_LessEqual_IntInt_ReturnValue_2 = LessEqual_IntInt(Temp_int_Variable, CallFunc_Abs_Int_ReturnValue_1)
+  [3545] if !(CallFunc_LessEqual_IntInt_ReturnValue_2) pop
+  [3555] push @3765
+  [3560] CallFunc_SelectFloat_B_ImplicitCast_1 = cast<CST_FloatToDouble>(L_RemainingStackTime)
+  [3589] CallFunc_SelectFloat_ReturnValue = SelectFloat(L_AdjustedStackTime, CallFunc_SelectFloat_B_ImplicitCast_1, RefreshStackTimer)
+  [3644] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [3664] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue_2, self.PenaltyGameEffectTemp, CallFunc_SelectFloat_ReturnValue, self, CallFunc_ApplySpecWithDuration_SpecHandle_2)
+  [3737] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle_2
+  [3764] pop
+  [3765] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Variable, 1)
+  [3807] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_2
+  [3834] goto @3470
+  [3839] CallFunc_NotEqual_IntInt_ReturnValue_1 = NotEqual_IntInt(self.CurrentHeldStacks, 0)
+  [3873] if !(CallFunc_NotEqual_IntInt_ReturnValue_1) pop
+  [3883] CallFunc_SelectFloat_B_ImplicitCast_1 = cast<CST_FloatToDouble>(L_RemainingStackTime)
+  [3912] CallFunc_SelectFloat_ReturnValue = SelectFloat(L_AdjustedStackTime, CallFunc_SelectFloat_B_ImplicitCast_1, RefreshStackTimer)
+  [3967] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [3987] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue, self.ZeroStackGameEffectTemp, CallFunc_SelectFloat_ReturnValue, self, CallFunc_ApplySpecWithDuration_SpecHandle)
+  [4060] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle
+  [4087] pop
+  [4088] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Variable_1, 1)
+  [4130] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_5
+  [4157] goto @1385
+  [4162] if !(self.PenaltyAdded) pop
+  [4172] if !(HideVFX) goto @4272
+  [4186] self.PenaltyAdded = false
+  [4197] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher_1)
+  [4220] OnStackBuffChanged__DelegateSignature(self.BuffType, false)
+  [4271] pop
+  [4272] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [4292] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_3)
+  [4328] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [4357] if !(K2Node_DynamicCast_bSuccess) pop
+  [4367] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [4387] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_3, self)
+  [4443] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.TryAddBuff(self.PenaltyVFXBuff, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable_1, K2Node_DynamicCast_AsPawn, true)
+  [4526] goto @4186
+  [4531] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [4551] K2Node_DynamicCast_AsPawn_1 = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_4)
+  [4587] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn_1)
+  [4616] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [4626] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [4646] CallFunc_GetArchonBuffableComponent_ReturnValue_1 = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_4, self)
+  [4702] CallFunc_TryAddBuff_ReturnValue_1 = CallFunc_GetArchonBuffableComponent_ReturnValue_1.TryAddBuff(self.BenefitVFXBuff, CallFunc_TryAddBuff_BuffAdded_1, Temp_struct_Variable, K2Node_DynamicCast_AsPawn_1, true)
+  [4785] goto @2027
+  [4790] return nothing
+  [4792] end
+
+=== AdjustMaxStacks
+  [0] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(StackAdjustment, self.MaxStacks)
+  [46] self.MaxStacks = CallFunc_Add_IntInt_ReturnValue
+  [73] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.CurrentHeldStacks, self.MaxStacks)
+  [111] if !(CallFunc_Greater_IntInt_ReturnValue) goto @146
+  [125] AdjustHeldStacks(0, false, false)
+  [146] return nothing
+  [148] end
+
+=== AdjustStackDuration
+  [0] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(DurationChange, self.StackDrainTime)
+  [46] self.StackDrainTime = CallFunc_Add_DoubleDouble_ReturnValue
+  [73] AdjustHeldStacks(0, true, true)
+  [94] return nothing
+  [96] end
+
+=== AdjustTempStacks
+  [0] push @4354
+  [5] self.TempStacksChange = StacksChange
+  [32] CallFunc_Clamp_ReturnValue_1 = Clamp(self.CurrentHeldStacks, self.MinStacks, self.MaxStacks)
+  [87] CallFunc_Add_IntInt_ReturnValue_9 = Add_IntInt(self.CurrentTempStacks, CallFunc_Clamp_ReturnValue_1)
+  [133] CallFunc_Add_IntInt_ReturnValue_10 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_9, self.TempStacksChange)
+  [179] CallFunc_Add_IntInt_ReturnValue_11 = Add_IntInt(self.CurrentTempStacks, CallFunc_Clamp_ReturnValue_1)
+  [225] CallFunc_Clamp_ReturnValue_5 = Clamp(CallFunc_Add_IntInt_ReturnValue_10, self.MinStacks, self.MaxStacks)
+  [280] CallFunc_Clamp_ReturnValue_6 = Clamp(CallFunc_Add_IntInt_ReturnValue_11, self.MinStacks, self.MaxStacks)
+  [335] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Clamp_ReturnValue_5, CallFunc_Clamp_ReturnValue_6)
+  [381] L_StackDiff = CallFunc_Subtract_IntInt_ReturnValue_1
+  [408] CallFunc_Clamp_ReturnValue_3 = Clamp(self.CurrentHeldStacks, self.MinStacks, self.MaxStacks)
+  [463] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(self.CurrentTempStacks, CallFunc_Clamp_ReturnValue_3)
+  [509] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_3, self.TempStacksChange)
+  [555] CallFunc_Clamp_ReturnValue_4 = Clamp(CallFunc_Add_IntInt_ReturnValue_4, self.MinStacks, self.MaxStacks)
+  [610] self.StacksToAdjustTo = CallFunc_Clamp_ReturnValue_4
+  [637] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [657] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_4, CallFunc_GetBuffOwner_ReturnValue_4, self.BenefitGameEffectTemp, -1, self)
+  [726] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [746] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_4, CallFunc_GetBuffOwner_ReturnValue_4, self.BenefitGameEffectPerm, -1, self)
+  [815] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [835] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_4, CallFunc_GetBuffOwner_ReturnValue_4, self.PenaltyGameEffectTemp, -1, self)
+  [904] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [924] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_4, CallFunc_GetBuffOwner_ReturnValue_4, self.PenaltyGameEffectPerm, -1, self)
+  [993] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [1013] Default__gameplay_helpers_fl_C.AuthRemoveGameplayEffectByClass(CallFunc_GetBuffOwner_ReturnValue_4, CallFunc_GetBuffOwner_ReturnValue_4, self.ZeroStackGameEffectTemp, -1, self)
+  [1082] push @1624
+  [1087] GetDynamicStackDuration(self.StacksToAdjustTo, CallFunc_GetDynamicStackDuration_AdjustedStackDuration)
+  [1119] L_AdjustedStackTime = CallFunc_GetDynamicStackDuration_AdjustedStackDuration
+  [1146] CallFunc_Add_IntInt_ReturnValue_8 = Add_IntInt(self.CurrentTempStacks, self.TempStacksChange)
+  [1192] CallFunc_NotEqual_IntInt_ReturnValue_2 = NotEqual_IntInt(CallFunc_Add_IntInt_ReturnValue_8, 0)
+  [1226] if !(CallFunc_NotEqual_IntInt_ReturnValue_2) goto @2121
+  [1240] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.CurrentHeldStacks, self.MinStacks)
+  [1278] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(self.MaxStacks, self.CurrentHeldStacks)
+  [1316] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_1, CallFunc_Greater_IntInt_ReturnValue)
+  [1354] if !(CallFunc_BooleanAND_ReturnValue) goto @2840
+  [1368] CallFunc_Greater_IntInt_ReturnValue_5 = Greater_IntInt(self.StacksToAdjustTo, 0)
+  [1402] if !(CallFunc_Greater_IntInt_ReturnValue_5) goto @3120
+  [1416] self.BenefitAdded = true
+  [1427] Temp_int_Variable_1 = 1
+  [1450] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, self.StacksToAdjustTo)
+  [1488] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [1498] push @3652
+  [1503] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1523] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue_2, self.BenefitGameEffectTemp, L_AdjustedStackTime, self, CallFunc_ApplySpecWithDuration_SpecHandle_1)
+  [1596] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle_1
+  [1623] pop
+  [1624] CallFunc_Clamp_ReturnValue_2 = Clamp(self.CurrentHeldStacks, self.MinStacks, self.MaxStacks)
+  [1679] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.StacksToAdjustTo, CallFunc_Clamp_ReturnValue_2)
+  [1725] self.CurrentTempStacks = CallFunc_Subtract_IntInt_ReturnValue
+  [1752] self.StacksToAdjustTo = 0
+  [1775] K2_ClearAndInvalidateTimerHandle(self, self.StackDrainTimerHandle)
+  [1795] BeginStackTimer(L_AdjustedStackTime)
+  [1818] push @1960
+  [1823] if !(self.BenefitAdded) goto @3726
+  [1837] if !(HideVFX) goto @4095
+  [1851] OnBenefitAdded(L_StackDiff)
+  [1874] self.BenefitAdded = false
+  [1885] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher_1)
+  [1908] OnStackBuffChanged__DelegateSignature(self.BuffType, true)
+  [1959] pop
+  [1960] CallFunc_NotEqual_IntInt_ReturnValue_3 = NotEqual_IntInt(StacksChange, 0)
+  [1994] if !(CallFunc_NotEqual_IntInt_ReturnValue_3) pop
+  [2004] CallFunc_Greater_IntInt_ReturnValue_6 = Greater_IntInt(StacksChange, 0)
+  [2038] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher)
+  [2061] OnStackBuffChanged__DelegateSignature(self.BuffType, CallFunc_Greater_IntInt_ReturnValue_6)
+  [2120] pop
+  [2121] CallFunc_NotEqual_IntInt_ReturnValue_1 = NotEqual_IntInt(self.CurrentHeldStacks, 0)
+  [2155] if !(CallFunc_NotEqual_IntInt_ReturnValue_1) pop
+  [2165] CallFunc_Greater_IntInt_ReturnValue_4 = Greater_IntInt(self.StacksToAdjustTo, 0)
+  [2199] if !(CallFunc_Greater_IntInt_ReturnValue_4) goto @2486
+  [2213] self.BenefitAdded = true
+  [2224] Temp_int_Variable_2 = 1
+  [2247] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(Temp_int_Variable_2, self.StacksToAdjustTo)
+  [2285] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) pop
+  [2295] push @2412
+  [2300] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2320] Default__gameplay_ability_function_library_C.ApplySpec(CallFunc_GetBuffOwner_ReturnValue_1, self.BenefitGameEffectPerm, self, CallFunc_ApplySpec_SpecHandle_1)
+  [2384] self.CurrentTempGESpecHandle = CallFunc_ApplySpec_SpecHandle_1
+  [2411] pop
+  [2412] CallFunc_Add_IntInt_ReturnValue_6 = Add_IntInt(Temp_int_Variable_2, 1)
+  [2454] Temp_int_Variable_2 = CallFunc_Add_IntInt_ReturnValue_6
+  [2481] goto @2247
+  [2486] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.StacksToAdjustTo, 0)
+  [2520] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2530] self.PenaltyAdded = true
+  [2541] Temp_int_Variable_3 = 1
+  [2564] CallFunc_Abs_Int_ReturnValue = Abs_Int(self.StacksToAdjustTo)
+  [2601] CallFunc_LessEqual_IntInt_ReturnValue_3 = LessEqual_IntInt(Temp_int_Variable_3, CallFunc_Abs_Int_ReturnValue)
+  [2639] if !(CallFunc_LessEqual_IntInt_ReturnValue_3) pop
+  [2649] push @2766
+  [2654] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2674] Default__gameplay_ability_function_library_C.ApplySpec(CallFunc_GetBuffOwner_ReturnValue_1, self.PenaltyGameEffectPerm, self, CallFunc_ApplySpec_SpecHandle)
+  [2738] self.CurrentTempGESpecHandle = CallFunc_ApplySpec_SpecHandle
+  [2765] pop
+  [2766] CallFunc_Add_IntInt_ReturnValue_7 = Add_IntInt(Temp_int_Variable_3, 1)
+  [2808] Temp_int_Variable_3 = CallFunc_Add_IntInt_ReturnValue_7
+  [2835] goto @2564
+  [2840] CallFunc_Clamp_ReturnValue = Clamp(self.CurrentHeldStacks, self.MinStacks, self.MaxStacks)
+  [2895] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.CurrentTempStacks, self.TempStacksChange)
+  [2941] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(CallFunc_Add_IntInt_ReturnValue_1, CallFunc_Clamp_ReturnValue)
+  [2987] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(CallFunc_Add_IntInt_ReturnValue_2, self.MinStacks)
+  [3025] CallFunc_Greater_IntInt_ReturnValue_3 = Greater_IntInt(self.MaxStacks, CallFunc_Add_IntInt_ReturnValue_2)
+  [3063] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue_3, CallFunc_Greater_IntInt_ReturnValue_2)
+  [3101] if !(CallFunc_BooleanAND_ReturnValue_1) goto @2121
+  [3115] goto @1368
+  [3120] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(self.StacksToAdjustTo, 0)
+  [3154] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @3487
+  [3168] self.PenaltyAdded = true
+  [3179] Temp_int_Variable = 1
+  [3202] CallFunc_Abs_Int_ReturnValue_1 = Abs_Int(self.StacksToAdjustTo)
+  [3239] CallFunc_LessEqual_IntInt_ReturnValue_2 = LessEqual_IntInt(Temp_int_Variable, CallFunc_Abs_Int_ReturnValue_1)
+  [3277] if !(CallFunc_LessEqual_IntInt_ReturnValue_2) pop
+  [3287] push @3413
+  [3292] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [3312] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue_2, self.PenaltyGameEffectTemp, L_AdjustedStackTime, self, CallFunc_ApplySpecWithDuration_SpecHandle_2)
+  [3385] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle_2
+  [3412] pop
+  [3413] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [3455] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [3482] goto @3202
+  [3487] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(self.CurrentHeldStacks, 0)
+  [3521] if !(CallFunc_NotEqual_IntInt_ReturnValue) pop
+  [3531] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [3551] Default__gameplay_ability_function_library_C.ApplySpecWithDuration(CallFunc_GetBuffOwner_ReturnValue, self.ZeroStackGameEffectTemp, L_AdjustedStackTime, self, CallFunc_ApplySpecWithDuration_SpecHandle)
+  [3624] self.CurrentTempGESpecHandle = CallFunc_ApplySpecWithDuration_SpecHandle
+  [3651] pop
+  [3652] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Variable_1, 1)
+  [3694] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_5
+  [3721] goto @1450
+  [3726] if !(self.PenaltyAdded) pop
+  [3736] if !(HideVFX) goto @3836
+  [3750] self.PenaltyAdded = false
+  [3761] GetPlayerEventDispatcher(CallFunc_GetPlayerEventDispatcher_Player_Event_Dispatcher_1)
+  [3784] OnStackBuffChanged__DelegateSignature(self.BuffType, false)
+  [3835] pop
+  [3836] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [3856] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_3)
+  [3892] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [3921] if !(K2Node_DynamicCast_bSuccess) pop
+  [3931] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [3951] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_3, self)
+  [4007] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.TryAddBuff(self.PenaltyVFXBuff, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable_1, K2Node_DynamicCast_AsPawn, true)
+  [4090] goto @3750
+  [4095] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [4115] K2Node_DynamicCast_AsPawn_1 = cast<Pawn>(CallFunc_GetBuffOwner_ReturnValue_5)
+  [4151] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn_1)
+  [4180] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [4190] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [4210] CallFunc_GetArchonBuffableComponent_ReturnValue_1 = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_5, self)
+  [4266] CallFunc_TryAddBuff_ReturnValue_1 = CallFunc_GetArchonBuffableComponent_ReturnValue_1.TryAddBuff(self.BenefitVFXBuff, CallFunc_TryAddBuff_BuffAdded_1, Temp_struct_Variable, K2Node_DynamicCast_AsPawn_1, true)
+  [4349] goto @1851
+  [4354] return nothing
+  [4356] end
+
+=== BeginStackTimer
+  [0] frame.K2Node_CustomEvent_StackDrainTimeOverride = StackDrainTimeOverride
+  [18] ExecuteUbergraph_base_new_buffs_manager(317)
+  [33] return nothing
+  [35] end
+
+=== DeferTest
+  [0] ExecuteUbergraph_base_new_buffs_manager(470)
+  [15] return nothing
+  [17] end
+
+=== DrainStacks
+  [0] ExecuteUbergraph_base_new_buffs_manager(322)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_base_new_buffs_manager
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [31] if !(CallFunc_IsServer_ReturnValue) goto @470
+  [45] K2Node_CreateDelegate_OutputDelegate = bind(self.DrainStacks)
+  [68] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(K2Node_CustomEvent_StackDrainTimeOverride, 0.0)
+  [106] CallFunc_SelectFloat_ReturnValue = SelectFloat(K2Node_CustomEvent_StackDrainTimeOverride, self.StackDrainTime, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [161] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_SelectFloat_ReturnValue)
+  [190] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [247] self.StackDrainTimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [274] goto @470
+  [279] ReceiveBeginPlay()
+  [289] BeginStackTimer(0.0)
+  [312] goto @470
+  [317] goto @10
+  [322] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.CurrentTempStacks, 0)
+  [356] if !(CallFunc_Greater_IntInt_ReturnValue) goto @396
+  [370] AdjustTempStacks(-1, false, true)
+  [391] goto @470
+  [396] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.CurrentTempStacks, 0)
+  [430] if !(CallFunc_Less_IntInt_ReturnValue) goto @470
+  [444] AdjustTempStacks(1, false, true)
+  [465] goto @470
+  [470] return nothing
+  [472] end
+
+=== GetCurrentMaxStacks
+  [0] MaxStacks = self.MaxStacks
+  [27] return nothing
+  [29] end
+
+=== GetCurrentStacks
+  [0] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentTempStacks, self.CurrentHeldStacks)
+  [46] CallFunc_Clamp_ReturnValue = Clamp(CallFunc_Add_IntInt_ReturnValue, self.MinStacks, self.MaxStacks)
+  [101] Stacks = CallFunc_Clamp_ReturnValue
+  [128] return nothing
+  [130] end
+
+=== GetDynamicStackDuration
+  [0] CallFunc_Abs_Int_ReturnValue = Abs_Int(CurStackCount)
+  [37] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Abs_Int_ReturnValue, 1)
+  [71] if !(CallFunc_Greater_IntInt_ReturnValue) goto @439
+  [85] CallFunc_Conv_IntToDouble_ReturnValue = Conv_IntToDouble(CurStackCount)
+  [122] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Conv_IntToDouble_ReturnValue, 1.0)
+  [160] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_Conv_IntToDouble_ReturnValue, -2.0, -10.0, 0.9, 0.1)
+  [233] CallFunc_MapRangeClamped_ReturnValue_1 = MapRangeClamped(CallFunc_Conv_IntToDouble_ReturnValue, 2.0, 10.0, 0.95, 0.55)
+  [306] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_MapRangeClamped_ReturnValue_1, CallFunc_MapRangeClamped_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [361] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.StackDrainTime, CallFunc_SelectFloat_ReturnValue)
+  [407] AdjustedStackDuration = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [434] goto @466
+  [439] AdjustedStackDuration = self.StackDrainTime
+  [466] return nothing
+  [468] end
+
+=== OnBenefitAdded
+  [0] return nothing
+  [2] end
+
+=== OnPenaltyAdded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_base_new_buffs_manager(279)
+  [15] return nothing
+  [17] end

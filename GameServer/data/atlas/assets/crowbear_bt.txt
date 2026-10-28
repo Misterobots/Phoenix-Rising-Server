@@ -1,0 +1,189 @@
+crowbear_bt  blackboard=BlackboardData crowbear_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    [if Compare_btdeco  (LeftSideKey=bb.DebugMode, CompareType=Int)]
+    2) Sequence
+      1) try_set_behemoth_state_bttask  (State=ReadyToAetherCharge)
+      2) set_blackboard_key_bttask  (ResultKey=bb.DebugAetherChargeType, DataType=Int, SourceData={"BlackboardKeyName": "DebugMode"})
+      3) ClearBBVar  (BBVar=bb.DebugMode)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    [if Blackboard  (InFleeState is Is Set)]
+    [if set_state_btdeco  (State=ActivelyFleeing)]
+    4) Sequence "Flee"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_prep_bt)
+      [if ForceSuccess]
+      [if not should_despawn_on_flee_btdeco "Not Despawning after Flee"  (bInverseCondition=true)]
+      2) pivot_towards_target_bttask  (PivotTarget=bb.NextPatrolPoint, BlendOutTime=0.25)
+      3) Sequence
+        {service hide_behemoth_bttask  (HideOnStart=false)}
+        1) Sequence
+          1) BehemothAction  (Montage=AnimMontage crowbear_disappear_flee_mot)
+          2) Wait
+          3) Selector
+            1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_despawn_bt)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree sub_burrow_to_point)
+        2) Sequence
+          [if ForceSuccess]
+          1) try_set_behemoth_state_bttask  (State=ActivelyFleeing, StateChangeType=End)
+          [if ForceSuccess]
+          2) Sequence
+            [if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=Lurking, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+            1) Sequence
+              1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_arrive_internal_bt)
+              [if Loop  (bInfiniteLoop=true)]
+              [if Blackboard  (TargetActor is Is Not Set)]
+              2) Sequence
+                1) Wait  (WaitTime=1)
+                2) call_specific_behemoth_function_bttask  (SpecificFunction=SpawnLurkGoo, bShowPropertyDetails=false)
+                3) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTargetInRange", "QueryConfig": [{"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": 0.5, "BBKey": "bb.None"}, {"ParamName": "Distance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+          [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+          3) Sequence
+            1) Wait  (WaitTime=1)
+            2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_point", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 300.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+            3) teleport_bttask  (FacingTargetKeyName=TargetActor)
+            4) BehemothAction  (Montage=AnimMontage shrowd_unburrow_attack)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_burrow_bt)
+    8) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if Blackboard  (AetherCharged is Is Not Set)]
+      [if Blackboard  (InFinalForm is Is Set)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+        2) Selector
+          [if Compare_btdeco  (LeftSideKey=bb.DebugAetherChargeType, CompareType=Int)]
+          1) Sequence
+            1) set_blackboard_key_bttask  (ResultKey=bb.AetherChargeType, DataType=Int, SourceData={"BlackboardKeyName": "DebugAetherChargeType"})
+            2) set_blackboard_key_bttask  (ResultKey=bb.DebugAetherChargeType, DataType=Int)
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          2) set_blackboard_key_bttask  (ResultKey=bb.AetherChargeType, DataType=Int, SourceData={"ConstantInt": 1}, bShowPropertyDetails=false)
+          3) set_blackboard_key_bttask  (ResultKey=bb.AetherChargeType, DataType=Int, SourceData={"ConstantInt": 3}, bShowPropertyDetails=false)
+        3) pivot_towards_target_bttask  (PivotTarget=bb.MoveDestination, BlendOutTime=0.25)
+        4) bttask_enter_aethercharge_state  (Montage=AnimMontage b_xf_umb_00_atk_180jumptochargeenter_fwd_00_mot)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+        5) apply_abilities_bttask  (EqsQuery=EnvQuery eqs_players_in_combat, AbilitiesToGrant=["BlueprintGeneratedClass shroud_nearsight_alpha_ab_C"])
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage moonface_exit_aether_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage moonface_exit_rage_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      4) Sequence
+        {service hide_behemoth_bttask  (HideOnStart=false, RandomDeviation=0)}
+        {service staggerproof_behemoth_bttask  (RandomDeviation=0)}
+        1) Sequence
+          1) store_current_location_bttask
+          2) bttask_enter_rage_state  (Montage=AnimMontage crowbear_disappear_rage_mot)
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+          [if ForceSuccess]
+          3) apply_abilities_bttask  (EqsQuery=EnvQuery eqs_players_in_combat, AbilitiesToGrant=["BlueprintGeneratedClass shroud_nearsight_ab_C"])
+          4) Wait  (WaitTime=3)
+          5) Selector
+            1) Sequence
+              1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+              2) teleport_bttask  (FacingTargetKeyName=KnownTargetsAvgPos)
+            2) teleport_bttask  (DestinationKeyName=TempLocation, FacingTargetKeyName=KnownTargetsAvgPos)
+        2) BehemothAction  (Montage=AnimMontage b_mf_umb_atk_unburrow)
+      [if Blackboard  (ReadyForTiredState is Is Set)]
+      5) bttask_enter_tired_state  (Montage=AnimMontage moonface_enter_tired)
+    9) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    10) Selector "COMBAT"
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+        [if btdeco_percentchance  (PercentChance=0.5)]
+        1) Sequence
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.TwinShadowsCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          [if not CheckGameplayTagsOnActor  (Does not have any tags in set: (GameplayTags=((TagName="Behemoth.Crowbear.CloneSpawned"))))]
+          1) Sequence
+            1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery point_infront", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.CloneSpawnPos)
+            2) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.TwinShadowsCooldown"}, CooldownDuration=50)
+            3) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=45)
+            4) BehemothAction  (Montage=AnimMontage crowbear_spawnclone_mot)
+        [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.DoomsdayCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+        [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage"}, bShowPropertyDetails=false)]
+        2) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.CloneSpawnPos)
+          2) pivot_towards_target_bttask  (PivotTarget=bb.CloneSpawnPos, BlendOutTime=0.25)
+          3) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.DoomsdayCooldown"}, CooldownDuration=30)
+          4) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=30)
+          5) BehemothAction "Spawn Orb"  (Montage=AnimMontage crowbear_spawn_orb_mot)
+      [if Blackboard  (AetherCharged is Is Set)]
+      2) Selector
+        {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+        [if Compare_btdeco  (LeftSideKey=bb.AetherChargeType, CompareOperator===, CompareType=Int, RightSideData={"ConstantInt": 1})]
+        [if Compare_btdeco  (LeftSideKey=bb.InFinalForm, CompareOperator===, CompareType=Bool, RightSideData={"ConstantBool": true})]
+        [if btdeco_percentchance  (PercentChance=0.5)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+        1) Sequence
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.TwinShadowsCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          [if not CheckGameplayTagsOnActor  (Does not have any tags in set: (GameplayTags=((TagName="Behemoth.Crowbear.CloneSpawned"))))]
+          1) Sequence
+            1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery point_infront", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.CloneSpawnPos)
+            2) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.TwinShadowsCooldown"}, CooldownDuration=40)
+            3) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=35)
+            4) BehemothAction  (Montage=AnimMontage crowbear_spawnclone_mot)
+        [if Compare_btdeco  (LeftSideKey=bb.AetherChargeType, CompareOperator===, CompareType=Int, RightSideData={"ConstantInt": 3})]
+        [if Compare_btdeco  (LeftSideKey=bb.InFinalForm, CompareOperator===, CompareType=Bool, RightSideData={"ConstantBool": true})]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+        2) Sequence
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.DoomsdayCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=-1, bActivatesCooldown=false)]
+          1) Sequence
+            1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.CloneSpawnPos)
+            2) pivot_towards_target_bttask  (PivotTarget=bb.CloneSpawnPos, BlendOutTime=0.25)
+            3) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.DoomsdayCooldown"}, CooldownDuration=35)
+            4) SetTagCooldown  (CooldownTag={"TagName": "BehemothAction.Crowbear.SpawnThingCooldown"}, CooldownDuration=35)
+            5) BehemothAction "Spawn Orb"  (Montage=AnimMontage crowbear_spawn_orb_mot)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      3) Selector "StateGate"
+        [if BTDeco_CheckActionScore  (ActionClass=BlueprintGeneratedClass atk_shrowd_barrel_chg_dynamic_C, TopScoreKey=bb.TopScore, bShowPropertyDetails=false)]
+        1) Sequence
+          1) PerformActionClass "Barrel charge"  (ActionClass=BlueprintGeneratedClass atk_shrowd_barrel_chg_dynamic_C, bShowPropertyDetails=false)
+          2) LoopMontageUntilPastTarget "ChargeUntilPasttarget"  (Montage=AnimMontage moonface_combo_charge_dynamic, RecoveryTime=0, LoopingSection=Charge, InjuredLoopingSection=Charge_Injured, TimeLimit=5, CollisionTest_XLenght=1000, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+          3) Selector "GetTarget"
+            1) Sequence
+              1) RunEQSQuery "PickTarget"  (QueryTemplate=EnvQuery EQ_FindPlayerTarget, QueryConfig=[{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], EQSRequest={"QueryTemplate": "EnvQuery EQ_FindPlayerTarget", "QueryConfig": [{"ParamName": "Range", "ParamType": "EAIParamType::Float", "Value": 10000.0, "BBKey": "bb.None"}, {"ParamName": "FacingDotProductScoringFactor", "ParamType": "EAIParamType::Float", "Value": -0.5, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.AttackTarget)
+            2) Sequence "ClearTarget"
+              1) ClearBBVar "BTTask_ClearBBVar"  (BBVar=bb.AttackTarget)
+          [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.AttackTarget)]
+          [if Blackboard  (AttackTarget is Is Set)]
+          4) Sequence
+            1) Selector "Spin"
+              [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.AttackTarget)]
+              1) BehemothAction "Spin Left"  (Montage=AnimMontage moonface_combo_spinout_l_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+              2) BehemothAction "spin right"  (Montage=AnimMontage moonface_combo_spinout_r_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, TriggerCooldownOnSuccess=false, bShowPropertyDetails=false)
+            2) BehemothAction  (Montage=AnimMontage glide_chg_antic_mot)
+            3) LoopMontageUntilPastTarget "GlideUntilPasttarget"  (Montage=AnimMontage moonface_combo_glide_dynamic, RecoveryTime=0, LoopingSection=Glide, InjuredLoopingSection=Glide, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "tired", "SectionName": "RecoveryTired"}, {"State": "interrupted", "SectionName": "prevent_collision"}, {"State": "None", "SectionName": "Recovery"}]}, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_barrel_chg_dynamic_C, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}], InterruptedSection=prevent_collision, bShowPropertyDetails=false)
+        [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass crowbear_clear_atk_C, bShowPropertyDetails=false)]
+        2) Selector "Back Clear"
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          1) BehemothAction "Fast Clear"  (Montage=AnimMontage b_xf_umb_00_atk_backpedalclear_fast_bwd_00_mot, ActionClassToCooldown=BlueprintGeneratedClass crowbear_clear_atk_C, bShowPropertyDetails=false)
+        [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass atk_moonface_4swipes_C, bShowPropertyDetails=false)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+        3) Sequence
+          1) PerformActionClass  (ActionClass=BlueprintGeneratedClass atk_moonface_4swipes_C, bShowPropertyDetails=false)
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          2) PerformActionClass  (ActionClass=BlueprintGeneratedClass atk_moonface_jumpslam_onspot_C, bShowPropertyDetails=false)
+        4) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    11) Selector "ENTER/LEAVE COMBAT/ALERT"
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    12) RunBehavior  (BehaviorAsset=BehaviorTree mf_genus_combat_repo_with_strafing_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    13) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_calloutcooldown_bt)

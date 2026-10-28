@@ -1,0 +1,411 @@
+# ammo_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthCheatToggleInfiniteAmmo
+  [0] ExecuteUbergraph_ammo_bpc(1463)
+  [15] return nothing
+  [17] end
+
+=== AuthReloadNumAmmo
+  [0] push @935
+  [5] push @518
+  [10] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [31] if !(CallFunc_IsServer_ReturnValue) goto @538
+  [45] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [73] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(AmmoToReload, CallFunc_GetCurrentAmmoCount_ReturnValue)
+  [119] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, self.MaxAmmoCount)
+  [165] SetAmmo(CallFunc_Min_ReturnValue)
+  [184] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [243] Temp_int_Variable = CallFunc_Array_Length_ReturnValue
+  [270] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [298] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(AmmoToReload, CallFunc_GetCurrentAmmoCount_ReturnValue)
+  [344] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, self.MaxAmmoCount)
+  [390] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Min_ReturnValue, 1)
+  [432] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue)
+  [470] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [480] push @861
+  [485] AuthSetAmmoIndexMeterScale(AmmoWeaponScale, Temp_int_Variable)
+  [517] pop
+  [518] ServerOnReloadWeapon__DelegateSignature()
+  [537] pop
+  [538] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [567] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [617] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [659] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Error: calling authreload weapon on client!')
+  [741] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [815] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [835] if !(CallFunc_IsShipping_ReturnValue) goto @850
+  [849] pop
+  [850] StackTrace()
+  [860] pop
+  [861] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Variable, 1)
+  [903] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [930] goto @270
+  [935] return nothing
+  [937] end
+
+=== AuthReloadWeaponWithAmmoScale
+  [0] push @781
+  [5] push @364
+  [10] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [31] if !(CallFunc_IsServer_ReturnValue) goto @384
+  [45] SetAmmo(self.MaxAmmoCount)
+  [64] Temp_int_Variable = 0
+  [87] Temp_bool_Variable = OverrideExistingAmmoScale
+  [106] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [165] Temp_int_Variable_1 = switch(Temp_bool_Variable){false: CallFunc_Array_Length_ReturnValue, true: Temp_int_Variable, default: K2Node_Select_Default}
+  [236] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.MaxAmmoCount, 1)
+  [278] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [316] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [326] push @707
+  [331] AuthSetAmmoIndexMeterScale(AmmoScale, Temp_int_Variable_1)
+  [363] pop
+  [364] ServerOnReloadWeapon__DelegateSignature()
+  [383] pop
+  [384] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [413] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [463] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [505] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Error: calling authreload weapon on client!')
+  [587] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [661] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [681] if !(CallFunc_IsShipping_ReturnValue) goto @696
+  [695] pop
+  [696] StackTrace()
+  [706] pop
+  [707] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [749] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [776] goto @236
+  [781] return nothing
+  [783] end
+
+=== AuthSetAmmoIndexMeterScale
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @211
+  [76] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(AmmoIndex, 0)
+  [110] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @211
+  [124] Default__KismetArrayLibrary.Array_Set(self.AmmoMeterScale, AmmoIndex, Scale, true)
+  [184] self.LastLoadedAmmoScale = Scale
+  [211] return nothing
+  [213] end
+
+=== AuthSetAmmoType
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @132
+  [76] self.CurrentAmmoType = NewAmmoType
+  [103] MarkPropertyDirtyFromRepIndex(self, 6, 'CurrentAmmoType')
+  [132] return nothing
+  [134] end
+
+=== AuthSetCurrentMeterScale
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @1229
+  [76] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [104] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [146] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Subtract_IntInt_ReturnValue, 0)
+  [180] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @1229
+  [194] CallFunc_FClamp_ReturnValue = FClamp(Scale, 1.0, Scale)
+  [249] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(Scale, 0.8999999761581421)
+  [287] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(Scale, 0.6600000262260437)
+  [325] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(Scale, 0.33000001311302185)
+  [363] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue_2
+  [382] Temp_real_Variable = 0.10000000149011612
+  [409] Temp_real_Variable_1 = 0.33000001311302185
+  [436] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [464] Temp_real_Variable_2 = 0.6600000262260437
+  [491] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [533] Temp_bool_Variable_1 = CallFunc_Less_DoubleDouble_ReturnValue_1
+  [552] Temp_bool_Variable_2 = CallFunc_Less_DoubleDouble_ReturnValue
+  [571] Default__KismetArrayLibrary.Array_Set(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue, switch(Temp_bool_Variable_2){false: CallFunc_FClamp_ReturnValue, true: switch(Temp_bool_Variable_1){false: Temp_real_Variable_2, true: switch(Temp_bool_Variable){false: Temp_real_Variable_1, true: Temp_real_Variable, default: K2Node_Select_Default}, default: K2Node_Select_Default_1}, default: K2Node_Select_Default_2}, true)
+  [763] CallFunc_FClamp_ReturnValue = FClamp(Scale, 1.0, Scale)
+  [818] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(Scale, 0.8999999761581421)
+  [856] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(Scale, 0.6600000262260437)
+  [894] CallFunc_Less_DoubleDouble_ReturnValue_2 = Less_DoubleDouble(Scale, 0.33000001311302185)
+  [932] Temp_bool_Variable = CallFunc_Less_DoubleDouble_ReturnValue_2
+  [951] Temp_real_Variable = 0.10000000149011612
+  [978] Temp_real_Variable_1 = 0.33000001311302185
+  [1005] Temp_real_Variable_2 = 0.6600000262260437
+  [1032] Temp_bool_Variable_1 = CallFunc_Less_DoubleDouble_ReturnValue_1
+  [1051] Temp_bool_Variable_2 = CallFunc_Less_DoubleDouble_ReturnValue
+  [1070] self.LastLoadedAmmoScale = switch(Temp_bool_Variable_2){false: CallFunc_FClamp_ReturnValue, true: switch(Temp_bool_Variable_1){false: Temp_real_Variable_2, true: switch(Temp_bool_Variable){false: Temp_real_Variable_1, true: Temp_real_Variable, default: K2Node_Select_Default}, default: K2Node_Select_Default_1}, default: K2Node_Select_Default_2}
+  [1229] return nothing
+  [1231] end
+
+=== ClampMeterScaleOnAmmoChanged
+  [0] frame.K2Node_CustomEvent_OldAmmoCount = OldAmmoCount
+  [18] frame.K2Node_CustomEvent_NewAmmoCount = NewAmmoCount
+  [36] ExecuteUbergraph_ammo_bpc(1605)
+  [51] return nothing
+  [53] end
+
+=== ClampMeterScaleToAmmo
+  [0] push @369
+  [5] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [33] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [92] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, CallFunc_GetCurrentAmmoCount_ReturnValue)
+  [130] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [164] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_Greater_IntInt_ReturnValue_1)
+  [202] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [212] push @5
+  [217] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [276] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue, 1)
+  [318] Default__KismetArrayLibrary.Array_Remove(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue)
+  [368] pop
+  [369] return nothing
+  [371] end
+
+=== DebugOutputAmmoScale
+  [0] push @626
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @552
+  [190] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(Temp_int_Array_Index_Variable)
+  [227] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Ammo meter scale at index ', CallFunc_Conv_IntToString_ReturnValue)
+  [292] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' is ')
+  [335] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [394] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Array_Get_Item)
+  [431] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue)
+  [477] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [551] pop
+  [552] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [594] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [621] goto @51
+  [626] return nothing
+  [628] end
+
+=== ExecuteUbergraph_ammo_bpc
+  [0] push @2057
+  [5] goto computed(EntryPoint)
+  [15] if !(false) pop
+  [17] Temp_int_Loop_Counter_Variable = 0
+  [40] Temp_int_Array_Index_Variable = 0
+  [63] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [122] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [160] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [170] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [197] push @564
+  [202] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [261] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Array_Get_Item)
+  [298] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(Temp_int_Array_Index_Variable)
+  [335] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Ammo Index ', CallFunc_Conv_IntToString_ReturnValue)
+  [385] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' Ammo Meter Scale: ')
+  [443] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue)
+  [489] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 0.0, 'None')
+  [563] pop
+  [564] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [606] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [633] goto @63
+  [638] K2Node_CreateDelegate_OutputDelegate = bind(self.ClampMeterScaleOnAmmoChanged)
+  [661] K2Node_CreateDelegate_OutputDelegate += None
+  [680] if !(self.StartWithFullAmmo) goto @864
+  [694] SetAmmo(self.MaxAmmoCount)
+  [713] Temp_int_Variable = 0
+  [736] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(self.MaxAmmoCount, 1)
+  [778] CallFunc_LessEqual_IntInt_ReturnValue_1 = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [816] if !(CallFunc_LessEqual_IntInt_ReturnValue_1) pop
+  [826] push @1108
+  [831] AuthSetAmmoIndexMeterScale(self.StartingAmmoScale, Temp_int_Variable)
+  [863] pop
+  [864] SetAmmo(self.StartingAmmoCount)
+  [883] Temp_int_Variable_1 = 0
+  [906] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.StartingAmmoCount, 1)
+  [948] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable_1, CallFunc_Subtract_IntInt_ReturnValue)
+  [986] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [996] push @1034
+  [1001] AuthSetAmmoIndexMeterScale(self.StartingAmmoScale, Temp_int_Variable_1)
+  [1033] pop
+  [1034] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Variable_1, 1)
+  [1076] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [1103] goto @906
+  [1108] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Variable, 1)
+  [1150] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [1177] goto @736
+  [1182] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1203] if !(CallFunc_IsServer_ReturnValue) pop
+  [1213] goto @638
+  [1218] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1238] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [1280] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [1290] CallFunc_K2_IsValidTimerHandle_ReturnValue = K2_IsValidTimerHandle(self.Cheat_AmmoRegenTimer)
+  [1319] if !(CallFunc_K2_IsValidTimerHandle_ReturnValue) goto @1354
+  [1333] K2_ClearAndInvalidateTimerHandle(self, self.Cheat_AmmoRegenTimer)
+  [1353] pop
+  [1354] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.Internal_RegenAmmoEvent)
+  [1377] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 0.5, true, 0.0, 0.0)
+  [1430] self.Cheat_AmmoRegenTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1457] pop
+  [1458] goto @15
+  [1463] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1483] if !(CallFunc_IsShipping_ReturnValue) goto @1218
+  [1497] pop
+  [1498] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [1526] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, self.MaxAmmoCount)
+  [1564] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1574] AdjustAmmo(1)
+  [1589] pop
+  [1590] ClampMeterScaleToAmmo()
+  [1604] pop
+  [1605] push @1590
+  [1610] CallFunc_Subtract_IntInt_ReturnValue_2 = Subtract_IntInt(K2Node_CustomEvent_OldAmmoCount, 1)
+  [1652] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_Subtract_IntInt_ReturnValue_2, K2Node_CustomEvent_NewAmmoCount)
+  [1690] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [1749] CallFunc_EqualEqual_IntInt_ReturnValue_1 = EqualEqual_IntInt(K2Node_CustomEvent_OldAmmoCount, CallFunc_Array_Length_ReturnValue_1)
+  [1787] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_IntInt_ReturnValue, CallFunc_EqualEqual_IntInt_ReturnValue_1)
+  [1825] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1835] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.AmmoScaleMultiplier, 1.0)
+  [1881] CallFunc_Subtract_IntInt_ReturnValue_2 = Subtract_IntInt(K2Node_CustomEvent_OldAmmoCount, 1)
+  [1923] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue_2, CallFunc_Array_Get_Item_1)
+  [1982] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Array_Get_Item_1, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [2028] OnSpentAmmoWithMeterScale__DelegateSignature(CallFunc_Add_DoubleDouble_ReturnValue)
+  [2056] pop
+  [2057] return nothing
+  [2059] end
+
+=== GetAmmoIndexScale
+  [0] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.AmmoMeterScale, AmmoIndex)
+  [60] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @165
+  [74] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, AmmoIndex, CallFunc_Array_Get_Item)
+  [133] Scale = CallFunc_Array_Get_Item
+  [160] goto @192
+  [165] Scale = 0.0
+  [192] return nothing
+  [194] end
+
+=== GetAmmoMeterScale
+  [0] AmmoMeterScale = self.AmmoMeterScale
+  [27] return nothing
+  [29] end
+
+=== GetAmmoScaleMultiplier
+  [0] AmmoScaleMultiplier = self.AmmoScaleMultiplier
+  [27] return nothing
+  [29] end
+
+=== GetAverageMeterScale
+  [0] push @631
+  [5] TotalScale = 0.0
+  [32] Temp_int_Loop_Counter_Variable = 0
+  [55] Temp_int_Array_Index_Variable = 0
+  [78] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [137] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [175] if !(CallFunc_Less_IntInt_ReturnValue) goto @354
+  [189] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [216] push @557
+  [221] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [280] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Array_Get_Item, TotalScale)
+  [326] TotalScale = CallFunc_Add_DoubleDouble_ReturnValue
+  [353] pop
+  [354] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AmmoMeterScale)
+  [413] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue)
+  [450] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [479] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(TotalScale, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [525] Average = CallFunc_Divide_DoubleDouble_ReturnValue
+  [552] goto @631
+  [557] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [599] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [626] goto @78
+  [631] return nothing
+  [633] end
+
+=== GetCurrentAmmoScale
+  [0] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [28] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [70] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue)
+  [130] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @305
+  [144] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [172] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [214] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item)
+  [273] Scale = CallFunc_Array_Get_Item
+  [300] goto @332
+  [305] Scale = 0.0
+  [332] return nothing
+  [334] end
+
+=== GetCurrentAmmoType
+  [0] AmmoType = self.CurrentAmmoType
+  [27] return nothing
+  [29] end
+
+=== Internal_RegenAmmoEvent
+  [0] ExecuteUbergraph_ammo_bpc(1498)
+  [15] return nothing
+  [17] end
+
+=== IsAmmoDepleted
+  [0] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [28] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 0)
+  [62] OutOfAmmo = CallFunc_EqualEqual_IntInt_ReturnValue
+  [81] return nothing
+  [83] end
+
+=== OnAmmoMeterScaleUpdated__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnRep_AmmoMeterScale
+  [0] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [28] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [70] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue)
+  [130] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @466
+  [144] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [172] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [214] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item)
+  [273] OnAmmoMeterScaleUpdated__DelegateSignature(CallFunc_Array_Get_Item, CallFunc_Subtract_IntInt_ReturnValue)
+  [310] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [338] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetCurrentAmmoCount_ReturnValue, 1)
+  [380] Default__KismetArrayLibrary.Array_Get(self.AmmoMeterScale, CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item)
+  [439] self.LastLoadedAmmoScale = CallFunc_Array_Get_Item
+  [466] return nothing
+  [468] end
+
+=== OnSpentAmmoWithMeterScale__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ammo_bpc(1182)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ammo_bpc(1458)
+  [33] return nothing
+  [35] end
+
+=== ServerOnReloadWeapon__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== SetAmmoScaleMultiplier
+  [0] self.AmmoScaleMultiplier = NewMultiplier
+  [27] return nothing
+  [29] end
+
+=== SetNewMaxAmmo
+  [0] push @451
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] self.MaxAmmoCount = NewMax
+  [104] MarkPropertyDirtyFromRepIndex(self, 2, 'MaxAmmoCount')
+  [133] CallFunc_GetCurrentAmmoCount_ReturnValue = GetCurrentAmmoCount()
+  [161] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.MaxAmmoCount, CallFunc_GetCurrentAmmoCount_ReturnValue)
+  [207] AdjustAmmo(CallFunc_Subtract_IntInt_ReturnValue)
+  [226] Temp_int_Variable = 0
+  [249] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(self.MaxAmmoCount, 1)
+  [291] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [329] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [339] push @377
+  [344] AuthSetAmmoIndexMeterScale(self.StartingAmmoScale, Temp_int_Variable)
+  [376] pop
+  [377] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [419] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [446] goto @249
+  [451] return nothing
+  [453] end

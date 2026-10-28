@@ -1,0 +1,277 @@
+# threat_tracking_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== BroadcastThreat
+  [0] ExecuteUbergraph_threat_tracking_bpc(1211)
+  [15] return nothing
+  [17] end
+
+=== DebugBeginPlay
+  [0] ExecuteUbergraph_threat_tracking_bpc(1520)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_threat_tracking_bpc
+  [0] push @2596
+  [5] goto computed(EntryPoint)
+  [15] ThisActorDamagedATarget(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageDealt)
+  [47] pop
+  [48] push @568
+  [53] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys_1, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [112] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TargetThreatMap, CallFunc_Array_Get_Item_1, CallFunc_Map_Find_Value)
+  [181] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.ThreatDecayFrequency, self.ThreatDecayPerSecond)
+  [227] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.TotalThreat)
+  [265] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [311] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [357] K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [386] CallFunc_Map_Find_Value.TotalThreat = K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast
+  [422] K2Node_SetFieldsInStruct_StructOut = CallFunc_Map_Find_Value
+  [449] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys_1, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [508] Default__BlueprintMapLibrary.Map_Add(self.TargetThreatMap, CallFunc_Array_Get_Item_1, K2Node_SetFieldsInStruct_StructOut)
+  [567] pop
+  [568] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [610] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [637] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys_1)
+  [696] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [734] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @780
+  [748] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [775] goto @48
+  [780] UpdateTotalThreat()
+  [794] pop
+  [795] Temp_int_Array_Index_Variable = 0
+  [818] goto @637
+  [823] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [865] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [892] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_CustomEvent_TargetThreatMapKeys)
+  [951] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [989] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [999] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [1026] push @823
+  [1031] Default__KismetArrayLibrary.Array_Get(K2Node_CustomEvent_TargetThreatMapKeys, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [1090] Default__BlueprintMapLibrary.Map_Add(self.TargetThreatMap, CallFunc_Array_Get_Item, EX_ArrayGetByRef(ArrayVariable=K2Node_CustomEvent_TargetThreatMapValues,ArrayIndex=Temp_int_Array_Index_Variable_1))
+  [1159] pop
+  [1160] Temp_int_Loop_Counter_Variable = 0
+  [1183] Temp_int_Array_Index_Variable_1 = 0
+  [1206] goto @892
+  [1211] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1231] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [1273] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [1283] array{}
+  [1294] Default__BlueprintMapLibrary.Map_Keys(self.TargetThreatMap, CallFunc_Map_Keys_Keys)
+  [1344] array{}
+  [1355] Default__BlueprintMapLibrary.Map_Values(self.TargetThreatMap, CallFunc_Map_Values_Values)
+  [1405] MulticastThreat (Debug)(CallFunc_Map_Keys_Keys, CallFunc_Map_Values_Values)
+  [1437] pop
+  [1438] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1459] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1474
+  [1473] pop
+  [1474] Default__BlueprintMapLibrary.Map_Clear(self.TargetThreatMap)
+  [1515] goto @1160
+  [1520] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1540] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsShipping_ReturnValue)
+  [1569] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [1579] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.BroadcastThreat)
+  [1602] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, 0.3333, true, 0.0, 0.0)
+  [1655] pop
+  [1656] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1676] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [1718] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [1728] push @2345
+  [1733] push @1848
+  [1738] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.TryDecayThreat)
+  [1761] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.ThreatDecayFrequency)
+  [1790] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [1847] pop
+  [1848] push @2099
+  [1853] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1873] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(behemoth_eventdispatcher_bpc_C)
+  [1924] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [1953] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1963] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1983] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(behemoth_eventdispatcher_bpc_C)
+  [2034] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnHitWithAnAttack_Event_0)
+  [2057] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [2098] pop
+  [2099] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2119] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(aggro_bpc_C)
+  [2170] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [2199] if !(CallFunc_IsValid_ReturnValue) pop
+  [2209] K2Node_CreateDelegate_OutputDelegate = bind(self.TookDamage_Event_0)
+  [2232] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2252] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(aggro_bpc_C)
+  [2303] K2Node_CreateDelegate_OutputDelegate += None
+  [2344] pop
+  [2345] DebugBeginPlay()
+  [2359] pop
+  [2360] ReceiveBeginPlay()
+  [2370] goto @1656
+  [2375] array{}
+  [2386] Default__BlueprintMapLibrary.Map_Values(self.TargetThreatMap, CallFunc_Map_Values_Values_1)
+  [2436] Temp_int_Loop_Counter_Variable_1 = 0
+  [2459] goto @795
+  [2464] array{}
+  [2475] Default__BlueprintMapLibrary.Map_Keys(self.TargetThreatMap, CallFunc_Map_Keys_Keys_1)
+  [2525] goto @2375
+  [2530] goto @2464
+  [2535] ThisActorTookDamage(K2Node_CustomEvent_DamageAmount, K2Node_CustomEvent_DamageInstigator, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)})
+  [2595] pop
+  [2596] return nothing
+  [2598] end
+
+=== GetIntensityLevel
+  [0] GetTotalThreatPercentOfMaxHealth(CallFunc_GetTotalThreatPercentOfMaxHealth_TotalThreatPercentOfMaxHealth)
+  [23] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_GetTotalThreatPercentOfMaxHealth_TotalThreatPercentOfMaxHealth, 0.07000000029802322)
+  [61] if !(CallFunc_Less_DoubleDouble_ReturnValue_1) goto @100
+  [75] CurrentIntensity = 0
+  [95] goto @197
+  [100] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_GetTotalThreatPercentOfMaxHealth_TotalThreatPercentOfMaxHealth, 0.15000000596046448)
+  [138] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @177
+  [152] CurrentIntensity = 1
+  [172] goto @197
+  [177] CurrentIntensity = 2
+  [197] return nothing
+  [199] end
+
+=== GetOwnerMaxHealth
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(AbilitySystemComponent)
+  [71] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetComponentByClass_ReturnValue, GameplayAttribute{'MaxHealth', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [195] if !(CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute) goto @465
+  [209] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [229] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(AbilitySystemComponent)
+  [280] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetComponentByClass_ReturnValue, GameplayAttribute{'MaxHealth', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [404] K2Node_FunctionResult_MaxHealth_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [433] MaxHealth = K2Node_FunctionResult_MaxHealth_ImplicitCast
+  [460] goto @809
+  [465] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [494] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [544] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [586] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Actor with threat_tracking_bpc has no abilitysystemcomponent!')
+  [686] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [760] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [780] if !(CallFunc_IsShipping_ReturnValue) goto @799
+  [794] goto @809
+  [799] StackTrace()
+  [809] return nothing
+  [811] end
+
+=== GetTotalThreatPercentOfMaxHealth
+  [0] GetOwnerMaxHealth(CallFunc_GetOwnerMaxHealth_MaxHealth)
+  [23] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TotalThreat, CallFunc_GetOwnerMaxHealth_MaxHealth)
+  [69] TotalThreatPercentOfMaxHealth = CallFunc_Divide_DoubleDouble_ReturnValue
+  [96] return nothing
+  [98] end
+
+=== GetWeightingForActor
+  [0] push @462
+  [5] push @435
+  [10] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TargetThreatMap, Actor, CallFunc_Map_Find_Value)
+  [79] if !(CallFunc_Map_Find_ReturnValue) pop
+  [89] GetOwnerMaxHealth(CallFunc_GetOwnerMaxHealth_MaxHealth)
+  [112] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TargetThreatMap, Actor, CallFunc_Map_Find_Value)
+  [181] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.TotalThreat)
+  [219] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_GetOwnerMaxHealth_MaxHealth)
+  [265] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 100.0)
+  [311] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.TargettingWeightingPer1PercentOfMaxHPInThreat)
+  [357] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 1.0)
+  [403] Weighting = CallFunc_Add_DoubleDouble_ReturnValue
+  [430] goto @462
+  [435] Weighting = 1.0
+  [462] return nothing
+  [464] end
+
+=== MulticastThreat (Debug)
+  [0] frame.K2Node_CustomEvent_TargetThreatMapKeys = TargetThreatMapKeys
+  [18] frame.K2Node_CustomEvent_TargetThreatMapValues = TargetThreatMapValues
+  [36] ExecuteUbergraph_threat_tracking_bpc(1438)
+  [51] return nothing
+  [53] end
+
+=== OnHitWithAnAttack_Event_0
+  [0] frame.K2Node_CustomEvent_DamageDealt = DamageDealt
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] ExecuteUbergraph_threat_tracking_bpc(15)
+  [69] return nothing
+  [71] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_threat_tracking_bpc(2360)
+  [15] return nothing
+  [17] end
+
+=== ThisActorDamagedATarget
+  [0] push @378
+  [5] push @363
+  [10] if !(true) pop
+  [12] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(DamageAmount, self.ThreatToReduceWhenTargetHitPerDamageDealt)
+  [58] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TargetThreatMap, DamagedActor, CallFunc_Map_Find_Value)
+  [127] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.TotalThreat)
+  [165] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [211] K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [240] CallFunc_Map_Find_Value.TotalThreat = K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast
+  [276] K2Node_SetFieldsInStruct_StructOut = CallFunc_Map_Find_Value
+  [303] Default__BlueprintMapLibrary.Map_Add(self.TargetThreatMap, DamagedActor, K2Node_SetFieldsInStruct_StructOut)
+  [362] pop
+  [363] UpdateTotalThreat()
+  [377] pop
+  [378] return nothing
+  [380] end
+
+=== ThisActorTookDamage
+  [0] push @500
+  [5] push @389
+  [10] CallFunc_Map_Contains_ReturnValue = Default__BlueprintMapLibrary.Map_Contains(self.TargetThreatMap, DamageInstigator)
+  [70] if !(CallFunc_Map_Contains_ReturnValue) goto @404
+  [84] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TargetThreatMap, DamageInstigator, CallFunc_Map_Find_Value)
+  [153] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.TotalThreat)
+  [191] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(DamageAmount, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [237] K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [266] CallFunc_Map_Find_Value.TotalThreat = K2Node_SetFieldsInStruct_TotalThreat_3_FB902541468E5665448D41998CBA90EC_ImplicitCast
+  [302] K2Node_SetFieldsInStruct_StructOut = CallFunc_Map_Find_Value
+  [329] Default__BlueprintMapLibrary.Map_Add(self.TargetThreatMap, DamageInstigator, K2Node_SetFieldsInStruct_StructOut)
+  [388] pop
+  [389] UpdateTotalThreat()
+  [403] pop
+  [404] K2Node_MakeStruct_threat_details.TotalThreat = 0.0
+  [436] Default__BlueprintMapLibrary.Map_Add(self.TargetThreatMap, DamageInstigator, K2Node_MakeStruct_threat_details)
+  [495] goto @84
+  [500] return nothing
+  [502] end
+
+=== TookDamage_Event_0
+  [0] frame.K2Node_CustomEvent_DamageAmount = DamageAmount
+  [18] frame.K2Node_CustomEvent_DamageInstigator = DamageInstigator
+  [36] ExecuteUbergraph_threat_tracking_bpc(2535)
+  [51] return nothing
+  [53] end
+
+=== TryDecayThreat
+  [0] ExecuteUbergraph_threat_tracking_bpc(2530)
+  [15] return nothing
+  [17] end
+
+=== UpdateTotalThreat
+  [0] push @584
+  [5] L_TotalThreat = 0.0
+  [32] array{}
+  [43] Default__BlueprintMapLibrary.Map_Values(self.TargetThreatMap, CallFunc_Map_Values_Values)
+  [93] Temp_int_Loop_Counter_Variable = 0
+  [116] Temp_int_Array_Index_Variable = 0
+  [139] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Values_Values)
+  [198] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [236] if !(CallFunc_Less_IntInt_ReturnValue) goto @453
+  [250] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [277] push @510
+  [282] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [341] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TotalThreat)
+  [379] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(L_TotalThreat, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [425] L_TotalThreat = CallFunc_Add_DoubleDouble_ReturnValue
+  [452] pop
+  [453] self.TotalThreat = L_TotalThreat
+  [480] MarkPropertyDirtyFromRepIndex(self, 2, 'TotalThreat')
+  [509] pop
+  [510] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [552] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [579] goto @139
+  [584] return nothing
+  [586] end

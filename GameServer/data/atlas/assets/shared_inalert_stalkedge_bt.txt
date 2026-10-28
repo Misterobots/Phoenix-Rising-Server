@@ -1,0 +1,34 @@
+shared_inalert_stalkedge_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  Sequence
+    {service try_pick_new_target_bts  (Interval=2)}
+    1) Selector
+      [if Cooldown  (CooldownTime=10)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_edge_of_arena", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 4000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.MoveDestination, MinDistance=2500, MaxDistance=10000)]
+      [if Cooldown]
+      2) Sequence
+        [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+        1) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+        [if ForceSuccess]
+        [if Blackboard  (AttackTarget is Is Set)]
+        2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=25)
+      3) Selector
+        [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.BackPoint, Observed=bb.MoveDestination)]
+        1) generic_action_bttask  (ActionType=BackUp, RequireThatActionExists=true)
+        [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.LeftPoint, Observed=bb.MoveDestination)]
+        2) generic_action_bttask  (ActionType=StrafeLeft, RequireThatActionExists=true)
+        [if ConeCheck  (ConeOrigin=bb.SelfPos, ConeDirection=bb.RightPoint, Observed=bb.MoveDestination)]
+        3) generic_action_bttask  (ActionType=StrafeRight, RequireThatActionExists=true)
+        4) Sequence
+          [if Blackboard  (AttackTarget is Is Set)]
+          [if ForceSuccess]
+          1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, MinAngleToTriggerPivot=35)
+          2) Selector
+            [if Cooldown]
+            1) generic_action_bttask  (ActionType=Growl, RequireThatActionExists=true)
+            2) generic_action_bttask  (ActionType=Suspicious, RequireThatActionExists=true)

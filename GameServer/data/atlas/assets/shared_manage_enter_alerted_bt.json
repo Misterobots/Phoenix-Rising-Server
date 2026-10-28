@@ -1,0 +1,94 @@
+{
+ "name": "shared_manage_enter_alerted_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/shared_manage_enter_alerted_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base"
+ ],
+ "exports": {
+  "shared_manage_enter_alerted_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_4",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_1",
+     "@behemoth_in_state_btdeco_C_3",
+     "@current_target_is_valid_btdeco_C_1",
+     "@passes_behemoth_requirements_btdeco_C_0"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt"
+   }
+  },
+  "behemoth_in_state_btdeco_C_3": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt"
+   }
+  },
+  "BTComposite_Sequence_4": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_5",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt"
+   }
+  },
+  "current_target_is_valid_btdeco_C_1": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt"
+   }
+  },
+  "passes_behemoth_requirements_btdeco_C_0": {
+   "type": "passes_behemoth_requirements_btdeco_C",
+   "props": {
+    "BehemothRequirements": {
+     "RequireBehemothArchetypeName": "Rock",
+     "ArchetypeCondition": "require_or_exclude::Exclude"
+    },
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt"
+   }
+  },
+  "pivot_towards_target_bttask_C_3": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "MinAngleToTriggerPivot": 35.0,
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_5": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "TreeAsset": "BehaviorTree shared_manage_enter_alerted_bt",
+    "ParentNode": "@BTComposite_Sequence_4"
+   }
+  }
+ }
+}

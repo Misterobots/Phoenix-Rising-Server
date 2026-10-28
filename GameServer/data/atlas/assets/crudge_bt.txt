@@ -1,0 +1,75 @@
+crudge_bt  blackboard=BlackboardData crudge_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    [if Blackboard  (MonsterIsDead is Is Not Set)]
+    2) Selector "RealRoot"
+      {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack)}
+      {service distance_from_target_service  (Distance_key=bb.TargetActor, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+      {service calc_knowntargetavgpos_btservice}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+      [if behemoth_in_state_btdeco  (State=EnteringArena)]
+      2) Sequence
+        1) generic_action_bttask  (ActionType=Unburrow)
+        2) try_set_behemoth_state_bttask  (State=EnteringArena, StateChangeType=End, WhenInterruptedChangeState=EnteringArena, InterruptedChangeStateEvent=End)
+      3) RunBehavior "Shared Stagger Behavior"  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      5) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      6) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      7) Selector
+        [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+        [if Blackboard  (ReadyToExitRageState is Is Set)]
+        1) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_ap_crudge_00_state_rage_exit_fwd_00_Montage)
+        [if Blackboard  (ReadyToExitRageState is Is Set)]
+        2) bttask_exit_rage_state  (Montage=AnimMontage b_ap_crudge_00_state_rage_exit_fwd_00_Montage)
+        [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+        3) bttask_enter_aethercharge_state  (Montage=AnimMontage b_ap_crudge_00_state_aether_enter_fwd_00_Montage, BlendTime=0)
+        [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+        4) bttask_exit_aethercharge_state "Exit Aether Charge State"  (Montage=AnimMontage b_ap_crudge_00_state_aether_exit_fwd_00_Montage)
+        [if Blackboard  (ReadyForRageState is Is Set)]
+        5) bttask_enter_rage_state  (Montage=AnimMontage b_ap_crudge_00_state_rage_enter_fwd_00_Montage, WhenInterrupted=CancelStateButStayReadyToTransition)
+      [if not BTDeco_CheckChosenAction  (bInverseCondition=true)]
+      [if Cooldown  (CooldownTime=1)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      8) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if Cooldown  (CooldownTime=60)]
+      [if can_perform_action_bttask  (CheckCooldown=false, ActionClass=BlueprintGeneratedClass crudge_sync_atk_C)]
+      [if BTDeco_CheckChosenAction]
+      [if behemoth_in_state_btdeco  (State=Combat, FlowAbortMode=Self)]
+      9) Sequence
+        [if ForceSuccess]
+        1) perform_action_montage_bttask "Synced Anim Entrance"  (Montage=AnimMontage b_ap_crudge_00_atk_sync_miss_fwd_00_Montage)
+        [if PhxHasSyncedAnimation "Was Synced Anim Entrance Successful?"  (ControllerClass=BlueprintGeneratedClass crudge_teleport_synced_anim_controller_C)]
+        2) PhxWaitForSyncedAnimationCompletion "Wait for Synced Anim Completion"  (ControllerClass=BlueprintGeneratedClass crudge_teleport_synced_anim_controller_C)
+      [if BTDeco_CheckChosenAction]
+      [if Cooldown  (CooldownTime=30)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      [if current_target_is_valid_btdeco]
+      [if btdeco_lock_target]
+      10) Sequence
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        2) teleport_bttask  (DestinationKeyName=AttackTarget, OptionalMontage=AnimMontage b_ap_crudge_00_atk_quickteleport_intro_fwd_00_Montage, BlendOutTime=0, HideBehemothOnTeleport=true)
+          {service hide_behemoth_bttask  (HideOnStart=false, ShowOnDeactivate=false, HideOnDeactivate=true)}
+        3) perform_action_montage_bttask  (Montage=AnimMontage b_ap_crudge_00_atk_teleport_exit_fwd_00_Montage)
+          {service hide_behemoth_bttask  (HideOnStart=false, ShowOnDeactivate=false, DisableCollisionDuringHide=false, ShowOnStart=true)}
+      [if BTDeco_CheckChosenAction  (FlowAbortMode=Self)]
+      [if Cooldown  (CooldownTime=2)]
+      [if behemoth_in_state_btdeco  (State=Combat, FlowAbortMode=Self)]
+      [if current_target_is_valid_btdeco]
+      11) Sequence
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        2) MoveToAndFace  (FacingAngleBlackboardKey=bb.TargetActor, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      [if Cooldown  (CooldownTime=2)]
+      [if not behemoth_in_state_btdeco  (State=Combat, bInverseCondition=true, FlowAbortMode=Self)]
+      [if current_target_is_valid_btdeco]
+      [if behemoth_in_state_btdeco  (State=Alerted, FlowAbortMode=Self)]
+      12) Sequence
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+        2) MoveToAndFace  (FacingAngleBlackboardKey=bb.TargetActor, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      13) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+        {service try_pick_new_target_bts  (Interval=2)}

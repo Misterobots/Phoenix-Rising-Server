@@ -1,0 +1,41 @@
+bullseye_bt  blackboard=BlackboardData bullseye_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      1) bttask_enter_rage_state  (Montage=AnimMontage b_sq_gen_00_pers_rageenter_fwd_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      2) bttask_exit_rage_state  (Montage=AnimMontage b_sq_gen_00_pers_rageexit_fwd_00_mot)
+      [if Blackboard  (ReadyToRegrowQuills is Is Set)]
+      3) Sequence
+        1) set_blackboard_key_bttask  (ResultKey=bb.ReadyToRegrowQuills, DataType=Bool)
+        2) BehemothAction  (Montage=AnimMontage b_sq_qul_00_pers_quillregrow_fwd_00_mot)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      1) Sequence
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      2) Selector "Reposition"
+        {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      3) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_juststrafe_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

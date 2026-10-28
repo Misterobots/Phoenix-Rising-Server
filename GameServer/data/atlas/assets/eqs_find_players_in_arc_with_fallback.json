@@ -1,0 +1,132 @@
+{
+ "name": "eqs_find_players_in_arc_with_fallback",
+ "package": "Archon/Content/Character/Monsters/BehemothBaseBPs/eqs_find_players_in_arc_with_fallback",
+ "type": "EnvQuery",
+ "refs": [],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "OnCircle.CircleRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_2": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Distance.ScoringFactor"
+   }
+  },
+  "AIDataProvider_QueryParams_5": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Distance.FloatValueMax"
+   }
+  },
+  "AIDataProvider_QueryParams_6": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Distance.FloatValueMin"
+   }
+  },
+  "AIDataProvider_QueryParams_7": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Dot.FloatValueMin"
+   }
+  },
+  "eqs_find_players_in_arc_with_fallback": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_find_players_in_arc_with_fallback",
+    "Options": [
+     "@EnvQueryOption_1",
+     "@EnvQueryOption_2"
+    ]
+   }
+  },
+  "EnvQueryGenerator_OnCircle_0": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "SpaceBetween": {
+     "DefaultValue": 500.0
+    },
+    "NumberOfPoints": {
+     "DefaultValue": 1
+    },
+    "PointOnCircleSpacingMethod": "EPointOnCircleSpacingMethod::ByNumberOfPoints",
+    "ArcAngle": {
+     "DefaultValue": 1.0
+    },
+    "AngleRadians": 0.017453292,
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "bDefineArc": true,
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_1": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EQGenerator_LivePlayers_C_1",
+    "Tests": [
+     "@EnvQueryTest_Distance_2",
+     "@EnvQueryTest_Dot_2"
+    ]
+   }
+  },
+  "EnvQueryOption_2": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_0"
+   }
+  },
+  "EnvQueryTest_Distance_2": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "FloatValueMin": {
+     "DefaultValue": 300.0,
+     "DataBinding": "@AIDataProvider_QueryParams_6",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 3000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_5",
+     "DataField": "FloatValue"
+    },
+    "ScoringFactor": {
+     "DataBinding": "@AIDataProvider_QueryParams_2",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Dot_2": {
+   "type": "EnvQueryTest_Dot",
+   "props": {
+    "TestMode": "EEnvTestDot::Dot2D",
+    "TestOrder": 1,
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DataBinding": "@AIDataProvider_QueryParams_7",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  },
+  "EQGenerator_LivePlayers_C_1": {
+   "type": "EQGenerator_LivePlayers_C",
+   "props": {}
+  }
+ }
+}

@@ -1,0 +1,294 @@
+{
+ "name": "behemoth_invincible_mod_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_hunt_modifier_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Percent Max Health to Heal",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L Heal Amount",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L Per Part Health",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LMonsterParts",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_behemoth_invincible_mod",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    },
+    {
+     "name": "K2Node_CustomEvent_DamageType",
+     "type": "ObjectProperty<DamageType>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 49,
+   "reads": [
+    "BaseHealth",
+    "MonsterParts",
+    "OnTakeAnyDamage"
+   ],
+   "sets": [
+    "BaseHealth",
+    "RatioOfBehemothHealth"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "ArchonBehemoth.InitializeHealth",
+    "GameplayStatics.SpawnEmitterAttached",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "MakeOutgoingSpec",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass heal_by_amount_ge_C",
+    "BlueprintGeneratedClass monsterpart_bpc_C",
+    "ParticleSystem heal_behemoth_p"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_invincible_mod_C.ExecuteUbergraph_behemoth_invincible_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageGiven",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageReceiver",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_invincible_mod_C.ExecuteUbergraph_behemoth_invincible_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_invincible_mod_C.ExecuteUbergraph_behemoth_invincible_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnParticle",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewParam",
+     "type": "ObjectProperty<MeshComponent>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_invincible_mod_C.ExecuteUbergraph_behemoth_invincible_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TakeDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Damage",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_invincible_mod_C.ExecuteUbergraph_behemoth_invincible_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/HuntModifiers/behemoth_invincible_mod",
+ "pseudo_file": "pseudo/behemoth_invincible_mod_C.txt",
+ "game_data": {}
+}

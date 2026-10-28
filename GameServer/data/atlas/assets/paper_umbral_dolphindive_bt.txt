@@ -1,0 +1,30 @@
+paper_umbral_dolphindive_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector
+    {service reset_action_cooldown_on_finish_btservice  (ActionClass=BlueprintGeneratedClass shadowcat_ground_dive_atk_C)}
+    {service debug_arrow_btservice  (ArrowEndKey=TempLocation)}
+    {service hide_behemoth_bttask  (HideOnStart=false)}
+    {service debug_arrow_btservice  (ArrowEndKey=PounceLocation)}
+    1) Sequence
+      1) Sequence
+        1) reset_action_cooldown_bttask
+        2) generic_action_bttask "Burrow"  (ActionType=Burrow, RequireThatActionExists=true)
+        [if ForceSuccess]
+        3) RunBehavior  (BehaviorAsset=BehaviorTree paper_umbral_dolphindive_setup_bt)
+      2) Selector
+        1) Sequence
+          {service hide_behemoth_bttask  (HideOnStart=false)}
+          1) set_random_blackboard_bttask  (VariableType=Int, MinValue=1, MaxValue=3, BlackboardValue=bb.TempInt)
+          [if ConditionalLoop  (TempInt Is Greater Than 0)]
+          2) Sequence
+            1) blackboard_math_bttask "TempInt--"  (LeftSideKey=bb.TempInt, Type=Int, Operator=-, RightSideData={"ConstantInt": 1}, ResultKeyName=TempInt, bShowPropertyDetails=false)
+            2) BehemothAction "Out and Back in"  (Montage=AnimMontage b_aq_pap_um_atk_dolphindive_fwd_00)
+            3) RunBehavior  (BehaviorAsset=BehaviorTree paper_umbral_dolphindive_setup_bt)
+          3) BehemothAction "Big jump out"  (Montage=AnimMontage b_aq_pap_um_atk_dolphindive_attack_fwd_00_mot)
+        2) Sequence
+          1) Wait  (WaitTime=1)
+          2) BehemothAction "Big jump out"  (Montage=AnimMontage b_aq_pap_um_atk_dolphindive_attack_fwd_00_mot)
+    2) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TempLocation)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree paper_umbral_portal_exit)

@@ -1,0 +1,152 @@
+# Ability_QuickItem_Healing_Pylon_Big_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuraTick
+  [0] frame.K2Node_Event_Pylon = Pylon
+  [18] ExecuteUbergraph_Ability_QuickItem_Healing_Pylon_Big(1387)
+  [33] return nothing
+  [35] end
+
+=== BonusEffect
+  [0] frame.K2Node_Event_Actor = Actor
+  [18] frame.K2Node_Event_Pylon_1 = Pylon
+  [36] ExecuteUbergraph_Ability_QuickItem_Healing_Pylon_Big(386)
+  [51] return nothing
+  [53] end
+
+=== CalculateNextHeal
+  [0] CallFunc_GetLifeSpan_ReturnValue = Pylon.GetLifeSpan()
+  [54] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.PylonsAndTotalHeals, Pylon, CallFunc_Map_Find_Value)
+  [123] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetLifeSpan_ReturnValue)
+  [152] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.TickRate)
+  [198] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.TargetHealing, CallFunc_Map_Find_Value)
+  [244] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.TickRate)
+  [290] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue_1, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [336] Default__BlueprintMapLibrary.Map_Add(self.PylonsAndDynamicHeals, Pylon, CallFunc_Divide_DoubleDouble_ReturnValue_1)
+  [395] return nothing
+  [397] end
+
+=== ExecuteUbergraph_Ability_QuickItem_Healing_Pylon_Big
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [31] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @50
+  [45] goto @1935
+  [50] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_CustomEvent_VFXTarget)
+  [86] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [115] if !(K2Node_DynamicCast_bSuccess) goto @370
+  [129] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [175] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [307] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_VFXTarget)
+  [365] goto @1935
+  [370] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [381] goto @175
+  [386] self.LPylon = K2Node_Event_Pylon_1
+  [405] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(K2Node_Event_Actor)
+  [441] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [470] if !(K2Node_DynamicCast_bSuccess_1) goto @549
+  [484] K2Node_DynamicCast_AsPlayer_Interface_1.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [530] if !(CallFunc_GetBleedOutState_BleedOutState) goto @565
+  [544] goto @1935
+  [549] CallFunc_GetBleedOutState_BleedOutState = false
+  [560] goto @530
+  [565] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [593] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.PylonsAndDynamicHeals, self.LPylon, CallFunc_Map_Find_Value)
+  [662] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Map_Find_Value, self.SavedEffectiveness)
+  [708] Default__archon_function_library_C.HealTarget(K2Node_Event_Actor, CallFunc_GetActorInfo_ReturnValue.OwnerActor, self, CallFunc_Multiply_DoubleDouble_ReturnValue_1, self)
+  [782] HealVFX(K2Node_Event_Actor)
+  [805] goto @1935
+  [810] PylonActivate(K2Node_Event_PylonLocation, K2Node_Event_PylonReference)
+  [838] CallFunc_GetAdjustedLifespan_ReturnValue = GetAdjustedLifespan()
+  [870] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_GetAdjustedLifespan_ReturnValue, self.TickRate)
+  [916] self.TotalTicks = CallFunc_Divide_DoubleDouble_ReturnValue
+  [943] GetMagnitude(CallFunc_GetMagnitude_Magnitude)
+  [966] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.TickRate, CallFunc_GetMagnitude_Magnitude)
+  [1012] self.HealthPerTick = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [1039] GetMagnitude(CallFunc_GetMagnitude_Magnitude)
+  [1062] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.TickRate, CallFunc_GetMagnitude_Magnitude)
+  [1108] CallFunc_GetAdjustedLifespan_ReturnValue = GetAdjustedLifespan()
+  [1140] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_GetAdjustedLifespan_ReturnValue, self.TickRate)
+  [1186] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1232] self.TargetHealing = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [1259] self.TotalHealing = 0.0
+  [1286] GetMagnitude(CallFunc_GetMagnitude_Magnitude)
+  [1309] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.TickRate, CallFunc_GetMagnitude_Magnitude)
+  [1355] self.DynamicHealthPerTick = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [1382] goto @1935
+  [1387] self.LPylon = K2Node_Event_Pylon
+  [1406] array{}
+  [1417] Default__BlueprintMapLibrary.Map_Keys(self.PylonsAndDynamicHeals, CallFunc_Map_Keys_Keys)
+  [1467] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(CallFunc_Map_Keys_Keys, self.LPylon)
+  [1527] if !(CallFunc_Array_Contains_ReturnValue) goto @1812
+  [1541] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(self.PylonsAndDynamicHeals, self.LPylon, CallFunc_Map_Find_Value_1)
+  [1610] CallFunc_Map_Find_ReturnValue_2 = Default__BlueprintMapLibrary.Map_Find(self.PylonsAndTotalHeals, self.LPylon, CallFunc_Map_Find_Value_2)
+  [1679] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Map_Find_Value_1, CallFunc_Map_Find_Value_2)
+  [1725] Default__BlueprintMapLibrary.Map_Add(self.PylonsAndTotalHeals, self.LPylon, CallFunc_Add_DoubleDouble_ReturnValue)
+  [1784] CalculateNextHeal(self.LPylon)
+  [1807] goto @1935
+  [1812] Default__BlueprintMapLibrary.Map_Add(self.PylonsAndDynamicHeals, self.LPylon, self.HealthPerTick)
+  [1871] Default__BlueprintMapLibrary.Map_Add(self.PylonsAndTotalHeals, self.LPylon, Temp_real_Variable)
+  [1930] goto @1541
+  [1935] return nothing
+  [1937] end
+
+=== GetAdjustedLifespan
+  [0] push @491
+  [5] push @443
+  [10] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [38] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [83] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [112] if !(K2Node_DynamicCast_bSuccess) goto @475
+  [126] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [172] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [201] if !(CallFunc_IsValid_ReturnValue) pop
+  [211] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Healing_Pylon_Big_C)
+  [262] K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big = cast<QuickItem_Healing_Pylon_Big_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [298] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big)
+  [327] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [337] K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big.GetDuration(CallFunc_GetDuration_Duration)
+  [382] K2Node_FunctionResult_ReturnValue_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDuration_Duration)
+  [411] ReturnValue = K2Node_FunctionResult_ReturnValue_ImplicitCast
+  [438] goto @491
+  [443] ReturnValue = 0.0
+  [470] goto @491
+  [475] CallFunc_GetLoadout_Loadout = null
+  [486] goto @172
+  [491] return ReturnValue
+  [501] end
+
+=== GetMagnitude
+  [0] push @462
+  [5] push @414
+  [10] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [38] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [83] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [112] if !(K2Node_DynamicCast_bSuccess) goto @446
+  [126] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [172] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [201] if !(CallFunc_IsValid_ReturnValue) pop
+  [211] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Healing_Pylon_Big_C)
+  [262] K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big = cast<QuickItem_Healing_Pylon_Big_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [298] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big)
+  [327] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [337] K2Node_DynamicCast_AsQuick_Item_Healing_Pylon_Big.GetAmount(CallFunc_GetAmount_Amount)
+  [382] Magnitude = CallFunc_GetAmount_Amount
+  [409] goto @462
+  [414] Magnitude = 0.0
+  [441] goto @462
+  [446] CallFunc_GetLoadout_Loadout = null
+  [457] goto @172
+  [462] return nothing
+  [464] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_VFXTarget = VFXTarget
+  [18] ExecuteUbergraph_Ability_QuickItem_Healing_Pylon_Big(10)
+  [33] return nothing
+  [35] end
+
+=== PylonActivate
+  [0] frame.K2Node_Event_PylonLocation = PylonLocation
+  [18] frame.K2Node_Event_PylonReference = PylonReference
+  [36] ExecuteUbergraph_Ability_QuickItem_Healing_Pylon_Big(810)
+  [51] return nothing
+  [53] end

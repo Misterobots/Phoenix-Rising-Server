@@ -1,0 +1,176 @@
+{
+ "name": "host_nonrage_combat_reposition_bt",
+ "package": "Archon/Content/Monsters/tp/host/ai/host_nonrage_combat_reposition_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base",
+  "eqs_host_perimeter_reposition"
+ ],
+ "exports": {
+  "host_nonrage_combat_reposition_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_1",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@BTDecorator_Blackboard_0",
+     "@current_target_is_valid_btdeco_C_0",
+     "@behemoth_in_state_btdeco_C_1"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_3",
+      "ChildTask": null,
+      "Decorators": [
+       "@btdeco_variablecooldown_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ConeCheck_0",
+       "@BTDecorator_Blackboard_2"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@get_action_helper_btservice_C_0"
+    ],
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_3": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@move_towards_point_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "btdeco_variablecooldown_C_0": {
+   "type": "btdeco_variablecooldown_C",
+   "props": {
+    "Cooldown_Min": 3.0,
+    "Cooldown_Max": 5.0,
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "TopScore Is Equal To 0.000000",
+    "BlackboardKey": "bb.TopScore",
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt"
+   }
+  },
+  "BTDecorator_Blackboard_2": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "AttackTarget is Is Set",
+    "BlackboardKey": "bb.AttackTarget",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_ConeCheck_0": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeHalfAngle": 22.0,
+    "ConeOrigin": "bb.SelfPos",
+    "ConeDirection": "bb.FrontPoint",
+    "Observed": "bb.AttackTarget",
+    "bInverseCondition": true,
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTTask_RunEQSQuery_2": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_host_perimeter_reposition"
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "current_target_is_valid_btdeco_C_0": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt"
+   }
+  },
+  "get_action_helper_btservice_C_0": {
+   "type": "get_action_helper_btservice_C",
+   "props": {
+    "ActionHelperKey": "bb.CurrentHelper",
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "move_towards_point_bttask_C_0": {
+   "type": "move_towards_point_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Sequence_3"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "TimeInFutureToPredict": 0.5,
+    "TreeAsset": "BehaviorTree host_nonrage_combat_reposition_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  }
+ }
+}

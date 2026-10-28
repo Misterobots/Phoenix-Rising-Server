@@ -1,0 +1,12 @@
+shockmane_jumpto_repeatable_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Requires PounceLocation"]
+  [root if comment_btdeco "Requires ShouldFaceAttackTargetAtEnd"]
+  Sequence
+    [if ForceSuccess]
+    1) Sequence
+      1) call_specific_behemoth_function_bttask "CalcJumpMontagePlayRate"  (SpecificFunction=CalcJumpMontagePlayRate, bShowPropertyDetails=false)
+      2) BehemothAction  (Montage=AnimMontage b_aq_shock_00_atk_lightningfencepounces_alpha_fwd_00_mot, StopMontageOnAbort=false, MontagePlayRateBlackboardName=PounceMontagePlayRate)
+    2) RunEQSQuery "Run EQS Query:PounceLocation"  (EQSRequest={"QueryTemplate": "EnvQuery shockmane_plant_shockrod_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1800.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 2200.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+    3) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=LandAndTurn)

@@ -1,0 +1,99 @@
+glitter_heroic_combat_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Selector
+    1) Selector
+      [if Blackboard  (InRageState is Is Set)]
+      1) Selector "Rage State"
+        [if Cooldown  (CooldownTime=25)]
+        1) Sequence
+          1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=45)
+          2) Selector
+            [if ArchonIsMounted]
+            1) Selector
+              [if btdeco_percentchance  (PercentChance=0.5)]
+              1) perform_action_montage_bttask "Tailswipe R -> L"  (Montage=AnimMontage b_glitter_normal_atk_tailswipe_mot)
+              2) perform_action_montage_bttask "Tailswipe L-> R"  (Montage=AnimMontage b_glitter_normal_atk_tailswipe_alt_mot)
+            2) PhxPerformGameplayAction "Tail Swipe Loop"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+        [if Cooldown  (CooldownTime=60)]
+        2) Sequence "Rage Pulse"
+          1) perform_action_montage_bttask "Manta -> Jelly"  (Montage=AnimMontage b_glitter_normal_state_manta_to_jelly_mot)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree glit_teleport_bt)
+          [if ForceSuccess]
+          3) Sequence
+            1) perform_action_montage_bttask "Rage Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_rage_unhide_mot)
+            [if btdeco_percentchance  (PercentChance=0.8)]
+            2) perform_action_montage_bttask "Rage Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_rage_mot)
+            [if btdeco_percentchance  (PercentChance=0.75)]
+            3) perform_action_montage_bttask "Rage Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_rage_mot)
+            [if btdeco_percentchance  (PercentChance=0.5)]
+            4) perform_action_montage_bttask "Rage Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_rage_mot)
+          4) perform_action_montage_bttask "Jelly Burst"  (Montage=AnimMontage b_glitter_normal_atk_jelly_burst_rage_mot)
+          5) perform_action_montage_bttask "Jelly -> Manta"  (Montage=AnimMontage b_glitter_normal_state_jelly_to_manta_mot)
+      [if Blackboard  (AetherCharged is Is Set)]
+      2) Sequence "Aether Charge State"
+        [if Cooldown  (CooldownTime=30)]
+        1) Selector
+          [if Cooldown  (CooldownTime=600)]
+          [if comment_btdeco "Let's not immediately execute aether stuff on aether enter"]
+          1) Wait  (WaitTime=0.2)
+          [if Blackboard  (InRageState is Is Not Set)]
+          [if Cooldown  (CooldownTime=60)]
+          2) Sequence "Pulse"
+            1) perform_action_montage_bttask "Manta -> Jelly"  (Montage=AnimMontage b_glitter_normal_state_manta_to_jelly_mot)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree glit_teleport_bt)
+            [if ForceSuccess]
+            3) Sequence
+              1) perform_action_montage_bttask "Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_unhide_mot)
+              [if btdeco_percentchance  (PercentChance=0.75)]
+              2) perform_action_montage_bttask "Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_mot)
+              [if btdeco_percentchance  (PercentChance=0.5)]
+              3) perform_action_montage_bttask "Jelly Pulse"  (Montage=AnimMontage b_glitter_normal_atk_jelly_pulse_mot)
+            4) perform_action_montage_bttask "Jelly Burst"  (Montage=AnimMontage b_glitter_normal_atk_jelly_burst_mot)
+            5) perform_action_montage_bttask "Jelly -> Manta"  (Montage=AnimMontage b_glitter_normal_state_jelly_to_manta_mot)
+          [if Blackboard  (InRageState is Is Not Set)]
+          [if Cooldown  (CooldownTime=60)]
+          3) Sequence "Projectiles"
+            1) perform_action_montage_bttask "Manta -> Jelly"  (Montage=AnimMontage b_glitter_normal_state_manta_to_jelly_mot)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree glit_teleport_bt)
+            3) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            4) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+    2) Selector "Combat Options"
+      [if Cooldown  (CooldownTime=15)]
+      1) Selector
+        [if compare_health_btdeco  (PercentValue(Decimal)=0.8)]
+        1) PhxPerformGameplayAction "Flex -> Overhead Tail Whip ->  Backturned Tail Whip"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+        [if action_available_btdeco "Is Sweep Available?"  (Attack Class=BlueprintGeneratedClass glitter_normal_action_sweep_C, bShowPropertyDetails=false)]
+        2) Sequence
+          1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass glitter_normal_action_sweep_C"], ChosenActionKey=bb.TempAction)
+          [if BTDeco_CheckChosenAction "Can We Sweep?"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sweep_C, ChosenAttackKeyName=TempAction, bShowPropertyDetails=false)]
+          2) Sequence
+            1) PhxPerformGameplayAction "Sweep -> Overhead Tail Whip ->  Backturned Tail Whip"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+            2) modify_attack_cooldown_bttask "Put Sweep On Cooldown"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sweep_C, bShowPropertyDetails=false)
+      2) Sequence
+        1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass glitter_normal_action_sideflop_l_C", "BlueprintGeneratedClass glitter_normal_action_sideflop_r_C"], ChosenActionKey=bb.TempAction)
+        [if Blackboard  (TempAction is Is Set)]
+        2) Sequence
+          [if ForceSuccess]
+          1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_sideflop_attacks_bt)
+          2) modify_attack_cooldown_bttask "Put Side Flop L On Cooldown"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sideflop_l_C, bShowPropertyDetails=false)
+          3) modify_attack_cooldown_bttask "Put Side Flop R On Cooldown"  (ActionClass=BlueprintGeneratedClass glitter_normal_action_sideflop_r_C, bShowPropertyDetails=false)
+      [if BTDeco_ArchonCooldown  (StartTime=15, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+      [if Cooldown  (CooldownTime=15)]
+      3) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_knot_attacks_bt)
+      [if BTDeco_ArchonCooldown  (CooldownTime=60, StartTime=60, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+      4) RunBehavior  (BehaviorAsset=BehaviorTree glitter_sync_attack_bt)
+      [if Blackboard  (ChosenAttack is Is Set)]
+      [if Blackboard  (TopScore Is Greater Than 0.010000)]
+      5) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      6) Selector "Fallbacks"
+        [if BTDeco_ArchonCooldown  (CooldownTime=5, StartTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_sync_attack_bt)
+        [if BTDeco_ArchonCooldown  (CooldownTime=10, StartTime=5, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        2) perform_action_montage_bttask  (Montage=AnimMontage b_glitter_normal_atk_whirlwind_mot)
+        [if btdeco_variablecooldown  (Cooldown_Min=15, Cooldown_Max=20, StartTime=30)]
+        3) Sequence
+          1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+          2) perform_action_montage_bttask  (Montage=AnimMontage b_glitter_normal_atk_manta_lazer_longrange_mot)

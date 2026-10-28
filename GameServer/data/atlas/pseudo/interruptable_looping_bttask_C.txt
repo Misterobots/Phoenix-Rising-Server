@@ -1,0 +1,109 @@
+# interruptable_looping_bttask_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== EndTask
+  [0] frame.K2Node_CustomEvent_Succeeded = Succeeded
+  [18] ExecuteUbergraph_interruptable_looping_bttask(706)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_interruptable_looping_bttask
+  [0] goto computed(EntryPoint)
+  [10] K2Node_DynamicCast_AsCharacter = cast<Character>(K2Node_Event_ControlledPawn_2)
+  [46] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter)
+  [75] if !(K2Node_DynamicCast_bSuccess) goto @1660
+  [89] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsCharacter.self.Mesh.GetAnimInstance()
+  [153] self.AnimInstance = CallFunc_GetAnimInstance_ReturnValue
+  [172] CallFunc_GetComponentByClass_ReturnValue = K2Node_Event_ControlledPawn_2.GetComponentByClass(NetworkedMontageComponent)
+  [223] self.MontageComp = CallFunc_GetComponentByClass_ReturnValue
+  [242] CallFunc_PlayMontage_InPlayRate_ImplicitCast = cast<CST_DoubleToFloat>(self.PlayRate)
+  [271] CallFunc_PlayMontage_ReturnValue = self.MontageComp.PlayMontage(self.Montage, CallFunc_PlayMontage_InPlayRate_ImplicitCast, 'None', 1.0)
+  [357] self.TaskState = 0
+  [377] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.MontageEnded)
+  [400] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [441] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.TimeLimit, 0.0)
+  [479] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1660
+  [493] K2Node_CreateDelegate_OutputDelegate = bind(self.ExitMontage)
+  [516] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeLimit)
+  [545] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [602] self.TimeoutHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [629] goto @1660
+  [634] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_CustomEvent_Montage, self.Montage)
+  [672] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @1660
+  [686] EndTask(true)
+  [701] goto @1660
+  [706] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(self.TaskState, 2)
+  [737] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @1660
+  [751] self.TaskState = 2
+  [771] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.MontageEnded)
+  [794] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [835] K2_ClearAndInvalidateTimerHandle(self, self.TimeoutHandle)
+  [855] self.MontageComp.CurrentMontageStop(0.0, null)
+  [893] if !(K2Node_CustomEvent_Succeeded) goto @923
+  [907] FinishExecute(true)
+  [918] goto @1660
+  [923] FinishAbort()
+  [933] goto @1660
+  [938] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.TaskState, 0)
+  [969] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @1660
+  [983] self.TaskState = 1
+  [1003] CallFunc_Montage_GetCurrentSection_ReturnValue = self.AnimInstance.Montage_GetCurrentSection(self.Montage)
+  [1062] self.MontageComp.CurrentMontageSetNextSectionName(CallFunc_Montage_GetCurrentSection_ReturnValue, self.ExitSection)
+  [1112] goto @1660
+  [1117] EndTask(false)
+  [1132] goto @1660
+  [1137] ExitMontage()
+  [1151] goto @1660
+  [1156] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.TaskState, 0)
+  [1187] if !(K2Node_SwitchEnum_CmpSuccess) goto @1206
+  [1201] goto @1660
+  [1206] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(self.BlackboardComparisonSection.Name, 'None')
+  [1257] if !(CallFunc_NotEqual_NameName_ReturnValue) goto @1660
+  [1271] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(K2Node_Event_OwnerController)
+  [1300] Default__archon_function_library_C.CompareBlackboardValues(CallFunc_GetBlackboard_ReturnValue, self.BlackboardComparisonSection.BlackboardComparison.LeftSideBlackboardVarName, self.BlackboardComparisonSection.BlackboardComparison.Operator, self.BlackboardComparisonSection.BlackboardComparison.Type, self.BlackboardComparisonSection.BlackboardComparison.RightSideData, self, CallFunc_CompareBlackboardValues_Result)
+  [1463] if !(CallFunc_CompareBlackboardValues_Result) goto @1660
+  [1477] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.TaskState, 0)
+  [1508] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) goto @1660
+  [1522] self.TaskState = 1
+  [1542] CallFunc_Montage_GetCurrentSection_ReturnValue_1 = self.AnimInstance.Montage_GetCurrentSection(self.Montage)
+  [1601] self.AnimInstance.Montage_SetNextSection(CallFunc_Montage_GetCurrentSection_ReturnValue_1, self.ExitSection, self.Montage)
+  [1660] return nothing
+  [1662] end
+
+=== ExitMontage
+  [0] ExecuteUbergraph_interruptable_looping_bttask(938)
+  [15] return nothing
+  [17] end
+
+=== MontageEnded
+  [0] frame.K2Node_CustomEvent_Montage = Montage
+  [18] frame.K2Node_CustomEvent_bInterrupted = bInterrupted
+  [36] ExecuteUbergraph_interruptable_looping_bttask(634)
+  [51] return nothing
+  [53] end
+
+=== ReceiveAbortAI
+  [0] frame.K2Node_Event_OwnerController_1 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_1 = ControlledPawn
+  [36] ExecuteUbergraph_interruptable_looping_bttask(1117)
+  [51] return nothing
+  [53] end
+
+=== ReceiveExecuteAI
+  [0] frame.K2Node_Event_OwnerController_2 = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn_2 = ControlledPawn
+  [36] ExecuteUbergraph_interruptable_looping_bttask(10)
+  [51] return nothing
+  [53] end
+
+=== ReceiveTickAI
+  [0] frame.K2Node_Event_OwnerController = OwnerController
+  [18] frame.K2Node_Event_ControlledPawn = ControlledPawn
+  [36] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [54] ExecuteUbergraph_interruptable_looping_bttask(1156)
+  [69] return nothing
+  [71] end
+
+=== StopLooping
+  [0] ExecuteUbergraph_interruptable_looping_bttask(1137)
+  [15] return nothing
+  [17] end

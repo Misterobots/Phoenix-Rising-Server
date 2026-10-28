@@ -1,0 +1,680 @@
+{
+ "name": "player_self_revive_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 232,
+ "sdk_header": "player_self_revive_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "PlayerEventDispatcherComponent",
+   "type": "Uplayer_eventdispatcher_bpc_C*",
+   "offset": "0xA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<player_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "bAutoReviveEnabled",
+   "type": "bool",
+   "offset": "0xB0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "BoolProperty",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "GrantAutoReviveChargeTimer",
+   "type": "FTimerHandle",
+   "offset": "0xB8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "bHasReceivedAutoReviveCharge",
+   "type": "bool",
+   "offset": "0xC0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "NumAutoRevivesPerformed",
+   "type": "int32",
+   "offset": "0xC4",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "IntProperty",
+   "rep_index": 3,
+   "schema_rep_index": 3
+  },
+  {
+   "name": "AutoReviveChargeTimerBase",
+   "type": "int32",
+   "offset": "0xC8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "bp_type": "IntProperty",
+   "rep_index": 4,
+   "schema_rep_index": 4
+  },
+  {
+   "name": "MinAutoReviveTimerDuration",
+   "type": "double",
+   "offset": "0xD0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "AutoReviveTimerDurationPerTier",
+   "type": "double",
+   "offset": "0xD8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "MaxNumAutoReviveTimerTiers",
+   "type": "int32",
+   "offset": "0xE0",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "Authority_TrySelfRevive",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "bSuccess",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 30,
+   "reads": [
+    "NumAutoRevivesPerformed",
+    "bHasReceivedAutoReviveCharge"
+   ],
+   "sets": [
+    "NumAutoRevivesPerformed",
+    "bHasReceivedAutoReviveCharge"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "ReviveFromBleedOut"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_player_self_revive_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "statements": 28,
+   "reads": [
+    "OnBleedoutStateChanged",
+    "PlayerEventDispatcherComponent"
+   ],
+   "sets": [
+    "PlayerEventDispatcherComponent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "ActorComponent.ReceiveBeginPlay",
+    "ActorComponent.ReceiveEndPlay",
+    "KismetSystemLibrary.IsValid",
+    "ResetAutoReviveChargeTimerScaling"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "GetGrantAutoReviveChargeTimeRemaining",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "double",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 5,
+   "reads": [
+    "GrantAutoReviveChargeTimer"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsAutoReviveEnabled",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "bReturnValue",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "bAutoReviveEnabled"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsGrantAutoReviveChargeTimerActive",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "ret": "bool",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure",
+    "Const"
+   ],
+   "statements": 4,
+   "reads": [
+    "GrantAutoReviveChargeTimer"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.K2_IsTimerActiveHandle"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnBleedoutStateChanged",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewBleedoutState",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "OnEnteredBleedoutState",
+    "OnExitedBleedoutState"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnEnteredBleedoutState",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 18,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonLoadout.HasRemaining",
+    "GetLoadout",
+    "IsAutoReviveEnabled",
+    "KismetSystemLibrary.IsValid",
+    "StartGrantAutoReviveChargeTimer"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_ReviveTalisman_C"
+   ]
+  },
+  {
+   "name": "OnExitedBleedoutState",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 28,
+   "reads": [
+    "bHasReceivedAutoReviveCharge"
+   ],
+   "sets": [
+    "bHasReceivedAutoReviveCharge"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonLoadout.AuthSetRemainingChargesByClass",
+    "ArchonLoadout.GetQuickItemRemainingByClass",
+    "GetLoadout",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "StopGrantAutoReviveChargeTimer"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_ReviveTalisman_C"
+   ]
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_self_revive_bpc_C.ExecuteUbergraph_player_self_revive_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveEndPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EndPlayReason_ReceiveEndPlay",
+     "type": "EEndPlayReason"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "player_self_revive_bpc_C.ExecuteUbergraph_player_self_revive_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetAutoReviveChargeTimerScaling",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [
+    "NumAutoRevivesPerformed"
+   ],
+   "sets": [
+    "AutoReviveChargeTimerBase"
+   ],
+   "calls": [
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartGrantAutoReviveChargeTimer",
+   "flags": [
+    "Protected",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "AutoReviveChargeTimerBase",
+    "AutoReviveTimerDurationPerTier",
+    "MaxNumAutoReviveTimerTiers",
+    "MinAutoReviveTimerDuration",
+    "NumAutoRevivesPerformed"
+   ],
+   "sets": [
+    "GrantAutoReviveChargeTimer"
+   ],
+   "calls": [
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Max",
+    "KismetMathLibrary.Min",
+    "KismetMathLibrary.Multiply_IntFloat",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.K2_SetTimerDelegate"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopGrantAutoReviveChargeTimer",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "GrantAutoReviveChargeTimer"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryGrantAutoReviveCharge",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 25,
+   "reads": [],
+   "sets": [
+    "bHasReceivedAutoReviveCharge"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonLoadout.AuthSetRemainingChargesByClass",
+    "ArchonLoadout.GetQuickItemRemainingByClass",
+    "GetLoadout",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Max",
+    "KismetSystemLibrary.IsValid",
+    "StopGrantAutoReviveChargeTimer"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_ReviveTalisman_C"
+   ]
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/player_self_revive_bpc",
+ "pseudo_file": "pseudo/player_self_revive_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

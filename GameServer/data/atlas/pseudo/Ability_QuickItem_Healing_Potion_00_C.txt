@@ -1,0 +1,58 @@
+# Ability_QuickItem_Healing_Potion_00_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyEffect
+  [0] CallFunc_K2_CommitAbility_ReturnValue = K2_CommitAbility()
+  [24] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [52] K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface = cast<GameplayTagAssetInterface>(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [97] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface)
+  [126] if !(K2Node_DynamicCast_bSuccess) goto @911
+  [140] array{GameplayTag{'Player.Item.FlaskOverTime'}}
+  [178] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [215] CallFunc_HasAnyMatchingGameplayTags_ReturnValue = K2Node_DynamicCast_AsGameplay_Tag_Asset_Interface.HasAnyMatchingGameplayTags(CallFunc_MakeGameplayTagContainerFromArray_ReturnValue)
+  [271] Temp_bool_Variable = CallFunc_HasAnyMatchingGameplayTags_ReturnValue
+  [290] if !(Temp_bool_Variable) goto @927
+  [304] CallFunc_GetActorInfo_ReturnValue_1 = GetActorInfo()
+  [332] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetActorInfo_ReturnValue_1.OwnerActor.GetComponentByClass(ArchonBuffableComponent)
+  [392] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(heal_over_time_buff_C, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, CallFunc_GetActorInfo_ReturnValue_1.OwnerActor, false)
+  [484] K2Node_DynamicCast_AsHeal_Over_Time_Buff = cast<heal_over_time_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [520] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsHeal_Over_Time_Buff)
+  [549] if !(K2Node_DynamicCast_bSuccess_1) goto @1038
+  [563] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.Heal Amount, self.HoTBonus)
+  [609] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.HoTTime)
+  [655] K2Node_DynamicCast_AsHeal_Over_Time_Buff.self.HealthRestoredPerSecond = CallFunc_Divide_DoubleDouble_ReturnValue
+  [704] K2Node_DynamicCast_AsHeal_Over_Time_Buff.FlushNetDormancy()
+  [736] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.HoTTime)
+  [765] K2Node_DynamicCast_AsHeal_Over_Time_Buff.self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [814] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsHeal_Over_Time_Buff, 10, 'MaxDuration')
+  [851] K2Node_DynamicCast_AsHeal_Over_Time_Buff.StartBuff()
+  [887] self.HealOverTimeBuff = K2Node_DynamicCast_AsHeal_Over_Time_Buff
+  [906] goto @1038
+  [911] Temp_bool_Variable = false
+  [922] goto @290
+  [927] CallFunc_GetActorInfo_ReturnValue_2 = GetActorInfo()
+  [955] Default__archon_function_library_C.HealTarget(CallFunc_GetActorInfo_ReturnValue_2.OwnerActor, CallFunc_GetActorInfo_ReturnValue_2.OwnerActor, self, self.Heal Amount, self)
+  [1038] return nothing
+  [1040] end
+
+=== CustomCanActivateAbility
+  [0] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(ActorInfoAbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [119] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1 = GetFloatAttributeFromAbilitySystemComponent(ActorInfoAbilitySystemComponent, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute_1)
+  [234] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [263] CallFunc_Less_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue_1)
+  [292] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, CallFunc_Less_DoubleDouble_B_ImplicitCast)
+  [330] CanUse = CallFunc_Less_DoubleDouble_ReturnValue
+  [349] return nothing
+  [351] end
+
+=== ExecuteUbergraph_Ability_QuickItem_Healing_Potion_00
+  [0] goto computed(EntryPoint)
+  [10] ApplyEffect()
+  [24] goto @34
+  [29] goto @10
+  [34] return nothing
+  [36] end
+
+=== OnActivateAbilityImpl
+  [0] ExecuteUbergraph_Ability_QuickItem_Healing_Potion_00(29)
+  [15] return nothing
+  [17] end

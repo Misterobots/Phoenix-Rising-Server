@@ -1,0 +1,43 @@
+# disable_mountable_socket_ns_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_SetSocketEnabled
+  [0] push @441
+  [5] push @380
+  [10] push @318
+  [15] CallFunc_IsValid_ReturnValue_2 = IsValid(SkeletalMeshComponent)
+  [44] if !(CallFunc_IsValid_ReturnValue_2) goto @441
+  [58] CallFunc_GetOwner_ReturnValue = SkeletalMeshComponent.GetOwner()
+  [100] OwningActor = CallFunc_GetOwner_ReturnValue
+  [119] CallFunc_IsValid_ReturnValue_1 = IsValid(OwningActor)
+  [148] if !(CallFunc_IsValid_ReturnValue_1) goto @441
+  [162] CallFunc_GetOwner_ReturnValue = SkeletalMeshComponent.GetOwner()
+  [204] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonMountableComponent)
+  [255] OwnerMountableComponent = CallFunc_GetComponentByClass_ReturnValue
+  [274] CallFunc_IsValid_ReturnValue = IsValid(OwnerMountableComponent)
+  [303] if !(CallFunc_IsValid_ReturnValue) goto @441
+  [317] pop
+  [318] CallFunc_HasAuthority_ReturnValue = OwningActor.HasAuthority()
+  [360] if !(CallFunc_HasAuthority_ReturnValue) goto @375
+  [374] pop
+  [375] goto @441
+  [380] CallFunc_Authority_SetSocketEnabled_ReturnValue = OwnerMountableComponent.Authority_SetSocketEnabled(self.Socket, bIsEnabled)
+  [440] pop
+  [441] return nothing
+  [443] end
+
+=== GetNotifyName
+  [0] ReturnValue = 'Disable Mountable Socket'
+  [44] return ReturnValue
+  [54] end
+
+=== Received_NotifyBegin
+  [0] Authority_SetSocketEnabled(MeshComp, false)
+  [24] ReturnValue = true
+  [35] return ReturnValue
+  [45] end
+
+=== Received_NotifyEnd
+  [0] Authority_SetSocketEnabled(MeshComp, self.EnableMountingOnNotifyEnd)
+  [32] ReturnValue = true
+  [43] return ReturnValue
+  [53] end

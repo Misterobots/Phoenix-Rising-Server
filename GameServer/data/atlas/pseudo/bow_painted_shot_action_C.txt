@@ -1,0 +1,83 @@
+# bow_painted_shot_action_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_bow_painted_shot_action
+  [0] push @884
+  [5] goto computed(EntryPoint)
+  [15] Local_EndTask(0)
+  [31] pop
+  [32] push @287
+  [37] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsBow_Painted_Draw_Action.self.PartSelectionData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [118] if !(CallFunc_Array_Get_Item.Selected) pop
+  [137] Default__KismetArrayLibrary.Array_Get(K2Node_DynamicCast_AsBow_Painted_Draw_Action.self.PartSelectionData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [218] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.SelectedPartData, CallFunc_Array_Get_Item)
+  [286] pop
+  [287] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [329] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [356] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_DynamicCast_AsBow_Painted_Draw_Action.self.PartSelectionData)
+  [437] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [475] if !(CallFunc_Less_IntInt_ReturnValue) goto @521
+  [489] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [516] goto @32
+  [521] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.SelectedPartData)
+  [580] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [614] if !(CallFunc_EqualEqual_IntInt_ReturnValue) goto @633
+  [628] goto @15
+  [633] self.CurrentShotIndex = 0
+  [656] TriggerNextShot()
+  [670] pop
+  [671] Temp_int_Array_Index_Variable = 0
+  [694] goto @356
+  [699] Temp_int_Loop_Counter_Variable = 0
+  [722] goto @671
+  [727] ReceiveOnStarted()
+  [737] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [783] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [793] K2Node_DynamicCast_AsBow_Painted_Draw_Action = cast<bow_painted_draw_action_C>(self.PreviousDrawAction)
+  [829] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBow_Painted_Draw_Action)
+  [858] if !(K2Node_DynamicCast_bSuccess) pop
+  [868] goto @699
+  [873] ReceiveOnFinished()
+  [883] pop
+  [884] return nothing
+  [886] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_bow_painted_shot_action(873)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_bow_painted_shot_action(727)
+  [15] return nothing
+  [17] end
+
+=== TriggerNextShot
+  [0] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.SelectedPartData, self.CurrentShotIndex)
+  [60] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @1014
+  [74] K2Node_DynamicCast_AsMonsterpart_Bpi = cast<monsterpart_bpi_C>(EX_ArrayGetByRef(ArrayVariable=self.SelectedPartData,ArrayIndex=self.CurrentShotIndex).MonsterPart)
+  [129] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsMonsterpart_Bpi)
+  [158] if !(K2Node_DynamicCast_bSuccess) goto @881
+  [172] K2Node_DynamicCast_AsMonsterpart_Bpi.GetParticleAttachBoneAndLocationInterface(CallFunc_GetParticleAttachBoneAndLocationInterface_AttachComponent, CallFunc_GetParticleAttachBoneAndLocationInterface_BoneName, CallFunc_GetParticleAttachBoneAndLocationInterface_OffsetFromBone, CallFunc_GetParticleAttachBoneAndLocationInterface_FinalWorldLocation)
+  [245] CallFunc_Array_LastIndex_ReturnValue = Default__KismetArrayLibrary.Array_LastIndex(self.SelectedPartData)
+  [304] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(self.CurrentShotIndex, CallFunc_Array_LastIndex_ReturnValue)
+  [342] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetParticleAttachBoneAndLocationInterface_FinalWorldLocation, self.LSpawnPoint)
+  [388] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [430] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_Subtract_VectorVector_ReturnValue)
+  [467] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Normal_ReturnValue, self.ProjectileSpeed)
+  [513] CallFunc_MakeTransform_ReturnValue = MakeTransform(self.LSpawnPoint, CallFunc_MakeRotFromX_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [584] Local_Shoot(CallFunc_MakeTransform_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_EqualEqual_IntInt_ReturnValue)
+  [625] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentShotIndex, 1)
+  [667] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [694] self.CurrentShotIndex = Temp_int_Variable
+  [721] K2Node_CreateDelegate_OutputDelegate = bind(self.TriggerNextShot)
+  [744] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 0.10000000149011612)
+  [790] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [819] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [876] goto @1014
+  [881] CallFunc_GetParticleAttachBoneAndLocationInterface_AttachComponent = null
+  [892] CallFunc_GetParticleAttachBoneAndLocationInterface_BoneName = 'None'
+  [923] CallFunc_GetParticleAttachBoneAndLocationInterface_OffsetFromBone = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [966] CallFunc_GetParticleAttachBoneAndLocationInterface_FinalWorldLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [1009] goto @245
+  [1014] return nothing
+  [1016] end

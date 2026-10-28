@@ -1,0 +1,702 @@
+# player_glide_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddDisableCapsuleCollisionOverride
+  [0] push @944
+  [5] RemoveDisableCapsuleCollisionOverride()
+  [19] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [39] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [75] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [104] if !(K2Node_DynamicCast_bSuccess) pop
+  [114] Temp_int_Variable_1 = 0
+  [137] Temp_int_Variable = 0
+  [160] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(33)
+  [193] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Variable_1, CallFunc_MakeLiteralInt_ReturnValue)
+  [231] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [241] CallFunc_Conv_IntToByte_ReturnValue_1 = Conv_IntToByte(Temp_int_Variable_1)
+  [278] CallFunc_GetEnumeratorValueFromIndex_ReturnValue = GetEnumeratorValueFromIndex(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue_1)
+  [324] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(CallFunc_GetEnumeratorValueFromIndex_ReturnValue)
+  [361] Temp_int_Variable = CallFunc_Conv_ByteToInt_ReturnValue
+  [388] push @870
+  [393] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [430] CallFunc_GetValidValue_ReturnValue = GetValidValue(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue)
+  [476] CallFunc_GetCollisionResponseToChannel_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.CapsuleComponent.GetCollisionResponseToChannel(CallFunc_GetValidValue_ReturnValue)
+  [561] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCollisionResponseToChannel_ReturnValue, 2)
+  [592] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [602] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [639] CallFunc_GetValidValue_ReturnValue = GetValidValue(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue)
+  [685] CallFunc_AddPrimitiveComponentCollisionResponseOverride_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.GameplayPropertyOverrideComponent.AddPrimitiveComponentCollisionResponseOverride(K2Node_DynamicCast_AsArchon_Character.self.CapsuleComponent, CallFunc_GetValidValue_ReturnValue, 0, 0)
+  [801] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.DisableCapsuleCollisionOverrideHandles, CallFunc_AddPrimitiveComponentCollisionResponseOverride_ReturnValue)
+  [869] pop
+  [870] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [912] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [939] goto @160
+  [944] return nothing
+  [946] end
+
+=== CalculateGlidingCollisionCapsule
+  [0] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [20] K2Node_DynamicCast_AsCharacter = cast<Character>(CallFunc_GetOwner_ReturnValue_1)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @784
+  [99] CallFunc_IsValid_ReturnValue = IsValid(K2Node_DynamicCast_AsCharacter.self.CapsuleComponent)
+  [150] if !(CallFunc_IsValid_ReturnValue) goto @784
+  [164] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [184] GetGlidingBlendSpaceControlValues(CallFunc_GetGlidingBlendSpaceControlValues_Forward, CallFunc_GetGlidingBlendSpaceControlValues_Turn)
+  [216] CallFunc_GetActorEnableCollision_ReturnValue = CallFunc_GetOwner_ReturnValue.GetActorEnableCollision()
+  [258] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_GetGlidingBlendSpaceControlValues_Forward, 0.0, 1.0)
+  [313] CallFunc_SelectFloat_ReturnValue = SelectFloat(0.0, CallFunc_FClamp_ReturnValue, CallFunc_GetActorEnableCollision_ReturnValue)
+  [368] CallFunc_Lerp_ReturnValue = Lerp(1.0, 0.0, CallFunc_SelectFloat_ReturnValue)
+  [423] CallFunc_K2_GetComponentLocation_ReturnValue = K2Node_DynamicCast_AsCharacter.self.CapsuleComponent.K2_GetComponentLocation()
+  [495] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_DynamicCast_AsCharacter.self.CapsuleComponent.self.CapsuleHalfHeight)
+  [568] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Lerp_ReturnValue)
+  [614] K2Node_FunctionResult_CapsuleRadius_ImplicitCast = cast<CST_FloatToDouble>(K2Node_DynamicCast_AsCharacter.self.CapsuleComponent.self.CapsuleRadius)
+  [687] CapsuleRadius = K2Node_FunctionResult_CapsuleRadius_ImplicitCast
+  [714] CalpsuleHalfHeight = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [741] CapsuleLocaton = CallFunc_K2_GetComponentLocation_ReturnValue
+  [768] Success = true
+  [779] goto @892
+  [784] CapsuleRadius = 0.0
+  [811] CalpsuleHalfHeight = 0.0
+  [838] CapsuleLocaton = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [881] Success = false
+  [892] return nothing
+  [894] end
+
+=== CanStartGlide
+  [0] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(self.ActiveGliderSpecId, 'None')
+  [42] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, ProgressionReworkFeature, true)
+  [73] CallFunc_Not_PreBool_ReturnValue_2 = Not_PreBool(CallFunc_IsFeatureEnabled_ReturnValue)
+  [102] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue_2, CallFunc_NotEqual_NameName_ReturnValue)
+  [140] if !(CallFunc_BooleanOR_ReturnValue) goto @1144
+  [154] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [174] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_GetOwner_ReturnValue_1)
+  [210] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [239] if !(K2Node_DynamicCast_bSuccess_2) goto @1144
+  [253] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(K2Node_DynamicCast_AsBP_Player_Character.self.IsInFallRecovery)
+  [304] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.PlayerStateMachineComponent.self.PlayerGameplayState, 0)
+  [357] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(self.CharacterMovementComponent.self.MovementMode, 3)
+  [410] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue_2, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [448] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [486] if !(CallFunc_BooleanAND_ReturnValue_1) goto @573
+  [500] CallFunc_GetCurrentGlidingState_ReturnValue = GetCurrentGlidingState()
+  [528] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_GetCurrentGlidingState_ReturnValue, 1)
+  [559] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) goto @589
+  [573] CanStartGlide = false
+  [584] goto @1144
+  [589] DoCollisionTest(200.0, 0.5, 1.0, true, CallFunc_DoCollisionTest_HitResult, CallFunc_DoCollisionTest_bHit)
+  [649] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_DoCollisionTest_bHit)
+  [678] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @980
+  [692] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [712] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [748] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [777] if !(K2Node_DynamicCast_bSuccess) goto @1144
+  [791] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [833] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [869] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [898] if !(K2Node_DynamicCast_bSuccess_1) goto @1144
+  [912] if !(K2Node_DynamicCast_AsArchon_Player_Controller.self.bIsGliderEnabled) goto @964
+  [948] CanStartGlide = true
+  [959] goto @1144
+  [964] CanStartGlide = false
+  [975] goto @1144
+  [980] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1000] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(NetworkedMontageComponent)
+  [1051] CallFunc_PlayMontage_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.PlayMontage(self.GlideLocoMountFail, 1.0, 'None', 1.0)
+  [1133] CanStartGlide = false
+  [1144] return nothing
+  [1146] end
+
+=== ClearGlidingTrack
+  [0] self.CurrGlidingTunnel = null
+  [11] return nothing
+  [13] end
+
+=== CloseGlider
+  [0] CallFunc_IsValid_ReturnValue_1 = IsValid(self.GliderActor)
+  [29] if !(CallFunc_IsValid_ReturnValue_1) goto @284
+  [43] K2Node_DynamicCast_AsGlider_Base_Bp = cast<glider_base_bp_C>(self.GliderActor)
+  [79] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsGlider_Base_Bp)
+  [108] if !(K2Node_DynamicCast_bSuccess) goto @284
+  [122] K2Node_DynamicCast_AsGlider_Base_Bp.GliderClose()
+  [158] self.GliderActor.K2_DestroyActor()
+  [194] self.GliderActor = null
+  [205] CallFunc_IsValid_ReturnValue = IsValid(self.GliderTrailFX)
+  [234] if !(CallFunc_IsValid_ReturnValue) goto @284
+  [248] self.GliderTrailFX.Deactivate()
+  [284] return nothing
+  [286] end
+
+=== Compute Detection Time Factor
+  [0] CallFunc_GetCurrentGlidingRotationVelocity_ReturnValue = GetCurrentGlidingRotationVelocity()
+  [28] CallFunc_GetCurrentGlidingRotation_ReturnValue = GetCurrentGlidingRotation()
+  [56] BreakRotator(CallFunc_GetCurrentGlidingRotationVelocity_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [102] BreakRotator(CallFunc_GetCurrentGlidingRotation_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [148] CallFunc_MapRangeClamped_Value_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [177] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_MapRangeClamped_Value_ImplicitCast, 0.0, 45.0, 1.0, 0.10000000149011612)
+  [250] CallFunc_MapRangeClamped_Value_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [279] CallFunc_MapRangeClamped_ReturnValue_1 = MapRangeClamped(CallFunc_MapRangeClamped_Value_ImplicitCast_1, -45.0, 0.0, 0.10000000149011612, 1.0)
+  [352] CallFunc_Abs_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_1)
+  [381] CallFunc_Abs_ReturnValue = Abs(CallFunc_Abs_A_ImplicitCast)
+  [418] CallFunc_MapRangeClamped_ReturnValue_2 = MapRangeClamped(CallFunc_Abs_ReturnValue, 0.0, 30.0, 1.0, 0.10000000149011612)
+  [491] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_MapRangeClamped_ReturnValue_2, CallFunc_MapRangeClamped_ReturnValue_1)
+  [537] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_MapRangeClamped_ReturnValue)
+  [583] Factor = CallFunc_Multiply_DoubleDouble_ReturnValue_1
+  [610] return nothing
+  [612] end
+
+=== DoCollisionTest
+  [0] push @2337
+  [5] CapsuleRadius = 0.0
+  [32] CapsuleHalfHeight = 0.0
+  [59] CapsuleLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [102] CalculateGlidingCollisionCapsule(CallFunc_CalculateGlidingCollisionCapsule_CapsuleRadius, CallFunc_CalculateGlidingCollisionCapsule_CalpsuleHalfHeight, CallFunc_CalculateGlidingCollisionCapsule_CapsuleLocaton, CallFunc_CalculateGlidingCollisionCapsule_Success)
+  [152] if !(CallFunc_CalculateGlidingCollisionCapsule_Success) pop
+  [162] CapsuleRadius = CallFunc_CalculateGlidingCollisionCapsule_CapsuleRadius
+  [189] CapsuleHalfHeight = CallFunc_CalculateGlidingCollisionCapsule_CalpsuleHalfHeight
+  [216] CapsuleLocation = CallFunc_CalculateGlidingCollisionCapsule_CapsuleLocaton
+  [243] push @1929
+  [248] push @1437
+  [253] push @269
+  [258] if !(TestGround) pop
+  [268] pop
+  [269] if !(TestGround) pop
+  [279] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [299] CallFunc_GetVelocity_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.GetVelocity()
+  [353] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_GetVelocity_ReturnValue_1, GroundTestPredictionTime)
+  [399] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.CharacterMovementComponent.self.MovementMode, 3)
+  [452] CallFunc_GetGravityZ_ReturnValue = self.CharacterMovementComponent.GetGravityZ()
+  [506] CallFunc_GetCurrentAcceleration_ReturnValue = self.CharacterMovementComponent.GetCurrentAcceleration()
+  [556] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetGravityZ_ReturnValue)
+  [585] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [640] CallFunc_Conv_VectorToVector2D_ReturnValue = Conv_VectorToVector2D(CallFunc_GetCurrentAcceleration_ReturnValue)
+  [677] CallFunc_Conv_Vector2DToVector_Z_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_SelectFloat_ReturnValue)
+  [706] CallFunc_Conv_Vector2DToVector_ReturnValue = Conv_Vector2DToVector(CallFunc_Conv_VectorToVector2D_ReturnValue, CallFunc_Conv_Vector2DToVector_Z_ImplicitCast)
+  [752] CallFunc_Square_ReturnValue = Square(GroundTestPredictionTime)
+  [789] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_Conv_Vector2DToVector_ReturnValue, 0.5)
+  [835] CallFunc_Multiply_VectorFloat_ReturnValue_3 = Multiply_VectorFloat(CallFunc_Multiply_VectorFloat_ReturnValue_2, CallFunc_Square_ReturnValue)
+  [881] CallFunc_Abs_ReturnValue = Abs(GroundTestHeight)
+  [918] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Abs_ReturnValue, -1.0)
+  [964] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1019] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CapsuleLocation, CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [1065] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue_3)
+  [1111] CallFunc_Add_VectorVector_ReturnValue_3 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue_2, CallFunc_MakeVector_ReturnValue)
+  [1157] CallFunc_CapsuleTraceSingleForObjects_Radius_ImplicitCast_1 = cast<CST_DoubleToFloat>(CapsuleRadius)
+  [1186] CallFunc_CapsuleTraceSingleForObjects_HalfHeight_ImplicitCast_1 = cast<CST_DoubleToFloat>(CapsuleHalfHeight)
+  [1215] CallFunc_CapsuleTraceSingleForObjects_ReturnValue = CapsuleTraceSingleForObjects(self, CallFunc_Add_VectorVector_ReturnValue_2, CallFunc_Add_VectorVector_ReturnValue_3, CallFunc_CapsuleTraceSingleForObjects_Radius_ImplicitCast_1, CallFunc_CapsuleTraceSingleForObjects_HalfHeight_ImplicitCast_1, self.GlidingCollisionChannels, false, Temp_object_Variable, 0, CallFunc_CapsuleTraceSingleForObjects_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1376] if !(CallFunc_CapsuleTraceSingleForObjects_ReturnValue) pop
+  [1386] HitResult = CallFunc_CapsuleTraceSingleForObjects_OutHit
+  [1413] bHit = CallFunc_CapsuleTraceSingleForObjects_ReturnValue
+  [1432] goto @2337
+  [1437] CallFunc_FMax_ReturnValue = FMax(ForwardTestPredictionTime, 0.06669999659061432)
+  [1483] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1503] CallFunc_GetVelocity_ReturnValue = CallFunc_GetOwner_ReturnValue.GetVelocity()
+  [1557] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetVelocity_ReturnValue, CallFunc_FMax_ReturnValue)
+  [1603] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CapsuleLocation, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1649] CallFunc_CapsuleTraceSingleForObjects_Radius_ImplicitCast = cast<CST_DoubleToFloat>(CapsuleRadius)
+  [1678] CallFunc_CapsuleTraceSingleForObjects_HalfHeight_ImplicitCast = cast<CST_DoubleToFloat>(CapsuleHalfHeight)
+  [1707] CallFunc_CapsuleTraceSingleForObjects_ReturnValue_1 = CapsuleTraceSingleForObjects(self, CapsuleLocation, CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_CapsuleTraceSingleForObjects_Radius_ImplicitCast, CallFunc_CapsuleTraceSingleForObjects_HalfHeight_ImplicitCast, self.GlidingCollisionChannels, false, Temp_object_Variable_1, 0, CallFunc_CapsuleTraceSingleForObjects_OutHit_1, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [1868] if !(CallFunc_CapsuleTraceSingleForObjects_ReturnValue_1) pop
+  [1878] HitResult = CallFunc_CapsuleTraceSingleForObjects_OutHit_1
+  [1905] bHit = CallFunc_CapsuleTraceSingleForObjects_ReturnValue_1
+  [1924] goto @2337
+  [1929] HitResult = HitResult{0, false, 1.0, 0.0, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, Vector_NetQuantize{0.0, 0.0, 0.0}, 0.0, -1, 0, 0, false, false, null, ActorInstanceHandle{null}, null, 'None', 'None'}
+  [2326] bHit = false
+  [2337] return nothing
+  [2339] end
+
+=== ExecuteUbergraph_player_glide_bpc
+  [0] goto computed(EntryPoint)
+  [10] self.GlideLocoFwdCollisionAnim = K2Node_Event_PlayerGlideAnimData.loco_collision
+  [38] self.GlideLocoDiveCollisionAnim = K2Node_Event_PlayerGlideAnimData.dive_collision
+  [66] self.GlideLocoIdleCollisionAnim = K2Node_Event_PlayerGlideAnimData.idle_collision
+  [94] self.GlideLocoMountFail = K2Node_Event_PlayerGlideAnimData.loco_mount_fail
+  [122] goto @731
+  [127] ReceiveOnEnteredGlidingState()
+  [137] Internal_OnEnteredGlidingState()
+  [151] goto @731
+  [156] ReceiveOnExitedGlidingState()
+  [166] Internal_OnExitedGlidingState()
+  [180] goto @731
+  [185] ReceiveOnEnteredNoneState()
+  [195] Internal_OnEnteredNoneState()
+  [209] goto @731
+  [214] ReceiveOnTickGlidingState(K2Node_Event_DeltaTime)
+  [233] CallFunc_Internal_OnTickGlidingState_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaTime)
+  [262] Internal_OnTickGlidingState(CallFunc_Internal_OnTickGlidingState_DeltaTime_ImplicitCast)
+  [285] goto @731
+  [290] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [310] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(player_glider_camera_bpc_C)
+  [361] self.GliderCameraComponent = CallFunc_GetComponentByClass_ReturnValue
+  [380] ServerSetActiveGliderSpec(self.DefaultGliderSpec)
+  [403] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [423] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(ArchonPlayerStateMachineComponent)
+  [474] self.PlayerStateMachineComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [493] goto @731
+  [498] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [518] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(ArchonCharacterMovementComponent)
+  [569] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [598] if !(CallFunc_IsValid_ReturnValue) goto @731
+  [612] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [632] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(ArchonCharacterMovementComponent)
+  [683] self.CharacterMovementComponent = CallFunc_GetComponentByClass_ReturnValue_1
+  [702] goto @290
+  [707] ReceiveOnEnteredDismountingState()
+  [717] Internal_OnEnteredDismountingState()
+  [731] return nothing
+  [733] end
+
+=== Fail Gliding Track
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CurrGlidingTunnel)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @108
+  [43] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [63] self.CurrGlidingTunnel.FailGlidingTrack(CallFunc_GetOwner_ReturnValue)
+  [108] return nothing
+  [110] end
+
+=== GetGlidingBlendSpaceControlValues
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(SkeletalMeshComponent)
+  [71] SkeletalMeshComponent = CallFunc_GetComponentByClass_ReturnValue
+  [90] CallFunc_IsValid_ReturnValue = IsValid(SkeletalMeshComponent)
+  [119] if !(CallFunc_IsValid_ReturnValue) goto @365
+  [133] CallFunc_GetLinkedAnimGraphInstanceByTag_ReturnValue = SkeletalMeshComponent.GetLinkedAnimGraphInstanceByTag('Gliding')
+  [188] K2Node_DynamicCast_AsPlayer_Gliding_Animbp = cast<player_gliding_animbp_C>(CallFunc_GetLinkedAnimGraphInstanceByTag_ReturnValue)
+  [224] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPlayer_Gliding_Animbp)
+  [253] if !(K2Node_DynamicCast_bSuccess) goto @365
+  [267] Forward = K2Node_DynamicCast_AsPlayer_Gliding_Animbp.self.ForwardControlBS
+  [316] Turn = K2Node_DynamicCast_AsPlayer_Gliding_Animbp.self.TurnControlBS
+  [365] return nothing
+  [367] end
+
+=== Internal_OnEnteredDismountingState
+  [0] push @40
+  [5] push @25
+  [10] RemoveInputComponent()
+  [24] pop
+  [25] RemoveDisableCapsuleCollisionOverride()
+  [39] pop
+  [40] return nothing
+  [42] end
+
+=== Internal_OnEnteredGlidingState
+  [0] push @2190
+  [5] push @2039
+  [10] push @1905
+  [15] push @1890
+  [20] push @1671
+  [25] push @639
+  [30] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [50] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_2)
+  [79] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [89] RestartGlideInputCooldown(self.GlideStopInputCooldownTime)
+  [112] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [132] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_4)
+  [168] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [197] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [207] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [249] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [285] K2Node_DynamicCast_bSuccess_4 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [314] if !(K2Node_DynamicCast_bSuccess_4) pop
+  [324] K2Node_DynamicCast_AsBPI_Camera = cast<BPI_camera_C>(K2Node_DynamicCast_AsArchon_Character)
+  [360] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Camera)
+  [389] if !(K2Node_DynamicCast_bSuccess_3) goto @440
+  [403] K2Node_DynamicCast_AsBPI_Camera.DisableCameraInput()
+  [440] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [460] CallFunc_AddArchonInputComponent_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.AddArchonInputComponent(self.InputComponentClass, CallFunc_GetOwner_ReturnValue_3)
+  [520] K2Node_DynamicCast_AsArchon_Gliding_Input_Component = cast<ArchonGlidingInputComponent>(CallFunc_AddArchonInputComponent_ReturnValue)
+  [556] K2Node_DynamicCast_bSuccess_6 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Gliding_Input_Component)
+  [585] if !(K2Node_DynamicCast_bSuccess_6) pop
+  [595] self.GlidingInputComponent = K2Node_DynamicCast_AsArchon_Gliding_Input_Component
+  [614] SetupBindings(self.GlidingInputComponent, 10)
+  [638] pop
+  [639] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [659] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_5)
+  [695] K2Node_DynamicCast_bSuccess_5 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [724] if !(K2Node_DynamicCast_bSuccess_5) pop
+  [734] CallFunc_IsValid_ReturnValue_2 = IsValid(self.GliderActor)
+  [763] if !(CallFunc_IsValid_ReturnValue_2) goto @813
+  [777] self.GliderActor.K2_DestroyActor()
+  [813] CallFunc_K2_GetActorRotation_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.K2_GetActorRotation()
+  [863] CallFunc_K2_GetActorLocation_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.K2_GetActorLocation()
+  [913] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorRotation_ReturnValue, EX_VectorConst(Value={'X': 2.0, 'Y': 2.0, 'Z': 2.0}))
+  [984] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, self.GliderClass, CallFunc_MakeTransform_ReturnValue, 1, K2Node_DynamicCast_AsArchon_Character_1)
+  [1034] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsArchon_Character_1)
+  [1075] CallFunc_K2_GetActorRotation_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.K2_GetActorRotation()
+  [1125] CallFunc_K2_GetActorLocation_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.K2_GetActorLocation()
+  [1175] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorRotation_ReturnValue, EX_VectorConst(Value={'X': 2.0, 'Y': 2.0, 'Z': 2.0}))
+  [1246] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [1284] self.GliderActor = CallFunc_FinishSpawningActor_ReturnValue
+  [1303] self.GliderActor.K2_AttachToComponent(K2Node_DynamicCast_AsArchon_Character_1.self.Mesh, 'attach_jnt', 2, 2, 1, true)
+  [1386] K2Node_DynamicCast_AsGlider_Base_Bp = cast<glider_base_bp_C>(self.GliderActor)
+  [1422] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsGlider_Base_Bp)
+  [1451] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1461] K2Node_DynamicCast_AsGlider_Base_Bp.GliderOpen()
+  [1497] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(glider_trail_basic_00_p, K2Node_DynamicCast_AsArchon_Character_1.self.Mesh, 'attach_jnt', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 90.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1651] self.GliderTrailFX = CallFunc_SpawnEmitterAttached_ReturnValue
+  [1670] pop
+  [1671] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1691] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(weapon_sheathe_bpc_C)
+  [1742] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [1771] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1781] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1801] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(weapon_sheathe_bpc_C)
+  [1852] CallFunc_GetComponentByClass_ReturnValue.SetSheatheWeapon(false)
+  [1889] pop
+  [1890] AddDisableCapsuleCollisionOverride()
+  [1904] pop
+  [1905] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1925] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [1961] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1990] if !(K2Node_DynamicCast_bSuccess) pop
+  [2000] K2Node_DynamicCast_AsPlayer_Interface.ToggleHideWeapon(true)
+  [2038] pop
+  [2039] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [2086] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [2115] if !(CallFunc_IsValid_ReturnValue) pop
+  [2125] K2Node_CreateDelegate_OutputDelegate = bind(self.OnStartPlayerEdgeRecovery)
+  [2148] K2Node_CreateDelegate_OutputDelegate += None
+  [2189] pop
+  [2190] return nothing
+  [2192] end
+
+=== Internal_OnEnteredNoneState
+  [0] push @83
+  [5] push @68
+  [10] push @30
+  [15] CloseGlider()
+  [29] pop
+  [30] RemoveInputComponent()
+  [44] RestartGlideInputCooldown(self.GlideStartInputCooldownTime)
+  [67] pop
+  [68] RemoveDisableCapsuleCollisionOverride()
+  [82] pop
+  [83] return nothing
+  [85] end
+
+=== Internal_OnExitedGlidingState
+  [0] push @704
+  [5] push @553
+  [10] push @538
+  [15] push @404
+  [20] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [40] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_1)
+  [69] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [79] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [99] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_2)
+  [135] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [164] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [174] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [216] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [252] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [281] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [291] K2Node_DynamicCast_AsBPI_Camera = cast<BPI_camera_C>(K2Node_DynamicCast_AsArchon_Character)
+  [327] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Camera)
+  [356] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [366] K2Node_DynamicCast_AsBPI_Camera.EnableCameraInput()
+  [403] pop
+  [404] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [424] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [460] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [489] if !(K2Node_DynamicCast_bSuccess) pop
+  [499] K2Node_DynamicCast_AsPlayer_Interface.ToggleHideWeapon(false)
+  [537] pop
+  [538] RemoveDisableCapsuleCollisionOverride()
+  [552] pop
+  [553] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [600] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [629] if !(CallFunc_IsValid_ReturnValue) pop
+  [639] K2Node_CreateDelegate_OutputDelegate = bind(self.OnStartPlayerEdgeRecovery)
+  [662] K2Node_CreateDelegate_OutputDelegate -= None
+  [703] pop
+  [704] return nothing
+  [706] end
+
+=== Internal_OnTickGlidingState
+  [0] push @2489
+  [5] push @1784
+  [10] push @1424
+  [15] push @1114
+  [20] push @653
+  [25] push @461
+  [30] CallFunc_IsValid_ReturnValue_2 = IsValid(self.GliderActor)
+  [59] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [69] CallFunc_CurrentPhysicsModel_ReturnValue = CurrentPhysicsModel()
+  [97] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_CurrentPhysicsModel_ReturnValue, 0)
+  [128] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [138] CallFunc_GetCurrentGlidingRotation_ReturnValue_1 = GetCurrentGlidingRotation()
+  [166] BreakRotator(CallFunc_GetCurrentGlidingRotation_ReturnValue_1, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [212] CallFunc_FInterpTo_Target_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [241] CallFunc_FInterpTo_ReturnValue_1 = FInterpTo(LastGliderPitch, CallFunc_FInterpTo_Target_ImplicitCast, DeltaTime, 0.0)
+  [305] LastGliderPitch = CallFunc_FInterpTo_ReturnValue_1
+  [332] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(LastGliderPitch)
+  [361] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, CallFunc_MakeRotator_Pitch_ImplicitCast, 0.0)
+  [408] self.GliderActor.K2_SetActorRelativeRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_SetActorRelativeRotation_SweepHitResult, false)
+  [460] pop
+  [461] CallFunc_IsValid_ReturnValue_3 = IsValid(self.GliderCameraComponent)
+  [490] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [500] CallFunc_GetCurrentGlidingRotation_ReturnValue_2 = GetCurrentGlidingRotation()
+  [528] BreakRotator(CallFunc_GetCurrentGlidingRotation_ReturnValue_2, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [574] K2Node_VariableSet_CurrentGliderPitch_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_2)
+  [603] self.GliderCameraComponent.self.CurrentGliderPitch = K2Node_VariableSet_CurrentGliderPitch_ImplicitCast
+  [652] pop
+  [653] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [673] K2Node_DynamicCast_AsCharacter = cast<Character>(CallFunc_GetOwner_ReturnValue)
+  [709] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter)
+  [738] if !(K2Node_DynamicCast_bSuccess) pop
+  [748] CallFunc_IsLocallyControlled_ReturnValue = K2Node_DynamicCast_AsCharacter.IsLocallyControlled()
+  [794] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsCharacter.self.Mesh.GetAnimInstance()
+  [858] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAnimInstance_ReturnValue)
+  [887] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsLocallyControlled_ReturnValue, CallFunc_IsValid_ReturnValue)
+  [925] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [935] CallFunc_GetAnimInstance_ReturnValue = K2Node_DynamicCast_AsCharacter.self.Mesh.GetAnimInstance()
+  [999] CallFunc_IsAnyMontagePlaying_ReturnValue = CallFunc_GetAnimInstance_ReturnValue.IsAnyMontagePlaying()
+  [1041] if !(CallFunc_IsAnyMontagePlaying_ReturnValue) pop
+  [1051] CallFunc_TryStopGliding_ReturnValue = TryStopGliding(PhxAnimMontageSelection{null, 1.0, 0.0, 'None'})
+  [1109] goto @2489
+  [1114] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1134] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue_1)
+  [1163] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [1173] Compute Detection Time Factor(CallFunc_Compute_Detection_Time_Factor_Factor)
+  [1196] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(0.20000000298023224, CallFunc_Compute_Detection_Time_Factor_Factor)
+  [1242] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(50.0, CallFunc_Compute_Detection_Time_Factor_Factor)
+  [1288] DoCollisionTest(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.5, CallFunc_Multiply_DoubleDouble_ReturnValue, false, CallFunc_DoCollisionTest_HitResult, CallFunc_DoCollisionTest_bHit)
+  [1348] if !(CallFunc_DoCollisionTest_bHit) pop
+  [1358] SelectDismountMontageFromHitResult(CallFunc_DoCollisionTest_HitResult, CallFunc_SelectDismountMontageFromHitResult_MontageSelection)
+  [1390] CallFunc_TryStopGliding_ReturnValue_1 = TryStopGliding(CallFunc_SelectDismountMontageFromHitResult_MontageSelection)
+  [1419] goto @2489
+  [1424] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1445] if !(CallFunc_IsServer_ReturnValue) pop
+  [1455] CallFunc_GetStaminaDrainPerSecond_ReturnValue = GetStaminaDrainPerSecond()
+  [1483] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetStaminaDrainPerSecond_ReturnValue)
+  [1512] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, DeltaTime)
+  [1558] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [1578] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_3.GetComponentByClass(ArchonStaminaComponent)
+  [1629] CallFunc_TryConsumeStamina_StaminaCost_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [1658] CallFunc_TryConsumeStamina_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryConsumeStamina(CallFunc_TryConsumeStamina_StaminaCost_ImplicitCast, 16, true)
+  [1712] if !(CallFunc_TryConsumeStamina_ReturnValue) goto @1727
+  [1726] pop
+  [1727] SelectFallingDismountMontage(CallFunc_SelectFallingDismountMontage_MontageSelection)
+  [1750] CallFunc_TryStopGliding_ReturnValue_2 = TryStopGliding(CallFunc_SelectFallingDismountMontage_MontageSelection)
+  [1779] goto @2489
+  [1784] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1805] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1820
+  [1819] pop
+  [1820] CallFunc_IsValid_ReturnValue_1 = IsValid(self.GliderActor)
+  [1849] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [1859] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [1879] CallFunc_GetVelocity_ReturnValue = CallFunc_GetOwner_ReturnValue_2.GetVelocity()
+  [1933] CallFunc_VSize_ReturnValue = VSize(CallFunc_GetVelocity_ReturnValue)
+  [1970] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_VSize_ReturnValue, 0.0, 1800.0, 0.0, 1.0)
+  [2043] CallFunc_FInterpTo_ReturnValue = FInterpTo(self.VelocityNormalized, CallFunc_MapRangeClamped_ReturnValue, DeltaTime, 3.0)
+  [2107] self.VelocityNormalized = CallFunc_FInterpTo_ReturnValue
+  [2134] CallFunc_SetRTPCValue_Value_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.VelocityNormalized)
+  [2163] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast_1, 0, self.GliderActor, 'Glider_Velocity')
+  [2232] CallFunc_GetCurrentGlidingRotation_ReturnValue = GetCurrentGlidingRotation()
+  [2260] BreakRotator(CallFunc_GetCurrentGlidingRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [2306] CallFunc_ClampAngle_AngleDegrees_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll)
+  [2335] CallFunc_ClampAngle_ReturnValue = ClampAngle(CallFunc_ClampAngle_AngleDegrees_ImplicitCast, -45.0, 45.0)
+  [2390] CallFunc_SetRTPCValue_Value_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_ClampAngle_ReturnValue)
+  [2419] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast, 0, self.GliderActor, 'Glider_Turn_Angle')
+  [2488] pop
+  [2489] return nothing
+  [2491] end
+
+=== OnGlideInputCooldownTimerCompleted
+  [0] return nothing
+  [2] end
+
+=== OnStartPlayerEdgeRecovery
+  [0] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(Player Interface)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @209
+  [79] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [99] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_GetOwner_ReturnValue, K2Node_DynamicCast_AsArchon_Character)
+  [137] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @209
+  [151] CallFunc_TryStopGliding_ReturnValue = TryStopGliding(PhxAnimMontageSelection{null, 1.0, 0.0, 'None'})
+  [209] return nothing
+  [211] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_player_glide_bpc(498)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnEnteredDismountingState
+  [0] ExecuteUbergraph_player_glide_bpc(707)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnEnteredGlidingState
+  [0] ExecuteUbergraph_player_glide_bpc(127)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnEnteredNoneState
+  [0] ExecuteUbergraph_player_glide_bpc(185)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnExitedGlidingState
+  [0] ExecuteUbergraph_player_glide_bpc(156)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTickGlidingState
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_player_glide_bpc(214)
+  [33] return nothing
+  [35] end
+
+=== RemoveDisableCapsuleCollisionOverride
+  [0] push @569
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [61] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [90] if !(K2Node_DynamicCast_bSuccess) pop
+  [100] Temp_int_Loop_Counter_Variable = 0
+  [123] Temp_int_Array_Index_Variable = 0
+  [146] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DisableCapsuleCollisionOverrideHandles)
+  [205] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [243] if !(CallFunc_Less_IntInt_ReturnValue) goto @453
+  [257] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [284] push @495
+  [289] Default__KismetArrayLibrary.Array_Get(self.DisableCapsuleCollisionOverrideHandles, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [348] CallFunc_RemovePrimitiveComponentCollisionResponseOverride_ReturnValue = K2Node_DynamicCast_AsArchon_Character.self.GameplayPropertyOverrideComponent.RemovePrimitiveComponentCollisionResponseOverride(K2Node_DynamicCast_AsArchon_Character.self.CapsuleComponent, CallFunc_Array_Get_Item)
+  [452] pop
+  [453] Default__KismetArrayLibrary.Array_Clear(self.DisableCapsuleCollisionOverrideHandles)
+  [494] pop
+  [495] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [537] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [564] goto @146
+  [569] return nothing
+  [571] end
+
+=== RemoveInputComponent
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetOwner_ReturnValue)
+  [49] if !(CallFunc_IsLocalCharacter_ReturnValue) goto @335
+  [63] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [83] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue_1)
+  [119] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [148] if !(K2Node_DynamicCast_bSuccess) goto @335
+  [162] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetController()
+  [204] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [240] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [269] if !(K2Node_DynamicCast_bSuccess_1) goto @335
+  [283] K2Node_DynamicCast_AsArchon_Player_Controller.RemoveArchonInputComponent(self.GlidingInputComponent)
+  [324] self.GlidingInputComponent = null
+  [335] return nothing
+  [337] end
+
+=== RestartGlideInputCooldown
+  [0] K2_ClearAndInvalidateTimerHandle(self, self.GlideInputCooldownTimerHandle)
+  [20] K2Node_CreateDelegate_OutputDelegate = bind(self.OnGlideInputCooldownTimerCompleted)
+  [43] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [72] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [129] self.GlideInputCooldownTimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [156] return nothing
+  [158] end
+
+=== SelectDismountMontageFromHitResult
+  [0] CalculateGlidingCollisionCapsule(CallFunc_CalculateGlidingCollisionCapsule_CapsuleRadius, CallFunc_CalculateGlidingCollisionCapsule_CalpsuleHalfHeight, CallFunc_CalculateGlidingCollisionCapsule_CapsuleLocaton, CallFunc_CalculateGlidingCollisionCapsule_Success)
+  [50] if !(CallFunc_CalculateGlidingCollisionCapsule_Success) goto @446
+  [64] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, -600.0)
+  [119] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_CalculateGlidingCollisionCapsule_CapsuleLocaton, CallFunc_MakeVector_ReturnValue)
+  [165] CallFunc_CapsuleTraceSingle_Radius_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateGlidingCollisionCapsule_CapsuleRadius)
+  [194] CallFunc_CapsuleTraceSingle_HalfHeight_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateGlidingCollisionCapsule_CalpsuleHalfHeight)
+  [223] CallFunc_CapsuleTraceSingle_ReturnValue = CapsuleTraceSingle(self, CallFunc_CalculateGlidingCollisionCapsule_CapsuleLocaton, CallFunc_Add_VectorVector_ReturnValue, CallFunc_CapsuleTraceSingle_Radius_ImplicitCast, CallFunc_CapsuleTraceSingle_HalfHeight_ImplicitCast, 0, false, Temp_object_Variable, 0, CallFunc_CapsuleTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [377] if !(CallFunc_CapsuleTraceSingle_ReturnValue) goto @446
+  [391] SelectLandingDismountMontage(CallFunc_SelectLandingDismountMontage_MontageSelection)
+  [414] MontageSelection = CallFunc_SelectLandingDismountMontage_MontageSelection
+  [441] goto @496
+  [446] SelectFallingDismountMontage(CallFunc_SelectFallingDismountMontage_MontageSelection)
+  [469] MontageSelection = CallFunc_SelectFallingDismountMontage_MontageSelection
+  [496] return nothing
+  [498] end
+
+=== SelectFallingDismountMontage
+  [0] GetGlidingBlendSpaceControlValues(CallFunc_GetGlidingBlendSpaceControlValues_Forward, CallFunc_GetGlidingBlendSpaceControlValues_Turn)
+  [32] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetGlidingBlendSpaceControlValues_Forward, 0.5)
+  [70] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(CallFunc_GetGlidingBlendSpaceControlValues_Forward, 0.75)
+  [108] Temp_bool_Variable = CallFunc_GreaterEqual_DoubleDouble_ReturnValue
+  [127] Temp_bool_Variable_1 = CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1
+  [146] K2Node_MakeStruct_PhxAnimMontageSelection.Montage = switch(Temp_bool_Variable_1){false: switch(Temp_bool_Variable){false: self.GlideLocoIdleCollisionAnim, true: self.GlideLocoFwdCollisionAnim, default: K2Node_Select_Default}, true: self.GlideLocoDiveCollisionAnim, default: K2Node_Select_Default_1}
+  [262] K2Node_MakeStruct_PhxAnimMontageSelection.PlayRate = 1.0
+  [294] K2Node_MakeStruct_PhxAnimMontageSelection.StartTime = 0.0
+  [326] K2Node_MakeStruct_PhxAnimMontageSelection.StartSection = 'None'
+  [366] MontageSelection = K2Node_MakeStruct_PhxAnimMontageSelection
+  [393] return nothing
+  [395] end
+
+=== SelectGliderSpecFromPJM
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @182
+  [99] CallFunc_HasAuthority_ReturnValue = K2Node_DynamicCast_AsArchon_Character.HasAuthority()
+  [141] if !(CallFunc_HasAuthority_ReturnValue) goto @182
+  [155] ServerSetActiveGliderSpecID('glider_spec_max')
+  [182] return nothing
+  [184] end
+
+=== SelectLandingDismountMontage
+  [0] GetGlidingBlendSpaceControlValues(CallFunc_GetGlidingBlendSpaceControlValues_Forward, CallFunc_GetGlidingBlendSpaceControlValues_Turn)
+  [32] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetGlidingBlendSpaceControlValues_Forward, 0.5)
+  [70] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(CallFunc_GetGlidingBlendSpaceControlValues_Forward, 0.8999999761581421)
+  [108] Temp_bool_Variable = CallFunc_GreaterEqual_DoubleDouble_ReturnValue
+  [127] Temp_bool_Variable_1 = CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1
+  [146] K2Node_MakeStruct_PhxAnimMontageSelection.Montage = switch(Temp_bool_Variable_1){false: switch(Temp_bool_Variable){false: self.GlideLocoIdleDismount, true: self.GlideLocoFwdDismount, default: K2Node_Select_Default}, true: self.GlideLocoDiveDismount, default: K2Node_Select_Default_1}
+  [262] K2Node_MakeStruct_PhxAnimMontageSelection.PlayRate = 1.0
+  [294] K2Node_MakeStruct_PhxAnimMontageSelection.StartTime = 0.0
+  [326] K2Node_MakeStruct_PhxAnimMontageSelection.StartSection = 'None'
+  [366] MontageSelection = K2Node_MakeStruct_PhxAnimMontageSelection
+  [393] return nothing
+  [395] end
+
+=== SetGlidingTrack
+  [0] self.CurrGlidingTunnel = Glide track
+  [19] return nothing
+  [21] end
+
+=== TryGlideInput
+  [0] push @612
+  [5] push @302
+  [10] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [31] K2Node_DynamicCast_AsBPGS_Archon_Game_State = cast<BPGS_Archon_GameState_C>(CallFunc_GetGameState_ReturnValue)
+  [67] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBPGS_Archon_Game_State)
+  [96] if !(K2Node_DynamicCast_bSuccess) pop
+  [106] if !(K2Node_DynamicCast_AsBPGS_Archon_Game_State.self.GlidersEnabled) pop
+  [138] CallFunc_GetCurrentGlidingState_ReturnValue = GetCurrentGlidingState()
+  [166] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentGlidingState_ReturnValue, 0)
+  [197] if !(K2Node_SwitchEnum_CmpSuccess) goto @318
+  [211] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentGlidingState_ReturnValue, 1)
+  [242] if !(K2Node_SwitchEnum_CmpSuccess) goto @460
+  [256] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetCurrentGlidingState_ReturnValue, 2)
+  [287] if !(K2Node_SwitchEnum_CmpSuccess) goto @601
+  [301] pop
+  [302] GlideTookJumpInput = false
+  [313] goto @612
+  [318] CanStartGlide(CallFunc_CanStartGlide_CanStartGlide)
+  [341] if !(CallFunc_CanStartGlide_CanStartGlide) pop
+  [351] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.GlideInputCooldownTimerHandle)
+  [381] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_K2_IsTimerActiveHandle_ReturnValue)
+  [410] if !(CallFunc_Not_PreBool_ReturnValue) goto @444
+  [424] CallFunc_TryStartGliding_ReturnValue = TryStartGliding()
+  [444] GlideTookJumpInput = true
+  [455] goto @612
+  [460] CallFunc_K2_IsTimerActiveHandle_ReturnValue_1 = K2_IsTimerActiveHandle(self, self.GlideInputCooldownTimerHandle)
+  [490] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_K2_IsTimerActiveHandle_ReturnValue_1)
+  [519] if !(CallFunc_Not_PreBool_ReturnValue_1) goto @585
+  [533] SelectFallingDismountMontage(CallFunc_SelectFallingDismountMontage_MontageSelection)
+  [556] CallFunc_TryStopGliding_ReturnValue = TryStopGliding(CallFunc_SelectFallingDismountMontage_MontageSelection)
+  [585] GlideTookJumpInput = true
+  [596] goto @612
+  [601] GlideTookJumpInput = true
+  [612] return nothing
+  [614] end
+
+=== UpdatePlayerGlideStanceAnim
+  [0] frame.K2Node_Event_PlayerGlideAnimData = PlayerGlideAnimData
+  [18] ExecuteUbergraph_player_glide_bpc(10)
+  [33] return nothing
+  [35] end

@@ -1,0 +1,122 @@
+{
+ "name": "eqs_get_away_point",
+ "package": "Archon/Content/Monsters/tp/mcrollin/blueprints/eqs_get_away_point",
+ "type": "EnvQuery",
+ "refs": [
+  "EQContext_AllLivePlayers_C",
+  "EQContext_CurrentPatrolCenterPoint_C",
+  "EQContext_NearestPlayer_C",
+  "NavigationQueryFilter_NoDynamic_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.OuterRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "Donut.InnerRadius"
+   }
+  },
+  "eqs_get_away_point": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_get_away_point",
+    "Options": [
+     "@EnvQueryOption_0"
+    ]
+   }
+  },
+  "EnvQueryGenerator_Donut_0": {
+   "type": "EnvQueryGenerator_Donut",
+   "props": {
+    "InnerRadius": {
+     "DefaultValue": 800.0,
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "OuterRadius": {
+     "DefaultValue": 1500.0,
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "PointsPerRing": {
+     "DefaultValue": 16
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "NavigationFilter": "BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C",
+     "ProjectDown": 750.0,
+     "ProjectUp": 100.0,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_0": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_Donut_0",
+    "Tests": [
+     "@EnvQueryTest_Distance_0",
+     "@EnvQueryTest_Distance_2",
+     "@EnvQueryTest_Distance_3",
+     "@EnvQueryTest_Trace_1"
+    ]
+   }
+  },
+  "EnvQueryTest_Distance_0": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_NearestPlayer_C",
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": 800.0,
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 500.0
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_2": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_AllLivePlayers_C",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_3": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_CurrentPatrolCenterPoint_C",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Trace_1": {
+   "type": "EnvQueryTest_Trace",
+   "props": {
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  }
+ }
+}

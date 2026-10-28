@@ -1,0 +1,95 @@
+# crowbear_eb_exotic_lifesteal_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_crowbear_eb_exotic_lifesteal_buff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [30] HealVFX(CallFunc_GetBuffOwner_ReturnValue_1)
+  [53] if !(self.Debug) goto @1467
+  [67] CallFunc_Conv_DoubleToString_InDouble_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [105] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Conv_DoubleToString_InDouble_ImplicitCast)
+  [142] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Damage Dealt: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [195] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{1.0, 0.022553, 0.0, 1.0}, 5.0, 'None')
+  [269] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [307] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.LifestealPercent)
+  [353] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [390] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Health Healed: ', CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [444] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 1.0, 0.08852, 1.0}, 5.0, 'None')
+  [518] goto @1467
+  [523] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [544] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @563
+  [558] goto @1467
+  [563] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_CustomEvent_VFXTarget)
+  [599] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [628] if !(K2Node_DynamicCast_bSuccess) goto @883
+  [642] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [688] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [820] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_VFXTarget)
+  [878] goto @1467
+  [883] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [894] goto @688
+  [899] goto @523
+  [904] OnAdded()
+  [914] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPostMitDamage)
+  [937] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [957] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_2.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1008] K2Node_CreateDelegate_OutputDelegate += None
+  [1049] goto @1467
+  [1054] Default__meter_gaining_rules_C.CanProcOnDamageEffects(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [1118] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1138] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [1167] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Combat.SpecialActive'})
+  [1241] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects, CallFunc_HasMatchingGameplayTag_ReturnValue)
+  [1279] if !(CallFunc_BooleanAND_ReturnValue) goto @1467
+  [1293] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1313] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [1351] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.LifestealPercent)
+  [1397] Default__archon_function_library_C.HealTarget(CallFunc_GetBuffOwner_ReturnValue_1, CallFunc_GetBuffOwner_ReturnValue_1, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [1462] goto @10
+  [1467] return nothing
+  [1469] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_VFXTarget = VFXTarget
+  [18] ExecuteUbergraph_crowbear_eb_exotic_lifesteal_buff(899)
+  [33] return nothing
+  [35] end
+
+=== IsValidTarget
+  [0] array{GameplayTag{'Combat.Lantern'}, GameplayTag{'Combat.Item'}}
+  [65] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [102] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(InsitgatorTags, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [141] if !(CallFunc_HasAnyTags_ReturnValue) goto @171
+  [155] ValidTarget = false
+  [166] goto @498
+  [171] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(DamagedActor)
+  [207] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [236] if !(K2Node_DynamicCast_bSuccess_1) goto @266
+  [250] ValidTarget = true
+  [261] goto @498
+  [266] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(DamagedActor)
+  [302] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [331] if !(K2Node_DynamicCast_bSuccess) goto @361
+  [345] ValidTarget = false
+  [356] goto @498
+  [361] CallFunc_GetOwner_ReturnValue = DamagedActor.GetOwner()
+  [403] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [439] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [468] if !(K2Node_DynamicCast_bSuccess_2) goto @487
+  [482] goto @250
+  [487] ValidTarget = false
+  [498] return nothing
+  [500] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_crowbear_eb_exotic_lifesteal_buff(904)
+  [15] return nothing
+  [17] end
+
+=== OnPostMitDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_crowbear_eb_exotic_lifesteal_buff(1054)
+  [87] return nothing
+  [89] end

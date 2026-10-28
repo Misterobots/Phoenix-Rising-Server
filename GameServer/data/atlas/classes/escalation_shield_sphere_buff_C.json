@@ -1,0 +1,701 @@
+{
+ "name": "escalation_shield_sphere_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_conditional_benefit_buff_C",
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Created",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CooldownTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DistanceCheckTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxDistance",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MinimumDistanceToActivate",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Cooldown",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CooldownIconGameplayEffectHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CooldownIconCompleteGameplayEffect",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NewVar_0",
+   "type": "StructProperty<player_requirements_str>",
+   "bp_type": "StructProperty<player_requirements_str>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NewVar_1",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActorsToIgnore",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NewVar_2",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "Activate Pillar",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AddCooldownCompleteIcon",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [
+    "CooldownIconCompleteGameplayEffect"
+   ],
+   "calls": [
+    "ApplySpecWithDurationAndMagnitude",
+    "ArchonBuff.GetBuffOwner",
+    "RemoveCooldownIcons"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_molten_orb_cooldowncomplete_ge_C"
+   ]
+  },
+  {
+   "name": "DoDistanceCheck",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DistanceCheckPassed",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedBehemoths_Behemoths",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 44,
+   "reads": [
+    "MaxDistance",
+    "MinimumDistanceToActivate"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "ActorIsAlive",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.GetGameMode",
+    "GetSpawnedBehemoths",
+    "IsWithinDistanceFast",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_escalation_shield_sphere_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 108,
+   "reads": [
+    "ActorsToIgnore",
+    "Cooldown",
+    "CooldownTimer",
+    "DistanceCheckTimer",
+    "OnBehemothCombatStateChanged",
+    "OnPopped"
+   ],
+   "sets": [
+    "CooldownTimer",
+    "DistanceCheckTimer"
+   ],
+   "calls": [
+    "Activate Pillar",
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "AddCooldownCompleteIcon",
+    "AkGameplayStatics.PostEventAtLocation",
+    "ArchonBuff.GetBuffOwner",
+    "DoDistanceCheck",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetGameMode",
+    "GetCameraView",
+    "GetFollowCamera",
+    "GetGroundPosAndNormal",
+    "GetIsAnyBehemothInCombat",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.GetForwardVector",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.Normal",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "RemoveCooldownIcons",
+    "ResetCooldownIcon",
+    "Server_Request Create",
+    "ShieldSphere_Activate_SFX",
+    "SpherePopped",
+    "StartCooldown",
+    "StartDistanceCheckTimer",
+    "StopDistanceCheckTimer",
+    "XY",
+    "base_buff_C.OnRemoved",
+    "base_conditional_benefit_buff_C.ReceiveBeginPlay"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_VFX_Spawn_Shield_Sphere",
+    "BlueprintGeneratedClass bpgm_event_dispatcher_bpc_C",
+    "BlueprintGeneratedClass escalation_shieldsphere_actor_C"
+   ]
+  },
+  {
+   "name": "OnCombatStateChange",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "IsAnyBehemothInCombat",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveCooldownIcons",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "CooldownIconCompleteGameplayEffect",
+    "CooldownIconGameplayEffectHandle"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonBuff.GetBuffOwner",
+    "RemoveActiveGameplayEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetCooldownIcon",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "Cooldown"
+   ],
+   "sets": [
+    "CooldownIconGameplayEffectHandle"
+   ],
+   "calls": [
+    "ApplySpecWithDurationAndMagnitude",
+    "ArchonBuff.GetBuffOwner",
+    "RemoveCooldownIcons"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_molten_orb_cooldownactive_ge_C"
+   ]
+  },
+  {
+   "name": "Server_Request Create",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "LaunchDirection",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "server",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShieldSpherePopped",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ShieldSphere",
+     "type": "ObjectProperty<escalation_shieldsphere_actor_C>"
+    },
+    {
+     "name": "Instigator",
+     "type": "ObjectProperty<Controller>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShieldSphere_Activate_SFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpherePopped",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Instigator",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "ShieldSphere",
+     "type": "ObjectProperty<escalation_shieldsphere_actor_C>"
+    },
+    {
+     "name": "CallFunc_GetLivePlayerCharacters_LiveCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetLivePlayerCharacters_LiveCharacters_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 51,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetActorLocation",
+    "AuthRemoveGameplayEffectByClass",
+    "GetCellEffectMagnitude",
+    "GetLivePlayerCharacters",
+    "IsWithinDistanceFast",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveBuffByClass",
+    "SetMagnitudeFromCell",
+    "StartBuff",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_shield_sphere_ico_ge_C",
+    "BlueprintGeneratedClass escalation_team_shield_sphere_ge_C"
+   ]
+  },
+  {
+   "name": "StartCooldown",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartDistanceCheckTimer",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopDistanceCheckTimer",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TryDistanceCheck",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_shield_sphere_buff_C.ExecuteUbergraph_escalation_shield_sphere_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/escalation/terra_s4/escalation_shield_sphere_buff",
+ "pseudo_file": "pseudo/escalation_shield_sphere_buff_C.txt",
+ "game_data": {}
+}

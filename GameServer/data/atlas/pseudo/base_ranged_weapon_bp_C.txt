@@ -1,0 +1,230 @@
+# base_ranged_weapon_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AimingState_OnPlayerStateDefaultInterrupted
+  [0] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(PreviousState, 10)
+  [31] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(NewState, 3)
+  [62] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(NewState, 2)
+  [93] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(NewState, 1)
+  [124] CallFunc_EqualEqual_ByteByte_ReturnValue_4 = EqualEqual_ByteByte(NewState, 0)
+  [155] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_4, CallFunc_EqualEqual_ByteByte_ReturnValue_3)
+  [193] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue_2)
+  [231] CallFunc_BooleanOR_ReturnValue_2 = BooleanOR(CallFunc_BooleanOR_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue_1)
+  [269] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BooleanOR_ReturnValue_2)
+  [298] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [336] if !(CallFunc_BooleanAND_ReturnValue) goto @366
+  [350] Client_SetRangedState(0)
+  [366] return nothing
+  [368] end
+
+=== Client_SetRangedState
+  [0] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(NewState, self.CurrentRangedState)
+  [38] if !(CallFunc_NotEqual_ByteByte_ReturnValue) goto @169
+  [52] FlushNetDormancy()
+  [62] self.CurrentRangedState = NewState
+  [89] MarkPropertyDirtyFromRepIndex(self, 21, 'CurrentRangedState')
+  [118] OnRep_CurrentRangedState()
+  [132] OnCurrentStateChanged()
+  [146] Server_SetRangedState(NewState)
+  [169] return nothing
+  [171] end
+
+=== ExecuteUbergraph_base_ranged_weapon_bp
+  [0] push @851
+  [5] goto computed(EntryPoint)
+  [15] OnStart()
+  [29] pop
+  [30] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [50] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [86] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [115] if !(K2Node_DynamicCast_bSuccess_1) goto @300
+  [129] self.ArchonCharacter = K2Node_DynamicCast_AsArchon_Character
+  [148] push @15
+  [153] push @636
+  [158] push @355
+  [163] CallFunc_GetController_ReturnValue = self.ArchonCharacter.GetController()
+  [205] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetController_ReturnValue)
+  [241] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [270] if !(K2Node_DynamicCast_bSuccess) pop
+  [280] self.ArchonPlayerController = K2Node_DynamicCast_AsArchon_Player_Controller
+  [299] pop
+  [300] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=30), -29261290, 'ExecuteUbergraph_base_ranged_weapon_bp', self})
+  [354] pop
+  [355] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [406] self.PlayerEventDispatcher = CallFunc_GetComponentByClass_ReturnValue
+  [425] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(generic_eventdispatcher_bpc_C)
+  [476] self.GenericEventDispatcher = CallFunc_GetComponentByClass_ReturnValue_1
+  [495] CallFunc_GetComponentByClass_ReturnValue_2 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [546] self.PlayerAimingComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [565] CallFunc_GetComponentByClass_ReturnValue_3 = self.ArchonCharacter.GetComponentByClass(player_state_machine_bpc_C)
+  [616] self.PlayerStateMachineBpc = CallFunc_GetComponentByClass_ReturnValue_3
+  [635] pop
+  [636] CallFunc_IsValid_ReturnValue = IsValid(self.ArchonCharacter)
+  [665] if !(CallFunc_IsValid_ReturnValue) pop
+  [675] SetupInput()
+  [689] pop
+  [690] OnRep_CurrentRangedState()
+  [704] pop
+  [705] MarkPropertyDirtyFromRepIndex(self, 21, 'CurrentRangedState')
+  [734] goto @690
+  [739] FlushNetDormancy()
+  [749] self.CurrentRangedState = K2Node_CustomEvent_NewState
+  [776] goto @705
+  [781] ReceiveBeginPlay()
+  [791] goto @30
+  [796] pop
+  [797] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(K2Node_CustomEvent_NewState, self.CurrentRangedState)
+  [835] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [845] goto @739
+  [850] pop
+  [851] return nothing
+  [853] end
+
+=== GetCurrentRangedState
+  [0] CurrentRangedState = self.CurrentRangedState
+  [27] return nothing
+  [29] end
+
+=== InputsToIgnore
+  [0] push @640
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Array)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @561
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @566
+  [194] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] K2Node_MakeStruct_InputActionBinding_1.KeyEvent = 0
+  [282] K2Node_MakeStruct_InputActionBinding_1.ActionName = CallFunc_Array_Get_Item
+  [318] CallFunc_AddActionBinding_ReturnValue = self.LInputComponent.AddActionBinding(K2Node_MakeStruct_InputActionBinding_1)
+  [377] Default__KismetArrayLibrary.Array_Get(Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [436] K2Node_MakeStruct_InputActionBinding.KeyEvent = 1
+  [465] K2Node_MakeStruct_InputActionBinding.ActionName = CallFunc_Array_Get_Item
+  [501] CallFunc_AddActionBinding_ReturnValue_1 = self.LInputComponent.AddActionBinding(K2Node_MakeStruct_InputActionBinding)
+  [560] pop
+  [561] goto @640
+  [566] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [608] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [635] goto @51
+  [640] return nothing
+  [642] end
+
+=== OnCurrentStateChanged
+  [0] push @285
+  [5] push @212
+  [10] push @106
+  [15] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PreviousRangedState, 0)
+  [46] if !(K2Node_SwitchEnum_CmpSuccess) goto @240
+  [60] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PreviousRangedState, 1)
+  [91] if !(K2Node_SwitchEnum_CmpSuccess) goto @255
+  [105] pop
+  [106] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.CurrentRangedState, 0)
+  [137] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @197
+  [151] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(self.CurrentRangedState, 1)
+  [182] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @270
+  [196] pop
+  [197] OnEnterDefaultState()
+  [211] pop
+  [212] self.PreviousRangedState = self.CurrentRangedState
+  [239] pop
+  [240] OnExitDefaultState()
+  [254] pop
+  [255] OnExitAimingState()
+  [269] pop
+  [270] OnEnterAimingState()
+  [284] pop
+  [285] return nothing
+  [287] end
+
+=== OnEnterAimingState
+  [0] push @492
+  [5] push @346
+  [10] push @293
+  [15] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [61] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [71] CallFunc_IsValid_ReturnValue = IsValid(self.PlayerAimingComponent.self.ReticleWidget)
+  [122] if !(CallFunc_IsValid_ReturnValue) pop
+  [132] K2Node_DynamicCast_AsReticle_Base_Bpw = cast<reticle_base_bpw_C>(self.PlayerAimingComponent.self.ReticleWidget)
+  [190] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsReticle_Base_Bpw)
+  [219] if !(K2Node_DynamicCast_bSuccess) pop
+  [229] K2Node_DynamicCast_AsReticle_Base_Bpw.SetReticleData(self.ReticleInitialSize, self.ReticleMinSize, self.ReticleMaxSize)
+  [292] pop
+  [293] CallFunc_HasAuthority_ReturnValue = self.ArchonCharacter.HasAuthority()
+  [335] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [345] pop
+  [346] self.PlayerStateMachineBpc.StartStrafe()
+  [382] self.PlayerAimingComponent.StartAiming(self.AimRequest)
+  [427] K2Node_CreateDelegate_OutputDelegate = bind(self.AimingState_OnPlayerStateDefaultInterrupted)
+  [450] K2Node_CreateDelegate_OutputDelegate += None
+  [491] pop
+  [492] return nothing
+  [494] end
+
+=== OnEnterDefaultState
+  [0] return nothing
+  [2] end
+
+=== OnExitAimingState
+  [0] push @239
+  [5] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.PreviousRangedState, 1)
+  [36] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [46] push @166
+  [51] push @113
+  [56] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [102] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [112] pop
+  [113] CallFunc_HasAuthority_ReturnValue = self.ArchonCharacter.HasAuthority()
+  [155] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [165] pop
+  [166] self.PlayerAimingComponent.StopAiming()
+  [202] self.PlayerStateMachineBpc.EndStrafe()
+  [238] pop
+  [239] return nothing
+  [241] end
+
+=== OnExitDefaultState
+  [0] return nothing
+  [2] end
+
+=== OnInputPrimaryShoot
+  [0] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(Event, 0)
+  [31] OnPrimaryShoot__DelegateSignature(KeyEvent, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [90] return nothing
+  [92] end
+
+=== OnRep_CurrentRangedState
+  [0] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [46] if !(CallFunc_IsLocallyControlled_ReturnValue) goto @65
+  [60] goto @79
+  [65] OnCurrentStateChanged()
+  [79] return nothing
+  [81] end
+
+=== OnStart
+  [0] ExecuteUbergraph_base_ranged_weapon_bp(850)
+  [15] return nothing
+  [17] end
+
+=== PopInput
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.LInputComponent)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @105
+  [43] CallFunc_PopInputComponent_ReturnValue = self.ArchonPlayerController.PopInputComponent(self.LInputComponent)
+  [94] self.LInputComponent = null
+  [105] return nothing
+  [107] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_base_ranged_weapon_bp(781)
+  [15] return nothing
+  [17] end
+
+=== Server_SetRangedState
+  [0] frame.K2Node_CustomEvent_NewState = NewState
+  [18] ExecuteUbergraph_base_ranged_weapon_bp(797)
+  [33] return nothing
+  [35] end
+
+=== SetupInput
+  [0] ExecuteUbergraph_base_ranged_weapon_bp(796)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,26 @@
+glitter_normal_enter_arena_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard "Has Not Entered Arena"  (HasEnteredArena is Is Not Set)]
+  Selector
+    1) Sequence
+      1) Wait  (WaitTime=1)
+      2) SimpleParallel
+        1) PhxPerformGameplayAction  (ActionChooser=@PhxGameplayActionClassChooser_0)
+        2) Sequence
+          1) Wait  (WaitTime=1)
+          [if ForceSuccess]
+          2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindClosestPlayerToPatrolPoint", "QueryConfig": [{"ParamName": "Distance", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+          3) creature_enter_arena_bttask
+          [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+          4) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+          5) Wait  (WaitTime=10)
+      3) Sequence
+        [if ForceSuccess]
+        1) try_set_behemoth_state_bttask  (State=EnteringArena, StateChangeType=End, WhenInterruptedChangeState=EnteringArena, InterruptedChangeStateEvent=End)
+        2) set_blackboard_key_bttask "Set Has Entered Arena"  (ResultKey=bb.HasEnteredArena, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+    2) Sequence
+      1) Wait  (WaitTime=3)
+      [if ForceSuccess]
+      2) try_set_behemoth_state_bttask  (State=EnteringArena, StateChangeType=End, WhenInterruptedChangeState=EnteringArena, InterruptedChangeStateEvent=End)
+      3) set_blackboard_key_bttask "Set Has Entered Arena"  (ResultKey=bb.HasEnteredArena, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)

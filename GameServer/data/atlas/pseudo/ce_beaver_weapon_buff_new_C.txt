@@ -1,0 +1,313 @@
+# ce_beaver_weapon_buff_new_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Apply Warmup VFX
+  [0] Check In Combat(CallFunc_Check_In_Combat_InCombat)
+  [23] if !(CallFunc_Check_In_Combat_InCombat) goto @226
+  [37] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.EnrageTimer)
+  [67] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @470
+  [81] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [101] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(ArchonBuffableComponent)
+  [152] CallFunc_HasBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.HasBuff(ce_beaver_weapon_warmupa_C)
+  [207] if !(CallFunc_HasBuff_ReturnValue) goto @245
+  [221] goto @470
+  [226] Remove VFX()
+  [240] goto @470
+  [245] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.EnrageTimer)
+  [283] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [312] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, self.WarmupTime)
+  [350] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @470
+  [364] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [384] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(CallFunc_GetBuffOwner_ReturnValue, ce_beaver_weapon_warmupa_C, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable, EX_NoInterface(), CallFunc_GetBuffOwner_ReturnValue, true)
+  [451] self.WarmupBuffA = CallFunc_ApplyBuff_ReturnValue
+  [470] return nothing
+  [472] end
+
+=== Buff Removed
+  [0] frame.K2Node_CustomEvent_DestroyedActor = DestroyedActor
+  [18] ExecuteUbergraph_ce_beaver_weapon_buff_new(756)
+  [33] return nothing
+  [35] end
+
+=== Check In Combat
+  [0] push @1332
+  [5] self.BehemothInCombat = false
+  [16] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [37] K2Node_DynamicCast_AsBpi_Gamemode = cast<bpi_gamemode_C>(CallFunc_GetGameMode_ReturnValue)
+  [73] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamemode)
+  [102] if !(K2Node_DynamicCast_bSuccess) goto @856
+  [116] K2Node_DynamicCast_AsBpi_Gamemode.GetCurrentSpawnedBehemoths(CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths)
+  [162] Temp_int_Loop_Counter_Variable = 0
+  [185] Temp_int_Array_Index_Variable_1 = 0
+  [208] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths)
+  [267] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [305] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @902
+  [319] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [346] push @926
+  [351] Temp_int_Loop_Counter_Variable_1 = 0
+  [374] Temp_int_Array_Index_Variable = 0
+  [397] array{4, 5, 6, 7, 10}
+  [418] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(K2Node_MakeArray_Array)
+  [477] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [515] if !(CallFunc_Less_IntInt_ReturnValue) goto @1000
+  [529] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [556] push @1242
+  [561] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [620] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_Array_Get_Item_1)
+  [656] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [685] if !(K2Node_DynamicCast_bSuccess_1) goto @1316
+  [699] array{4, 5, 6, 7, 10}
+  [720] Default__KismetArrayLibrary.Array_Get(K2Node_MakeArray_Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [779] K2Node_DynamicCast_AsBehemoth_Interface.BehemothInState(CallFunc_Array_Get_Item, CallFunc_BehemothInState_IsInState)
+  [834] if !(CallFunc_BehemothInState_IsInState) pop
+  [844] IsDisallowedState = true
+  [855] pop
+  [856] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths)
+  [897] goto @162
+  [902] InCombat = self.BehemothInCombat
+  [921] goto @1332
+  [926] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [968] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [995] goto @208
+  [1000] if !(IsDisallowedState) goto @1015
+  [1014] pop
+  [1015] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1035] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [1094] CallFunc_GetDistanceTo_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetDistanceTo(CallFunc_Array_Get_Item_1)
+  [1153] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDistanceTo_ReturnValue)
+  [1182] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 6500.0)
+  [1220] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [1230] self.BehemothInCombat = true
+  [1241] pop
+  [1242] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1284] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1311] goto @397
+  [1316] CallFunc_BehemothInState_IsInState = false
+  [1327] goto @834
+  [1332] return nothing
+  [1334] end
+
+=== DamageTakenDelegate_event
+  [0] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [18] frame.K2Node_CustomEvent_Damage = Damage
+  [36] frame.K2Node_CustomEvent_DamageType = DamageType
+  [54] frame.K2Node_CustomEvent_InstigatedBy = InstigatedBy
+  [72] frame.K2Node_CustomEvent_DamageCauser = DamageCauser
+  [90] ExecuteUbergraph_ce_beaver_weapon_buff_new(3258)
+  [105] return nothing
+  [107] end
+
+=== DealtDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor_1 = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_ce_beaver_weapon_buff_new(2473)
+  [87] return nothing
+  [89] end
+
+=== EnrageEvent
+  [0] ExecuteUbergraph_ce_beaver_weapon_buff_new(2773)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ce_beaver_weapon_buff_new
+  [0] push @3759
+  [5] goto computed(EntryPoint)
+  [15] push @670
+  [20] push @548
+  [25] push @426
+  [30] push @304
+  [35] push @289
+  [40] push @167
+  [45] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [65] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_9, self)
+  [121] CallFunc_GetArchonBuffableComponent_ReturnValue.RemoveBuffByClass(ce_beaver_weapon_warmupb_C)
+  [166] pop
+  [167] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [187] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_9, self)
+  [243] CallFunc_GetArchonBuffableComponent_ReturnValue.RemoveBuffByClass(ce_beaver_weapon_enraged_buff_C)
+  [288] pop
+  [289] Remove VFX()
+  [303] pop
+  [304] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [324] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_9, self)
+  [380] CallFunc_GetArchonBuffableComponent_ReturnValue.RemoveBuffByClass(ce_beaver_weapon_warmupc_C)
+  [425] pop
+  [426] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [446] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_9, self)
+  [502] CallFunc_GetArchonBuffableComponent_ReturnValue.RemoveBuffByClass(ce_beaver_weapon_enrage_effects_buff_C)
+  [547] pop
+  [548] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [568] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(CallFunc_GetBuffOwner_ReturnValue_9, self)
+  [624] CallFunc_GetArchonBuffableComponent_ReturnValue.RemoveBuffByClass(ce_beaver_weapon_warmupa_C)
+  [669] pop
+  [670] CallFunc_GetBuffOwner_ReturnValue_9 = GetBuffOwner()
+  [690] CallFunc_RemoveGameplayEffect_ReturnValue_2 = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetBuffOwner_ReturnValue_9, self.CountdownEffect, -1)
+  [755] pop
+  [756] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [776] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_4)
+  [812] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [841] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [851] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [887] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [916] if !(K2Node_DynamicCast_bSuccess_2) goto @1138
+  [930] K2Node_DynamicCast_AsPlayer_Interface.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [976] if !(CallFunc_GetBleedOutState_BleedOutState) goto @991
+  [990] pop
+  [991] Check In Combat(CallFunc_Check_In_Combat_InCombat)
+  [1014] if !(CallFunc_Check_In_Combat_InCombat) pop
+  [1024] Set Enrage Timer(self.BaseTimeUntilEnrage)
+  [1047] CallFunc_K2_SetTimer_ReturnValue_2 = K2_SetTimer(self, 'Apply Warmup VFX', 0.25, true, 0.0, 0.0)
+  [1110] self.WarmupVFXTimer = CallFunc_K2_SetTimer_ReturnValue_2
+  [1137] pop
+  [1138] CallFunc_GetBleedOutState_BleedOutState = false
+  [1149] goto @976
+  [1154] OnAdded()
+  [1164] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1184] Default__global_function_library_C.Get Global Event Dispatcher(CallFunc_GetBuffOwner_ReturnValue_2, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [1239] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.Player Knockout)
+  [1262] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1303] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.DamageTakenDelegate_event)
+  [1326] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1346] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [1387] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(self.OwnerAbilitySystemComponent, GameplayAttribute{'MaxHealth', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [1511] K2Node_VariableSet_OwnerMaxHealth_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [1540] self.OwnerMaxHealth = K2Node_VariableSet_OwnerMaxHealth_ImplicitCast
+  [1567] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1587] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.DealtDamage)
+  [1610] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1661] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [1702] pop
+  [1703] Set Enrage Timer(self.BaseTimeUntilEnrage)
+  [1726] pop
+  [1727] CallFunc_K2_IsTimerActiveHandle_ReturnValue = K2_IsTimerActiveHandle(self, self.EnrageTimer)
+  [1757] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue) goto @1703
+  [1771] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_Damage)
+  [1800] CallFunc_Divide_DoubleDouble_ReturnValue_1 = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, self.OwnerMaxHealth)
+  [1846] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Divide_DoubleDouble_ReturnValue_1, 0.0, 33.0)
+  [1901] self.DamageMaxHealthPercent = CallFunc_FClamp_ReturnValue
+  [1928] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(self.DamageMaxHealthPercent)
+  [1957] CallFunc_GetFloatValue_ReturnValue = self.IncomingDamageCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [2016] K2Node_VariableSet_TimerReductionPercent_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [2045] self.TimerReductionPercent = K2Node_VariableSet_TimerReductionPercent_ImplicitCast
+  [2072] CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue = K2_GetTimerRemainingTimeHandle(self, self.EnrageTimer)
+  [2110] K2Node_VariableSet_TimerTimeRemaining_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_K2_GetTimerRemainingTimeHandle_ReturnValue)
+  [2139] self.TimerTimeRemaining = K2Node_VariableSet_TimerTimeRemaining_ImplicitCast
+  [2166] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TimerReductionPercent, 100.0)
+  [2212] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, self.BaseTimeUntilEnrage)
+  [2258] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.TimerTimeRemaining, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2304] CallFunc_FClamp_ReturnValue_1 = FClamp(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.10000000149011612, self.BaseTimeUntilEnrage)
+  [2359] Set Enrage Timer(CallFunc_FClamp_ReturnValue_1)
+  [2382] CallFunc_K2_SetTimer_ReturnValue_1 = K2_SetTimer(self, 'Apply Warmup VFX', 0.25, true, 0.0, 0.0)
+  [2445] self.WarmupVFXTimer = CallFunc_K2_SetTimer_ReturnValue_1
+  [2472] pop
+  [2473] CallFunc_GetBuffOwner_ReturnValue_8 = GetBuffOwner()
+  [2493] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetBuffOwner_ReturnValue_8.GetComponentByClass(ArchonBuffableComponent)
+  [2544] CallFunc_HasBuff_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue_2.HasBuff(ce_beaver_weapon_enrage_effects_buff_C)
+  [2599] if !(CallFunc_HasBuff_ReturnValue_1) goto @2614
+  [2613] pop
+  [2614] CallFunc_K2_IsTimerActiveHandle_ReturnValue_1 = K2_IsTimerActiveHandle(self, self.EnrageTimer)
+  [2644] if !(CallFunc_K2_IsTimerActiveHandle_ReturnValue_1) goto @2659
+  [2658] pop
+  [2659] Set Enrage Timer(self.BaseTimeUntilEnrage)
+  [2682] CallFunc_K2_SetTimer_ReturnValue = K2_SetTimer(self, 'Apply Warmup VFX', 0.25, true, 0.0, 0.0)
+  [2745] self.WarmupVFXTimer = CallFunc_K2_SetTimer_ReturnValue
+  [2772] pop
+  [2773] Remove VFX()
+  [2787] K2_ClearAndInvalidateTimerHandle(self, self.WarmupVFXTimer)
+  [2807] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [2827] CallFunc_RemoveGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetBuffOwner_ReturnValue, self.CountdownEffect, -1)
+  [2892] Check In Combat(CallFunc_Check_In_Combat_InCombat_1)
+  [2915] if !(CallFunc_Check_In_Combat_InCombat_1) pop
+  [2925] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [2945] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [2965] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(CallFunc_GetBuffOwner_ReturnValue_6, ce_beaver_weapon_enrage_effects_buff_C, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable, EX_NoInterface(), CallFunc_GetInstigator_ReturnValue, false)
+  [3032] K2Node_CreateDelegate_OutputDelegate = bind(self.Buff Removed)
+  [3055] K2Node_CreateDelegate_OutputDelegate += None
+  [3096] K2Node_DynamicCast_AsBpi_Cell_Buff = cast<bpi_cell_buff_C>(CallFunc_ApplyBuff_ReturnValue)
+  [3132] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Cell_Buff)
+  [3161] if !(K2Node_DynamicCast_bSuccess_3) goto @3221
+  [3175] K2Node_DynamicCast_AsBpi_Cell_Buff.SetMagnitudeFromCell(self.CellEffectMagnitude)
+  [3221] CallFunc_ApplyBuff_ReturnValue.StartBuff()
+  [3257] pop
+  [3258] CallFunc_GetBuffOwner_ReturnValue_7 = GetBuffOwner()
+  [3278] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_7.GetComponentByClass(ArchonBuffableComponent)
+  [3329] CallFunc_HasBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_1.HasBuff(ce_beaver_weapon_enrage_effects_buff_C)
+  [3384] if !(CallFunc_HasBuff_ReturnValue) goto @1727
+  [3398] pop
+  [3399] Apply Warmup VFX()
+  [3413] pop
+  [3414] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [3435] if !(CallFunc_IsDedicatedServer_ReturnValue) pop
+  [3445] K2Node_CustomEvent_Player.GetPlayerInterface(CallFunc_GetPlayerInterface_Player_Interface)
+  [3491] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_GetPlayerInterface_Player_Interface)
+  [3527] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [3556] if !(K2Node_DynamicCast_bSuccess) pop
+  [3566] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [3586] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_GetBuffOwner_ReturnValue_5, K2Node_DynamicCast_AsBP_Player_Character)
+  [3624] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [3634] K2_ClearAndInvalidateTimerHandle(self, self.EnrageTimer)
+  [3654] Remove VFX()
+  [3668] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [3688] CallFunc_RemoveGameplayEffect_ReturnValue_1 = Default__GameplayModifierFunctionLibrary.RemoveGameplayEffect(CallFunc_GetBuffOwner_ReturnValue_3, self.CountdownEffect, -1)
+  [3753] pop
+  [3754] goto @15
+  [3759] return nothing
+  [3761] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ce_beaver_weapon_buff_new(1154)
+  [15] return nothing
+  [17] end
+
+=== Player Knockout
+  [0] frame.K2Node_CustomEvent_Player = Player
+  [18] ExecuteUbergraph_ce_beaver_weapon_buff_new(3414)
+  [33] return nothing
+  [35] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_ce_beaver_weapon_buff_new(3754)
+  [15] return nothing
+  [17] end
+
+=== Remove VFX
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(ArchonBuffableComponent)
+  [71] CallFunc_HasBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.HasBuff(ce_beaver_weapon_warmupa_C)
+  [126] if !(CallFunc_HasBuff_ReturnValue) goto @208
+  [140] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [160] RemoveBuff(CallFunc_GetBuffOwner_ReturnValue, self.WarmupBuffA)
+  [188] self.WarmupVFXState = 0
+  [208] return nothing
+  [210] end
+
+=== Set Enrage Timer
+  [0] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [21] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @585
+  [35] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.CountdownEffect)
+  [64] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @426
+  [78] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [98] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [127] K2Node_DynamicCast_AsArchon_Ability_System_Component = cast<ArchonAbilitySystemComponent>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [163] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_System_Component)
+  [192] if !(K2Node_DynamicCast_bSuccess) goto @585
+  [206] CallFunc_SetActiveGameplayEffectTimeRemaining_NewTimeRemaining_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [235] K2Node_DynamicCast_AsArchon_Ability_System_Component.SetActiveGameplayEffectTimeRemaining(self.CountdownEffect, CallFunc_SetActiveGameplayEffectTimeRemaining_NewTimeRemaining_ImplicitCast)
+  [285] K2Node_CreateDelegate_OutputDelegate = bind(self.EnrageEvent)
+  [308] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [337] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [394] self.EnrageTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [421] goto @585
+  [426] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [446] CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast = cast<CST_DoubleToFloat>(Time)
+  [475] CallFunc_ApplyGameplayEffectWithDuration_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDuration(CallFunc_GetBuffOwner_ReturnValue, ce_beaver_weapon_countdown_ge_C, CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast, EX_NoInterface())
+  [553] self.CountdownEffect = CallFunc_ApplyGameplayEffectWithDuration_ReturnValue
+  [580] goto @285
+  [585] return nothing
+  [587] end
+
+=== WarmupVFX
+  [0] ExecuteUbergraph_ce_beaver_weapon_buff_new(3399)
+  [15] return nothing
+  [17] end

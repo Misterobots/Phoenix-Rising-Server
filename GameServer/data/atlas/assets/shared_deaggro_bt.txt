@@ -1,0 +1,23 @@
+shared_deaggro_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if set_state_btdeco  (State=Deaggroing)]
+  [root if Blackboard  (ReadyToDeaggro is Is Set)]
+  Sequence "Deaggroing"
+    1) push_coordination_message_bttask  (Message={"TaskType": "coordination_message_type::coordination_message_MAX", "AgentAllocationType": "agent_allocation_type::AllOtherAgents"}, bShowPropertyDetails=false)
+    [if ForceSuccess]
+    2) Sequence
+      [if has_generic_action_btdeco  (ActionType=DeAggroAnnounce)]
+      1) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=45)
+        2) generic_action_bttask  (ActionType=DeAggroAnnounce)
+    3) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_aetherconsume_position", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 150.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+    [if ForceSuccess]
+    [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+    4) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+    [if ForceSuccess]
+    5) Sequence
+      [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Set)]
+      1) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.CurrentPatrolPoint, BlendOutTime=0.25, MinAngleToTriggerPivot=45)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_cleanup_bt)

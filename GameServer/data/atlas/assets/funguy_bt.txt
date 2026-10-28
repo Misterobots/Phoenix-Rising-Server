@@ -1,0 +1,103 @@
+funguy_bt  blackboard=BlackboardData bugbear_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.IsAirborne, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    [if Blackboard "Check if Dead"  (MonsterIsDead is Is Set)]
+    1) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_announce_bt)
+      2) Selector
+        [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+        1) generic_action_bttask  (ActionType=Die, bShowPropertyDetails=false)
+        [if behemoth_in_state_btdeco  (State=AtherCharged)]
+        2) generic_action_bttask  (ActionType=AetherDie, bShowPropertyDetails=false)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if behemoth_in_state_btdeco  (State=ReadyToAetherCharge)]
+    [if behemoth_in_state_btdeco  (State=Rage, StateRequirement=ExcludedByState)]
+    2) Sequence
+      {service staggerproof_behemoth_bttask  (Interval=0.2, RandomDeviation=0)}
+      1) Sequence
+        1) PhxPerformGameplayAction "(Phoenix) Perform Move and Do Aether Enter"  (ActionChooser=@PhxGameplayActionClassChooser_0)
+        2) bttask_enter_aethercharge_state  (BlendTime=0)
+    [if Blackboard "Has Not Entered Arena"  (HasEnteredArena is Is Not Set)]
+    3) Sequence
+      1) SimpleParallel
+        1) funguy_wait_for_combat_enter
+        2) Sequence
+          1) Wait  (WaitTime=1)
+          2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery EQ_FindClosestPlayerToPatrolPoint", "QueryConfig": [{"ParamName": "Distance", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+          3) funguy_trigger_combat_enter
+      [if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+      3) set_blackboard_key_bttask "Set Has Entered Arena"  (ResultKey=bb.HasEnteredArena, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    [if Blackboard  (InFleeState is Is Set)]
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false)]
+    7) Sequence
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    8) Selector "StateChange"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      1) Sequence
+        [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+        1) bttask_exit_aethercharge_state  (Montage=AnimMontage b_tl_funguy_00_state_aetherexit_fwd_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      [if behemoth_in_state_btdeco  (State=ReadyToExitRage)]
+      [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+      [if behemoth_in_state_btdeco  (State=ReadyToExitAetherCharge, StateRequirement=ExcludedByState)]
+      2) bttask_exit_rage_state  (Montage=AnimMontage b_tl_funguy_00_state_rage_exit_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+      3) Sequence
+        [if ForceSuccess]
+        1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25, TimeInFutureToPredict=0.5)
+        2) bttask_enter_rage_state  (Montage=AnimMontage b_tl_funguy_00_state_rage_enter_00_mot, WhenInterrupted=CancelStateButStayReadyToTransition)
+    [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+    9) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    10) Selector
+      [if ArchonIsMounted]
+      [if btdeco_variablecooldown  (Cooldown_Min=6, Cooldown_Max=8)]
+      [if behemoth_in_state_btdeco  (State=AtherCharged)]
+      1) Sequence
+        1) Wait  (WaitTime=1, RandomDeviation=0.25)
+        2) PerformActionClass  (ActionClass=BlueprintGeneratedClass funguy_aether_thrash_C, bShowPropertyDetails=false)
+      [if ArchonIsMounted]
+      [if btdeco_variablecooldown  (Cooldown_Min=6, Cooldown_Max=8)]
+      [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+      2) Sequence
+        1) Wait  (WaitTime=1, RandomDeviation=0.25)
+        2) PerformActionClass  (ActionClass=BlueprintGeneratedClass funguy_thrash_C, bShowPropertyDetails=false)
+        3) PerformActionClass  (ActionClass=BlueprintGeneratedClass funguy_loco_bwd_C)
+    11) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      [if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Rock", "ArchetypeCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    12) Selector
+      1) Selector
+        [if Blackboard  (TopScore Is Greater Than 0.000000)]
+        1) Selector
+          1) Sequence
+            1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+            [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass funguy_root_drain_C)]
+            2) PerformActionClass  (ActionClass=BlueprintGeneratedClass funguy_spore_bombs_C)
+    [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+    13) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    [if btdeco_variablecooldown  (Cooldown_Min=45, Cooldown_Max=60, StartTime=30)]
+    [if behemoth_in_state_btdeco  (State=AtherCharged, StateRequirement=ExcludedByState)]
+    14) Sequence
+      1) pivot_towards_target_bttask  (PivotTarget=bb.TargetActor, BlendOutTime=0.25)
+      [if ForceSuccess]
+      2) Selector
+        1) PersonalityAnimHandler  (PersonalityAnims_Normal=[{"Montage": "AnimMontage b_tl_funguy_00_pers_frustration_01_mot", "Chance": 0.5}])
+    15) Selector
+      {service try_pick_new_target_bts  (Interval=2)}

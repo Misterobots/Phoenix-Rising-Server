@@ -1,0 +1,633 @@
+{
+ "name": "base_conditional_benefit_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": 2008,
+ "sdk_header": "base_conditional_benefit_buff_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "cooldown_manager_bpc",
+   "type": "Ucooldown_manager_bpc_C*",
+   "offset": "0x740",
+   "size": 8,
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<cooldown_manager_bpc_C>"
+  },
+  {
+   "name": "EffectCooldown",
+   "type": "double",
+   "offset": "0x748",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "EffectsOnConditionComplete",
+   "type": "TArray<Feffect_magitudes_struct>",
+   "offset": "0x750",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "BuffsOnConditionComplete",
+   "type": "TArray<Fbuff_init_data>",
+   "offset": "0x760",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "GenerateUniqueCooldownName",
+   "type": "bool",
+   "offset": "0x770",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "ManualCooldownName",
+   "type": "FName",
+   "offset": "0x774",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "NameProperty"
+  },
+  {
+   "name": "L_MagnitudeSet",
+   "type": "bool",
+   "offset": "0x77C",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "L_Magnitudes",
+   "type": "TArray<Fname_float_struct>",
+   "offset": "0x780",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "ImpulsesOnConditionActivated",
+   "type": "TArray<Farchon_impulse>",
+   "offset": "0x790",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "SpawnedVFX",
+   "type": "TArray<UParticleSystemComponent*>",
+   "offset": "0x7A0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "CreatedEffects",
+   "type": "TArray<FActiveGameplayEffectHandle>",
+   "offset": "0x7B0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "CreatedBuffs",
+   "type": "TArray<AArchonBuff*>",
+   "offset": "0x7C0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "StartOnCooldown",
+   "type": "bool",
+   "offset": "0x7D0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "cooldown_manager_bpc",
+   "class": "cooldown_manager_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CustomActivateEffect",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_base_conditional_benefit_buff",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 96,
+   "reads": [
+    "CellEffectMagnitude",
+    "EffectCooldown",
+    "EffectsOnConditionComplete",
+    "GenerateUniqueCooldownName",
+    "ImpulsesOnConditionActivated",
+    "L_MagnitudeSet",
+    "L_Magnitudes",
+    "ManualCooldownName",
+    "SpawnedVFX",
+    "StartOnCooldown",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [
+    "L_MagnitudeSet",
+    "L_Magnitudes",
+    "ManualCooldownName"
+   ],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "GetMesh",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Set",
+    "KismetGuidLibrary.Conv_GuidToString",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Conv_StringToName",
+    "RegisterCooldown",
+    "SpawnImpulse",
+    "TryDestroyComponent",
+    "base_buff_C.ReceiveDestroyed"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GameplayEffectComplete",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "CreatedEffects"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonAbilitySystemBlueprintLibrary.GetTimeRemaining",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastImpulsesOnConditionActivated",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_conditional_benefit_buff_C.ExecuteUbergraph_base_conditional_benefit_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_conditional_benefit_buff_C.ExecuteUbergraph_base_conditional_benefit_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "base_conditional_benefit_buff_C.ExecuteUbergraph_base_conditional_benefit_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Refresh Cooldown",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "ManualCooldownName",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [],
+   "calls": [
+    "Refresh Cooldown"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Refresh_Cooldown",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "ResetCooldown",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [
+    "EffectCooldown",
+    "ManualCooldownName",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "ResetCooldown"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetAndRegisterEffectCooldown",
+   "flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewCooldown",
+     "type": "double"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 9,
+   "reads": [
+    "EffectCooldown",
+    "GenerateUniqueCooldownName",
+    "ManualCooldownName",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [
+    "EffectCooldown",
+    "ManualCooldownName"
+   ],
+   "calls": [
+    "KismetGuidLibrary.Conv_GuidToString",
+    "KismetGuidLibrary.NewGuid",
+    "KismetStringLibrary.Conv_StringToName",
+    "RegisterCooldown"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Try Activate Effect",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ResetCooldown",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "ActivatedEffect",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_ApplyCellBuffsAndEffects_AppliedEffects",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_ApplyCellBuffsAndEffects_AppliedBuffs",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 41,
+   "reads": [
+    "BuffsOnConditionComplete",
+    "CellEffectMagnitude",
+    "CreatedEffects",
+    "EffectsOnConditionComplete",
+    "ImpulsesOnConditionActivated",
+    "ManualCooldownName",
+    "cooldown_manager_bpc"
+   ],
+   "sets": [
+    "CreatedBuffs",
+    "CreatedEffects"
+   ],
+   "calls": [
+    "ApplyCellBuffsAndEffects",
+    "ArchonAbilitySystemBlueprintLibrary.GetActiveDuration",
+    "ArchonBuff.GetBuffOwner",
+    "CustomActivateEffect",
+    "IsCooldownReady",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MulticastImpulsesOnConditionActivated",
+    "ResetCooldown"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Try_Activate_Effect",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ResetCooldown_0",
+     "type": "bool"
+    },
+    {
+     "name": "ActivatedEffect",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/cell_building_blocks/base_conditional_benefit_buff",
+ "pseudo_file": "pseudo/base_conditional_benefit_buff_C.txt",
+ "game_data": {}
+}

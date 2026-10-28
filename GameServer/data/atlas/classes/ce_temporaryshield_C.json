@@ -1,0 +1,370 @@
+{
+ "name": "ce_temporaryshield_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": 2048,
+ "sdk_header": "ce_temporaryshield_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ShieldTags",
+   "type": "FGameplayTagContainer",
+   "offset": "0x740",
+   "size": 32,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<GameplayTagContainer>"
+  },
+  {
+   "name": "ShieldDuration",
+   "type": "double",
+   "offset": "0x760",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "RemoveShieldWhenBuffRemoved",
+   "type": "bool",
+   "offset": "0x768",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "RemoveBuffWhenShieldRemoved",
+   "type": "bool",
+   "offset": "0x769",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "SetBuffDurationToShieldDuration",
+   "type": "bool",
+   "offset": "0x76A",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "RemoveShieldsOnApplicationMatchingThisQuery",
+   "type": "FGameplayTagQuery",
+   "offset": "0x770",
+   "size": 72,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<GameplayTagQuery>"
+  },
+  {
+   "name": "RefreshShieldsOnApplicationWithTheseTags",
+   "type": "FGameplayTagContainer",
+   "offset": "0x7B8",
+   "size": 32,
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<GameplayTagContainer>"
+  },
+  {
+   "name": "ShieldGUID",
+   "type": "FGuid",
+   "offset": "0x7D8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Guid>"
+  },
+  {
+   "name": "L_DestroyShield",
+   "type": "FGuid",
+   "offset": "0x7E8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Guid>"
+  },
+  {
+   "name": "MaxShields",
+   "type": "double",
+   "offset": "0x7F8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_ce_temporaryshield",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 80,
+   "reads": [
+    "L_DestroyShield",
+    "MaxDuration",
+    "MaxShields",
+    "OnShieldRefreshed",
+    "OnShieldRemoved",
+    "RefreshShieldsOnApplicationWithTheseTags",
+    "RemoveBuffWhenShieldRemoved",
+    "RemoveShieldWhenBuffRemoved",
+    "RemoveShieldsOnApplicationMatchingThisQuery",
+    "SetBuffDurationToShieldDuration",
+    "ShieldDuration",
+    "ShieldGUID",
+    "ShieldTags"
+   ],
+   "sets": [
+    "L_DestroyShield",
+    "MaxDuration",
+    "ShieldGUID"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "AddShield",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.UpdateExpireTime",
+    "ArchonGameplayStatics.IsShipping",
+    "GetCellEffectMagnitude",
+    "K2_DestroyActor",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetGuidLibrary.Invalidate_Guid",
+    "KismetGuidLibrary.IsValid_Guid",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "RefreshShieldsWithTags",
+    "SetLifeSpan",
+    "TryRemoveShieldByGUID",
+    "TryRemoveShieldsByTagQuery",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass shieldable_bpc_C"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_temporaryshield_C.ExecuteUbergraph_ce_temporaryshield"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_temporaryshield_C.ExecuteUbergraph_ce_temporaryshield"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnShieldRefreshed",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ShieldData",
+     "type": "Fshield_data"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_temporaryshield_C.ExecuteUbergraph_ce_temporaryshield"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnShieldRemoved",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RemovedReasonTag",
+     "type": "FGameplayTag"
+    },
+    {
+     "name": "ShieldGUID_0",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_temporaryshield_C.ExecuteUbergraph_ce_temporaryshield"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/ce_temporaryshield",
+ "pseudo_file": "pseudo/ce_temporaryshield_C.txt",
+ "game_data": {}
+}

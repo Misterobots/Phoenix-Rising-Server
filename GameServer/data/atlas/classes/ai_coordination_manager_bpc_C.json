@@ -1,0 +1,1378 @@
+{
+ "name": "ai_coordination_manager_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 240,
+ "sdk_header": "ai_coordination_manager_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "AgentGroups",
+   "type": "TArray<Fai_agent_group>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "TaskStateChanged",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0xB8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "DebugEnabled",
+   "type": "bool",
+   "offset": "0xC8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "LocalAgents",
+   "type": "TArray<Uai_coordination_agent_bpc_C*>",
+   "offset": "0xD0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_BestAgent",
+   "type": "Uai_coordination_agent_bpc_C*",
+   "offset": "0xE0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<ai_coordination_agent_bpc_C>"
+  },
+  {
+   "name": "L_BestDistSqr",
+   "type": "double",
+   "offset": "0xE8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AddAgentToGroup_Internal",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Agent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    },
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 40,
+   "reads": [
+    "AgentGroups",
+    "OnDestroyed"
+   ],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsShipping",
+    "FindFirstIndexOfAgent",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.NotEqual_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AddClaim",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ClaimingAgent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    },
+    {
+     "name": "ClaimedType",
+     "type": "Ecoordination_message_type"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 24,
+   "reads": [
+    "AgentGroups",
+    "MainGroupID"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Set",
+    "KismetGuidLibrary.IsValid_Guid",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClaimExists",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Type",
+     "type": "Ecoordination_message_type"
+    },
+    {
+     "name": "ClaimExists",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "FindIndexOfClaim",
+    "FindIndexOfGroup",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClearPendingMessagesOfType",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "MessageType",
+     "type": "Ecoordination_message_type"
+    },
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 31,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "ClearPendingMessagesOfType",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CreateAgentGroup",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Rules",
+     "type": "TArray<UClass*>"
+    },
+    {
+     "name": "GroupGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 30,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.SpawnObject",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ai_coordination_manager_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 96,
+   "reads": [
+    "AgentGroups",
+    "DebugEnabled"
+   ],
+   "sets": [],
+   "calls": [
+    "DebugDrawSimple",
+    "EvaluateRule",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "UserDefinedEnum coordination_message_type"
+   ]
+  },
+  {
+   "name": "FindAllGroupsContainingAgent",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Agent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    },
+    {
+     "name": "GroupIndexes",
+     "type": "TArray<int32>"
+    },
+    {
+     "name": "AgentIndexes",
+     "type": "TArray<int32>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 38,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "FindFirstIndexOfAgent",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Agent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    },
+    {
+     "name": "GroupIndex",
+     "type": "int32"
+    },
+    {
+     "name": "AgentIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 34,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "FindIndexOfClaim",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupIndex",
+     "type": "int32"
+    },
+    {
+     "name": "TaskType",
+     "type": "Ecoordination_message_type"
+    },
+    {
+     "name": "ClaimIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 38,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "FindIndexOfGroup",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Index_0",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 20,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetGroupMembers",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Agents",
+     "type": "TArray<Uai_coordination_agent_bpc_C*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "statements": 20,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetMessageTargets",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Message",
+     "type": "Fcoordination_message"
+    },
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Agents",
+     "type": "TArray<Uai_coordination_agent_bpc_C*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 130,
+   "reads": [
+    "HitAreaComponents",
+    "L_BestAgent",
+    "L_BestDistSqr",
+    "LocalAgents",
+    "ScaleHitAreaToBehemothSize",
+    "TargettingData",
+    "TargettingType"
+   ],
+   "sets": [
+    "L_BestAgent",
+    "L_BestDistSqr",
+    "LocalAgents"
+   ],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsShipping",
+    "GameplayStatics.GetActorArrayAverageLocation",
+    "GetDistanceSqr",
+    "GetGroupMembers",
+    "GetPlayerCharacters",
+    "GetTargetsFromActionData",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.RandomInteger",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsLocationInAnyDangerZone",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Location",
+     "type": "FVector"
+    },
+    {
+     "name": "IsInDangerZone",
+     "type": "bool"
+    },
+    {
+     "name": "Zone",
+     "type": "Fdanger_zone"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "FindIndexOfGroup",
+    "IsLocationInDangerZone",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "IsLocationInDangerZone",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Location",
+     "type": "FVector"
+    },
+    {
+     "name": "DangerZone",
+     "type": "Fdanger_zone"
+    },
+    {
+     "name": "IsInDangerZone",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 7,
+   "reads": [
+    "TargettingData"
+   ],
+   "sets": [],
+   "calls": [
+    "LocationInTargettingArea"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAgentDestroyed",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 21,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "FindAllGroupsContainingAgent",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid",
+    "RemoveAgentFromGroup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ai_coordination_agent_bpc_C"
+   ]
+  },
+  {
+   "name": "PushMessageToGroup",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "coordination_message",
+     "type": "Fcoordination_message"
+    },
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 86,
+   "reads": [
+    "AgentGroups",
+    "DebugEnabled"
+   ],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "AddMessage",
+    "ArchonGameplayStatics.IsShipping",
+    "ClaimExists",
+    "FindIndexOfGroup",
+    "GetMessageTargets",
+    "GetMessages",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "UserDefinedEnum coordination_message_type"
+   ]
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ai_coordination_manager_bpc_C.ExecuteUbergraph_ai_coordination_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ai_coordination_manager_bpc_C.ExecuteUbergraph_ai_coordination_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RegisterDangerZone",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "NewDangerZone",
+     "type": "Fdanger_zone"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Add",
+    "KismetMathLibrary.GreaterEqual_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveAgentFromGroup",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Agent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    },
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 55,
+   "reads": [
+    "AgentGroups",
+    "OnDestroyed"
+   ],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsShipping",
+    "ClearPendingMessagesOfType",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "RemoveClaimsByAgent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveClaimByType",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Type",
+     "type": "Ecoordination_message_type"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 25,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "FindIndexOfClaim",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveClaimsByAgent",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "Agent",
+     "type": "Uai_coordination_agent_bpc_C*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 36,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.IsShipping",
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveDangerZone",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    },
+    {
+     "name": "DangerZoneGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetGuidLibrary.EqualEqual_GuidGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveGroupByGUID",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "GroupId",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 27,
+   "reads": [
+    "AgentGroups"
+   ],
+   "sets": [],
+   "calls": [
+    "FindIndexOfGroup",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "RemoveAgentFromGroup"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TaskStateChanged__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateGroups",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ai_coordination_manager_bpc_C.ExecuteUbergraph_ai_coordination_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/_shared/blueprints/ai_coordination_manager_bpc",
+ "pseudo_file": "pseudo/ai_coordination_manager_bpc_C.txt",
+ "game_data": {}
+}

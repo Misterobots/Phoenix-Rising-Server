@@ -1,0 +1,110 @@
+{
+ "name": "dp_piercing_shot_animstateset",
+ "package": "Archon/Content/blueprints/Weapons/AnimStates/dp_piercing_shot_animstateset",
+ "type": "AnimStateSet",
+ "refs": [
+  "dp_base_animstateset",
+  "h_mr_dp_base_aim_x1_pushback_fwd_01_mot",
+  "h_mr_dp_base_aim_x1_pushbackshot_fwd_01_mot",
+  "h_mr_dp_base_aim_x1_short_pushbackshot_fwd_01_mot"
+ ],
+ "exports": {
+  "dp_piercing_shot_animstateset": {
+   "type": "AnimStateSet",
+   "props": {
+    "ParentSet": "AnimStateSet dp_base_animstateset",
+    "AnimStates": [
+     "@ComboAnimState_0",
+     "@ComboAnimState_5",
+     "@ComboAnimState_8"
+    ]
+   }
+  },
+  "ArchonGroupCondition_0": {
+   "type": "ArchonGroupCondition",
+   "props": {
+    "ChildConditions": [
+     "@remaining_effect_time_ec_C_0",
+     "@ArchonMatchTagsCondition_0"
+    ]
+   }
+  },
+  "ArchonMatchTagsCondition_0": {
+   "type": "ArchonMatchTagsCondition",
+   "props": {
+    "Required": [
+     "Combat.Pistols.XEmpower"
+    ]
+   }
+  },
+  "ComboAnimState_0": {
+   "type": "ComboAnimState",
+   "props": {
+    "StateName": "X1",
+    "AnimMontage": "AnimMontage h_mr_dp_base_aim_x1_short_pushbackshot_fwd_01_mot",
+    "EntryCondition": "@remaining_effect_time_ec_C_0"
+   }
+  },
+  "ComboAnimState_5": {
+   "type": "ComboAnimState",
+   "props": {
+    "StateName": "X1_empowered",
+    "AnimMontage": "AnimMontage h_mr_dp_base_aim_x1_pushbackshot_fwd_01_mot",
+    "EntryCondition": "@ArchonGroupCondition_0",
+    "Transitions": [
+     {
+      "bEnabled": true,
+      "DestState": "/Game/Blueprints/Weapons/AnimStates/dp_piercing_shot_animstateset.dp_piercing_shot_animstateset",
+      "DestStatePtr": "@ComboAnimState_8",
+      "TransitionEvent": "input_window",
+      "NextMontageSection": "None",
+      "CheckGlobalTransitionCondition": true,
+      "CheckDestStateEntryCondition": true,
+      "Condition": null,
+      "Context": "EArchonAttackActionContext::All",
+      "Tags": [],
+      "bCombatPlayrateAttributeEnabled": true,
+      "PlayRate": 1.0,
+      "FlyingMove": false,
+      "ComboInputKey": {
+       "PrimaryKey": "EArchonAttackActionKey::None",
+       "SecondaryKey": "EArchonAttackActionKeyModifier::None",
+       "InputType": "EArchonCombatInputType::InputType_Any"
+      },
+      "BufferMethod": "EComboBufferMethod::Mixed",
+      "BufferPriority": "EComboBufferPriority::Exclusive",
+      "PressAndHoldTime": 0.0,
+      "PressAndHoldTimeModifierAttribute": "None",
+      "bHoldFromStartOfBufferWindow": true,
+      "bPreviousInputAllowed": true,
+      "bAllowWhileStaggered": false,
+      "bAllowWhileFrozen": false,
+      "bTriggerReleasedInputIfButtonUpOnStart": false
+     }
+    ]
+   }
+  },
+  "ComboAnimState_8": {
+   "type": "ComboAnimState",
+   "props": {
+    "StateName": "X1_empowered_shoot",
+    "AnimMontage": "AnimMontage h_mr_dp_base_aim_x1_pushback_fwd_01_mot",
+    "EntryCondition": "@dp_x_stored_empowered_ec_C_0"
+   }
+  },
+  "dp_x_stored_empowered_ec_C_0": {
+   "type": "dp_x_stored_empowered_ec_C",
+   "props": {}
+  },
+  "remaining_effect_time_ec_C_0": {
+   "type": "remaining_effect_time_ec_C",
+   "props": {
+    "EffectTag": [
+     "Combat.Pistols.XCooldown"
+    ],
+    "Operator": "EArchonCompareOperator::Equals",
+    "CheckWeapon": true
+   }
+  }
+ }
+}

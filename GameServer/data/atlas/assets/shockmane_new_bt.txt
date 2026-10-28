@@ -1,0 +1,140 @@
+shockmane_new_bt  blackboard=BlackboardData shockmane_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.DistanceFromAttackTarget, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_enter_arena_fly_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree aq_flee_fly_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_deaggro_bt)
+    7) Selector "StateChange"
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+        3) get_count_from_eqs_bttask  (ResultVar=bb.NumLivePlayers, EqsQuery=EnvQuery eqs_find_nearest_live_player)
+        4) Selector
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartNamesToCheck": ["Head"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+          1) Sequence
+            1) bttask_enter_aethercharge_state  (Montage=AnimMontage shockmane_lightning_curse_aether_enter_mot)
+            2) Sequence
+              1) modify_attack_cooldown_bttask "Lightning Curse Cooldown"  (ActionClass=BlueprintGeneratedClass shockmane_lightningcurse_atk_C, bShowPropertyDetails=false)
+              2) modify_attack_cooldown_bttask "Lightning Curse Cooldown"  (ActionClass=BlueprintGeneratedClass shockmane_lightningcurse_alpha_atk_C, bShowPropertyDetails=false)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Normal"}, bShowPropertyDetails=false)]
+      2) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_leRawr_state_rageaether_exit_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      3) try_change_state_bttask "Exit Aether and Rage"  (StateChanges=[{"State": "behemoth_states_enum::Rage", "StateChange": "behemoth_state_event::End"}, {"State": "behemoth_states_enum::AtherCharged", "StateChange": "behemoth_state_event::End"}], DeactivationDelayIfAborted=1, Montage=AnimMontage b_aq_shock_00_state_rageaetherexit_alpha_fwd_00_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      4) bttask_exit_aethercharge_state  (Montage=AnimMontage b_aq_shock_00_state_aetherexit_alpha_fwd_00_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      5) bttask_exit_aethercharge_state  (Montage=AnimMontage b_leRawr_state_aether_exit_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      6) bttask_exit_rage_state  (Montage=AnimMontage b_aq_shock_00_state_rageexit_alpha_fwd_00_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      7) bttask_exit_rage_state  (Montage=AnimMontage b_leRawr_state_rage_exit_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      8) bttask_enter_rage_state  (Montage=AnimMontage b_aq_shock_00_state_rageenter_alpha_fwd_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      9) bttask_enter_rage_state  (Montage=AnimMontage b_leRawr_state_rage_enter_mot)
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha", "PartRequirements": {"PartNamesToCheck": ["Head"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+      10) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+        3) bttask_enter_aethercharge_state  (Montage=AnimMontage b_aq_shock_00_state_aetherenter_alpha_fwd_00_mot)
+        4) Sequence
+          1) modify_attack_cooldown_bttask "Lightning Curse Cooldown"  (ActionClass=BlueprintGeneratedClass shockmane_lightningcurse_atk_C, bShowPropertyDetails=false)
+          2) modify_attack_cooldown_bttask "Lightning Curse Cooldown"  (ActionClass=BlueprintGeneratedClass shockmane_lightningcurse_alpha_atk_C, bShowPropertyDetails=false)
+    8) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    9) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    10) Selector
+      [if BTDeco_ArchonCooldown  (CooldownTime=30, StartTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+      1) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+        3) Selector
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::AtherCharged", "RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          1) PerformActionClass  (ActionClass=BlueprintGeneratedClass shockmane_shockballdischarge_multi_debug_atk_C, bShowPropertyDetails=false)
+          2) BehemothAction  (Montage=AnimMontage b_shockmane_balllightning_multi_mot)
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1500, MaxDistance=9999)]
+        4) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_runandpounce_bt)
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::AtherCharged", "PartRequirements": {"PartNamesToCheck": ["Head"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+      [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass shockmane_lightningcurse_alpha_atk_C, bShowPropertyDetails=false)]
+      2) Sequence
+        1) PerformActionClass  (ActionClass=BlueprintGeneratedClass shockmane_lightningcurse_alpha_atk_C, bShowPropertyDetails=false)
+      [if call_behemoth_function_btdeco  (FunctionOnActivate=StartPrepareLightningPounce, FunctionOnDeactivate=StopPrepareLightningPounce)]
+      [if Blackboard  (AetherCharged is Is Set)]
+      [if btdeco_variablecooldown  (Cooldown_Min=20, Cooldown_Max=25)]
+      3) Sequence
+        1) RunEQSQuery "Run EQS Query:PounceLocation"  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1400.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) set_blackboard_key_bttask "Set ShouldFaceAttackTarget"  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+        3) RunBehavior "Run Behavior: JumpTo"  (BehaviorAsset=BehaviorTree lerawr_jumpto_bt)
+        4) BehemothAction "PounceFwdR"  (Montage=AnimMontage shockmane_lightningpounce_mot, TriggerCooldownOnSuccess=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Combat", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        [if btdeco_percentchance  (PercentChance=0.5)]
+        5) Sequence
+          1) BehemothAction "Personality_01"  (Montage=AnimMontage b_aq_gen_00_pers_personality_00_mot)
+      [if cooldown_btdeco  (MinCooldown={"BlackboardKeyName": "FenceCD"}, MaxCooldown={"BlackboardKeyName": "FenceCD"}, CooldownResetType=OnActivate, IgnoreThisGarbageVariable=bb.TargetActor, ObservedKeyNames=["TargetActor"], bShowPropertyDetails=false)]
+      4) Sequence
+        1) set_blackboard_key_bttask  (ResultKey=bb.LastShockRod, DataType=Object, bShowPropertyDetails=false)
+        2) RunEQSQuery "Run EQS Query:PounceLocation"  (EQSRequest={"QueryTemplate": "EnvQuery shockmane_plant_shockrod_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1400.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        3) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+        [if set_blackboard_while_active_btdeco  (BlackboardResultKeyName=CreateShockRod, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+        4) Sequence
+          [if Loop  (NumLoops=4)]
+          1) Sequence
+            1) RunBehavior "Run Behavior: JumpTo"  (BehaviorAsset=BehaviorTree shockmane_jumpto_repeatable_bt)
+          2) Sequence
+            [if ForceSuccess]
+            1) Sequence
+              [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=200, MaxDistance=3500)]
+              1) BehemothAction  (Montage=AnimMontage b_aq_shock_00_atk_lightningfencepounces_alpha_fwd_00_mot)
+            2) Selector
+              1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=LandAndTurn, TimeInFutureToPredict=0.25)
+          3) Selector
+            {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+            [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.5)]
+            1) BehemothAction "PounceFwdLeft"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_mot, TriggerCooldownOnSuccess=false)
+            2) BehemothAction "PounceFwdR"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdright_mo, TriggerCooldownOnSuccess=false)
+      [if btdeco_variablecooldown  (Cooldown_Min=30, Cooldown_Max=45, StartTime=30)]
+      [if can_perform_action_bttask  (CheckCooldown=false, CheckActionSpecificRequirements=false, ActionClass=BlueprintGeneratedClass shockmane_lightningteleportpounce_atk_C)]
+      5) RunBehavior  (BehaviorAsset=BehaviorTree shockmane_alpha_pawstomp_teleport_bt)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      6) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if Blackboard  (TopScore Is Equal To 0.000000)]
+      7) Selector
+        {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+        [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1500, MaxDistance=3000)]
+        1) MoveTo  (AcceptableRadius=1250, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+        [if Blackboard  (TopScore Is Equal To 0.000000)]
+        2) Selector "Reposition"
+          {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+          [if Blackboard  (CurrentHelper is Is Set)]
+          1) Sequence
+            {service LookAlongPath  (HelperKey=bb.CurrentHelper)}
+            1) MoveToAndFace  (FacingAngleBlackboardKey=bb.CurrentHelper, bAlignWithFacingObject=true, AcceptableRadius=25, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentHelper)
+    11) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

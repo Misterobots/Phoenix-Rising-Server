@@ -1,0 +1,286 @@
+{
+ "name": "shadowcat_ground_dive_setup_bt",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/shadowcat_ground_dive_setup_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "eqs_find_live_players_random_in_arena",
+  "eqs_shadowcat_predict_target",
+  "shadowcat_bb",
+  "shadowcat_ground_attack_portal_C"
+ ],
+ "exports": {
+  "shadowcat_ground_dive_setup_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_1",
+    "BlackboardAsset": "BlackboardData shadowcat_bb"
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@nav_trace_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_current_location_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_current_location_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@spawn_gameplay_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@predict_future_location_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_shadowcat_predict_target",
+     "QueryConfig": [
+      {
+       "ParamName": "OnCircle.CircleRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 500.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_RunEQSQuery_1": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_live_players_random_in_arena"
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "nav_trace_bttask_C_0": {
+   "type": "nav_trace_bttask_C",
+   "props": {
+    "TraceEndBBKey": "TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "predict_future_location_bttask_C_1": {
+   "type": "predict_future_location_bttask_C",
+   "props": {
+    "TargetKey": "bb.TargetActor",
+    "TimeInFuture": 1.2999999523162842,
+    "ResultKeyName": "TempLocation",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "set_blackboard_key_bttask_C_0": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.PounceLocation",
+    "DataType": "blackboard_comparable_key_type::Vector",
+    "SourceData": {
+     "BlackboardKeyName": "TempLocation"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "PounceLocation = TempLocation",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "set_blackboard_key_bttask_C_1": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.TempInt",
+    "DataType": "blackboard_comparable_key_type::Int",
+    "bShowPropertyDetails": false,
+    "NodeName": "TempInt = 0 (Expire if no target found)",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "spawn_gameplay_bttask_C_0": {
+   "type": "spawn_gameplay_bttask_C",
+   "props": {
+    "GameplayData": {
+     "ManualTargetting": [
+      {
+       "X": 10.0,
+       "Y": 0.0,
+       "Z": 0.0
+      }
+     ],
+     "GameplayType": "eqs_gameplay_type::Actor",
+     "ActorInfo": {
+      "ActorClass": "BlueprintGeneratedClass shadowcat_ground_attack_portal_C",
+      "EQSGameplayData": {
+       "NumToSpawnPerTick": 1
+      },
+      "AlignWithGround": false
+     }
+    },
+    "WaitForRequestToFinish": false,
+    "bShowPropertyDetails": false,
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "store_current_location_bttask_C_0": {
+   "type": "store_current_location_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "store_current_location_bttask_C_2": {
+   "type": "store_current_location_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "teleport_bttask_C_1": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "TempLocation",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "teleport_bttask_C_2": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "PounceLocation",
+    "FacingTargetKeyName": "TempLocation",
+    "TreeAsset": "BehaviorTree shadowcat_ground_dive_setup_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  }
+ }
+}

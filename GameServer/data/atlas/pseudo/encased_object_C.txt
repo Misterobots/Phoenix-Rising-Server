@@ -1,0 +1,206 @@
+# encased_object_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AllowBeamToPierce
+  [0] Pierce? = true
+  [11] return nothing
+  [13] end
+
+=== CheckForPlayerAudio
+  [0] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [21] array{}
+  [32] self.AudioSphere.GetOverlappingActors(CallFunc_GetOverlappingActors_OverlappingActors, ArchonCharacter)
+  [82] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(CallFunc_GetOverlappingActors_OverlappingActors, CallFunc_GetLocalArchonCharacter_ReturnValue)
+  [142] if !(CallFunc_Array_Contains_ReturnValue) goto @175
+  [156] if !(self.EncaseAudio?) goto @368
+  [170] goto @542
+  [175] if !(self.EncaseAudio?) goto @542
+  [189] Default__AkGameplayStatics.SetState(null, 'Player_Effect_Encased', 'Off')
+  [248] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [269] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Radiant_Persistent_Encased, CallFunc_GetLocalArchonCharacter_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [352] self.EncaseAudio? = false
+  [363] goto @542
+  [368] Default__AkGameplayStatics.SetState(null, 'Player_Effect_Encased', 'On')
+  [427] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [448] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Radiant_Persistent_Encased, CallFunc_GetLocalArchonCharacter_ReturnValue, 0, Temp_delegate_Variable, false)
+  [531] self.EncaseAudio? = true
+  [542] return nothing
+  [544] end
+
+=== CustomExpire
+  [0] ExecuteUbergraph_encased_object(1756)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_encased_object
+  [0] push @1955
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_K2_GetComponentLocation_ReturnValue = self.vfx_destructable_test_DM.K2_GetComponentLocation()
+  [65] self.vfx_destructable_test_DM.AddRadialImpulse(CallFunc_K2_GetComponentLocation_ReturnValue, 100000.0, 1000.0, 0, true)
+  [123] self.Timeline_2.PlayFromStart()
+  [155] pop
+  [156] K2Node_DynamicCast_AsAk_Audio_Event = cast<AkAudioEvent>(self.Impact SFX)
+  [192] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event)
+  [221] if !(K2Node_DynamicCast_bSuccess) pop
+  [231] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(K2Node_DynamicCast_AsAk_Audio_Event, self, 0, Temp_delegate_Variable_1, false)
+  [306] pop
+  [307] CallFunc_IsValid_ReturnValue_1 = IsValid(self.mesh_vfx_prismsphere)
+  [336] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [346] self.mesh_vfx_prismsphere.SetScalarParameterValueOnMaterials('BehemothDissolve', self.Timeline_1_DissolveIn_EAA7F7554A856ABAF2B58DA6843C304D)
+  [400] pop
+  [401] ReceiveBeginPlay()
+  [411] push @891
+  [416] push @858
+  [421] push @520
+  [426] CallFunc_K2_SetTimer_ReturnValue = K2_SetTimer(self, 'CheckForPlayerAudio', 0.2, true, 0.0, 0.0)
+  [492] self.PlayerAudioTimer = CallFunc_K2_SetTimer_ReturnValue
+  [519] pop
+  [520] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.ExpireCleanupTime, 0.0)
+  [558] CallFunc_Less_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.InitialLifeSpan)
+  [587] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(self.ExpireCleanupTime, CallFunc_Less_DoubleDouble_B_ImplicitCast)
+  [625] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue)
+  [663] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [673] K2Node_CreateDelegate_OutputDelegate = bind(self.StartCustomExpire)
+  [696] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.InitialLifeSpan)
+  [725] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.ExpireCleanupTime)
+  [771] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [800] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [857] pop
+  [858] self.Timeline_0.PlayFromStart()
+  [890] pop
+  [891] self.Timeline_1.PlayFromStart()
+  [923] pop
+  [924] Default__archon_function_library_C.TryDestroyComponent(self.ParticleSystem, self)
+  [970] pop
+  [971] self.vfx_destructable_test_DM.SetVisibility(true, false)
+  [1005] CallFunc_K2_GetComponentLocation_ReturnValue = self.vfx_destructable_test_DM.K2_GetComponentLocation()
+  [1055] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, 0.0)
+  [1110] self.vfx_destructable_test_DM.ApplyDamage(100.0, CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_MakeVector_ReturnValue, 0.0)
+  [1174] Delay(self, 0.1, LatentActionInfo{EX_SkipOffsetConst(Value=15), 621107411, 'ExecuteUbergraph_encased_object', self})
+  [1228] pop
+  [1229] push @1289
+  [1234] push @1375
+  [1239] push @971
+  [1244] push @924
+  [1249] push @1422
+  [1254] K2_ClearAndInvalidateTimerHandle(self, self.PlayerAudioTimer)
+  [1274] PlayDestroySounds()
+  [1288] pop
+  [1289] CallFunc_IsValid_ReturnValue_2 = IsValid(self.p_bugbear_encase_draw)
+  [1318] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1328] Default__archon_function_library_C.TryDestroyComponent(self.p_bugbear_encase_draw, self)
+  [1374] pop
+  [1375] Default__archon_function_library_C.TryDestroyComponent(self.mesh_vfx_prismsphere, self)
+  [1421] pop
+  [1422] Default__archon_function_library_C.TryDestroyComponent(self.StaticMesh, self)
+  [1468] CallFunc_IsValid_ReturnValue = IsValid(self.StaticMesh)
+  [1497] if !(CallFunc_IsValid_ReturnValue) pop
+  [1507] self.StaticMesh.SetCollisionEnabled(0)
+  [1545] pop
+  [1546] self.p_bugbear_encase_draw.DeactivateSystem()
+  [1578] pop
+  [1579] pop
+  [1580] self.vfx_destructable_test_DM.SetScalarParameterValueOnMaterials('BehemothDissolve', self.Timeline_2_DissolveOut_9FCD4106425E5504FD5E6EA7D2EB02D5)
+  [1634] pop
+  [1635] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, self.Timeline_0_Rotation_E0329DC746DB67F08EDE7EB943105E1E)
+  [1682] self.Scene.K2_SetWorldRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_SetWorldRotation_SweepHitResult, false)
+  [1734] pop
+  [1735] goto @1635
+  [1740] goto @1546
+  [1745] goto @1580
+  [1750] goto @156
+  [1755] pop
+  [1756] goto @1229
+  [1761] CustomExpire()
+  [1775] pop
+  [1776] goto @1229
+  [1781] if !(self.EncaseAudio?) pop
+  [1791] Default__AkGameplayStatics.SetState(null, 'Player_Effect_Encased', 'Off')
+  [1850] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [1871] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Radiant_Persistent_Encased, CallFunc_GetLocalArchonCharacter_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1954] pop
+  [1955] return nothing
+  [1957] end
+
+=== GameplayCue.Combat.OnDamageReceived
+  [0] frame.K2Node_GameplayCueEvent_EventType = EventType
+  [18] frame.K2Node_GameplayCueEvent_Parameters = Parameters
+  [36] ExecuteUbergraph_encased_object(1750)
+  [51] return nothing
+  [53] end
+
+=== MulticastOnDeath
+  [0] ExecuteUbergraph_encased_object(1776)
+  [15] return nothing
+  [17] end
+
+=== PlayDestroySounds
+  [0] push @544
+  [5] push @25
+  [10] if !(Temp_bool_Has_Been_Initd_Variable) goto @519
+  [24] pop
+  [25] if !(Temp_bool_IsClosed_Variable) goto @40
+  [39] pop
+  [40] Temp_bool_IsClosed_Variable = true
+  [51] Default__AkGameplayStatics.SetState(null, 'Player_Effect_Encased', 'Off')
+  [110] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [131] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Stop_Generic_Elemental_Radiant_Persistent_Encased, CallFunc_GetLocalArchonCharacter_ReturnValue, 0, Temp_delegate_Variable, false)
+  [214] K2Node_DynamicCast_AsAk_Audio_Event_1 = cast<AkAudioEvent>(self.Destroyed_SFX_Radiant)
+  [250] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event_1)
+  [279] if !(K2Node_DynamicCast_bSuccess_1) goto @368
+  [293] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(K2Node_DynamicCast_AsAk_Audio_Event_1, self, 0, Temp_delegate_Variable_1, false)
+  [368] K2Node_DynamicCast_AsAk_Audio_Event = cast<AkAudioEvent>(self.Destroyed SFX Sweetener)
+  [404] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event)
+  [433] if !(K2Node_DynamicCast_bSuccess) pop
+  [443] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(K2Node_DynamicCast_AsAk_Audio_Event, self, 0, Temp_delegate_Variable_2, false)
+  [518] pop
+  [519] Temp_bool_Has_Been_Initd_Variable = true
+  [530] if !(false) pop
+  [532] Temp_bool_IsClosed_Variable = true
+  [543] pop
+  [544] return nothing
+  [546] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_encased_object(401)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_encased_object(1781)
+  [15] return nothing
+  [17] end
+
+=== StartCustomExpire
+  [0] ExecuteUbergraph_encased_object(1761)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__FinishedFunc
+  [0] ExecuteUbergraph_encased_object(1740)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__UpdateFunc
+  [0] ExecuteUbergraph_encased_object(1735)
+  [15] return nothing
+  [17] end
+
+=== Timeline_1__FinishedFunc
+  [0] ExecuteUbergraph_encased_object(1579)
+  [15] return nothing
+  [17] end
+
+=== Timeline_1__UpdateFunc
+  [0] ExecuteUbergraph_encased_object(307)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__FinishedFunc
+  [0] ExecuteUbergraph_encased_object(1755)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__UpdateFunc
+  [0] ExecuteUbergraph_encased_object(1745)
+  [15] return nothing
+  [17] end

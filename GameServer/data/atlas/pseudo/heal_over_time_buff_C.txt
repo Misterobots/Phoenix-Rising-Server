@@ -1,0 +1,108 @@
+# heal_over_time_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyHeal
+  [0] ExecuteUbergraph_heal_over_time_buff(986)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_heal_over_time_buff
+  [0] goto computed(EntryPoint)
+  [10] RemoveHealParticle()
+  [24] goto @1847
+  [29] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [50] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @69
+  [64] goto @1847
+  [69] CallFunc_IsValid_ReturnValue_1 = IsValid(self.HealParticle)
+  [98] if !(CallFunc_IsValid_ReturnValue_1) goto @117
+  [112] goto @1847
+  [117] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(K2Node_CustomEvent_TargetActor)
+  [153] K2Node_DynamicCast_bSuccess_2 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [182] if !(K2Node_DynamicCast_bSuccess_2) goto @456
+  [196] K2Node_DynamicCast_AsPlayer_Interface_1.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [242] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_v2_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [374] self.HealParticle = CallFunc_SpawnEmitterAttached_ReturnValue
+  [393] self.HealParticle.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_TargetActor)
+  [451] goto @1847
+  [456] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [467] goto @242
+  [472] K2Node_CreateDelegate_OutputDelegate = bind(self.ApplyHeal)
+  [495] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenHeals)
+  [524] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [581] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.TimeBetweenHeals, 0.0)
+  [619] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1847
+  [633] ApplyHeal()
+  [647] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [667] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [696] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(heal_over_time_icon_ge_C, 0.0, GameplayEffectContextHandle{})
+  [778] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', self.MaxDuration)
+  [837] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [857] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [886] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [954] self.HealIconHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [981] goto @1847
+  [986] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1006] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [1042] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [1071] if !(K2Node_DynamicCast_bSuccess) goto @1847
+  [1085] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [1121] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [1150] if !(K2Node_DynamicCast_bSuccess_1) goto @1384
+  [1164] K2Node_DynamicCast_AsPlayer_Interface.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [1210] CallFunc_GetHealth_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetHealth()
+  [1260] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [1289] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [1327] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GetBleedOutState_BleedOutState, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [1365] if !(CallFunc_BooleanOR_ReturnValue) goto @1400
+  [1379] goto @1847
+  [1384] CallFunc_GetBleedOutState_BleedOutState = false
+  [1395] goto @1210
+  [1400] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1420] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.HealthRestoredPerSecond, self.TimeBetweenHeals)
+  [1466] Default__archon_function_library_C.HealTarget(CallFunc_GetBuffOwner_ReturnValue, CallFunc_GetBuffOwner_ReturnValue, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [1531] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1551] HealVFX(CallFunc_GetBuffOwner_ReturnValue)
+  [1574] goto @1847
+  [1579] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [1600] if !(CallFunc_IsDedicatedServer_ReturnValue_1) goto @1619
+  [1614] goto @1847
+  [1619] CallFunc_IsValid_ReturnValue = IsValid(self.HealParticle)
+  [1648] if !(CallFunc_IsValid_ReturnValue) goto @1847
+  [1662] self.HealParticle.Deactivate()
+  [1698] goto @1847
+  [1703] goto @29
+  [1708] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [1728] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_3)
+  [1757] CallFunc_GetAbilitySystemComponent_ReturnValue_2.RemoveActiveGameplayEffectBySourceEffect(heal_over_time_icon_ge_C, null, -1)
+  [1808] goto @10
+  [1813] OnRemoved()
+  [1823] RemoveHealParticle()
+  [1837] goto @1847
+  [1842] goto @1579
+  [1847] return nothing
+  [1849] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_TargetActor = TargetActor
+  [18] ExecuteUbergraph_heal_over_time_buff(1703)
+  [33] return nothing
+  [35] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_heal_over_time_buff(472)
+  [15] return nothing
+  [17] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_heal_over_time_buff(1813)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_heal_over_time_buff(1708)
+  [15] return nothing
+  [17] end
+
+=== RemoveHealParticle
+  [0] ExecuteUbergraph_heal_over_time_buff(1842)
+  [15] return nothing
+  [17] end

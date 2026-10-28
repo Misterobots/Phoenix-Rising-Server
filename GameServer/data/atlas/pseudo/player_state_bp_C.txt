@@ -1,0 +1,596 @@
+# player_state_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Any
+  [0] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [18] frame.K2Node_CustomEvent_Damage = Damage
+  [36] frame.K2Node_CustomEvent_DamageType = DamageType
+  [54] frame.K2Node_CustomEvent_InstigatedBy = InstigatedBy
+  [72] frame.K2Node_CustomEvent_DamageCauser = DamageCauser
+  [90] ExecuteUbergraph_player_state_bp(5313)
+  [105] return nothing
+  [107] end
+
+=== ApplyEliteHuntPassRewards
+  [0] ExecuteUbergraph_player_state_bp(5667)
+  [15] return nothing
+  [17] end
+
+=== AuthClearBonusLoot
+  [0] frame.K2Node_Event_ClearOnlyFromThisSource = ClearOnlyFromThisSource
+  [18] ExecuteUbergraph_player_state_bp(5387)
+  [33] return nothing
+  [35] end
+
+=== AuthModifyBonusLoot
+  [0] push @938
+  [5] push @488
+  [10] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [30] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [40] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(Source, 0)
+  [71] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [81] GetBonusLootRolls(Source, CallFunc_GetBonusLootRolls_NumLootRolls, CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_)
+  [122] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_GetBonusLootRolls_NumLootRolls, NumToAdd)
+  [168] CallFunc_Max_ReturnValue = Max(CallFunc_Add_IntInt_ReturnValue, 0)
+  [210] CallFunc_EqualEqual_IntInt_ReturnValue_1 = EqualEqual_IntInt(CallFunc_Max_ReturnValue, 0)
+  [244] if !(CallFunc_EqualEqual_IntInt_ReturnValue_1) goto @561
+  [258] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_, 0)
+  [292] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PlayerEndOfMatchLootRolls)
+  [351] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_, CallFunc_Array_Length_ReturnValue)
+  [389] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [427] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [437] Default__KismetArrayLibrary.Array_Remove(self.PlayerEndOfMatchLootRolls, CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_)
+  [487] pop
+  [488] GetBonusLootRolls(Source, CallFunc_GetBonusLootRolls_NumLootRolls_1, CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound__1)
+  [529] NewAmount = CallFunc_GetBonusLootRolls_NumLootRolls_1
+  [556] goto @938
+  [561] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_, -1)
+  [595] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_GetBonusLootRolls_NumLootRolls, NumToAdd)
+  [641] CallFunc_Max_ReturnValue = Max(CallFunc_Add_IntInt_ReturnValue, 0)
+  [683] Temp_bool_Variable = CallFunc_EqualEqual_IntInt_ReturnValue
+  [702] K2Node_MakeStruct_lootroll_info.NumBonusRolls = CallFunc_Max_ReturnValue
+  [738] K2Node_MakeStruct_lootroll_info.Source = Source
+  [774] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.PlayerEndOfMatchLootRolls)
+  [833] Default__KismetArrayLibrary.Array_Set(self.PlayerEndOfMatchLootRolls, switch(Temp_bool_Variable){false: CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_, true: CallFunc_Array_Length_ReturnValue_1, default: K2Node_Select_Default}, K2Node_MakeStruct_lootroll_info, true)
+  [937] pop
+  [938] return nothing
+  [940] end
+
+=== AuthModifyInjuryCount
+  [0] frame.K2Node_Event_Delta = Delta
+  [18] ExecuteUbergraph_player_state_bp(5672)
+  [33] return nothing
+  [35] end
+
+=== AuthResetBonusLoot
+  [0] ExecuteUbergraph_player_state_bp(5916)
+  [15] return nothing
+  [17] end
+
+=== ClientOnBehemothInterrupted
+  [0] ExecuteUbergraph_player_state_bp(5677)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_player_state_bp
+  [0] push @6063
+  [5] goto computed(EntryPoint)
+  [15] K2_ClearAndInvalidateTimerHandle(self, self.HuntPassComponentPoller)
+  [35] CallFunc_GetController_ReturnValue_2 = self.PlayerPawn.GetController()
+  [77] CallFunc_GetComponentByClass_ReturnValue_3 = CallFunc_GetController_ReturnValue_2.GetComponentByClass(HuntPassComponent)
+  [128] CallFunc_IsPremiumUnlockedBonusLootActive_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_3.IsPremiumUnlockedBonusLootActive()
+  [170] if !(CallFunc_IsPremiumUnlockedBonusLootActive_ReturnValue) pop
+  [180] AuthModifyBonusLoot(2, 7, CallFunc_AuthModifyBonusLoot_NewAmount_2)
+  [210] pop
+  [211] MarkPropertyDirtyFromRepIndex(self, 48, 'DamageTaken')
+  [240] pop
+  [241] FlushNetDormancy()
+  [251] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_Damage)
+  [280] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(self.DamageTaken, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [326] self.DamageTaken = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [353] goto @211
+  [358] FlushNetDormancy()
+  [368] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.DamageGiven, CallFunc_CalculateScoreForHit_DamageScore)
+  [414] self.DamageGiven = CallFunc_Add_DoubleDouble_ReturnValue
+  [441] MarkPropertyDirtyFromRepIndex(self, 49, 'DamageGiven')
+  [470] pop
+  [471] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(self.PlayerPawn)
+  [507] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [536] if !(K2Node_DynamicCast_bSuccess) goto @912
+  [550] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.Any)
+  [573] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [614] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [656] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetCurrentWeapon_ReturnValue)
+  [685] if !(CallFunc_IsValid_ReturnValue_1) goto @967
+  [699] FlushNetDormancy()
+  [709] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(K2Node_DynamicCast_AsArchon_Character, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:GlobalPower'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [826] K2Node_VariableSet_WeaponPower_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [855] self.WeaponPower = K2Node_VariableSet_WeaponPower_ImplicitCast
+  [882] MarkPropertyDirtyFromRepIndex(self, 50, 'WeaponPower')
+  [911] pop
+  [912] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=471), 579603604, 'ExecuteUbergraph_player_state_bp', self})
+  [966] pop
+  [967] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=1022), -875224281, 'ExecuteUbergraph_player_state_bp', self})
+  [1021] pop
+  [1022] goto @614
+  [1027] CallFunc_IsValid_ReturnValue = IsValid(self.PlayerPawn)
+  [1056] if !(CallFunc_IsValid_ReturnValue) goto @2323
+  [1070] CallFunc_GetController_ReturnValue = self.PlayerPawn.GetController()
+  [1112] K2Node_DynamicCast_AsPlayer_Controller = cast<PlayerController>(CallFunc_GetController_ReturnValue)
+  [1148] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPlayer_Controller)
+  [1177] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1187] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.OnPlayergiveDamage)
+  [1210] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [1251] CallFunc_IsFeatureEnabledWorldContext_ReturnValue = IsFeatureEnabledWorldContext(self, ProgressionNetworkOptimizationsFeature, true)
+  [1282] if !(CallFunc_IsFeatureEnabledWorldContext_ReturnValue) goto @1400
+  [1296] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.WaitForHuntPassComponent)
+  [1319] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_4, 1.0, true, 0.0, 0.0)
+  [1372] self.HuntPassComponentPoller = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1399] pop
+  [1400] CallFunc_GetController_ReturnValue_1 = self.PlayerPawn.GetController()
+  [1442] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetController_ReturnValue_1.GetComponentByClass(ProgressionComponent)
+  [1493] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_GetComponentByClass_ReturnValue_2)
+  [1522] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [1532] CallFunc_GetController_ReturnValue_1 = self.PlayerPawn.GetController()
+  [1574] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetController_ReturnValue_1.GetComponentByClass(ProgressionComponent)
+  [1625] CallFunc_IsComponentReady_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_2.IsComponentReady()
+  [1667] if !(CallFunc_IsComponentReady_ReturnValue) goto @2165
+  [1681] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [1702] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [1738] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [1767] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [1777] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(K2Node_DynamicCast_AsPlayer_Controller, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [1837] if !(CallFunc_GetCurrentHuntPassSeasonData_ReturnValue) pop
+  [1847] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(K2Node_DynamicCast_AsPlayer_Controller, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [1907] self.L_HuntPassData = CallFunc_GetCurrentHuntPassSeasonData_HuntPassData
+  [1934] CallFunc_GetController_ReturnValue_1 = self.PlayerPawn.GetController()
+  [1976] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetController_ReturnValue_1.GetComponentByClass(ProgressionComponent)
+  [2027] CallFunc_GetTrackProgression_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_2.GetTrackProgression(self.L_HuntPassData.ProgressionTrack, CallFunc_GetTrackProgression_OutDetails)
+  [2096] if !(CallFunc_GetTrackProgression_ReturnValue) pop
+  [2106] if !(CallFunc_GetTrackProgression_OutDetails.ProgressDetails.bHasPremium) pop
+  [2134] AuthModifyBonusLoot(2, 7, CallFunc_AuthModifyBonusLoot_NewAmount_1)
+  [2164] pop
+  [2165] K2Node_CreateDelegate_OutputDelegate = bind(self.ApplyEliteHuntPassRewards)
+  [2188] CallFunc_GetController_ReturnValue_1 = self.PlayerPawn.GetController()
+  [2230] CallFunc_GetComponentByClass_ReturnValue_2 = CallFunc_GetController_ReturnValue_1.GetComponentByClass(ProgressionComponent)
+  [2281] K2Node_CreateDelegate_OutputDelegate += None
+  [2322] pop
+  [2323] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=1027), -878449543, 'ExecuteUbergraph_player_state_bp', self})
+  [2377] pop
+  [2378] FlushNetDormancy()
+  [2388] self.InCity = K2Node_Event_InCity
+  [2407] MarkPropertyDirtyFromRepIndex(self, 46, 'InCity')
+  [2436] pop
+  [2437] FlushNetDormancy()
+  [2447] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(self.PartBreakCount, 1)
+  [2489] self.PartBreakCount = CallFunc_Add_IntInt_ReturnValue_2
+  [2516] MarkPropertyDirtyFromRepIndex(self, 56, 'PartBreakCount')
+  [2545] OnBehemothPartBroken__DelegateSignature(K2Node_Event_Behemoth_1)
+  [2573] CallFunc_GetArchonGameState_ReturnValue_2 = GetArchonGameState(self)
+  [2594] OnPlayerBrokeBehemothPart__DelegateSignature(K2Node_Event_MonsterPart, self)
+  [2645] pop
+  [2646] FlushNetDormancy()
+  [2656] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(self.InterruptCount, 1)
+  [2698] self.InterruptCount = CallFunc_Add_IntInt_ReturnValue_3
+  [2725] MarkPropertyDirtyFromRepIndex(self, 57, 'InterruptCount')
+  [2754] OnBehemothInterrupted__DelegateSignature(K2Node_Event_Behemoth, K2Node_Event_InstigatingAttackDamageTags)
+  [2791] CallFunc_GetArchonGameState_ReturnValue_2 = GetArchonGameState(self)
+  [2812] OnPlayerInterruptedBehemoth__DelegateSignature(self, K2Node_Event_Behemoth, K2Node_Event_InstigatingAttackDamageTags)
+  [2872] ClientOnBehemothInterrupted()
+  [2886] pop
+  [2887] FlushNetDormancy()
+  [2897] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(CallFunc_GetInjuryCount_PlayerInjuryCount, K2Node_Event_Delta)
+  [2943] CallFunc_Max_ReturnValue = Max(CallFunc_Add_IntInt_ReturnValue_5, 0)
+  [2985] self.PlayerInjuryCount = CallFunc_Max_ReturnValue
+  [3012] MarkPropertyDirtyFromRepIndex(self, 60, 'PlayerInjuryCount')
+  [3041] pop
+  [3042] Temp_int_Loop_Counter_Variable = 0
+  [3065] Temp_int_Array_Index_Variable = 0
+  [3088] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [3109] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetArchonGameState_ReturnValue.self.PlayerArray)
+  [3190] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [3228] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [3238] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [3265] push @3489
+  [3270] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [3291] Default__KismetArrayLibrary.Array_Get(CallFunc_GetArchonGameState_ReturnValue.self.PlayerArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [3372] K2Node_DynamicCast_AsArchon_Player_State = cast<ArchonPlayerState>(CallFunc_Array_Get_Item)
+  [3408] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_State)
+  [3437] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [3447] K2Node_DynamicCast_AsArchon_Player_State.ResetCurrentStaggerDamageDealt(K2Node_Event_Behemoth_2)
+  [3488] pop
+  [3489] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [3531] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_4
+  [3558] goto @3088
+  [3563] FlushNetDormancy()
+  [3573] self.PlayerEndOfMatchLootRollsResetState = self.PlayerEndOfMatchLootRolls
+  [3600] MarkPropertyDirtyFromRepIndex(self, 61, 'PlayerEndOfMatchLootRollsResetState')
+  [3629] pop
+  [3630] FlushNetDormancy()
+  [3640] self.PlayerEndOfMatchLootRolls = self.PlayerEndOfMatchLootRollsResetState
+  [3667] MarkPropertyDirtyFromRepIndex(self, 59, 'PlayerEndOfMatchLootRolls')
+  [3696] pop
+  [3697] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [3718] if !(CallFunc_IsServer_ReturnValue) pop
+  [3728] goto @3630
+  [3733] pop
+  [3734] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentlySelectedSlot, 1)
+  [3776] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ArchonInventory.self.QuickSlots)
+  [3857] CallFunc_Percent_IntInt_ReturnValue = Percent_IntInt(CallFunc_Add_IntInt_ReturnValue, CallFunc_Array_Length_ReturnValue)
+  [3903] SelectQuickslot(CallFunc_Percent_IntInt_ReturnValue)
+  [3926] pop
+  [3927] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.CurrentlySelectedSlot, 1)
+  [3969] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_Subtract_IntInt_ReturnValue, 0)
+  [4003] if !(CallFunc_Less_IntInt_ReturnValue) goto @4164
+  [4017] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.ArchonInventory.self.QuickSlots)
+  [4098] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [4140] SelectQuickslot(CallFunc_Subtract_IntInt_ReturnValue_1)
+  [4163] pop
+  [4164] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.CurrentlySelectedSlot, 1)
+  [4206] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Subtract_IntInt_ReturnValue, 0)
+  [4240] if !(CallFunc_Greater_IntInt_ReturnValue) goto @4254
+  [4254] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.CurrentlySelectedSlot, 1)
+  [4296] SelectQuickslot(CallFunc_Subtract_IntInt_ReturnValue)
+  [4319] pop
+  [4320] self.CurrentlySelectedSlot = K2Node_CustomEvent_SlotID
+  [4347] Selected Quickslot Changed Dispatcher__DelegateSignature(self.CurrentlySelectedSlot)
+  [4375] pop
+  [4376] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [4396] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [4406] push @3563
+  [4411] push @4426
+  [4416] push @1027
+  [4421] goto @471
+  [4426] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, enable_CR2019_bpff_C, true)
+  [4457] if !(CallFunc_IsFeatureEnabled_ReturnValue) pop
+  [4467] AuthModifyBonusLoot(self.LootRollsForRemainingStims, 4, CallFunc_AuthModifyBonusLoot_NewAmount)
+  [4501] pop
+  [4502] goto @4376
+  [4507] CallFunc_IsValid_ReturnValue_2 = IsValid(K2Node_CustomEvent_DamagedActor_1)
+  [4536] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [4546] if !(self.TrackingDamageGiven) pop
+  [4556] CallFunc_GetComponentByClass_ReturnValue = K2Node_CustomEvent_DamagedActor_1.GetComponentByClass(score_giver_bpc_C)
+  [4607] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [4636] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [4646] CallFunc_GetComponentByClass_ReturnValue = K2Node_CustomEvent_DamagedActor_1.GetComponentByClass(score_giver_bpc_C)
+  [4697] CallFunc_CalculateScoreForHit_DamageAmount_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_Damage_1)
+  [4726] CallFunc_GetComponentByClass_ReturnValue.CalculateScoreForHit(CallFunc_CalculateScoreForHit_DamageAmount_ImplicitCast, CallFunc_CalculateScoreForHit_DamageScore)
+  [4780] goto @358
+  [4785] CallFunc_IsServer_ReturnValue_1 = IsServer(self)
+  [4806] if !(CallFunc_IsServer_ReturnValue_1) pop
+  [4816] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(K2Node_Event_ClearOnlyFromThisSource, 0)
+  [4847] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @4903
+  [4861] Default__KismetArrayLibrary.Array_Clear(self.PlayerEndOfMatchLootRolls)
+  [4902] pop
+  [4903] GetBonusLootRolls(K2Node_Event_ClearOnlyFromThisSource, CallFunc_GetBonusLootRolls_NumLootRolls, CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_)
+  [4944] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_, 0)
+  [4978] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [4988] Default__KismetArrayLibrary.Array_Remove(self.PlayerEndOfMatchLootRolls, CallFunc_GetBonusLootRolls_LootEntryIndex_IfFound_)
+  [5038] pop
+  [5039] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.StaggerCount, 1)
+  [5081] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [5108] self.StaggerCount = Temp_int_Variable
+  [5135] OnBehemothStaggered__DelegateSignature(K2Node_Event_Behemoth_2, K2Node_Event_WasInterrupt)
+  [5172] CallFunc_GetArchonGameState_ReturnValue = GetArchonGameState(self)
+  [5193] OnPlayerStaggeredBehemoth__DelegateSignature(K2Node_Event_Behemoth_2, self, K2Node_Event_WasInterrupt)
+  [5253] Delay(self, 2.0, LatentActionInfo{EX_SkipOffsetConst(Value=3042), -1269834251, 'ExecuteUbergraph_player_state_bp', self})
+  [5307] pop
+  [5308] goto @2378
+  [5313] goto @241
+  [5318] CallFunc_IsServer_ReturnValue_2 = IsServer(self)
+  [5339] if !(CallFunc_IsServer_ReturnValue_2) pop
+  [5349] GetInjuryCount(CallFunc_GetInjuryCount_PlayerInjuryCount)
+  [5372] goto @2887
+  [5377] goto @2437
+  [5382] goto @2646
+  [5387] goto @4785
+  [5392] OnOwnerSetPawn(K2Node_Event_InPawn)
+  [5411] CallFunc_IsValid_ReturnValue_4 = IsValid(K2Node_Event_InPawn)
+  [5440] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [5450] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.Exposed Part)
+  [5473] CallFunc_GetComponentByClass_ReturnValue_1 = K2Node_Event_InPawn.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [5524] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [5565] pop
+  [5566] OnBehemothPartExposed__DelegateSignature(K2Node_CustomEvent_Behemoth)
+  [5594] CallFunc_GetArchonGameState_ReturnValue_1 = GetArchonGameState(self)
+  [5615] OnPlayerWoundedBehemothPart__DelegateSignature(K2Node_CustomEvent_MonsterPart, self)
+  [5666] pop
+  [5667] goto @1681
+  [5672] goto @5318
+  [5677] Default__global_function_library_C.Get Global Event Dispatcher(self, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [5724] Client3rdPartyBehemothInterrupted__DelegateSignature()
+  [5765] pop
+  [5766] CallFunc_GetController_ReturnValue_2 = self.PlayerPawn.GetController()
+  [5808] CallFunc_GetComponentByClass_ReturnValue_3 = CallFunc_GetController_ReturnValue_2.GetComponentByClass(HuntPassComponent)
+  [5859] CallFunc_IsComponentReady_ReturnValue_1 = CallFunc_GetComponentByClass_ReturnValue_3.IsComponentReady()
+  [5901] if !(CallFunc_IsComponentReady_ReturnValue_1) pop
+  [5911] goto @15
+  [5916] goto @3697
+  [5921] CallFunc_GetController_ReturnValue_2 = self.PlayerPawn.GetController()
+  [5963] CallFunc_GetComponentByClass_ReturnValue_3 = CallFunc_GetController_ReturnValue_2.GetComponentByClass(HuntPassComponent)
+  [6014] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_GetComponentByClass_ReturnValue_3)
+  [6043] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [6053] goto @5766
+  [6058] goto @5921
+  [6063] return nothing
+  [6065] end
+
+=== Exposed Part
+  [0] frame.K2Node_CustomEvent_Behemoth = Behemoth
+  [18] frame.K2Node_CustomEvent_MonsterPart = MonsterPart
+  [36] frame.K2Node_CustomEvent_Instigator = Instigator
+  [54] ExecuteUbergraph_player_state_bp(5566)
+  [69] return nothing
+  [71] end
+
+=== Get Debug Color
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @303
+  [34] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(self.DebugColorIndex, -1)
+  [68] if !(CallFunc_NotEqual_IntInt_ReturnValue) goto @335
+  [82] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [103] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [139] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [168] if !(K2Node_DynamicCast_bSuccess) goto @541
+  [182] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.Debug Get Player Color(self.DebugColorIndex, CallFunc_Debug_Get_Player_Color_Linear_Color)
+  [237] FlushNetDormancy()
+  [247] self.Player Color = CallFunc_Debug_Get_Player_Color_Linear_Color
+  [274] MarkPropertyDirtyFromRepIndex(self, 41, 'Player Color')
+  [303] Color = self.Player Color
+  [330] goto @598
+  [335] CallFunc_GetGameMode_ReturnValue_1 = GetGameMode(self)
+  [356] K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1 = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue_1)
+  [392] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1)
+  [421] if !(K2Node_DynamicCast_bSuccess_1) goto @513
+  [435] K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1.Assign Free Player Color Index(CallFunc_Assign_Free_Player_Color_Index_OutColorIndex)
+  [481] self.DebugColorIndex = CallFunc_Assign_Free_Player_Color_Index_OutColorIndex
+  [508] goto @82
+  [513] CallFunc_Assign_Free_Player_Color_Index_OutColorIndex = 0
+  [536] goto @481
+  [541] CallFunc_Debug_Get_Player_Color_Linear_Color = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [593] goto @237
+  [598] return nothing
+  [600] end
+
+=== GetBonusLootRolls
+  [0] push @1067
+  [5] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(OnlyThisSource, 0)
+  [36] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @381
+  [50] Temp_int_Loop_Counter_Variable_1 = 0
+  [73] Temp_int_Array_Index_Variable = 0
+  [96] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PlayerEndOfMatchLootRolls)
+  [155] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [193] if !(CallFunc_Less_IntInt_ReturnValue) goto @864
+  [207] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [234] push @919
+  [239] Default__KismetArrayLibrary.Array_Get(self.PlayerEndOfMatchLootRolls, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [298] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(L_TotalRolls, CallFunc_Array_Get_Item.NumBonusRolls)
+  [353] L_TotalRolls = CallFunc_Add_IntInt_ReturnValue_1
+  [380] pop
+  [381] Temp_int_Loop_Counter_Variable = 0
+  [404] Temp_int_Array_Index_Variable_1 = 0
+  [427] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.PlayerEndOfMatchLootRolls)
+  [486] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [524] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @813
+  [538] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [565] push @993
+  [570] Default__KismetArrayLibrary.Array_Get(self.PlayerEndOfMatchLootRolls, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [629] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_Array_Get_Item_1.Source, OnlyThisSource)
+  [676] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) pop
+  [686] Default__KismetArrayLibrary.Array_Get(self.PlayerEndOfMatchLootRolls, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [745] NumLootRolls = CallFunc_Array_Get_Item_1.NumBonusRolls
+  [781] LootEntryIndex(IfFound) = Temp_int_Array_Index_Variable_1
+  [808] goto @1067
+  [813] NumLootRolls = 0
+  [836] LootEntryIndex(IfFound) = -1
+  [859] goto @1067
+  [864] NumLootRolls = L_TotalRolls
+  [891] LootEntryIndex(IfFound) = -1
+  [914] goto @1067
+  [919] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [961] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [988] goto @96
+  [993] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1035] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1062] goto @427
+  [1067] return nothing
+  [1069] end
+
+=== GetBonusRollInfo
+  [0] LootRollInfo = self.PlayerEndOfMatchLootRolls
+  [27] return nothing
+  [29] end
+
+=== GetEndOfGameRankingValue
+  [0] RankingValue = self.EndOfGameRanking
+  [27] return nothing
+  [29] end
+
+=== GetInjuryCount
+  [0] PlayerInjuryCount = self.PlayerInjuryCount
+  [27] return nothing
+  [29] end
+
+=== GetNumBleedouts
+  [0] ReturnValue = self.BleedoutCount
+  [27] return ReturnValue
+  [37] end
+
+=== GetRankingData
+  [0] DamageGiven = self.DamageGiven
+  [27] DamageTaken = self.DamageTaken
+  [54] BleedoutCount = self.BleedoutCount
+  [81] NumRevivesPerformed = self.NumRevivesPerformed
+  [108] StaggerCount = self.StaggerCount
+  [135] return nothing
+  [137] end
+
+=== GetSelectedSlotFName
+  [0] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.CurrentlySelectedSlot, 0)
+  [34] if !(K2Node_SwitchInteger_CmpSuccess) goto @551
+  [48] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.CurrentlySelectedSlot, 1)
+  [82] if !(K2Node_SwitchInteger_CmpSuccess) goto @587
+  [96] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.CurrentlySelectedSlot, 2)
+  [130] if !(K2Node_SwitchInteger_CmpSuccess) goto @623
+  [144] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.CurrentlySelectedSlot, 3)
+  [178] if !(K2Node_SwitchInteger_CmpSuccess) goto @659
+  [192] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(self.CurrentlySelectedSlot, 4)
+  [226] if !(K2Node_SwitchInteger_CmpSuccess) goto @695
+  [240] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [269] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [319] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [361] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Invalid Currently Selected Slot')
+  [431] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [505] StackTrace()
+  [515] Name = 'INVALID'
+  [546] goto @726
+  [551] Name = 'Top'
+  [582] goto @726
+  [587] Name = 'Right'
+  [618] goto @726
+  [623] Name = 'Bottom'
+  [654] goto @726
+  [659] Name = 'Left'
+  [690] goto @726
+  [695] Name = 'Debug1'
+  [726] return nothing
+  [728] end
+
+=== HasFinishedLoading
+  [0] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [21] K2Node_DynamicCast_AsBpi_Gamemode = cast<bpi_gamemode_C>(CallFunc_GetGameMode_ReturnValue)
+  [57] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamemode)
+  [86] if !(K2Node_DynamicCast_bSuccess) goto @237
+  [100] K2Node_DynamicCast_AsBpi_Gamemode.IsIntroCinematicEnabled(CallFunc_IsIntroCinematicEnabled_Enabled)
+  [146] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsIntroCinematicEnabled_Enabled)
+  [175] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Not_PreBool_ReturnValue, self.IsServerReadyToStart)
+  [213] ReturnValue = CallFunc_BooleanOR_ReturnValue
+  [232] goto @253
+  [237] CallFunc_IsIntroCinematicEnabled_Enabled = false
+  [248] goto @146
+  [253] return ReturnValue
+  [263] end
+
+=== IncrementInterruptCount
+  [0] frame.K2Node_Event_Behemoth = Behemoth
+  [18] frame.K2Node_Event_InstigatingAttackDamageTags = InstigatingAttackDamageTags
+  [36] ExecuteUbergraph_player_state_bp(5382)
+  [51] return nothing
+  [53] end
+
+=== IncrementPartBreakCount
+  [0] frame.K2Node_Event_Behemoth_1 = Behemoth
+  [18] frame.K2Node_Event_MonsterPart = MonsterPart
+  [36] ExecuteUbergraph_player_state_bp(5377)
+  [51] return nothing
+  [53] end
+
+=== IncrementStaggerCount
+  [0] frame.K2Node_Event_Behemoth_2 = Behemoth
+  [18] frame.K2Node_Event_WasInterrupt = WasInterrupt
+  [36] ExecuteUbergraph_player_state_bp(5039)
+  [51] return nothing
+  [53] end
+
+=== OnOwnerSetPawn
+  [0] frame.K2Node_Event_InPawn = InPawn
+  [18] ExecuteUbergraph_player_state_bp(5392)
+  [33] return nothing
+  [35] end
+
+=== OnPlayergiveDamage
+  [0] frame.K2Node_CustomEvent_Damage_1 = Damage
+  [18] frame.K2Node_CustomEvent_DamageType_1 = DamageType
+  [36] frame.K2Node_CustomEvent_DamagedActor_1 = DamagedActor
+  [54] frame.K2Node_CustomEvent_DamageCauser_1 = DamageCauser
+  [72] ExecuteUbergraph_player_state_bp(4507)
+  [87] return nothing
+  [89] end
+
+=== OnRep_Is Talking
+  [0] Talking State Change Dispatcher__DelegateSignature(self.Is Talking)
+  [28] return nothing
+  [30] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_player_state_bp(4502)
+  [15] return nothing
+  [17] end
+
+=== SelectNextQuickslotItem
+  [0] ExecuteUbergraph_player_state_bp(3734)
+  [15] return nothing
+  [17] end
+
+=== SelectPreviousQuickslotItem
+  [0] ExecuteUbergraph_player_state_bp(3927)
+  [15] return nothing
+  [17] end
+
+=== SelectQuickslot
+  [0] frame.K2Node_CustomEvent_SlotID = SlotID
+  [18] ExecuteUbergraph_player_state_bp(4320)
+  [33] return nothing
+  [35] end
+
+=== Selected Quickslot Changed Dispatcher__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== SetInAirship
+  [0] frame.K2Node_Event_InAirship = InAirship
+  [18] ExecuteUbergraph_player_state_bp(3733)
+  [33] return nothing
+  [35] end
+
+=== SetInCity-Deprecated
+  [0] frame.K2Node_Event_InCity = InCity
+  [18] ExecuteUbergraph_player_state_bp(5308)
+  [33] return nothing
+  [35] end
+
+=== Setup Player Inventory
+  [0] return nothing
+  [2] end
+
+=== SetupCombatText
+  [0] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [20] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(CallFunc_GetArchonGameUserSettings_ReturnValue.self.DamageText, 0)
+  [76] if !(K2Node_SwitchInteger_CmpSuccess) goto @165
+  [90] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(CallFunc_GetArchonGameUserSettings_ReturnValue.self.DamageText, 1)
+  [146] if !(K2Node_SwitchInteger_CmpSuccess) goto @309
+  [160] goto @448
+  [165] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [186] K2Node_DynamicCast_AsBpi_Gamestate_1 = cast<bpi_gamestate_C>(CallFunc_GetGameState_ReturnValue)
+  [222] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate_1)
+  [251] if !(K2Node_DynamicCast_bSuccess_1) goto @448
+  [265] K2Node_DynamicCast_AsBpi_Gamestate_1.SetCombatTextType(0)
+  [304] goto @448
+  [309] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [330] K2Node_DynamicCast_AsBpi_Gamestate = cast<bpi_gamestate_C>(CallFunc_GetGameState_ReturnValue)
+  [366] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate)
+  [395] if !(K2Node_DynamicCast_bSuccess) goto @448
+  [409] K2Node_DynamicCast_AsBpi_Gamestate.SetCombatTextType(1)
+  [448] return nothing
+  [450] end
+
+=== Talking State Change Dispatcher__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== Use Currently Selected Quickslot Item
+  [0] GetSelectedSlotFName(CallFunc_GetSelectedSlotFName_Name)
+  [23] CallFunc_StartUseItem_ReturnValue = self.ArchonInventory.StartUseItem(CallFunc_GetSelectedSlotFName_Name)
+  [74] Started Use = CallFunc_StartUseItem_ReturnValue
+  [93] return nothing
+  [95] end
+
+=== UserConstructionScript
+  [0] Setup Player Inventory()
+  [14] SetupCombatText()
+  [28] return nothing
+  [30] end
+
+=== WaitForHuntPassComponent
+  [0] ExecuteUbergraph_player_state_bp(6058)
+  [15] return nothing
+  [17] end

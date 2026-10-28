@@ -1,0 +1,197 @@
+{
+ "name": "lerawr_deaggro_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/lerawr_deaggro_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "bb_base",
+  "eqs_aetherconsume_position",
+  "shared_deaggro_cleanup_bt"
+ ],
+ "exports": {
+  "lerawr_deaggro_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@set_state_btdeco_C_7",
+     "@BTDecorator_Blackboard_8"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [
+       "@set_behemoth_loco_mode_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_2"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Deaggroing",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_2",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_1"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_Blackboard_1": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "HasEnteredCombatSinceLastDisengage is Is Set",
+    "BlackboardKey": "bb.HasEnteredCombatSinceLastDisengage",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTDecorator_Blackboard_8": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "ReadyToDeaggro is Is Set",
+    "BlackboardKey": "bb.ReadyToDeaggro",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt"
+   }
+  },
+  "BTDecorator_ForceSuccess_2": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 200.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_RunBehavior_0": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree shared_deaggro_cleanup_bt",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_aetherconsume_position",
+     "QueryConfig": [
+      {
+       "ParamName": "OnCircle.CircleRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1250.0,
+       "BBKey": "bb.None"
+      }
+     ],
+     "EQSQueryBlackboardKey": "bb.TargetActor"
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.CurrentPatrolPoint",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 20.0,
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_0": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Run",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "set_state_btdeco_C_7": {
+   "type": "set_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Deaggroing",
+    "TreeAsset": "BehaviorTree lerawr_deaggro_bt"
+   }
+  }
+ }
+}

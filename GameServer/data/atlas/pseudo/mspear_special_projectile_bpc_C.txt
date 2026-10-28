@@ -1,0 +1,221 @@
+# mspear_special_projectile_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateWeaponPartGameplay
+  [0] frame.K2Node_Event_StartTime = StartTime
+  [18] ExecuteUbergraph_mspear_special_projectile_bpc(1706)
+  [33] return nothing
+  [35] end
+
+=== CalculateCurrentAimAccuracy
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.LAimAccuracyCurve)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @414
+  [43] CallFunc_FMax_ReturnValue = FMax(Duration, 0.10000000149011612)
+  [89] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [118] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue, StartTime)
+  [164] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_FMax_ReturnValue)
+  [210] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Divide_DoubleDouble_ReturnValue, 0.0, 1.0)
+  [265] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FClamp_ReturnValue)
+  [294] CallFunc_GetFloatValue_ReturnValue = self.LAimAccuracyCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [353] K2Node_FunctionResult_Accuracy_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [382] Accuracy = K2Node_FunctionResult_Accuracy_ImplicitCast
+  [409] goto @441
+  [414] Accuracy = 0.0
+  [441] return nothing
+  [443] end
+
+=== DeactivateWeaponPartGameplay
+  [0] frame.K2Node_Event_EndTime = EndTime
+  [18] ExecuteUbergraph_mspear_special_projectile_bpc(1655)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_mspear_special_projectile_bpc
+  [0] push @3389
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetPowerTableData_ReturnValue = self.ArchonWeapon.GetPowerTableData(CallFunc_GetPowerTableData_OutPowerTableData)
+  [66] GetCustomAttributeFromWeaponPowerTable(CallFunc_GetPowerTableData_OutPowerTableData, 'SpearAimHoldDuration', CallFunc_GetCustomAttributeFromWeaponPowerTable_StartedTime, CallFunc_GetCustomAttributeFromWeaponPowerTable_Duration)
+  [120] self.LAimStartTime = CallFunc_GetCustomAttributeFromWeaponPowerTable_StartedTime
+  [147] self.LAimDuration = CallFunc_GetCustomAttributeFromWeaponPowerTable_Duration
+  [174] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [225] K2Node_MakeStruct_player_aim_request.AimCameraDistance = 325.0
+  [257] K2Node_MakeStruct_player_aim_request.AimCameraOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 75.0, 'Z': -65.0})
+  [309] K2Node_MakeStruct_player_aim_request.AimCameraFOV = 80.0
+  [341] K2Node_MakeStruct_player_aim_request.AimCameraTargetOffset = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 175.0})
+  [393] K2Node_MakeStruct_player_aim_request.AimCameraLagSpeed = 17.5
+  [425] K2Node_MakeStruct_player_aim_request.AimPoseOverride = h_mr_ms_melee_super_aim_base_01
+  [453] K2Node_MakeStruct_player_aim_request.AimOffsetOverride = h_mr_ms_super_ao
+  [481] K2Node_MakeStruct_player_aim_request.OverrideWeaponRootForAiming = true
+  [501] K2Node_MakeStruct_player_aim_request.ReticleWidgetClass = null
+  [521] K2Node_MakeStruct_player_aim_request.TimeConstant = 0.25
+  [553] CallFunc_GetComponentByClass_ReturnValue.StartAiming(K2Node_MakeStruct_player_aim_request)
+  [598] SpawnEffects()
+  [612] pop
+  [613] CalculateCurrentAimAccuracy(self.LAimStartTime, self.LAimDuration, CallFunc_CalculateCurrentAimAccuracy_Accuracy)
+  [654] self.L_CurrentAimAccuracy = CallFunc_CalculateCurrentAimAccuracy_Accuracy
+  [681] CallFunc_IsValid_ReturnValue_5 = IsValid(self.p_SpearAim)
+  [710] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [720] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(self.L_CurrentAimAccuracy, 0.0, 1.0, 1.0, 0.0)
+  [793] CallFunc_Conv_FloatToVector_InFloat_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_MapRangeClamped_ReturnValue)
+  [822] CallFunc_Conv_FloatToVector_ReturnValue_1 = Conv_FloatToVector(CallFunc_Conv_FloatToVector_InFloat_ImplicitCast_1)
+  [859] BreakVector(CallFunc_Conv_FloatToVector_ReturnValue_1, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [905] CallFunc_MakeVector_ReturnValue = MakeVector(1.0, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [960] self.p_SpearAim.SetVectorParameter('AimScale', CallFunc_MakeVector_ReturnValue)
+  [1018] CallFunc_Conv_FloatToVector_InFloat_ImplicitCast = cast<CST_DoubleToFloat>(self.L_CurrentAimAccuracy)
+  [1047] CallFunc_Conv_FloatToVector_ReturnValue = Conv_FloatToVector(CallFunc_Conv_FloatToVector_InFloat_ImplicitCast)
+  [1084] self.p_SpearAim.SetVectorParameter('FlareScale', CallFunc_Conv_FloatToVector_ReturnValue)
+  [1142] CallFunc_SetFloatParameter_Param_ImplicitCast = cast<CST_DoubleToFloat>(self.L_CurrentAimAccuracy)
+  [1171] self.p_SpearAim.SetFloatParameter('OpacityScale', CallFunc_SetFloatParameter_Param_ImplicitCast)
+  [1229] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(self.L_CurrentAimAccuracy, 0.0, 1.0, 1.0, 0.0)
+  [1302] CallFunc_SetFloatParameter_Param_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_MapRangeClamped_ReturnValue)
+  [1331] self.p_SpearAim.SetFloatParameter('RotScale', CallFunc_SetFloatParameter_Param_ImplicitCast_1)
+  [1389] pop
+  [1390] Default__archon_function_library_C.TryDeactivateComponent(self.p_SpearAim, self)
+  [1436] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_wep_spear_mortar_aim, self.ArchonCharacter, 0, Temp_delegate_Variable, false)
+  [1519] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_aiming_bpc_C)
+  [1570] CallFunc_GetComponentByClass_ReturnValue_1.StopAiming()
+  [1606] pop
+  [1607] CallFunc_IsValid_ReturnValue = IsValid(self.p_SpearAim)
+  [1636] if !(CallFunc_IsValid_ReturnValue) goto @1436
+  [1650] goto @1390
+  [1655] DeactivateWeaponPartGameplay(K2Node_Event_EndTime)
+  [1674] if !(self.bIsAiming) pop
+  [1684] push @1694
+  [1689] goto @1607
+  [1694] self.bIsAiming = false
+  [1705] pop
+  [1706] ActivateWeaponPartGameplay(K2Node_Event_StartTime)
+  [1725] self.L_GameplayStartTime = K2Node_Event_StartTime
+  [1752] push @1762
+  [1757] goto @15
+  [1762] self.bIsAiming = true
+  [1773] pop
+  [1774] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [1793] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bIsAiming, self.bEnableAimingUpdate)
+  [1831] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1841] goto @613
+  [1846] CallFunc_IsLocallyControlled_ReturnValue = self.ArchonCharacter.IsLocallyControlled()
+  [1892] if !(CallFunc_IsLocallyControlled_ReturnValue) pop
+  [1902] CallFunc_GetSubMesh_ReturnValue = self.ArchonWeapon.GetSubMesh(1, true)
+  [1947] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue = SpawnEmitterAttached_WeaponSeparation(ms_aim_p, CallFunc_GetSubMesh_ReturnValue, 'mspear_bottom_socket', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [2079] self.p_SpearAim = CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue
+  [2098] CallFunc_GetOwner_ReturnValue = self.ArchonWeapon.GetOwner()
+  [2140] Default__vfx_function_library_C.GetElementalParticleColorVector(CallFunc_GetOwner_ReturnValue, self, CallFunc_GetElementalParticleColorVector_ColorVector)
+  [2195] self.p_SpearAim.SetVectorParameter('ParticleColor', CallFunc_GetElementalParticleColorVector_ColorVector)
+  [2253] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_wep_spear_mortar_aim, self.ArchonCharacter, 0, Temp_delegate_Variable_1, false)
+  [2336] Default__global_function_library_C.Get Global Event Dispatcher(self.ArchonCharacter, self, CallFunc_Get_Global_Event_Dispatcher_Global_Event_Dispatcher)
+  [2391] Client3rdPartyWpnWarpikeShot__DelegateSignature()
+  [2432] pop
+  [2433] CallFunc_IsValid_ReturnValue_1 = IsValid(self.ArchonWeapon)
+  [2462] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2472] CallFunc_GetComponentByClass_ReturnValue_2 = self.ArchonWeapon.GetComponentByClass(ammo_bpc_C)
+  [2523] self.AmmoComponent = CallFunc_GetComponentByClass_ReturnValue_2
+  [2542] CallFunc_IsValid_ReturnValue_3 = IsValid(self.AmmoComponent)
+  [2571] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [2581] K2Node_CreateDelegate_OutputDelegate = bind(self.OnSpentAmmoWithScale)
+  [2604] K2Node_CreateDelegate_OutputDelegate += None
+  [2645] pop
+  [2646] self.LLastFiredShotAmmoScale = K2Node_CustomEvent_Spent_Ammo_Scale
+  [2673] pop
+  [2674] OnWeaponPartUnequipped()
+  [2684] push @2793
+  [2689] CallFunc_IsValid_ReturnValue_2 = IsValid(self.AmmoComponent)
+  [2718] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2728] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnSpentAmmoWithScale)
+  [2751] K2Node_CreateDelegate_OutputDelegate_1 -= None
+  [2792] pop
+  [2793] if !(self.bIsAiming) pop
+  [2803] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [2832] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue, self.LAimStartTime)
+  [2878] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.L_GameplayStartTime)
+  [2924] DeactivateWeaponPartGameplay(CallFunc_Add_DoubleDouble_ReturnValue)
+  [2947] pop
+  [2948] push @2958
+  [2953] goto @2433
+  [2958] CallFunc_IsValid_ReturnValue_4 = IsValid(self.ArchonWeapon)
+  [2987] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [2997] CallFunc_GetItemId_ReturnValue = self.ArchonWeapon.GetItemId()
+  [3047] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetItemId_ReturnValue)
+  [3084] CallFunc_LookupPowerTableRow_ReturnValue = self.ArchonWeapon.LookupPowerTableRow(CallFunc_Conv_StringToName_ReturnValue, CallFunc_LookupPowerTableRow_OutPowerTableData)
+  [3148] if !(CallFunc_LookupPowerTableRow_ReturnValue) goto @3163
+  [3162] pop
+  [3163] CallFunc_GetItemId_ReturnValue = self.ArchonWeapon.GetItemId()
+  [3213] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Invalid mortar spear item ID: "', CallFunc_GetItemId_ReturnValue)
+  [3283] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '" in OnEquip blueprint call')
+  [3349] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue_1)
+  [3368] pop
+  [3369] OnWeaponPartEquipped()
+  [3379] goto @2948
+  [3384] goto @3369
+  [3389] return nothing
+  [3391] end
+
+=== GetAmmoScale
+  [0] AmmoScale = self.LLastFiredShotAmmoScale
+  [27] return nothing
+  [29] end
+
+=== GetCurrentAimAccuracy
+  [0] Accuracy = self.L_CurrentAimAccuracy
+  [27] return nothing
+  [29] end
+
+=== GetCustomAttributeFromWeaponPowerTable
+  [0] push @897
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(WeaponPowerTableData.CustomAttributes)
+  [130] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [159] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [197] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [235] if !(CallFunc_BooleanAND_ReturnValue) goto @418
+  [249] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [276] push @823
+  [281] Default__KismetArrayLibrary.Array_Get(WeaponPowerTableData.CustomAttributes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [349] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item.Name, CustomAttribute)
+  [396] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [406] Temp_bool_True_if_break_was_hit_Variable = true
+  [417] pop
+  [418] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(self.L_GameplayStartTime)
+  [455] PrintString(self, CallFunc_Conv_DoubleToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [529] Default__KismetArrayLibrary.Array_Get(WeaponPowerTableData.CustomAttributes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [597] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.BaseValue)
+  [635] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, self.L_GameplayStartTime)
+  [681] LAimAccuracyDuration = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [708] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [737] LAimAccuracyStartedTime = CallFunc_GetTimeSeconds_ReturnValue
+  [764] StartedTime = LAimAccuracyStartedTime
+  [791] Duration = LAimAccuracyDuration
+  [818] goto @897
+  [823] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [865] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [892] goto @62
+  [897] return nothing
+  [899] end
+
+=== OnSpentAmmoWithScale
+  [0] frame.K2Node_CustomEvent_Spent_Ammo_Scale = Spent Ammo Scale
+  [18] ExecuteUbergraph_mspear_special_projectile_bpc(2646)
+  [33] return nothing
+  [35] end
+
+=== OnWeaponPartEquipped
+  [0] ExecuteUbergraph_mspear_special_projectile_bpc(3384)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponPartUnequipped
+  [0] ExecuteUbergraph_mspear_special_projectile_bpc(2674)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_mspear_special_projectile_bpc(1774)
+  [33] return nothing
+  [35] end
+
+=== SpawnEffects
+  [0] ExecuteUbergraph_mspear_special_projectile_bpc(1846)
+  [15] return nothing
+  [17] end

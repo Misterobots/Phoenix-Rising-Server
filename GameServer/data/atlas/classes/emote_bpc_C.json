@@ -1,0 +1,625 @@
+{
+ "name": "emote_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 232,
+ "sdk_header": "emote_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "SheatheComponent",
+   "type": "Uweapon_sheathe_bpc_C*",
+   "offset": "0xA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference",
+    "AdvancedDisplay"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<weapon_sheathe_bpc_C>"
+  },
+  {
+   "name": "NetworkMontageComponent",
+   "type": "UNetworkedMontageComponent*",
+   "offset": "0xB0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference",
+    "AdvancedDisplay"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<NetworkedMontageComponent>"
+  },
+  {
+   "name": "IsPlayingEmote?",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "AdvancedDisplay"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "DefaultEmotes",
+   "type": "TArray<TSoftObjectPtr<UAnimMontage>>",
+   "offset": "0xC0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "PlayerEventDispatcherComponent",
+   "type": "Uplayer_eventdispatcher_bpc_C*",
+   "offset": "0xD0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference",
+    "AdvancedDisplay"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<player_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "CurrentEmoteMontage",
+   "type": "UAnimMontage*",
+   "offset": "0xD8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "AdvancedDisplay"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<AnimMontage>"
+  },
+  {
+   "name": "PlayerLocomotionComponent",
+   "type": "Uplayer_state_machine_bpc_C*",
+   "offset": "0xE0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<player_state_machine_bpc_C>"
+  }
+ ],
+ "components": [
+  {
+   "name": "NetworkMontageComponent",
+   "class": "UNetworkedMontageComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CanPerformEmote",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "bool",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 13,
+   "reads": [
+    "IsPlayingEmote?"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ActorComponent.GetOwner",
+    "BlueprintGameplayTagLibrary.HasAnyTags",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagContainerFromArray",
+    "CanPerformAction",
+    "GetOwnedGameplayTags",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_emote_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 141,
+   "reads": [
+    "AnimSequenceAsset",
+    "CurrentEmoteMontage",
+    "DefaultEmotes",
+    "IsPlayingEmote?",
+    "NetworkMontageComponent",
+    "OnMovementModeChanged",
+    "OnSheatheWeaponAnimEnd",
+    "PlayerEventDispatcherComponent",
+    "SheatheComponent",
+    "WeaponRestriction",
+    "WeaponType"
+   ],
+   "sets": [
+    "CurrentEmoteMontage",
+    "IsPlayingEmote?",
+    "NetworkMontageComponent",
+    "PlayerEventDispatcherComponent",
+    "PlayerLocomotionComponent",
+    "SheatheComponent"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "AnimInstance.Montage_RemoveBlendingOutDelegate",
+    "AnimInstance.Montage_SetBlendingOutDelegate",
+    "ArchonLoadout.GetManualEmote",
+    "ArchonPlayerController.GetLoadout",
+    "GetLocalController",
+    "GetOwnedWeapon",
+    "GetOwnerMesh",
+    "GetWeaponSheatheState",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.LoadAsset",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "NetworkedMontageComponent.CurrentMontageStop",
+    "NetworkedMontageComponent.PlayMontage",
+    "PlayEmoteAnim",
+    "ServerSetEmoteState",
+    "SetSheatheWeapon",
+    "SkeletalMeshComponent.GetAnimInstance",
+    "StopEmoteAudio",
+    "Stop_Emote_Audio_Multicast",
+    "UtilityMethods.HasReference"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass player_state_machine_bpc_C",
+    "BlueprintGeneratedClass weapon_sheathe_bpc_C"
+   ]
+  },
+  {
+   "name": "OnEmoteBlendOut",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Montage",
+     "type": "UAnimMontage*"
+    },
+    {
+     "name": "bInterrupted",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_00A792C4495B9DB0E50C8D83189B60A1",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "UObject*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnMovementModeChanged_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PreviousMovementMode",
+     "type": "EMovementMode"
+    },
+    {
+     "name": "NewMovementMode",
+     "type": "EMovementMode"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSheatheWeaponEnd_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Success",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayEmoteAnim",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Asset",
+     "type": "TSoftObjectPtr<UObject*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerSetEmoteState",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "IsPlayingEmote_",
+     "type": "bool"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopEmoteAudio",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AkGameplayStatics.GetAkComponent",
+    "GetOwnerMesh",
+    "PostAkEvent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Stop_Emote_Sounds"
+   ]
+  },
+  {
+   "name": "Stop_Emote_Audio_Multicast",
+   "flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Interrupted",
+     "type": "bool"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Stop_Emote_Audio_Server",
+   "flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Interrupted",
+     "type": "bool"
+    }
+   ],
+   "rpc": "server",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TriggerEmote",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EmoteIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "emote_bpc_C.ExecuteUbergraph_emote_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Player/blueprints/Components/emote_bpc",
+ "pseudo_file": "pseudo/emote_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

@@ -1,0 +1,682 @@
+# aggro_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CacheComponentsBP
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(threat_tracking_bpc_C)
+  [71] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [100] if !(CallFunc_IsValid_ReturnValue) goto @204
+  [114] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [134] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(threat_tracking_bpc_C)
+  [185] self.ThreatTrackingBPC = CallFunc_GetComponentByClass_ReturnValue
+  [204] return nothing
+  [206] end
+
+=== CalculateAccessiblity
+  [0] push @1465
+  [5] LocalPathResult = 0
+  [25] LocalPathCost = -1.0
+  [52] LocalOwnerProjectedNavPoint = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [95] LocalAccessible = 3
+  [115] push @1392
+  [120] push @393
+  [125] CalculateAccessibility(Target, TargetData, CallFunc_CalculateAccessibility_OutTargetAccessibility, CallFunc_CalculateAccessibility_OutPathExists, CallFunc_CalculateAccessibility_OutPathCostIfPathExists)
+  [180] K2Node_VariableSet_LocalPathCost_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_CalculateAccessibility_OutPathCostIfPathExists)
+  [209] LocalPathCost = K2Node_VariableSet_LocalPathCost_ImplicitCast
+  [236] CalculateAccessibility(Target, TargetData, CallFunc_CalculateAccessibility_OutTargetAccessibility, CallFunc_CalculateAccessibility_OutPathExists, CallFunc_CalculateAccessibility_OutPathCostIfPathExists)
+  [291] LocalPathExists = CallFunc_CalculateAccessibility_OutPathExists
+  [310] CalculateAccessibility(Target, TargetData, CallFunc_CalculateAccessibility_OutTargetAccessibility, CallFunc_CalculateAccessibility_OutPathExists, CallFunc_CalculateAccessibility_OutPathCostIfPathExists)
+  [365] LocalAccessible = CallFunc_CalculateAccessibility_OutTargetAccessibility
+  [392] pop
+  [393] if !(self.DebugAggro) pop
+  [403] Temp_struct_Variable = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [455] Temp_struct_Variable_1 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [507] Temp_struct_Variable_2 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [559] Temp_struct_Variable_3 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [611] Temp_struct_Variable_4 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [663] Temp_struct_Variable_5 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [715] Temp_byte_Variable = LocalAccessible
+  [742] DrawDebugSphere(self, LocalOwnerProjectedNavPoint, 200.0, 12, switch(Temp_byte_Variable){0: Temp_struct_Variable_5, 1: Temp_struct_Variable_4, 2: Temp_struct_Variable_3, 3: Temp_struct_Variable_2, 4: Temp_struct_Variable_1, 5: Temp_struct_Variable, default: K2Node_Select_Default}, 0.01, 5.0)
+  [897] Temp_struct_Variable = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [949] Temp_struct_Variable_1 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [1001] Temp_struct_Variable_2 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [1053] Temp_struct_Variable_3 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [1105] Temp_struct_Variable_4 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [1157] Temp_struct_Variable_5 = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [1209] Temp_byte_Variable = LocalAccessible
+  [1236] DrawDebugSphere(self, LocalProjectedPoint, 200.0, 12, switch(Temp_byte_Variable){0: Temp_struct_Variable_5, 1: Temp_struct_Variable_4, 2: Temp_struct_Variable_3, 3: Temp_struct_Variable_2, 4: Temp_struct_Variable_1, 5: Temp_struct_Variable, default: K2Node_Select_Default}, 0.01, 5.0)
+  [1391] pop
+  [1392] TargetIsAccessible = LocalAccessible
+  [1419] PathExists = LocalPathExists
+  [1438] PathCostIfPathExists = LocalPathCost
+  [1465] return nothing
+  [1467] end
+
+=== CalculatePathCosts
+  [0] ExecuteUbergraph_aggro_bpc(5403)
+  [15] return nothing
+  [17] end
+
+=== CanAggroNewTarget
+  [0] CallFunc_GetTetherActor_ReturnValue = GetTetherActor()
+  [20] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetTetherActor_ReturnValue)
+  [49] if !(CallFunc_IsValid_ReturnValue) goto @225
+  [63] CallFunc_IsInTetherRange_ReturnValue = IsInTetherRange(Target)
+  [92] CallFunc_IsInEnterCombatRange_ReturnValue = IsInEnterCombatRange(Target)
+  [125] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bCanAggroTargetsOutsideTetherRange, CallFunc_IsInEnterCombatRange_ReturnValue)
+  [163] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsInTetherRange_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [201] ReturnValue = CallFunc_BooleanOR_ReturnValue
+  [220] goto @236
+  [225] ReturnValue = true
+  [236] return ReturnValue
+  [246] end
+
+=== CanTargetActor
+  [0] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(Actor, player_interface_C)
+  [38] CanTarget = CallFunc_DoesImplementInterface_ReturnValue
+  [57] return nothing
+  [59] end
+
+=== ExecuteUbergraph_aggro_bpc
+  [0] push @5936
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [35] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [64] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBlackboard_ReturnValue)
+  [93] if !(CallFunc_IsValid_ReturnValue) goto @709
+  [107] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [127] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('CanDeaggroWarning')
+  [168] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [197] CallFunc_GetBlackboard_ReturnValue.SetValueAsBool(CallFunc_MakeLiteralName_ReturnValue, true)
+  [239] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [259] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [288] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('EnterCombatRange')
+  [329] CallFunc_SetValueAsFloat_FloatValue_ImplicitCast = cast<CST_DoubleToFloat>(self.EnterCombatRange)
+  [358] CallFunc_GetBlackboard_ReturnValue.SetValueAsFloat(CallFunc_MakeLiteralName_ReturnValue_1, CallFunc_SetValueAsFloat_FloatValue_ImplicitCast)
+  [408] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [428] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [457] CallFunc_MakeLiteralName_ReturnValue_2 = MakeLiteralName('TetherActor')
+  [498] CallFunc_GetTetherActor_ReturnValue = GetTetherActor()
+  [518] CallFunc_GetBlackboard_ReturnValue.SetValueAsObject(CallFunc_MakeLiteralName_ReturnValue_2, CallFunc_GetTetherActor_ReturnValue)
+  [568] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [588] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [617] CallFunc_MakeLiteralName_ReturnValue_3 = MakeLiteralName('TetherRadius')
+  [658] CallFunc_GetBlackboard_ReturnValue.SetValueAsFloat(CallFunc_MakeLiteralName_ReturnValue_3, self.TetherRadius)
+  [708] pop
+  [709] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=15), -1277953004, 'ExecuteUbergraph_aggro_bpc', self})
+  [763] pop
+  [764] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnActivated)
+  [787] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [806] pop
+  [807] push @2957
+  [812] GetTargetAccessibilityAndVisibility(Temp_int_Array_Index_Variable, CallFunc_GetTargetAccessibilityAndVisibility_OutAccessibility, CallFunc_GetTargetAccessibilityAndVisibility_OutVisibility)
+  [849] Temp_string_Variable = ''
+  [869] Temp_struct_Variable = LinearColor{0.0, 0.0, 0.0, 0.0}
+  [921] Temp_struct_Variable_1 = LinearColor{0.723958, 0.0, 0.0, 1.0}
+  [973] Temp_struct_Variable_2 = LinearColor{0.880208, 0.363454, 0.0, 1.0}
+  [1025] Temp_struct_Variable_3 = LinearColor{0.890625, 0.886451, 0.063223, 1.0}
+  [1077] Temp_struct_Variable_4 = LinearColor{0.0, 0.859375, 0.132621, 1.0}
+  [1129] Temp_string_Variable_1 = '*'
+  [1150] CallFunc_GetTargetAccessRequirementFromBools_ReturnValue = GetTargetAccessRequirementFromBools(CallFunc_GetTargetAccessibilityAndVisibility_OutAccessibility, CallFunc_GetTargetAccessibilityAndVisibility_OutVisibility)
+  [1196] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(ETargetAccessRequirement, CallFunc_GetTargetAccessRequirementFromBools_ReturnValue)
+  [1242] Temp_byte_Variable = CallFunc_GetTargetAccessRequirementFromBools_ReturnValue
+  [1269] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [1298] Default__KismetArrayLibrary.Array_Get(self.TargetData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1357] CallFunc_Subtract_DoubleDouble_B_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.LastSeenTimestamp)
+  [1395] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, CallFunc_Subtract_DoubleDouble_B_ImplicitCast_2)
+  [1441] CallFunc_Conv_DoubleToText_ReturnValue_1 = Conv_DoubleToText(CallFunc_Subtract_DoubleDouble_ReturnValue_3, 0, false, true, 2, 324, 0, 2)
+  [1502] CallFunc_Conv_TextToString_ReturnValue_1 = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue_1)
+  [1539] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(CallFunc_Array_Get_Item.Target)
+  [1585] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(Temp_int_Array_Index_Variable, self.CurrentTargetIndex)
+  [1623] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TargetScore)
+  [1661] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentTargetStickiness)
+  [1690] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [1736] Temp_bool_Variable_1 = CallFunc_EqualEqual_IntInt_ReturnValue
+  [1755] Temp_bool_Variable = CallFunc_EqualEqual_IntInt_ReturnValue
+  [1774] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TargetScore)
+  [1812] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(switch(Temp_bool_Variable_1){false: Temp_string_Variable, true: Temp_string_Variable_1, default: K2Node_Select_Default_1}, CallFunc_GetDisplayName_ReturnValue_1)
+  [1902] CallFunc_Conv_DoubleToText_ReturnValue_2 = Conv_DoubleToText(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: CallFunc_Multiply_DoubleDouble_ReturnValue, default: K2Node_Select_Default_2}, 0, false, true, 1, 324, 3, 3)
+  [2007] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, '(')
+  [2047] CallFunc_Conv_TextToString_ReturnValue_2 = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue_2)
+  [2084] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_TextToString_ReturnValue_2)
+  [2130] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, ') - ')
+  [2173] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [2219] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, ' last seen: ')
+  [2270] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_8, CallFunc_Conv_TextToString_ReturnValue_1)
+  [2316] CallFunc_Concat_StrStr_ReturnValue_10 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_9, 's ago')
+  [2360] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_10, true, false, switch(Temp_byte_Variable){0: Temp_struct_Variable_4, 1: Temp_struct_Variable_3, 2: Temp_struct_Variable_2, 3: Temp_struct_Variable_1, 4: Temp_struct_Variable, default: K2Node_Select_Default}, 0.01, 'None')
+  [2500] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(Temp_int_Array_Index_Variable, self.CurrentTargetIndex)
+  [2538] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [2548] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [2568] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetOwner_ReturnValue_3)
+  [2604] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [2633] if !(K2Node_DynamicCast_bSuccess) goto @3165
+  [2647] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [2693] CallFunc_GetSocketLocation_ReturnValue = CallFunc_GetMesh_SkeletalMesh.GetSocketLocation('head_jnt')
+  [2760] Default__KismetArrayLibrary.Array_Get(self.TargetData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2819] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_Array_Get_Item.Target.K2_GetActorLocation()
+  [2878] DrawDebugArrow(self, CallFunc_GetSocketLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, 2500.0, LinearColor{0.89, 0.0, 0.218696, 1.0}, 0.1, 5.0)
+  [2956] pop
+  [2957] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2999] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [3026] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TargetData)
+  [3085] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [3123] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [3133] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [3160] goto @807
+  [3165] CallFunc_GetMesh_SkeletalMesh = null
+  [3176] goto @2693
+  [3181] Temp_int_Array_Index_Variable = 0
+  [3204] goto @3026
+  [3209] Temp_int_Loop_Counter_Variable = 0
+  [3232] Temp_int_Array_Index_Variable_1 = 0
+  [3255] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.TargetData)
+  [3314] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [3352] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @3583
+  [3366] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [3393] push @3509
+  [3398] Default__KismetArrayLibrary.Array_Get(self.TargetData, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [3457] GetOrAddTargetData(CallFunc_Array_Get_Item_1.Target, true, CallFunc_GetOrAddTargetData_TargetData, CallFunc_GetOrAddTargetData_DataIndex)
+  [3508] pop
+  [3509] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [3551] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [3578] goto @3255
+  [3583] UpdateAfterTargetDataChange()
+  [3593] pop
+  [3594] if !(Temp_bool_IsClosed_Variable) goto @3609
+  [3608] pop
+  [3609] Temp_bool_IsClosed_Variable = true
+  [3620] ValidateComponent()
+  [3630] CacheComponents()
+  [3640] CacheComponentsBP()
+  [3654] CallFunc_GetOwner_ReturnValue_5 = GetOwner()
+  [3674] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_5.HasAuthority()
+  [3716] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [3726] RefreshAndScoreTargets()
+  [3740] if !(self.CanDeaggro) goto @3834
+  [3754] K2Node_CreateDelegate_OutputDelegate_6 = bind(self.TryDegenFrustration)
+  [3777] CallFunc_K2_SetTimerDelegate_ReturnValue_3 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_6, self.FrustrationDegenInterval, true, 0.0, 0.0)
+  [3834] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.CalculatePathCosts)
+  [3857] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.PathCostCheckInterval)
+  [3886] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_5, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [3943] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.RefreshTargetVisibilityEvent)
+  [3966] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.VisibilityCheckInterval)
+  [3995] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_3, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1, true, 0.0, 0.0)
+  [4052] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.RefreshAndScoreTargets)
+  [4075] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2 = cast<CST_DoubleToFloat>(self.TargetRefreshAndScoreInterval)
+  [4104] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_4, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2, true, 0.0, 0.0)
+  [4161] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.RefreshTargetAggroEvent)
+  [4184] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_3 = cast<CST_DoubleToFloat>(self.AggroCheckInterval)
+  [4213] CallFunc_K2_SetTimerDelegate_ReturnValue_4 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_3, true, 0.0, 0.0)
+  [4270] goto @709
+  [4275] Temp_bool_IsClosed_Variable = true
+  [4286] pop
+  [4287] push @3594
+  [4292] if !(Temp_bool_Has_Been_Initd_Variable) goto @4307
+  [4306] pop
+  [4307] Temp_bool_Has_Been_Initd_Variable = true
+  [4318] if !(false) pop
+  [4320] goto @4275
+  [4325] pop
+  [4326] if !(self.bAutoActivate) goto @764
+  [4340] goto @4287
+  [4345] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [4365] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue_2.HasAuthority()
+  [4407] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [4417] push @4480
+  [4422] push @5011
+  [4427] CallFunc_UpdateCurrentTargetFrustration_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [4456] UpdateCurrentTargetFrustration(CallFunc_UpdateCurrentTargetFrustration_DeltaTime_ImplicitCast)
+  [4479] pop
+  [4480] if !(self.DebugAggro) pop
+  [4490] push @4983
+  [4495] CallFunc_GetOwner_ReturnValue_4 = GetOwner()
+  [4515] CallFunc_GetGameTimeInSeconds_ReturnValue_2 = GetGameTimeInSeconds(self)
+  [4544] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_GetOwner_ReturnValue_4)
+  [4581] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(CallFunc_GetDisplayName_ReturnValue, ' last had a valid target ')
+  [4645] CallFunc_Subtract_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(self.LastHadAnAccessibleVisibleTargetTimestamp)
+  [4674] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue_2, CallFunc_Subtract_DoubleDouble_B_ImplicitCast_1)
+  [4720] CallFunc_Conv_DoubleToText_ReturnValue = Conv_DoubleToText(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0, false, true, 1, 324, 2, 2)
+  [4781] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue)
+  [4818] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, CallFunc_Conv_TextToString_ReturnValue)
+  [4864] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 's ago')
+  [4908] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, false, LinearColor{0.065574, 0.34351, 0.635417, 1.0}, 0.01, 'None')
+  [4982] pop
+  [4983] Temp_int_Loop_Counter_Variable_1 = 0
+  [5006] goto @3181
+  [5011] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [5040] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.TargetChangedTimestamp)
+  [5069] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue_1, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [5115] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.TargetStickinessDecayTime)
+  [5161] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Divide_DoubleDouble_ReturnValue, 0.0, 1.0)
+  [5216] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(1.0, CallFunc_FClamp_ReturnValue)
+  [5262] CallFunc_Lerp_B_ImplicitCast = cast<CST_FloatToDouble>(self.TargetStickinessMax)
+  [5291] CallFunc_Lerp_ReturnValue = Lerp(self.TargetStickinessMin, CallFunc_Lerp_B_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue_2)
+  [5346] K2Node_VariableSet_CurrentTargetStickiness_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Lerp_ReturnValue)
+  [5375] self.CurrentTargetStickiness = K2Node_VariableSet_CurrentTargetStickiness_ImplicitCast
+  [5402] pop
+  [5403] goto @3209
+  [5408] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [5428] K2Node_MakeStruct_EnvNamedValue.ParamName = 'EnterCombatRange'
+  [5468] K2Node_MakeStruct_EnvNamedValue.ParamType = 0
+  [5497] K2Node_MakeStruct_Value_ImplicitCast = cast<CST_DoubleToFloat>(self.EnterCombatRange)
+  [5526] K2Node_MakeStruct_EnvNamedValue.Value = K2Node_MakeStruct_Value_ImplicitCast
+  [5562] array{K2Node_MakeStruct_EnvNamedValue}
+  [5582] CallFunc_RunEQSQuery_ReturnValue = RunEQSQuery(self, self.TargettingQuery, CallFunc_GetOwner_ReturnValue_1, 3, null, K2Node_MakeArray_Array)
+  [5633] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_RunEQSQuery_ReturnValue)
+  [5662] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [5672] K2Node_CreateDelegate_OutputDelegate = bind(self.OnRefreshAndScoreTargetsQueryFinished)
+  [5695] K2Node_CreateDelegate_OutputDelegate += None
+  [5736] pop
+  [5737] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [5758] K2Node_DynamicCast_AsBpi_Gamestate = cast<bpi_gamestate_C>(CallFunc_GetGameState_ReturnValue)
+  [5794] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate)
+  [5823] if !(K2Node_DynamicCast_bSuccess_1) goto @5904
+  [5837] K2Node_DynamicCast_AsBpi_Gamestate.HasGameStarted(CallFunc_HasGameStarted_GameStarted)
+  [5883] if !(CallFunc_HasGameStarted_GameStarted) pop
+  [5893] RefreshTargetVisibility()
+  [5903] pop
+  [5904] CallFunc_HasGameStarted_GameStarted = false
+  [5915] goto @5883
+  [5920] goto @4287
+  [5925] RefreshTargetAggro()
+  [5935] pop
+  [5936] return nothing
+  [5938] end
+
+=== GetEnterCombatRange
+  [0] K2Node_FunctionResult_ReturnValue_ImplicitCast = cast<CST_DoubleToFloat>(self.EnterCombatRange)
+  [29] ReturnValue = K2Node_FunctionResult_ReturnValue_ImplicitCast
+  [56] return ReturnValue
+  [66] end
+
+=== GetOrAddTargetData
+  [0] push @1726
+  [5] CallFunc_GetIndexOfTarget_ReturnValue = GetIndexOfTarget(Target)
+  [42] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetIndexOfTarget_ReturnValue, 0)
+  [76] if !(CallFunc_Less_IntInt_ReturnValue) goto @1385
+  [90] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [119] K2Node_MakeStruct_TargetData.Target = Target
+  [147] K2Node_MakeStruct_TargetData.PathCost = 0.0
+  [179] K2Node_MakeStruct_TargetData.TargetScore = 0.0
+  [211] K2Node_MakeStruct_LastAggroTimestamp_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [240] K2Node_MakeStruct_TargetData.LastAggroTimestamp = K2Node_MakeStruct_LastAggroTimestamp_ImplicitCast
+  [276] K2Node_MakeStruct_TargetData.LastSeenTimestamp = 0.0
+  [308] K2Node_MakeStruct_TargetData.LastAccessibleTimestamp = 0.0
+  [340] K2Node_MakeStruct_TargetData.PathExists = false
+  [360] K2Node_MakeStruct_TargetData.Accessibility = 3
+  [389] K2Node_MakeStruct_TargetData.DeaggroState = 1
+  [418] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.TargetData, K2Node_MakeStruct_TargetData)
+  [486] LocalIndex = CallFunc_Array_Add_ReturnValue
+  [513] K2Node_CreateDelegate_OutputDelegate = bind(self.OnTargetDestroyed)
+  [536] K2Node_CreateDelegate_OutputDelegate += None
+  [577] Default__KismetArrayLibrary.Array_Get(self.TargetData, LocalIndex, CallFunc_Array_Get_Item_1)
+  [636] CalculateAccessiblity(Target, CallFunc_Array_Get_Item_1, CallFunc_CalculateAccessiblity_TargetIsAccessible, CallFunc_CalculateAccessiblity_PathExists, CallFunc_CalculateAccessiblity_PathCostIfPathExists)
+  [695] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [724] Default__KismetArrayLibrary.Array_Get(self.TargetData, LocalIndex, CallFunc_Array_Get_Item_1)
+  [783] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(CallFunc_CalculateAccessiblity_TargetIsAccessible, 1)
+  [814] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(CallFunc_CalculateAccessiblity_TargetIsAccessible, 0)
+  [845] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_3, CallFunc_EqualEqual_ByteByte_ReturnValue_2)
+  [883] Temp_bool_Variable = CallFunc_BooleanOR_ReturnValue_1
+  [902] K2Node_Select_Option_0_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.LastAccessibleTimestamp)
+  [940] K2Node_SetFieldsInStruct_PathCost_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateAccessiblity_PathCostIfPathExists)
+  [969] CallFunc_Array_Get_Item_1.PathCost = K2Node_SetFieldsInStruct_PathCost_ImplicitCast
+  [1005] K2Node_SetFieldsInStruct_LastAccessibleTimestamp_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: K2Node_Select_Option_0_ImplicitCast, true: CallFunc_GetGameTimeInSeconds_ReturnValue_1, default: K2Node_Select_Default})
+  [1078] CallFunc_Array_Get_Item_1.LastAccessibleTimestamp = K2Node_SetFieldsInStruct_LastAccessibleTimestamp_ImplicitCast
+  [1114] CallFunc_Array_Get_Item_1.PathExists = CallFunc_CalculateAccessiblity_PathExists
+  [1142] CallFunc_Array_Get_Item_1.Accessibility = CallFunc_CalculateAccessiblity_TargetIsAccessible
+  [1178] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item_1
+  [1205] Default__KismetArrayLibrary.Array_Set(self.TargetData, LocalIndex, K2Node_SetFieldsInStruct_StructOut, false)
+  [1265] push @1586
+  [1270] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_CalculateAccessiblity_TargetIsAccessible, 2)
+  [1301] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_CalculateAccessiblity_TargetIsAccessible, 3)
+  [1332] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [1370] if !(CallFunc_BooleanOR_ReturnValue) goto @1704
+  [1384] pop
+  [1385] CallFunc_GetIndexOfTarget_ReturnValue = GetIndexOfTarget(Target)
+  [1422] LocalIndex = CallFunc_GetIndexOfTarget_ReturnValue
+  [1449] if !(RefreshCachedData) goto @1468
+  [1463] goto @577
+  [1468] Default__KismetArrayLibrary.Array_Get(self.TargetData, LocalIndex, CallFunc_Array_Get_Item_1)
+  [1527] TargetData = CallFunc_Array_Get_Item_1
+  [1554] DataIndex = LocalIndex
+  [1581] goto @1726
+  [1586] Default__KismetArrayLibrary.Array_Get(self.TargetData, LocalIndex, CallFunc_Array_Get_Item)
+  [1645] TargetData = CallFunc_Array_Get_Item
+  [1672] DataIndex = LocalIndex
+  [1699] goto @1726
+  [1704] ClearPendingFrustrationFromTarget(Target, 2)
+  [1725] pop
+  [1726] return nothing
+  [1728] end
+
+=== GetTargets
+  [0] push @476
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TargetData)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @370
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @402
+  [194] CallFunc_IsTargetValid_ReturnValue = IsTargetValid(Temp_int_Array_Index_Variable, Accessibility Requirement)
+  [232] if !(CallFunc_IsTargetValid_ReturnValue) pop
+  [242] Default__KismetArrayLibrary.Array_Get(self.TargetData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [301] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(Matched Data, CallFunc_Array_Get_Item)
+  [369] pop
+  [370] Matching Target Datas = Matched Data
+  [397] goto @476
+  [402] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [444] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [471] goto @51
+  [476] return nothing
+  [478] end
+
+=== IncreaseFrustration
+  [0] push @2133
+  [5] IsAbleToBuildFrustration(CallFunc_IsAbleToBuildFrustration_AbleToBuildFrustration)
+  [28] if !(CallFunc_IsAbleToBuildFrustration_AbleToBuildFrustration) pop
+  [38] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(Amount)
+  [67] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [105] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @697
+  [119] push @1012
+  [124] CallFunc_GetIndexOfTrackedFrustration_ReturnValue = GetIndexOfTrackedFrustration(Reason)
+  [161] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetIndexOfTrackedFrustration_ReturnValue, 0)
+  [195] if !(CallFunc_Less_IntInt_ReturnValue) goto @2064
+  [209] K2Node_MakeStruct_FrustrationFloatPair.Reason = Reason
+  [245] K2Node_MakeStruct_FrustrationFloatPair.Amount = 0.0
+  [277] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.FrustrationTracking, K2Node_MakeStruct_FrustrationFloatPair)
+  [345] LocalIndex = CallFunc_Array_Add_ReturnValue
+  [372] Default__KismetArrayLibrary.Array_Get(self.FrustrationTracking, LocalIndex, CallFunc_Array_Get_Item)
+  [431] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.Amount)
+  [469] CallFunc_Add_DoubleDouble_B_ImplicitCast_1 = cast<CST_FloatToDouble>(Amount)
+  [498] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Add_DoubleDouble_B_ImplicitCast_1)
+  [544] K2Node_SetFieldsInStruct_Amount_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [573] CallFunc_Array_Get_Item.Amount = K2Node_SetFieldsInStruct_Amount_ImplicitCast
+  [609] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [636] Default__KismetArrayLibrary.Array_Set(self.FrustrationTracking, LocalIndex, K2Node_SetFieldsInStruct_StructOut, false)
+  [696] pop
+  [697] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [726] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [776] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [818] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'increase frustration should be > 0!')
+  [892] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [966] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [986] if !(CallFunc_IsShipping_ReturnValue) goto @1001
+  [1000] pop
+  [1001] StackTrace()
+  [1011] pop
+  [1012] TryDelayDegen()
+  [1022] push @1463
+  [1027] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(self.CurrentFrustration)
+  [1056] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(Amount)
+  [1085] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1131] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue_1, 50.0)
+  [1169] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1) pop
+  [1179] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('CanDeaggroWarning')
+  [1220] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1240] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(CallFunc_GetOwner_ReturnValue_1)
+  [1269] CallFunc_GetValueAsBool_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue_1.GetValueAsBool(CallFunc_MakeLiteralName_ReturnValue_1)
+  [1320] if !(CallFunc_GetValueAsBool_ReturnValue_1) pop
+  [1330] CallFunc_MakeLiteralName_ReturnValue_2 = MakeLiteralName('ReadyToDeaggroWarning')
+  [1371] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1391] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(CallFunc_GetOwner_ReturnValue_1)
+  [1420] CallFunc_GetBlackboard_ReturnValue_1.SetValueAsBool(CallFunc_MakeLiteralName_ReturnValue_2, true)
+  [1462] pop
+  [1463] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(self.CurrentFrustration)
+  [1492] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(Amount)
+  [1521] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1567] K2Node_VariableSet_CurrentFrustration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [1596] self.CurrentFrustration = K2Node_VariableSet_CurrentFrustration_ImplicitCast
+  [1623] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.CurrentFrustration)
+  [1652] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaxFrustration)
+  [1681] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [1719] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [1729] self.CurrentFrustration = self.MaxFrustration
+  [1756] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('ReadyToDeaggro')
+  [1797] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1817] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [1846] CallFunc_GetValueAsBool_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetValueAsBool(CallFunc_MakeLiteralName_ReturnValue)
+  [1897] if !(CallFunc_GetValueAsBool_ReturnValue) goto @1912
+  [1911] pop
+  [1912] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('ReadyToDeaggro')
+  [1953] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1973] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [2002] CallFunc_GetBlackboard_ReturnValue.SetValueAsBool(CallFunc_MakeLiteralName_ReturnValue, true)
+  [2044] StartedFrustration__DelegateSignature()
+  [2063] pop
+  [2064] CallFunc_GetIndexOfTrackedFrustration_ReturnValue = GetIndexOfTrackedFrustration(Reason)
+  [2101] LocalIndex = CallFunc_GetIndexOfTrackedFrustration_ReturnValue
+  [2128] goto @372
+  [2133] return nothing
+  [2135] end
+
+=== IsAbleToBuildFrustration
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsAggro_Interface = cast<aggro_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsAggro_Interface)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @483
+  [99] CallFunc_IsAbleToBuildFrustration_ReturnValue = K2Node_DynamicCast_AsAggro_Interface.IsAbleToBuildFrustration()
+  [146] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.FrustrationPaused)
+  [175] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('ReadyToDeaggro')
+  [216] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [236] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [265] CallFunc_GetValueAsBool_ReturnValue = CallFunc_GetBlackboard_ReturnValue.GetValueAsBool(CallFunc_MakeLiteralName_ReturnValue)
+  [316] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_GetValueAsBool_ReturnValue)
+  [345] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsAbleToBuildFrustration_ReturnValue, CallFunc_Not_PreBool_ReturnValue_1)
+  [383] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [421] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, self.CanDeaggro)
+  [459] AbleToBuildFrustration = CallFunc_BooleanAND_ReturnValue_2
+  [478] goto @499
+  [483] CallFunc_IsAbleToBuildFrustration_ReturnValue = false
+  [494] goto @146
+  [499] return nothing
+  [501] end
+
+=== IsInEnterCombatRange
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Actor)
+  [29] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [49] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwner_ReturnValue)
+  [78] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue, CallFunc_IsValid_ReturnValue_1)
+  [116] if !(CallFunc_BooleanAND_ReturnValue) goto @358
+  [130] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [180] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [200] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [250] CallFunc_Vector_Distance_ReturnValue = Vector_Distance(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [296] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Vector_Distance_ReturnValue, self.EnterCombatRange)
+  [334] ReturnValue = CallFunc_LessEqual_DoubleDouble_ReturnValue
+  [353] goto @369
+  [358] ReturnValue = false
+  [369] return ReturnValue
+  [379] end
+
+=== OnActivated
+  [0] frame.K2Node_CustomEvent_Component = Component
+  [18] frame.K2Node_CustomEvent_bReset = bReset
+  [36] ExecuteUbergraph_aggro_bpc(5920)
+  [51] return nothing
+  [53] end
+
+=== OnRefreshAndScoreTargetsQueryFinished
+  [0] push @562
+  [5] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(QueryStatus, 1)
+  [36] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [46] array{}
+  [57] CallFunc_GetQueryResultsAsActors_ReturnValue = QueryInstance.GetQueryResultsAsActors(CallFunc_GetQueryResultsAsActors_ResultActors)
+  [108] Temp_int_Loop_Counter_Variable = 0
+  [131] Temp_int_Array_Index_Variable = 0
+  [154] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetQueryResultsAsActors_ResultActors)
+  [213] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [251] if !(CallFunc_Less_IntInt_ReturnValue) goto @477
+  [265] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [292] push @488
+  [297] CallFunc_GetItemScore_ReturnValue = QueryInstance.GetItemScore(Temp_int_Array_Index_Variable)
+  [356] Default__KismetArrayLibrary.Array_Get(CallFunc_GetQueryResultsAsActors_ResultActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [415] CallFunc_OnTargetRefreshedAndScored_Score_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetItemScore_ReturnValue)
+  [444] OnTargetRefreshedAndScored(CallFunc_Array_Get_Item, CallFunc_OnTargetRefreshedAndScored_Score_ImplicitCast)
+  [476] pop
+  [477] UpdateAfterTargetDataChange()
+  [487] pop
+  [488] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [530] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [557] goto @154
+  [562] return nothing
+  [564] end
+
+=== OnTargetRefreshedAndScored
+  [0] CanTargetActor(Target, CallFunc_CanTargetActor_CanTarget)
+  [32] if !(CallFunc_CanTargetActor_CanTarget) goto @747
+  [46] CallFunc_GetIndexOfTarget_ReturnValue = GetIndexOfTarget(Target)
+  [83] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(self.TargetData, CallFunc_GetIndexOfTarget_ReturnValue)
+  [143] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @695
+  [157] GetOrAddTargetData(Target, false, CallFunc_GetOrAddTargetData_TargetData, CallFunc_GetOrAddTargetData_DataIndex)
+  [199] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [228] K2Node_SetFieldsInStruct_LastAggroTimestamp_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [257] EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex).LastAggroTimestamp = K2Node_SetFieldsInStruct_LastAggroTimestamp_ImplicitCast
+  [303] self.L_ThreatScale = 1.0
+  [330] CallFunc_IsValid_ReturnValue = IsValid(self.ThreatTrackingBPC)
+  [359] if !(CallFunc_IsValid_ReturnValue) goto @499
+  [373] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, threat_2020_bpff_C, true)
+  [404] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @499
+  [418] self.ThreatTrackingBPC.GetWeightingForActor(Target, CallFunc_GetWeightingForActor_Weighting)
+  [472] self.L_ThreatScale = CallFunc_GetWeightingForActor_Weighting
+  [499] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(Score, self.L_ThreatScale)
+  [545] K2Node_SetFieldsInStruct_TargetScore_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [574] EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex).TargetScore = K2Node_SetFieldsInStruct_TargetScore_ImplicitCast
+  [620] Default__KismetArrayLibrary.Array_Set(self.TargetData, CallFunc_GetOrAddTargetData_DataIndex, EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex), false)
+  [690] goto @747
+  [695] CallFunc_CanAggroNewTarget_ReturnValue = CanAggroNewTarget(Target)
+  [728] if !(CallFunc_CanAggroNewTarget_ReturnValue) goto @747
+  [742] goto @157
+  [747] return nothing
+  [749] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_aggro_bpc(4326)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTetherChanged
+  [0] ReceiveOnTetherChanged()
+  [10] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [30] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue)
+  [59] BlackboardComponent = CallFunc_GetBlackboard_ReturnValue
+  [78] CallFunc_IsValid_ReturnValue = IsValid(BlackboardComponent)
+  [107] if !(CallFunc_IsValid_ReturnValue) goto @323
+  [121] CallFunc_GetTetherActor_ReturnValue = GetTetherActor()
+  [141] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('TetherActor')
+  [182] BlackboardComponent.SetValueAsObject(CallFunc_MakeLiteralName_ReturnValue_1, CallFunc_GetTetherActor_ReturnValue)
+  [232] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('TetherRadius')
+  [273] BlackboardComponent.SetValueAsFloat(CallFunc_MakeLiteralName_ReturnValue, self.TetherRadius)
+  [323] return nothing
+  [325] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_aggro_bpc(4345)
+  [33] return nothing
+  [35] end
+
+=== RefreshAndScoreTargets
+  [0] ExecuteUbergraph_aggro_bpc(5408)
+  [15] return nothing
+  [17] end
+
+=== RefreshTargetAggroEvent
+  [0] ExecuteUbergraph_aggro_bpc(5925)
+  [15] return nothing
+  [17] end
+
+=== RefreshTargetVisibilityEvent
+  [0] ExecuteUbergraph_aggro_bpc(5737)
+  [15] return nothing
+  [17] end
+
+=== StartedFrustration__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ThisActorTookDamage
+  [0] TookDamage__DelegateSignature(DamageAmount, DamageInstigator)
+  [37] CanTargetActor(DamageInstigator, CallFunc_CanTargetActor_CanTarget)
+  [69] if !(CallFunc_CanTargetActor_CanTarget) goto @964
+  [83] CallFunc_HasTag_ReturnValue = HasTag(InstigatorAndDamageTags, GameplayTag{'Combat.Weapon.DoesntCauseFrustration'}, false)
+  [140] if !(CallFunc_HasTag_ReturnValue) goto @159
+  [154] goto @964
+  [159] GetOrAddTargetData(DamageInstigator, false, CallFunc_GetOrAddTargetData_TargetData, CallFunc_GetOrAddTargetData_DataIndex)
+  [201] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [230] K2Node_SetFieldsInStruct_LastAggroTimestamp_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [259] EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex).LastAggroTimestamp = K2Node_SetFieldsInStruct_LastAggroTimestamp_ImplicitCast
+  [305] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex).Accessibility, 2)
+  [355] if !(K2Node_SwitchEnum_CmpSuccess) goto @438
+  [369] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(EX_ArrayGetByRef(ArrayVariable=self.TargetData,ArrayIndex=CallFunc_GetOrAddTargetData_DataIndex).Accessibility, 3)
+  [419] if !(K2Node_SwitchEnum_CmpSuccess) goto @438
+  [433] goto @964
+  [438] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [459] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [495] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [524] if !(K2Node_DynamicCast_bSuccess) goto @936
+  [538] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetExpectedPlayerCount(CallFunc_GetExpectedPlayerCount_Count)
+  [584] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.PathCostCheckInterval, 3.0)
+  [630] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_GetExpectedPlayerCount_Count)
+  [667] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [696] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.FrustrationPer100DamageFromInaccessibleTargets, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [742] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(DamageAmount, CallFunc_Divide_DoubleDouble_ReturnValue)
+  [788] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.01)
+  [834] CallFunc_AddPendingFrustrationFromTarget_Amount_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [863] CallFunc_AddPendingFrustrationFromTarget_Delay_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [892] AddPendingFrustrationFromTarget(DamageInstigator, CallFunc_AddPendingFrustrationFromTarget_Amount_ImplicitCast, 2, CallFunc_AddPendingFrustrationFromTarget_Delay_ImplicitCast)
+  [931] goto @964
+  [936] CallFunc_GetExpectedPlayerCount_Count = 0
+  [959] goto @584
+  [964] return nothing
+  [966] end
+
+=== TookDamage__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== UpdateCurrentTargetFrustration
+  [0] push @662
+  [5] push @175
+  [10] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [30] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [95] if !(K2Node_DynamicCast_bSuccess) goto @521
+  [109] K2Node_DynamicCast_AsBehemoth_Interface.GetCurrentTarget_interface(CallFunc_GetCurrentTarget_interface_CurrentTarget)
+  [155] CurrentTargetActor = CallFunc_GetCurrentTarget_interface_CurrentTarget
+  [174] pop
+  [175] CallFunc_IsValid_ReturnValue = IsValid(CurrentTargetActor)
+  [204] if !(CallFunc_IsValid_ReturnValue) pop
+  [214] GetOrAddTargetData(CurrentTargetActor, false, CallFunc_GetOrAddTargetData_TargetData, CallFunc_GetOrAddTargetData_DataIndex)
+  [256] push @370
+  [261] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetOrAddTargetData_TargetData.Accessibility, 2)
+  [301] if !(K2Node_SwitchEnum_CmpSuccess) goto @561
+  [315] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_GetOrAddTargetData_TargetData.Accessibility, 3)
+  [355] if !(K2Node_SwitchEnum_CmpSuccess) goto @561
+  [369] pop
+  [370] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(CallFunc_GetOrAddTargetData_TargetData.DeaggroState, 0)
+  [410] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [420] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.FrustrationPerSecDeaggroingTarget, DeltaTime)
+  [466] CallFunc_IncreaseFrustration_Amount_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [495] IncreaseFrustration(CallFunc_IncreaseFrustration_Amount_ImplicitCast, 0)
+  [520] pop
+  [521] CallFunc_GetCurrentTargetActor_ReturnValue = GetCurrentTargetActor()
+  [541] CurrentTargetActor = CallFunc_GetCurrentTargetActor_ReturnValue
+  [560] pop
+  [561] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.FrustrationPerSecInaccessibleTarget, DeltaTime)
+  [607] CallFunc_IncreaseFrustration_Amount_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [636] IncreaseFrustration(CallFunc_IncreaseFrustration_Amount_ImplicitCast_1, 0)
+  [661] pop
+  [662] return nothing
+  [664] end
+
+=== UpdateSpecialCaseSignificanceManagement
+  [0] frame.K2Node_Event_NewSignificance = NewSignificance
+  [18] ExecuteUbergraph_aggro_bpc(4325)
+  [33] return nothing
+  [35] end
+
+=== UsesSpecialCaseSignificanceManagement
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

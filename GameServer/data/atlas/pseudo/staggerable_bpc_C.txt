@@ -1,0 +1,654 @@
+# staggerable_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddStaggerArmor
+  [0] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(ArmorDuration, 0.0)
+  [38] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @249
+  [52] GetPlayerScalingFactor(Player Count, CallFunc_GetPlayerScalingFactor_ScalingFactor)
+  [84] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(UnscaledArmorAmount, CallFunc_GetPlayerScalingFactor_ScalingFactor)
+  [130] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.ArmorScalingFactor)
+  [176] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, ArmorDuration)
+  [222] L_DegenRate = CallFunc_Divide_DoubleDouble_ReturnValue
+  [249] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [277] GUID = CallFunc_NewGuid_ReturnValue
+  [304] GetPlayerScalingFactor(Player Count, CallFunc_GetPlayerScalingFactor_ScalingFactor)
+  [336] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(UnscaledArmorAmount, CallFunc_GetPlayerScalingFactor_ScalingFactor)
+  [382] Temp_real_Variable = 1.0
+  [409] Temp_bool_Variable = self.Debug1HitStagger
+  [428] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, self.ArmorScalingFactor)
+  [474] K2Node_MakeStruct_stagger_armor_data.Armor_ID = GUID
+  [510] K2Node_MakeStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: CallFunc_Multiply_DoubleDouble_ReturnValue_1, true: Temp_real_Variable, default: K2Node_Select_Default})
+  [583] K2Node_MakeStruct_stagger_armor_data.RemainingAmount = K2Node_MakeStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast
+  [619] K2Node_MakeStruct_DegenRate_7_ADC701C54538163272DF4E94BBF5A29D_ImplicitCast = cast<CST_DoubleToFloat>(L_DegenRate)
+  [648] K2Node_MakeStruct_stagger_armor_data.DegenRate = K2Node_MakeStruct_DegenRate_7_ADC701C54538163272DF4E94BBF5A29D_ImplicitCast
+  [684] K2Node_MakeStruct_InitialArmorAmount_10_452B9AAF43BA2E5325868DBD7DB4DCC9_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: CallFunc_Multiply_DoubleDouble_ReturnValue_1, true: Temp_real_Variable, default: K2Node_Select_Default})
+  [757] K2Node_MakeStruct_stagger_armor_data.InitialArmorAmount = K2Node_MakeStruct_InitialArmorAmount_10_452B9AAF43BA2E5325868DBD7DB4DCC9_ImplicitCast
+  [793] Default__KismetArrayLibrary.Array_Insert(self.StaggerArmorStack, K2Node_MakeStruct_stagger_armor_data, 0)
+  [848] ArmorGUID = GUID
+  [875] return nothing
+  [877] end
+
+=== AuthSendStaggerTelemetryData
+  [0] ExecuteUbergraph_staggerable_bpc(2257)
+  [15] return nothing
+  [17] end
+
+=== CanReceiveStaggerDamage
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [56] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [85] if !(K2Node_DynamicCast_bSuccess) goto @175
+  [99] CallFunc_IsStaggered_ReturnValue = K2Node_DynamicCast_AsArchon_Behemoth.IsStaggered()
+  [145] if !(CallFunc_IsStaggered_ReturnValue) goto @175
+  [159] Staggerable = false
+  [170] goto @533
+  [175] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [234] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [268] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.FinalStageStrategy, 0)
+  [299] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentStaggerStage, 1)
+  [341] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue, CallFunc_Greater_IntInt_ReturnValue)
+  [379] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [438] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, CallFunc_Add_IntInt_ReturnValue)
+  [476] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_Greater_IntInt_ReturnValue_1, CallFunc_BooleanAND_ReturnValue)
+  [514] Staggerable = CallFunc_BooleanOR_ReturnValue
+  [533] return nothing
+  [535] end
+
+=== ChangeStaggerStage
+  [0] push @1273
+  [5] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(NewStaggerStage, 0)
+  [39] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [98] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(NewStaggerStage, CallFunc_Array_Length_ReturnValue)
+  [136] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [174] if !(CallFunc_BooleanAND_ReturnValue) goto @539
+  [188] push @1188
+  [193] push @854
+  [198] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [219] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [255] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [284] if !(K2Node_DynamicCast_bSuccess) goto @1245
+  [298] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetConnectedPlayerCount(CallFunc_GetConnectedPlayerCount_Count)
+  [344] GetStaggerMaxHealthForStage(NewStaggerStage, CallFunc_GetConnectedPlayerCount_Count, CallFunc_GetStaggerMaxHealthForStage_Max_Health)
+  [385] self.CurrentStaggerHealth = CallFunc_GetStaggerMaxHealthForStage_Max_Health
+  [412] MarkPropertyDirtyFromRepIndex(self, 3, 'CurrentStaggerHealth')
+  [441] GetStaggerMaxHealthForStage(NewStaggerStage, CallFunc_GetConnectedPlayerCount_Count, CallFunc_GetStaggerMaxHealthForStage_Max_Health)
+  [482] self.CurrentStaggerMaxHealth = CallFunc_GetStaggerMaxHealthForStage_Max_Health
+  [509] MarkPropertyDirtyFromRepIndex(self, 5, 'CurrentStaggerMaxHealth')
+  [538] pop
+  [539] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [568] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [618] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [660] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'invalid index in changestaggerstage')
+  [734] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [808] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [828] if !(CallFunc_IsShipping_ReturnValue) goto @843
+  [842] pop
+  [843] StackTrace()
+  [853] pop
+  [854] if !(DoStagger) pop
+  [864] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [884] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [920] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [949] if !(K2Node_DynamicCast_bSuccess_1) goto @1040
+  [963] K2Node_DynamicCast_AsBehemoth_Interface.StaggerBehemoth_interface(4, StaggerType, false, false, StaggeredPart, StaggerCauser, StaggerAttackDamageEventTags)
+  [1040] Default__KismetArrayLibrary.Array_Get(self.StaggerData, NewStaggerStage, CallFunc_Array_Get_Item)
+  [1099] CallFunc_AddStaggerArmor_UnscaledArmorAmount_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TemporaryArmorOnStagger)
+  [1137] AddStaggerArmor(CallFunc_AddStaggerArmor_UnscaledArmorAmount_ImplicitCast, self.StaggerArmorDuration, CallFunc_GetConnectedPlayerCount_Count, CallFunc_AddStaggerArmor_ArmorGUID)
+  [1187] pop
+  [1188] self.CurrentStaggerStage = NewStaggerStage
+  [1215] MarkPropertyDirtyFromRepIndex(self, 4, 'CurrentStaggerStage')
+  [1244] pop
+  [1245] CallFunc_GetConnectedPlayerCount_Count = 0
+  [1268] goto @344
+  [1273] return nothing
+  [1275] end
+
+=== DegenStaggerArmor
+  [0] ExecuteUbergraph_staggerable_bpc(2319)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_staggerable_bpc
+  [0] push @3770
+  [5] goto computed(EntryPoint)
+  [15] self.CloseToStaggerEffectsActive = false
+  [26] MarkPropertyDirtyFromRepIndex(self, 6, 'CloseToStaggerEffectsActive')
+  [55] OnRep_CloseToStaggerEffectsActive()
+  [69] pop
+  [70] MarkPropertyDirtyFromRepIndex(self, 3, 'CurrentStaggerHealth')
+  [99] pop
+  [100] MarkPropertyDirtyFromRepIndex(self, 6, 'CloseToStaggerEffectsActive')
+  [129] OnRep_CloseToStaggerEffectsActive()
+  [143] pop
+  [144] OnRep_CloseToStaggerEffectsActive()
+  [158] pop
+  [159] MarkPropertyDirtyFromRepIndex(self, 6, 'CloseToStaggerEffectsActive')
+  [188] goto @144
+  [193] MarkPropertyDirtyFromRepIndex(self, 7, 'TotalArmorValueForUI')
+  [222] self.TotalInitialArmorValueForUI = CallFunc_GetTotalArmor_TotalInitalArmor_1
+  [249] MarkPropertyDirtyFromRepIndex(self, 8, 'TotalInitialArmorValueForUI')
+  [278] pop
+  [279] OnRep_CloseToStaggerEffectsActive()
+  [293] pop
+  [294] MarkPropertyDirtyFromRepIndex(self, 6, 'CloseToStaggerEffectsActive')
+  [323] goto @279
+  [328] self.StaggerVFX.self.Scene.SetVisibility(true, true)
+  [384] pop
+  [385] push @674
+  [390] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, self.L_armorIndex, CallFunc_Array_Get_Item_2)
+  [449] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.RemainingAmount)
+  [487] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.DegenRate)
+  [525] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [571] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, 0.0)
+  [609] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @854
+  [623] Default__KismetArrayLibrary.Array_Remove(self.StaggerArmorStack, self.L_armorIndex)
+  [673] pop
+  [674] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.StaggerArmorStack)
+  [733] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(self.L_armorIndex, CallFunc_Array_Length_ReturnValue_2)
+  [771] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @790
+  [785] goto @385
+  [790] GetTotalArmor(CallFunc_GetTotalArmor_TotalArmor_1, CallFunc_GetTotalArmor_TotalInitalArmor_1)
+  [822] self.TotalArmorValueForUI = CallFunc_GetTotalArmor_TotalArmor_1
+  [849] goto @193
+  [854] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, self.L_armorIndex, CallFunc_Array_Get_Item_2)
+  [913] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.RemainingAmount)
+  [951] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.DegenRate)
+  [989] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [1035] K2Node_SetFieldsInStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [1064] CallFunc_Array_Get_Item_2.RemainingAmount = K2Node_SetFieldsInStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast
+  [1100] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item_2
+  [1127] Default__KismetArrayLibrary.Array_Set(self.StaggerArmorStack, self.L_armorIndex, K2Node_SetFieldsInStruct_StructOut, false)
+  [1187] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.L_armorIndex, 1)
+  [1229] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1256] self.L_armorIndex = Temp_int_Variable
+  [1283] pop
+  [1284] K2Node_CreateDelegate_OutputDelegate = bind(self.RefreshStaggerEffectsActive)
+  [1307] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.2, true, 0.0, 0.0)
+  [1360] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.DegenStaggerArmor)
+  [1383] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, 1.0, true, 0.0, 0.0)
+  [1436] CallFunc_IsBuildShipping_ReturnValue = IsBuildShipping()
+  [1456] if !(CallFunc_IsBuildShipping_ReturnValue) goto @1471
+  [1470] pop
+  [1471] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.AuthSendStaggerTelemetryData)
+  [1494] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, 1.0, true, 0.0, 0.0)
+  [1547] pop
+  [1548] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1568] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [1610] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [1620] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [1679] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.CurrentStaggerStage, CallFunc_Array_Length_ReturnValue)
+  [1717] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.CurrentStaggerStage, 0)
+  [1751] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [1789] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1799] Default__KismetArrayLibrary.Array_Get(self.StaggerData, self.CurrentStaggerStage, CallFunc_Array_Get_Item)
+  [1858] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [1887] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.StaggerRegenPerSecond)
+  [1925] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [1971] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.CurrentStaggerHealth, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [2017] CallFunc_FMin_ReturnValue = FMin(CallFunc_Add_DoubleDouble_ReturnValue, self.CurrentStaggerMaxHealth)
+  [2063] self.CurrentStaggerHealth = CallFunc_FMin_ReturnValue
+  [2090] goto @70
+  [2095] pop
+  [2096] goto @1548
+  [2101] self.BaseStaggerData = self.StaggerData
+  [2128] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2148] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [2190] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [2200] ChangeStaggerStage(false, 0, null, 0, null, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)})
+  [2252] goto @1284
+  [2257] if !(self.DebugStaggers) pop
+  [2267] MulticastTelemetryData(self.StaggerTelemetryData)
+  [2290] pop
+  [2291] self.StaggerTelemetryData = K2Node_CustomEvent_StaggerTelemetryData
+  [2318] pop
+  [2319] self.L_armorIndex = 0
+  [2342] goto @674
+  [2347] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2367] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(CallFunc_GetOwner_ReturnValue_2, behemoth_interface_C)
+  [2405] if !(CallFunc_DoesImplementInterface_ReturnValue) goto @2612
+  [2419] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2439] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetOwner_ReturnValue_2)
+  [2475] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [2504] if !(K2Node_DynamicCast_bSuccess) goto @2596
+  [2518] K2Node_DynamicCast_AsBehemoth_Interface.BehemothInState(10, CallFunc_BehemothInState_IsInState)
+  [2566] if !(CallFunc_BehemothInState_IsInState) goto @2612
+  [2580] self.CloseToStaggerEffectsActive = false
+  [2591] goto @294
+  [2596] CallFunc_BehemothInState_IsInState = false
+  [2607] goto @2566
+  [2612] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [2671] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(self.CurrentStaggerStage, CallFunc_Array_Length_ReturnValue_1)
+  [2709] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(self.CurrentStaggerStage, 0)
+  [2743] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue_1, CallFunc_Less_IntInt_ReturnValue_1)
+  [2781] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [2791] GetTotalArmor(CallFunc_GetTotalArmor_TotalArmor, CallFunc_GetTotalArmor_TotalInitalArmor)
+  [2823] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [2843] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue_3)
+  [2872] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Behemoth.StaggerProof'})
+  [2946] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) goto @2965
+  [2960] goto @15
+  [2965] Default__KismetArrayLibrary.Array_Get(self.StaggerData, self.CurrentStaggerStage, CallFunc_Array_Get_Item_1)
+  [3024] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_GetTotalArmor_TotalArmor, self.CurrentStaggerHealth)
+  [3070] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.StaggerDamageRequired)
+  [3108] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [3154] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 0.5)
+  [3192] CallFunc_BooleanAND_ReturnValue_3 = BooleanAND(self.CloseToStaggerEffectsActive, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [3230] if !(CallFunc_BooleanAND_ReturnValue_3) goto @3260
+  [3244] self.CloseToStaggerEffectsActive = false
+  [3255] goto @100
+  [3260] Default__KismetArrayLibrary.Array_Get(self.StaggerData, self.CurrentStaggerStage, CallFunc_Array_Get_Item_1)
+  [3319] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.CloseToStaggerEffectsActive)
+  [3348] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_GetTotalArmor_TotalArmor, self.CurrentStaggerHealth)
+  [3394] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.StaggerDamageRequired)
+  [3432] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [3478] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 0.3330000042915344)
+  [3516] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_DoubleDouble_ReturnValue)
+  [3554] if !(CallFunc_BooleanAND_ReturnValue_2) pop
+  [3564] self.CloseToStaggerEffectsActive = true
+  [3575] goto @159
+  [3580] CallFunc_IsValid_ReturnValue_1 = IsValid(self.StaggerVFX)
+  [3609] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [3619] self.StaggerVFX.self.Scene.SetVisibility(false, true)
+  [3675] pop
+  [3676] CallFunc_IsValid_ReturnValue = IsValid(self.StaggerVFX)
+  [3705] if !(CallFunc_IsValid_ReturnValue) pop
+  [3715] Delay(self, 0.2, LatentActionInfo{EX_SkipOffsetConst(Value=328), -2109916654, 'ExecuteUbergraph_staggerable_bpc', self})
+  [3769] pop
+  [3770] return nothing
+  [3772] end
+
+=== GetCurrentStaggerData
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [59] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.CurrentStaggerStage, CallFunc_Array_Length_ReturnValue)
+  [97] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.CurrentStaggerStage, 0)
+  [131] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [169] if !(CallFunc_BooleanAND_ReturnValue) goto @274
+  [183] Default__KismetArrayLibrary.Array_Get(self.StaggerData, self.CurrentStaggerStage, CallFunc_Array_Get_Item)
+  [242] StaggerData = CallFunc_Array_Get_Item
+  [269] goto @641
+  [274] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [303] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [353] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [395] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'invalid staggerdata index')
+  [459] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [533] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [553] if !(CallFunc_IsShipping_ReturnValue) goto @626
+  [567] StaggerData = stagger_stage{1000.0, 50.0, 100.0, 2, 1000.0}
+  [621] goto @641
+  [626] StackTrace()
+  [636] goto @567
+  [641] return nothing
+  [643] end
+
+=== GetIndexOfStaggerData
+  [0] push @444
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerTelemetryData)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @342
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @370
+  [194] Default__KismetArrayLibrary.Array_Get(self.StaggerTelemetryData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(Instigator, CallFunc_Array_Get_Item.Instigator)
+  [300] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) pop
+  [310] Index = Temp_int_Array_Index_Variable
+  [337] goto @444
+  [342] Index = -1
+  [365] goto @444
+  [370] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [412] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [439] goto @51
+  [444] return nothing
+  [446] end
+
+=== GetPlayerScalingFactor
+  [0] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [21] K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1 = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [57] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1)
+  [86] if !(K2Node_DynamicCast_bSuccess_1) goto @813
+  [100] K2Node_DynamicCast_AsBPI_Combat_Game_Mode_1.UseNewHealthTuning(CallFunc_UseNewHealthTuning_UseNew)
+  [146] Default__behemoth_function_library_C.GetPerPlayerScalingValuesForNewTuning(self, CallFunc_GetPerPlayerScalingValuesForNewTuning_BaseHealthScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_PerPlayerCoreHealthScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_BasePartHealthScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_BasePartWoundHealthScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_PerPlayerWoundHealthScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_BaseStaggerScale, CallFunc_GetPerPlayerScalingValuesForNewTuning_PerPlayerStaggerHealthScale)
+  [246] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [267] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [303] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [332] if !(K2Node_DynamicCast_bSuccess) goto @829
+  [346] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.GetPerGameModeBehemothTuningOverrides(CallFunc_GetPerGameModeBehemothTuningOverrides_UseOverrides, CallFunc_GetPerGameModeBehemothTuningOverrides_BaseHealthScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_BasePartHealthScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerCoreHealthScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_BasePartWoundHealthScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerWoundHealthScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_BaseStaggerScaleOverride, CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerStaggerHealthScaleOverride)
+  [455] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Player Count, 1)
+  [497] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Subtract_IntInt_ReturnValue)
+  [534] Temp_bool_Variable = CallFunc_UseNewHealthTuning_UseNew
+  [553] Temp_bool_Variable_1 = CallFunc_GetPerGameModeBehemothTuningOverrides_UseOverrides
+  [572] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [601] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(switch(Temp_bool_Variable_1){false: switch(Temp_bool_Variable){false: self.PerPlayerScaling, true: CallFunc_GetPerPlayerScalingValuesForNewTuning_PerPlayerStaggerHealthScale, default: K2Node_Select_Default}, true: CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerStaggerHealthScaleOverride, default: K2Node_Select_Default_1}, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [735] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(1.0, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [781] ScalingFactor = CallFunc_Add_DoubleDouble_ReturnValue
+  [808] goto @1034
+  [813] CallFunc_UseNewHealthTuning_UseNew = false
+  [824] goto @146
+  [829] CallFunc_GetPerGameModeBehemothTuningOverrides_UseOverrides = false
+  [840] CallFunc_GetPerGameModeBehemothTuningOverrides_BaseHealthScaleOverride = 0.0
+  [867] CallFunc_GetPerGameModeBehemothTuningOverrides_BasePartHealthScaleOverride = 0.0
+  [894] CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerCoreHealthScaleOverride = 0.0
+  [921] CallFunc_GetPerGameModeBehemothTuningOverrides_BasePartWoundHealthScaleOverride = 0.0
+  [948] CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerWoundHealthScaleOverride = 0.0
+  [975] CallFunc_GetPerGameModeBehemothTuningOverrides_BaseStaggerScaleOverride = 0.0
+  [1002] CallFunc_GetPerGameModeBehemothTuningOverrides_PerPlayerStaggerHealthScaleOverride = 0.0
+  [1029] goto @455
+  [1034] return nothing
+  [1036] end
+
+=== GetStaggerMaxHealthForStage
+  [0] GetPlayerScalingFactor(Player Count, CallFunc_GetPlayerScalingFactor_ScalingFactor)
+  [32] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [52] Temp_real_Variable = 1.0
+  [79] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsShipping_ReturnValue)
+  [108] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, self.Debug1HitStagger)
+  [146] Default__KismetArrayLibrary.Array_Get(self.StaggerData, Stage, CallFunc_Array_Get_Item)
+  [205] Temp_bool_Variable = CallFunc_BooleanAND_ReturnValue
+  [224] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.StaggerDamageRequired)
+  [262] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_GetPlayerScalingFactor_ScalingFactor, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [308] Max Health = switch(Temp_bool_Variable){false: CallFunc_Multiply_DoubleDouble_ReturnValue, true: Temp_real_Variable, default: K2Node_Select_Default}
+  [379] return nothing
+  [381] end
+
+=== GetTotalArmor
+  [0] push @722
+  [5] L_TotalArmor = 0.0
+  [32] L_TotalInitialArmor = 0.0
+  [59] Temp_int_Loop_Counter_Variable = 0
+  [82] Temp_int_Array_Index_Variable = 0
+  [105] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerArmorStack)
+  [164] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [202] if !(CallFunc_Less_IntInt_ReturnValue) goto @589
+  [216] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [243] push @648
+  [248] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [307] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RemainingAmount)
+  [345] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, L_TotalArmor)
+  [391] L_TotalArmor = CallFunc_Add_DoubleDouble_ReturnValue_1
+  [418] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [477] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.InitialArmorAmount)
+  [515] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, L_TotalInitialArmor)
+  [561] L_TotalInitialArmor = CallFunc_Add_DoubleDouble_ReturnValue
+  [588] pop
+  [589] TotalArmor = L_TotalArmor
+  [616] TotalInitalArmor = L_TotalInitialArmor
+  [643] goto @722
+  [648] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [690] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [717] goto @105
+  [722] return nothing
+  [724] end
+
+=== HideStaggerVFX
+  [0] ExecuteUbergraph_staggerable_bpc(3580)
+  [15] return nothing
+  [17] end
+
+=== MulticastTelemetryData
+  [0] frame.K2Node_CustomEvent_StaggerTelemetryData = StaggerTelemetryData
+  [18] ExecuteUbergraph_staggerable_bpc(2291)
+  [33] return nothing
+  [35] end
+
+=== OnRep_CloseToStaggerEffectsActive
+  [0] if !(self.CloseToStaggerEffectsActive) goto @62
+  [14] CallFunc_IsValid_ReturnValue_2 = IsValid(self.StaggerVFX)
+  [43] if !(CallFunc_IsValid_ReturnValue_2) goto @278
+  [57] goto @1014
+  [62] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.CurrentStaggerStage, 1)
+  [96] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @194
+  [110] CallFunc_IsValid_ReturnValue_1 = IsValid(self.StaggerVFX)
+  [139] if !(CallFunc_IsValid_ReturnValue_1) goto @1014
+  [153] self.StaggerVFX.K2_DestroyActor()
+  [189] goto @1014
+  [194] CallFunc_IsValid_ReturnValue = IsValid(self.StaggerVFX)
+  [223] if !(CallFunc_IsValid_ReturnValue) goto @1014
+  [237] self.StaggerVFX.K2_DestroyActor()
+  [273] goto @1014
+  [278] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [298] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [334] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [363] if !(K2Node_DynamicCast_bSuccess) goto @998
+  [377] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [423] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [443] CallFunc_GetSocketTransform_ReturnValue = CallFunc_GetMesh_SkeletalMesh.GetSocketTransform('head_jnt', 2)
+  [512] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, stagger_behemoth_telegraph_bp_C, CallFunc_GetSocketTransform_ReturnValue, 0, CallFunc_GetOwner_ReturnValue)
+  [562] CallFunc_GetSocketTransform_ReturnValue = CallFunc_GetMesh_SkeletalMesh.GetSocketTransform('head_jnt', 2)
+  [631] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_GetSocketTransform_ReturnValue)
+  [669] CallFunc_FinishSpawningActor_ReturnValue.K2_AttachToComponent(CallFunc_GetMesh_SkeletalMesh, self.Staggerable VFX Socket, 2, 2, 0, true)
+  [726] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_FinishSpawningActor_ReturnValue.K2_GetRootComponent()
+  [768] CallFunc_K2_GetRootComponent_ReturnValue.K2_AddWorldOffset(self.VFX Offset, false, CallFunc_K2_AddWorldOffset_SweepHitResult, false)
+  [820] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_FinishSpawningActor_ReturnValue.K2_GetRootComponent()
+  [862] CallFunc_K2_GetRootComponent_ReturnValue.self.bAbsoluteRotation = true
+  [895] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_FinishSpawningActor_ReturnValue.K2_GetRootComponent()
+  [937] MarkPropertyDirtyFromRepIndex(CallFunc_K2_GetRootComponent_ReturnValue, 9, 'bAbsoluteRotation')
+  [974] self.StaggerVFX = CallFunc_FinishSpawningActor_ReturnValue
+  [993] goto @1014
+  [998] CallFunc_GetMesh_SkeletalMesh = null
+  [1009] goto @423
+  [1014] return nothing
+  [1016] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_staggerable_bpc(2101)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_staggerable_bpc(2096)
+  [33] return nothing
+  [35] end
+
+=== RecordStaggerDamage
+  [0] LocalIndex = 0
+  [23] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(Instigator)
+  [59] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [88] if !(K2Node_DynamicCast_bSuccess) goto @832
+  [102] GetIndexOfStaggerData(Instigator, CallFunc_GetIndexOfStaggerData_Index)
+  [134] LocalIndex = CallFunc_GetIndexOfStaggerData_Index
+  [161] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(LocalIndex, -1)
+  [195] if !(CallFunc_EqualEqual_IntInt_ReturnValue) goto @337
+  [209] K2Node_MakeStruct_stagger_telemetry_data.Instigator = K2Node_DynamicCast_AsArchon_Character
+  [237] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.StaggerTelemetryData, K2Node_MakeStruct_stagger_telemetry_data)
+  [305] LocalIndex = CallFunc_Array_Add_ReturnValue
+  [332] goto @832
+  [337] Temp_bool_Variable = CausedAStagger
+  [356] Temp_int_Variable = 1
+  [379] Temp_int_Variable_1 = 0
+  [402] Default__KismetArrayLibrary.Array_Get(self.StaggerTelemetryData, LocalIndex, CallFunc_Array_Get_Item)
+  [461] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.TotalStaggerDamage)
+  [499] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, StaggerDamage)
+  [545] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Array_Get_Item.NumStaggers, switch(Temp_bool_Variable){false: Temp_int_Variable_1, true: Temp_int_Variable, default: K2Node_Select_Default})
+  [644] K2Node_SetFieldsInStruct_TotalStaggerDamage_6_3164963048E101FE3B71228914FBBFB5_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [673] CallFunc_Array_Get_Item.TotalStaggerDamage = K2Node_SetFieldsInStruct_TotalStaggerDamage_6_3164963048E101FE3B71228914FBBFB5_ImplicitCast
+  [709] CallFunc_Array_Get_Item.NumStaggers = CallFunc_Add_IntInt_ReturnValue
+  [745] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [772] Default__KismetArrayLibrary.Array_Set(self.StaggerTelemetryData, LocalIndex, K2Node_SetFieldsInStruct_StructOut, false)
+  [832] return nothing
+  [834] end
+
+=== ReduceArmor
+  [0] push @1021
+  [5] L_Amount = Amount
+  [32] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(L_Amount, 0.0)
+  [70] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerArmorStack)
+  [129] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(L_Index, CallFunc_Array_Length_ReturnValue)
+  [167] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [205] if !(CallFunc_BooleanAND_ReturnValue) goto @751
+  [219] push @32
+  [224] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, L_Index, CallFunc_Array_Get_Item_1)
+  [283] CallFunc_FMin_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.RemainingAmount)
+  [321] CallFunc_FMin_ReturnValue = FMin(CallFunc_FMin_A_ImplicitCast, L_Amount)
+  [367] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.RemainingAmount)
+  [405] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_FMin_ReturnValue)
+  [451] L_RemainingArmor = CallFunc_Subtract_DoubleDouble_ReturnValue_1
+  [478] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(L_RemainingArmor, 0.0)
+  [516] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @783
+  [530] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, L_Index, CallFunc_Array_Get_Item_1)
+  [589] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.RemainingAmount)
+  [627] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(L_Amount, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [673] L_Amount = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [700] Default__KismetArrayLibrary.Array_Remove(self.StaggerArmorStack, L_Index)
+  [750] pop
+  [751] AmountRemaining = L_Amount
+  [778] goto @1021
+  [783] Default__KismetArrayLibrary.Array_Get(self.StaggerArmorStack, L_Index, CallFunc_Array_Get_Item)
+  [842] K2Node_SetFieldsInStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast = cast<CST_DoubleToFloat>(L_RemainingArmor)
+  [871] CallFunc_Array_Get_Item.RemainingAmount = K2Node_SetFieldsInStruct_RemainingAmount_5_5BDFA8AE451069C24F3885BD88A50F89_ImplicitCast
+  [907] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [934] Default__KismetArrayLibrary.Array_Set(self.StaggerArmorStack, L_Index, K2Node_SetFieldsInStruct_StructOut, false)
+  [994] AmountRemaining = 0.0
+  [1021] return nothing
+  [1023] end
+
+=== RefreshStaggerEffectsActive
+  [0] ExecuteUbergraph_staggerable_bpc(2347)
+  [15] return nothing
+  [17] end
+
+=== RetroactivelyAdjustStaggerHealthForPlayerCount
+  [0] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.CurrentStaggerMaxHealth, 0.0)
+  [38] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @329
+  [52] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.CurrentStaggerHealth, self.CurrentStaggerMaxHealth)
+  [98] L_StaggerHealthPercent = CallFunc_Divide_DoubleDouble_ReturnValue
+  [125] GetStaggerMaxHealthForStage(self.CurrentStaggerStage, Player Count, CallFunc_GetStaggerMaxHealthForStage_Max_Health)
+  [166] self.CurrentStaggerMaxHealth = CallFunc_GetStaggerMaxHealthForStage_Max_Health
+  [193] MarkPropertyDirtyFromRepIndex(self, 5, 'CurrentStaggerMaxHealth')
+  [222] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.CurrentStaggerMaxHealth, L_StaggerHealthPercent)
+  [268] self.CurrentStaggerHealth = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [295] MarkPropertyDirtyFromRepIndex(self, 3, 'CurrentStaggerHealth')
+  [324] goto @361
+  [329] L_StaggerHealthPercent = 0.0
+  [356] goto @125
+  [361] return nothing
+  [363] end
+
+=== ShowStaggerVFX
+  [0] ExecuteUbergraph_staggerable_bpc(3676)
+  [15] return nothing
+  [17] end
+
+=== TryAddStaggerDamage
+  [0] push @3437
+  [5] push @1913
+  [10] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [69] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [103] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [113] CanReceiveStaggerDamage(CallFunc_CanReceiveStaggerDamage_Staggerable)
+  [136] if !(CallFunc_CanReceiveStaggerDamage_Staggerable) pop
+  [146] CallFunc_FClamp_ReturnValue = FClamp(StaggerResistPenetrationPercent, 0.0, 1.0)
+  [201] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(1.0, CallFunc_FClamp_ReturnValue)
+  [247] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(TotalBaseStaggerDamage, BaseDamageStaggerMultiplier)
+  [293] GetCurrentStaggerData(CallFunc_GetCurrentStaggerData_StaggerData)
+  [316] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurrentStaggerData_StaggerData.StaggerPerHitArmor)
+  [354] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [400] CallFunc_FMax_ReturnValue_1 = FMax(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.0)
+  [446] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_FMax_ReturnValue_1)
+  [492] CallFunc_FMax_ReturnValue_2 = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_2, 0.0)
+  [538] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue_2, PerHitStaggerBonus)
+  [584] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, PostCalcStaggerMultiplier)
+  [630] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_2, 0.0)
+  [668] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [678] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [699] if !(CallFunc_IsServer_ReturnValue) goto @1956
+  [713] push @3149
+  [718] push @2483
+  [723] CallFunc_FClamp_ReturnValue = FClamp(StaggerResistPenetrationPercent, 0.0, 1.0)
+  [778] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(1.0, CallFunc_FClamp_ReturnValue)
+  [824] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(TotalBaseStaggerDamage, BaseDamageStaggerMultiplier)
+  [870] GetCurrentStaggerData(CallFunc_GetCurrentStaggerData_StaggerData)
+  [893] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurrentStaggerData_StaggerData.StaggerPerHitArmor)
+  [931] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [977] CallFunc_FMax_ReturnValue_1 = FMax(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.0)
+  [1023] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_FMax_ReturnValue_1)
+  [1069] CallFunc_FMax_ReturnValue_2 = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_2, 0.0)
+  [1115] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue_2, PerHitStaggerBonus)
+  [1161] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, PostCalcStaggerMultiplier)
+  [1207] L_StaggerDealt = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [1234] ReduceArmor(L_StaggerDealt, CallFunc_ReduceArmor_AmountRemaining)
+  [1266] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.CurrentStaggerHealth, CallFunc_ReduceArmor_AmountRemaining)
+  [1312] self.CurrentStaggerHealth = CallFunc_Subtract_DoubleDouble_ReturnValue_1
+  [1339] MarkPropertyDirtyFromRepIndex(self, 3, 'CurrentStaggerHealth')
+  [1368] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1388] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [1417] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'Behemoth.StaggerProof'})
+  [1491] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) goto @1607
+  [1505] CallFunc_FMax_ReturnValue = FMax(1.0, self.CurrentStaggerHealth)
+  [1551] self.CurrentStaggerHealth = CallFunc_FMax_ReturnValue
+  [1578] MarkPropertyDirtyFromRepIndex(self, 3, 'CurrentStaggerHealth')
+  [1607] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(self.CurrentStaggerHealth, 0.0)
+  [1645] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [1655] push @3200
+  [1660] L_OriginalStage = self.CurrentStaggerStage
+  [1687] L_NextStage = L_OriginalStage
+  [1714] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.StaggerData)
+  [1773] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.CurrentStaggerStage, 1)
+  [1815] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Add_IntInt_ReturnValue_1, CallFunc_Array_Length_ReturnValue_1)
+  [1853] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @3355
+  [1867] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.FinalStageStrategy, 1)
+  [1898] if !(K2Node_SwitchEnum_CmpSuccess) goto @3425
+  [1912] pop
+  [1913] StaggerCausedByThisDamage = false
+  [1924] StaggerDamageDealt = 0.0
+  [1951] goto @3437
+  [1956] CallFunc_FClamp_ReturnValue = FClamp(StaggerResistPenetrationPercent, 0.0, 1.0)
+  [2011] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(1.0, CallFunc_FClamp_ReturnValue)
+  [2057] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(TotalBaseStaggerDamage, BaseDamageStaggerMultiplier)
+  [2103] GetCurrentStaggerData(CallFunc_GetCurrentStaggerData_StaggerData)
+  [2126] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurrentStaggerData_StaggerData.StaggerPerHitArmor)
+  [2164] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [2210] CallFunc_FMax_ReturnValue_1 = FMax(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.0)
+  [2256] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_FMax_ReturnValue_1)
+  [2302] CallFunc_FMax_ReturnValue_2 = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_2, 0.0)
+  [2348] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue_2, PerHitStaggerBonus)
+  [2394] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, PostCalcStaggerMultiplier)
+  [2440] StaggerCausedByThisDamage = false
+  [2451] StaggerDamageDealt = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [2478] goto @3437
+  [2483] CallFunc_IsBuildShipping_ReturnValue = IsBuildShipping()
+  [2503] if !(CallFunc_IsBuildShipping_ReturnValue) goto @2518
+  [2517] pop
+  [2518] CallFunc_FClamp_ReturnValue = FClamp(StaggerResistPenetrationPercent, 0.0, 1.0)
+  [2573] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(1.0, CallFunc_FClamp_ReturnValue)
+  [2619] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(TotalBaseStaggerDamage, BaseDamageStaggerMultiplier)
+  [2665] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(self.CurrentStaggerHealth, 0.0)
+  [2703] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.FinishedStaggerStages)
+  [2732] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_LessEqual_DoubleDouble_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [2770] GetCurrentStaggerData(CallFunc_GetCurrentStaggerData_StaggerData)
+  [2793] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetCurrentStaggerData_StaggerData.StaggerPerHitArmor)
+  [2831] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [2877] CallFunc_FMax_ReturnValue_1 = FMax(CallFunc_Multiply_DoubleDouble_ReturnValue_1, 0.0)
+  [2923] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, CallFunc_FMax_ReturnValue_1)
+  [2969] CallFunc_FMax_ReturnValue_2 = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_2, 0.0)
+  [3015] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_FMax_ReturnValue_2, PerHitStaggerBonus)
+  [3061] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, PostCalcStaggerMultiplier)
+  [3107] RecordStaggerDamage(Instigator, CallFunc_Multiply_DoubleDouble_ReturnValue_2, CallFunc_BooleanAND_ReturnValue)
+  [3148] pop
+  [3149] StaggerCausedByThisDamage = L_WasStaggeredByThisDamage
+  [3168] StaggerDamageDealt = L_StaggerDealt
+  [3195] goto @3437
+  [3200] if !(self.FinishedStaggerStages) goto @3215
+  [3214] pop
+  [3215] Default__KismetArrayLibrary.Array_Get(self.StaggerData, L_OriginalStage, CallFunc_Array_Get_Item)
+  [3274] ChangeStaggerStage(true, L_NextStage, StaggeredPart, CallFunc_Array_Get_Item.StaggerType, Instigator, StaggerAttackDamageEventTags)
+  [3343] L_WasStaggeredByThisDamage = true
+  [3354] pop
+  [3355] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentStaggerStage, 1)
+  [3397] L_NextStage = CallFunc_Add_IntInt_ReturnValue
+  [3424] pop
+  [3425] self.FinishedStaggerStages = true
+  [3436] pop
+  [3437] return nothing
+  [3439] end
+
+=== UpdateSpecialCaseSignificanceManagement
+  [0] frame.K2Node_Event_NewSignificance = NewSignificance
+  [18] ExecuteUbergraph_staggerable_bpc(2095)
+  [33] return nothing
+  [35] end
+
+=== UsesSpecialCaseSignificanceManagement
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

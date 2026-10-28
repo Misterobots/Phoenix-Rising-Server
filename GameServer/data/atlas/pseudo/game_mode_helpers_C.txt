@@ -1,0 +1,136 @@
+# game_mode_helpers_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Find Arrival Cinematic Location
+  [0] push @1859
+  [5] array{}
+  [16] GetAllActorsOfClass(WorldContextObject, island_player_arrival_marker_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [53] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(CallFunc_GetAllActorsOfClass_OutActors, 0)
+  [109] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @724
+  [123] Temp_int_Loop_Counter_Variable_1 = 0
+  [146] Temp_int_Array_Index_Variable_1 = 0
+  [169] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [228] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [266] if !(CallFunc_Less_IntInt_ReturnValue) goto @724
+  [280] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [307] push @1711
+  [312] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [371] Temp_name_Variable = 'StoryMission'
+  [402] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(CallFunc_Array_Get_Item.self.Tags, Temp_name_Variable)
+  [484] CallFunc_CurrentGameModeHasTag_ReturnValue = CurrentGameModeHasTag(WorldContextObject, GameplayTag{'GameMode.StoryMission'})
+  [540] CallFunc_EqualEqual_BoolBool_ReturnValue = EqualEqual_BoolBool(CallFunc_CurrentGameModeHasTag_ReturnValue, CallFunc_Array_Contains_ReturnValue)
+  [578] if !(CallFunc_EqualEqual_BoolBool_ReturnValue) pop
+  [588] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [647] CallFunc_Array_Get_Item.GetArrivalMarkerTransform(CallFunc_GetArrivalMarkerTransform_NewParam)
+  [692] ArrivalCineTransform = CallFunc_GetArrivalMarkerTransform_NewParam
+  [719] goto @1859
+  [724] CallFunc_GetCurrentLevelName_ReturnValue = GetCurrentLevelName(WorldContextObject, true)
+  [762] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('FindArrivalCinematicLocation: No island arrival markers with correct tags found in level: ', CallFunc_GetCurrentLevelName_ReturnValue)
+  [891] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue)
+  [910] L_AvgLoc = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [953] array{}
+  [964] GetAllCurrentGameModePlayerStarts(WorldContextObject, CallFunc_GetAllCurrentGameModePlayerStarts_Starts)
+  [992] Temp_int_Loop_Counter_Variable = 0
+  [1015] Temp_int_Array_Index_Variable = 0
+  [1038] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllCurrentGameModePlayerStarts_Starts)
+  [1097] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [1135] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1608
+  [1149] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1176] push @1785
+  [1181] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllCurrentGameModePlayerStarts_Starts, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1240] K2Node_DynamicCast_AsArchon_Player_Start = cast<ArchonPlayerStart>(CallFunc_Array_Get_Item_1)
+  [1276] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Start)
+  [1305] if !(K2Node_DynamicCast_bSuccess) pop
+  [1315] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Start.GetTransform()
+  [1365] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1411] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(L_AvgLoc, CallFunc_BreakTransform_Location)
+  [1457] L_AvgLoc = CallFunc_Add_VectorVector_ReturnValue
+  [1484] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Start.GetTransform()
+  [1534] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1580] L_Rot = CallFunc_BreakTransform_Rotation
+  [1607] pop
+  [1608] CallFunc_MakeTransform_ReturnValue = MakeTransform(L_AvgLoc, L_Rot, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [1679] ArrivalCineTransform = CallFunc_MakeTransform_ReturnValue
+  [1706] goto @1859
+  [1711] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1753] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1780] goto @169
+  [1785] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1827] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1854] goto @1038
+  [1859] return nothing
+  [1861] end
+
+=== FindArrivalCinematicLocationForPlayer
+  [0] push @1780
+  [5] array{}
+  [16] GetAllActorsOfClass(WorldContextObject, island_player_arrival_marker_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [53] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(CallFunc_GetAllActorsOfClass_OutActors, 0)
+  [109] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @744
+  [123] Temp_int_Loop_Counter_Variable_1 = 0
+  [146] Temp_int_Array_Index_Variable_1 = 0
+  [169] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [228] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [266] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @744
+  [280] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [307] push @1632
+  [312] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [371] CallFunc_CurrentGameModeHasTag_ReturnValue = CurrentGameModeHasTag(WorldContextObject, GameplayTag{'GameMode.StoryMission'})
+  [427] Temp_name_Variable = 'StoryMission'
+  [458] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(CallFunc_Array_Get_Item_1.self.Tags, Temp_name_Variable)
+  [540] CallFunc_EqualEqual_BoolBool_ReturnValue = EqualEqual_BoolBool(CallFunc_CurrentGameModeHasTag_ReturnValue, CallFunc_Array_Contains_ReturnValue)
+  [578] if !(CallFunc_EqualEqual_BoolBool_ReturnValue) pop
+  [588] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [647] CallFunc_Array_Get_Item_1.GetActorMeshTransform(PlayerStartSlot, CallFunc_GetActorMeshTransform_ActorTransform)
+  [701] FoundTransform = true
+  [712] ArrivalCineTransform = CallFunc_GetActorMeshTransform_ActorTransform
+  [739] goto @1780
+  [744] CallFunc_GetCurrentLevelName_ReturnValue = GetCurrentLevelName(WorldContextObject, true)
+  [782] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('FindArrivalCinematicLocationForPlayer: No island arrival markers with correct tags found in level: ', CallFunc_GetCurrentLevelName_ReturnValue)
+  [920] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue)
+  [939] array{}
+  [950] GetAllCurrentGameModePlayerStarts(WorldContextObject, CallFunc_GetAllCurrentGameModePlayerStarts_Starts)
+  [978] Temp_int_Loop_Counter_Variable = 0
+  [1001] Temp_int_Array_Index_Variable = 0
+  [1024] array{}
+  [1035] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_MakeArray_Array)
+  [1094] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [1132] if !(CallFunc_Less_IntInt_ReturnValue) goto @1486
+  [1146] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1173] push @1706
+  [1178] array{}
+  [1189] Default__KismetArrayLibrary.Array_Get(K2Node_MakeArray_Array, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1248] K2Node_DynamicCast_AsArchon_Player_Start = cast<ArchonPlayerStart>(CallFunc_Array_Get_Item)
+  [1284] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Start)
+  [1313] if !(K2Node_DynamicCast_bSuccess) pop
+  [1323] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(K2Node_DynamicCast_AsArchon_Player_Start.self.SlotIndex, PlayerStartSlot)
+  [1383] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [1393] CallFunc_GetTransform_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Start.GetTransform()
+  [1443] FoundTransform = true
+  [1454] ArrivalCineTransform = CallFunc_GetTransform_ReturnValue
+  [1481] goto @1780
+  [1486] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [1589] FoundTransform = false
+  [1600] ArrivalCineTransform = CallFunc_MakeTransform_ReturnValue
+  [1627] goto @1780
+  [1632] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1674] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1701] goto @169
+  [1706] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1748] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1775] goto @1024
+  [1780] return nothing
+  [1782] end
+
+=== GetPlayerStateIndex
+  [0] array{}
+  [11] array{}
+  [22] GetPlayerStatesAndCharacters(Controller, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [60] K2Node_DynamicCast_AsArchon_Player_State = cast<ArchonPlayerState>(Controller.self.PlayerState)
+  [118] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_State)
+  [147] if !(K2Node_DynamicCast_bSuccess) goto @261
+  [161] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(CallFunc_GetPlayerStatesAndCharacters_PlayerStates, K2Node_DynamicCast_AsArchon_Player_State)
+  [229] ReturnValue = CallFunc_Array_Find_ReturnValue
+  [256] goto @284
+  [261] ReturnValue = 0
+  [284] return ReturnValue
+  [294] end

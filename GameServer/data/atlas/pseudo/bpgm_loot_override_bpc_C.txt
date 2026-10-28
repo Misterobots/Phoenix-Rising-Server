@@ -1,0 +1,80 @@
+# bpgm_loot_override_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ClearAllBreakPartOverrides
+  [0] Default__BlueprintMapLibrary.Map_Clear(self.BehemothBreakPartOverrides)
+  [41] return nothing
+  [43] end
+
+=== ClearSpecificBreakPartLoot
+  [0] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.BehemothBreakPartOverrides, BodyPartType)
+  [60] return nothing
+  [62] end
+
+=== GetBreakPartLootOverrideForPart
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.BehemothBreakPartOverrides, BodyPartType, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @240
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.BehemothBreakPartOverrides, BodyPartType, CallFunc_Map_Find_Value)
+  [152] OverrideExists = true
+  [163] OverrideLootID = CallFunc_Map_Find_Value.Name
+  [199] Amount = CallFunc_Map_Find_Value.Int
+  [235] goto @305
+  [240] OverrideExists = false
+  [251] OverrideLootID = 'None'
+  [282] Amount = 0
+  [305] return nothing
+  [307] end
+
+=== OverrideAllBreakPartLoot
+  [0] push @627
+  [5] self.OverrideExcludedBehemoths = ExcludedBehemoths
+  [32] self.GlobalOverrideChance = OverrideChance
+  [59] Temp_int_Variable_1 = 0
+  [82] Temp_int_Variable = 0
+  [105] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(22)
+  [138] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Variable_1, CallFunc_MakeLiteralInt_ReturnValue)
+  [176] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [186] CallFunc_Conv_IntToByte_ReturnValue_1 = Conv_IntToByte(Temp_int_Variable_1)
+  [223] CallFunc_GetEnumeratorValueFromIndex_ReturnValue = GetEnumeratorValueFromIndex(behemoth_bodypart_type, CallFunc_Conv_IntToByte_ReturnValue_1)
+  [269] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(CallFunc_GetEnumeratorValueFromIndex_ReturnValue)
+  [306] Temp_int_Variable = CallFunc_Conv_ByteToInt_ReturnValue
+  [333] push @553
+  [338] K2Node_MakeStruct_name_int_pair.Name = LootID
+  [374] K2Node_MakeStruct_name_int_pair.Int = Amount
+  [410] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [447] CallFunc_GetValidValue_ReturnValue = GetValidValue(behemoth_bodypart_type, CallFunc_Conv_IntToByte_ReturnValue)
+  [493] Default__BlueprintMapLibrary.Map_Add(self.BehemothBreakPartOverrides, CallFunc_GetValidValue_ReturnValue, K2Node_MakeStruct_name_int_pair)
+  [552] pop
+  [553] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [595] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [622] goto @105
+  [627] return nothing
+  [629] end
+
+=== OverrideSpecificBreakPartLoot
+  [0] K2Node_MakeStruct_name_int_pair.Name = LootID
+  [36] K2Node_MakeStruct_name_int_pair.Int = Amount
+  [72] Default__BlueprintMapLibrary.Map_Add(self.BehemothBreakPartOverrides, BehemothBodyPartType, K2Node_MakeStruct_name_int_pair)
+  [131] return nothing
+  [133] end
+
+=== RollGlobalOverrideForBehemothBreak
+  [0] CallFunc_Array_Contains_ReturnValue = Default__KismetArrayLibrary.Array_Contains(self.OverrideExcludedBehemoths, BehemothName)
+  [60] if !(CallFunc_Array_Contains_ReturnValue) goto @144
+  [74] OverrideLootID = 'None'
+  [105] Amount = 0
+  [128] IsOverriding = false
+  [139] goto @523
+  [144] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.BehemothBreakPartOverrides, BodyPart, CallFunc_Map_Find_Value)
+  [213] if !(CallFunc_Map_Find_ReturnValue) goto @458
+  [227] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [255] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_RandomFloat_ReturnValue, self.GlobalOverrideChance)
+  [293] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.BehemothBreakPartOverrides, BodyPart, CallFunc_Map_Find_Value)
+  [362] OverrideLootID = CallFunc_Map_Find_Value.Name
+  [398] Amount = CallFunc_Map_Find_Value.Int
+  [434] IsOverriding = CallFunc_LessEqual_DoubleDouble_ReturnValue
+  [453] goto @523
+  [458] OverrideLootID = 'None'
+  [489] Amount = 0
+  [512] IsOverriding = false
+  [523] return nothing
+  [525] end

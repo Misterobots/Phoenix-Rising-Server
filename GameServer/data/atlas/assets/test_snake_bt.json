@@ -1,0 +1,190 @@
+{
+ "name": "test_snake_bt",
+ "package": "Archon/Content/Monsters/sandworm_test/test_snake_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "test_snake_bb"
+ ],
+ "exports": {
+  "test_snake_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_0",
+    "BlackboardAsset": "BlackboardData test_snake_bb",
+    "RootDecorators": [
+     "@BTDecorator_Blackboard_0"
+    ]
+   }
+  },
+  "behemoth_in_state_btdeco_C_0": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "behemoth_in_state_btdeco_C_1": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@behemoth_in_state_btdeco_C_1",
+       "@current_target_is_valid_btdeco_C_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_PerformActionClass_C_14",
+      "Decorators": [
+       "@BTDeco_CheckChosenAction_C_0",
+       "@BTDecorator_Cooldown_0",
+       "@behemoth_in_state_btdeco_C_0",
+       "@BTDeco_Sandworm_IsHead_C_0",
+       "@BTDeco_Sandworm_BodyCombatReady_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@try_pick_new_target_bts_C_1",
+     "@evaluate_action_btservice_C_2",
+     "@distance_from_target_service_C_1",
+     "@calc_knowntargetavgpos_btservice_C_2"
+    ],
+    "NodeName": "RealRoot",
+    "TreeAsset": "BehaviorTree test_snake_bt"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@try_set_behemoth_state_bttask_C_2",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDeco_CheckChosenAction_C_0": {
+   "type": "BTDeco_CheckChosenAction_C",
+   "props": {
+    "bIsObservingBB": false,
+    "bInverseCondition": true,
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDeco_Sandworm_BodyCombatReady_C_0": {
+   "type": "BTDeco_Sandworm_BodyCombatReady_C",
+   "props": {
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDeco_Sandworm_IsHead_C_0": {
+   "type": "BTDeco_Sandworm_IsHead_C",
+   "props": {
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "MonsterIsDead is Is Not Set",
+    "OperationType": 1,
+    "BlackboardKey": "bb.MonsterIsDead",
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree test_snake_bt"
+   }
+  },
+  "BTDecorator_Cooldown_0": {
+   "type": "BTDecorator_Cooldown",
+   "props": {
+    "CooldownTime": 1.0,
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_PerformActionClass_C_14": {
+   "type": "BTTask_PerformActionClass_C",
+   "props": {
+    "ActionBlackboardKeyName": "ChosenAttack",
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "calc_knowntargetavgpos_btservice_C_2": {
+   "type": "calc_knowntargetavgpos_btservice_C",
+   "props": {
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "current_target_is_valid_btdeco_C_1": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "distance_from_target_service_C_1": {
+   "type": "distance_from_target_service_C",
+   "props": {
+    "Distance_key": "bb.TargetActor",
+    "Target_key": "bb.AttackTarget",
+    "Interval": 0.2,
+    "RandomDeviation": 0.0,
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "evaluate_action_btservice_C_2": {
+   "type": "evaluate_action_btservice_C",
+   "props": {
+    "AttackTargetKey": "bb.AttackTarget",
+    "TopScoreKey": "bb.TopScore",
+    "ChosenActionKey": "bb.ChosenAttack",
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "try_pick_new_target_bts_C_1": {
+   "type": "try_pick_new_target_bts_C",
+   "props": {
+    "OnSearchStart": true,
+    "OnTick": false,
+    "Interval": 2.0,
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "try_set_behemoth_state_bttask_C_2": {
+   "type": "try_set_behemoth_state_bttask_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "TreeAsset": "BehaviorTree test_snake_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  }
+ }
+}

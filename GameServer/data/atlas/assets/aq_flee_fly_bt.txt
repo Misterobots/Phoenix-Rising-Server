@@ -1,0 +1,48 @@
+aq_flee_fly_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if BTDeco_MemberOfClassIsPresent  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+  [root if Blackboard  (InFleeState is Is Set)]
+  Selector
+    1) Sequence
+      [if set_state_btdeco  (State=ActivelyFleeing)]
+      1) Sequence
+        {service debug_arrow_btservice  (ArrowEndKey=CurrentPatrolPoint)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_prep_bt)
+        2) Sequence
+          [if ForceSuccess]
+          1) Sequence
+            [if not navtrace_btdeco  (TraceTargetBlackboardKey=NextPatrolPoint, MaxDistance=2500, TargetPointTraceHeight=1000, bInverseCondition=true)]
+            1) Sequence
+              1) RunEQSQuery "FindBackoffPos"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_fly_startpos"}, BlackboardKey=bb.MoveDestination)
+              2) Selector
+                [if navtrace_btdeco  (TraceTargetBlackboardKey=MoveDestination)]
+                1) Sequence
+                  1) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_jumpto_facemovedest_bt)
+                [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+                2) Sequence
+                  1) MoveTo  (AcceptableRadius=400, FilterClass=BlueprintGeneratedClass NavigationQueryFilter_NoDynamic_C, bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+                  2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_jumpto_facemovedest_bt)
+        3) Sequence
+          1) Selector
+            [if should_despawn_on_flee_btdeco]
+            1) pivot_towards_target_bttask  (PivotTarget=bb.CurrentPatrolPoint, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+            2) pivot_towards_target_bttask  (PivotTarget=bb.NextPatrolPoint, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+          2) BehemothAction  (Montage=AnimMontage aq_run_mot)
+      [if set_state_btdeco  (State=behemoth_states_enum::Successfully Fled)]
+      2) Sequence
+        {service debug_arrow_btservice  (ArrowEndKey=CurrentPatrolPoint)}
+        1) Selector
+          {service behemoth_specific_function_bts  (EnterFunction=EnterFleeState, LeaveFunction=LeaveFleeState)}
+          [if should_despawn_on_flee_btdeco]
+          1) Sequence
+            1) Wait  (WaitTime=3)
+            2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_despawn_bt)
+          2) Sequence
+            {service flight_navigation_btservice  (SpeedSmoothingOverride=0, DirectionSmoothingOverride=0, MaxFlySpeedOverride=2500, MaxFlyAccelerationOverride=6000)}
+            1) FlyDirectlyTo  (AcceptableRadius=350, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.NextPatrolPoint)
+        2) BehemothAction "exit fly"  (Montage=AnimMontage b_aq_lerawr_00_loco_jumplandturntoidle_fwd_00_mot)
+        3) RunEQSQuery "Find Patrol point"  (QueryTemplate=EnvQuery EQS_NextPointAroundTargetPoint, EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"}, BlackboardKey=bb.MoveDestination)
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      3) RunBehavior  (BehaviorAsset=BehaviorTree sub_flee_arrive)
+    2) ResetFleeTimer "BTTask_ResetFleeTimer"

@@ -1,0 +1,88 @@
+# voip_member_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Construct
+  [0] ExecuteUbergraph_voip_member_bpw(10)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_voip_member_bpw
+  [0] goto computed(EntryPoint)
+  [10] From Party Member(self.Party Member)
+  [33] CallFunc_IsValidNetId_ReturnValue = IsValidNetId(self.Party Member.UniqueId)
+  [71] if !(CallFunc_IsValidNetId_ReturnValue) goto @140
+  [85] self.w_voip_icons_bpw.Init(self.Party Member.UniqueId)
+  [135] goto @190
+  [140] ArchonLogError("Invalid Net ID!! can't get playerstate")
+  [190] return nothing
+  [192] end
+
+=== From Party Member
+  [0] self.Party Member = PartyMember
+  [27] CallFunc_IsPartyLeader_ReturnValue = IsPartyLeader(self, PartyMember.UniqueId)
+  [66] Temp_bool_Variable = CallFunc_IsPartyLeader_ReturnValue
+  [85] Temp_byte_Variable = 3
+  [105] Temp_byte_Variable_1 = 1
+  [125] self.LeaderImage.SetVisibility(switch(Temp_bool_Variable){false: Temp_byte_Variable_1, true: Temp_byte_Variable, default: K2Node_Select_Default})
+  [214] if !(true) goto @562
+  [220] CallFunc_GetArchonSocialManager_ReturnValue = GetArchonSocialManager(self)
+  [241] CallFunc_FindUser_ReturnValue = CallFunc_GetArchonSocialManager_ReturnValue.FindUser(PartyMember.UniqueId)
+  [301] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindUser_ReturnValue)
+  [330] if !(CallFunc_IsValid_ReturnValue) goto @658
+  [344] CallFunc_GetArchonSocialManager_ReturnValue = GetArchonSocialManager(self)
+  [365] CallFunc_FindUser_ReturnValue = CallFunc_GetArchonSocialManager_ReturnValue.FindUser(PartyMember.UniqueId)
+  [425] CallFunc_GetDisplayName_ReturnValue = CallFunc_FindUser_ReturnValue.GetDisplayName()
+  [475] CallFunc_Conv_StringToText_ReturnValue_1 = Conv_StringToText(CallFunc_GetDisplayName_ReturnValue)
+  [512] self.Name.SetText(CallFunc_Conv_StringToText_ReturnValue_1)
+  [557] goto @750
+  [562] CallFunc_Conv_StringToText_ReturnValue = Conv_StringToText(PartyMember.PlayerName)
+  [608] self.Name.SetText(CallFunc_Conv_StringToText_ReturnValue)
+  [653] goto @750
+  [658] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr("Can't find socialuser of ", PartyMember.PlayerName)
+  [731] ArchonLogError(CallFunc_Concat_StrStr_ReturnValue)
+  [750] return nothing
+  [752] end
+
+=== Get Party Client
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.Party Client)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @67
+  [43] ReturnValue = self.Party Client
+  [62] goto @986
+  [67] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [91] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwningPlayer_ReturnValue)
+  [127] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [156] if !(K2Node_DynamicCast_bSuccess) goto @383
+  [170] CallFunc_IsValid_ReturnValue_1 = IsValid(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [199] if !(CallFunc_IsValid_ReturnValue_1) goto @701
+  [213] CallFunc_GetParty_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetParty()
+  [255] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetParty_ReturnValue)
+  [284] if !(CallFunc_IsValid_ReturnValue_2) goto @685
+  [298] CallFunc_GetParty_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetParty()
+  [340] self.Party Client = CallFunc_GetParty_ReturnValue
+  [359] ReturnValue = self.Party Client
+  [378] goto @986
+  [383] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [412] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [462] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [504] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Could not cast Player Controller to ArchonPlayerController')
+  [601] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_3, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [675] StackTrace()
+  [685] ReturnValue = null
+  [696] goto @986
+  [701] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [730] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue_1)
+  [780] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ') =')
+  [822] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'ArchonPlayerController is not valid!')
+  [897] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [971] StackTrace()
+  [981] goto @685
+  [986] return ReturnValue
+  [996] end
+
+=== GetVisibilityForVoipIcons
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, ArchonVoiceChatFeature, true)
+  [31] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @70
+  [45] ReturnValue = 0
+  [65] goto @90
+  [70] ReturnValue = 2
+  [90] return ReturnValue
+  [100] end

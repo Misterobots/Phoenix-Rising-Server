@@ -1,0 +1,17 @@
+lerawr_jumpto_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Requires PounceLocation"]
+  [root if comment_btdeco "Requires ShouldFaceAttackTargetAtEnd"]
+  Sequence
+    1) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+    [if ForceSuccess]
+    2) Sequence
+      1) call_specific_behemoth_function_bttask "CalcJumpMontagePlayRate"  (SpecificFunction=CalcJumpMontagePlayRate, bShowPropertyDetails=false)
+      2) BehemothAction  (Montage=AnimMontage b_leRawr_loco_pounceing_reposition_mot, StopMontageOnAbort=false, MontagePlayRateBlackboardName=PounceMontagePlayRate)
+    [if ForceSuccess]
+    3) Sequence
+      [if Compare_btdeco  (LeftSideKey=bb.ShouldFaceAttackTargetAtEnd, CompareOperator===, CompareType=Bool, RightSideData={"ConstantBool": true})]
+      1) Selector
+        1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=LandAndTurn)
+    4) set_blackboard_key_bttask  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool)

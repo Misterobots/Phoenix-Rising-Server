@@ -1,0 +1,70 @@
+# b_scissors_nemesis_archetype_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CanSpawnHive
+  [0] Can Spawn = true
+  [11] return nothing
+  [13] end
+
+=== ExecuteUbergraph_b_scissors_nemesis_archetype_bp
+  [0] push @492
+  [5] goto computed(EntryPoint)
+  [15] self.IsHealing = false
+  [26] pop
+  [27] CallFunc_SpawnSystemAttached_ReturnValue = SpawnSystemAttached(scissors_vamp_Heal_NS, self.Mesh, 'back_mount_socket_01', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), 0, false, true, 0, true)
+  [135] Delay(self, 1.0, LatentActionInfo{EX_SkipOffsetConst(Value=15), 1168943225, 'ExecuteUbergraph_b_scissors_nemesis_archetype_bp', self})
+  [189] pop
+  [190] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self)
+  [211] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(heal_by_amount_ge_C, 1.0, GameplayEffectContextHandle{})
+  [293] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'HealAmount', K2Node_Event_DamageEventData.MitigatedAttackDamage)
+  [361] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(self)
+  [382] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [441] HealFX()
+  [455] pop
+  [456] self.IsHealing = true
+  [467] goto @27
+  [472] if !(self.IsHealing) goto @456
+  [486] pop
+  [487] goto @472
+  [492] return nothing
+  [494] end
+
+=== GetSpawnedHiveTransform
+  [0] CallFunc_GetTransform_ReturnValue = GetTransform()
+  [28] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [74] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_BreakTransform_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [161] HiveTransform = CallFunc_MakeTransform_ReturnValue
+  [188] return nothing
+  [190] end
+
+=== HealFX
+  [0] ExecuteUbergraph_b_scissors_nemesis_archetype_bp(487)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnPostMitigationDealtDamage
+  [0] frame.K2Node_Event_DamageTaker = DamageTaker
+  [18] frame.K2Node_Event_DamageEventData = DamageEventData
+  [36] frame.K2Node_Event_DamageTags = DamageTags
+  [54] frame.K2Node_Event_Context = Context
+  [72] ExecuteUbergraph_b_scissors_nemesis_archetype_bp(190)
+  [87] return nothing
+  [89] end
+
+=== SpawnHive
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @138
+  [35] GetSpawnedHiveTransform(CallFunc_GetSpawnedHiveTransform_HiveTransform)
+  [58] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, c_nest_archetype_bp_C, CallFunc_GetSpawnedHiveTransform_HiveTransform, 1, null)
+  [100] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_GetSpawnedHiveTransform_HiveTransform)
+  [138] return nothing
+  [140] end
+
+=== TrySpawnHive
+  [0] CanSpawnHive(CallFunc_CanSpawnHive_Can_Spawn)
+  [23] if !(CallFunc_CanSpawnHive_Can_Spawn) goto @67
+  [37] SpawnHive()
+  [51] Success = true
+  [62] goto @78
+  [67] Success = false
+  [78] return nothing
+  [80] end

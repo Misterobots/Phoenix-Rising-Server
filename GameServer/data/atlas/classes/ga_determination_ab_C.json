@@ -1,0 +1,546 @@
+{
+ "name": "ga_determination_ab_C",
+ "kind": "blueprint",
+ "parents": [
+  "GameplayAbility",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationMax",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentDeterminationHandle",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationDebuggingEnabled",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxDeterminationLevel",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DebugDetermination",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AbilitySystem",
+   "type": "ObjectProperty<AbilitySystemComponent>",
+   "bp_type": "ObjectProperty<AbilitySystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageTags",
+   "type": "StructProperty<GameplayTagContainer>",
+   "bp_type": "StructProperty<GameplayTagContainer>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SpecialHit",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BuffableComponent",
+   "type": "ObjectProperty<ArchonBuffableComponent>",
+   "bp_type": "ObjectProperty<ArchonBuffableComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DeterminationBuff",
+   "type": "ObjectProperty<ga_determination_meter_base_buff_C>",
+   "bp_type": "ObjectProperty<ga_determination_meter_base_buff_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Weapon",
+   "type": "ObjectProperty<ArchonWeapon>",
+   "bp_type": "ObjectProperty<ArchonWeapon>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "CloseGate",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_ab_C.ExecuteUbergraph_ga_determination_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DebugOutputToLog",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Text",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.ArchonLogText",
+    "KismetMathLibrary.SelectString",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ga_determination_ab",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 107,
+   "reads": [
+    "DamageTags",
+    "DeterminationDebuggingEnabled",
+    "OnPostMitigationDealtAnyDamage"
+   ],
+   "sets": [
+    "AbilitySystem",
+    "BuffableComponent",
+    "DamageTags",
+    "MaxDeterminationLevel",
+    "Weapon"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.MakeLiteralGameplayTag",
+    "CanProcOnDamageEffects",
+    "CloseGate",
+    "DebugOutputToLog",
+    "GameplayAbility.GetActorInfo",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GetArchonBuffableComponent",
+    "GetCurrentWeaponPowerData",
+    "GetOwnedWeapon",
+    "HandleDeterminationIncrease",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "LevelUpDetermination",
+    "OpenGate",
+    "ReadyToLevel"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "GetDeterminationIncrease",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Actor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Val",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "CallFunc_GetDeterminationOnHitPerChargeLevel_DeterminationOnHitPerChargeLevel",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GetCurrentDetermination",
+    "GetCurrentWeaponPowerData",
+    "GetDeterminationOnHitPerChargeLevel",
+    "GetOwnedWeapon",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Multiply_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleDeterminationIncrease",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Special",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "SpecialThrow",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 106,
+   "reads": [
+    "AbilitySystem",
+    "DamageTags",
+    "DebugDetermination",
+    "DeterminationDebuggingEnabled"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.SetStackCount",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.MakeLiteralGameplayTag",
+    "DebugOutputToLog",
+    "GameplayAbility.GetActorInfo",
+    "GetCurrentChargeLevel",
+    "GetDeterminationIncrease",
+    "GetOwnedWeapon",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.SelectFloat",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetSystemLibrary.PrintString",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass determination_ge_C",
+    "BlueprintGeneratedClass determination_ready_to_level_ge_C"
+   ]
+  },
+  {
+   "name": "K2_ActivateAbility",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_ab_C.ExecuteUbergraph_ga_determination_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LevelUpDetermination",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 101,
+   "reads": [
+    "AbilitySystem",
+    "BonusDeterminationLevels",
+    "BuffableComponent",
+    "DeterminationBuff",
+    "DeterminationDebuggingEnabled",
+    "MaxDeterminationLevel",
+    "Weapon"
+   ],
+   "sets": [
+    "DeterminationBuff",
+    "MaxDuration"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.RemoveActiveEffectsWithGrantedTags",
+    "Actor.FlushNetDormancy",
+    "ArchonCharacter.GetCurrentWeapon",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintGameplayTagLibrary.MakeLiteralGameplayTag",
+    "DebugOutputToLog",
+    "GameplayAbility.GetOwningActorFromActorInfo",
+    "GetOwnedGameplayTags",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "MakeOutgoingSpec",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "StartBuff",
+    "TryAddBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ga_determination_meter_01_buff_C",
+    "BlueprintGeneratedClass ga_determination_meter_02_buff_C",
+    "BlueprintGeneratedClass ga_determination_meter_03_buff_C",
+    "BlueprintGeneratedClass ga_determination_meter_04_buff_C",
+    "BlueprintGeneratedClass ga_determination_meter_05_buff_C",
+    "BlueprintGeneratedClass ga_determination_meter_base_buff_C",
+    "BlueprintGeneratedClass scale_determination_ge_C"
+   ]
+  },
+  {
+   "name": "OnPostMitDealtDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_ab_C.ExecuteUbergraph_ga_determination_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OpenGate",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ga_determination_ab_C.ExecuteUbergraph_ga_determination_ab"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReadyToLevel",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 13,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "GameplayAbility.GetActorInfo",
+    "GetOwnedWeapon",
+    "HasMatchingGameplayTag"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/game/abilities/weapons/Determination/ga_determination_ab",
+ "pseudo_file": "pseudo/ga_determination_ab_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,82 @@
+{
+ "name": "rock_ice_bulldozer_bt",
+ "package": "Archon/Content/Monsters/sq/rock_ice/ai/rock_ice_bulldozer_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "eqs_find_all_live_players_near_ice_spires",
+  "rock_ice_bulldozer_atk_C",
+  "sq_bb"
+ ],
+ "exports": {
+  "rock_ice_bulldozer_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_1",
+    "BlackboardAsset": "BlackboardData sq_bb"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_PerformActionClass_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree rock_ice_bulldozer_bt"
+   }
+  },
+  "BTTask_PerformActionClass_C_0": {
+   "type": "BTTask_PerformActionClass_C",
+   "props": {
+    "ActionClass": "BlueprintGeneratedClass rock_ice_bulldozer_atk_C",
+    "TreeAsset": "BehaviorTree rock_ice_bulldozer_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTTask_RunEQSQuery_1": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_all_live_players_near_ice_spires",
+     "QueryConfig": [
+      {
+       "ParamName": "Distance.FloatValueMax",
+       "ParamType": "EAIParamType::Float",
+       "Value": 3000.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree rock_ice_bulldozer_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.TargetActor",
+    "MinAngleToTriggerPivot": 30.0,
+    "TreeAsset": "BehaviorTree rock_ice_bulldozer_bt",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  }
+ }
+}

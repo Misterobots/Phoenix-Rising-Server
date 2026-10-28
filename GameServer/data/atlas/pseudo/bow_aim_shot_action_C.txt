@@ -1,0 +1,40 @@
+# bow_aim_shot_action_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_bow_aim_shot_action
+  [0] goto computed(EntryPoint)
+  [10] ReceiveOnStarted()
+  [20] self.PreviousDrawAction.GetAccuracy(CallFunc_GetAccuracy_Accuracy)
+  [65] self.LAccuracyAlpha = CallFunc_GetAccuracy_Accuracy
+  [92] CallFunc_IsValid_ReturnValue = IsValid(self.PlayerAimingBpc)
+  [121] if !(CallFunc_IsValid_ReturnValue) goto @640
+  [135] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(self.LAccuracyAlpha, 0.0, 1.0, self.MinProjectileSpeed, self.MaxProjectileSpeed)
+  [208] CallFunc_GetDirectionUnitVector_ReturnValue = GetDirectionUnitVector(self.LSpawnPoint, self.PlayerAimingBpc.self.LTargetPoint)
+  [276] CallFunc_FindRandomPointAroundConeEdge_ReturnValue = FindRandomPointAroundConeEdge(CallFunc_GetDirectionUnitVector_ReturnValue, self.AccuracyConeHalfAngle)
+  [326] CallFunc_VLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(self.LAccuracyAlpha)
+  [355] CallFunc_VLerp_ReturnValue = VLerp(CallFunc_FindRandomPointAroundConeEdge_ReturnValue, CallFunc_GetDirectionUnitVector_ReturnValue, CallFunc_VLerp_Alpha_ImplicitCast)
+  [410] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_VLerp_ReturnValue, CallFunc_MapRangeClamped_ReturnValue)
+  [456] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_VLerp_ReturnValue)
+  [493] CallFunc_MakeTransform_ReturnValue = MakeTransform(self.LSpawnPoint, CallFunc_MakeRotFromX_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [564] Local_Shoot(CallFunc_MakeTransform_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue, true)
+  [597] self.CombatComboCounterBpc.IncrementComboCount(5)
+  [635] goto @688
+  [640] ArchonLogError('Player Aiming Component is not valid')
+  [688] return nothing
+  [690] end
+
+=== FindRandomPointAroundConeEdge
+  [0] CallFunc_Cross_VectorVector_ReturnValue = Cross_VectorVector(Direction, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [62] CallFunc_Normal_ReturnValue = Normal(CallFunc_Cross_VectorVector_ReturnValue, 0.0001)
+  [104] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 360.0)
+  [150] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [179] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(CallFunc_Normal_ReturnValue, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast_1, Direction)
+  [234] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(ConeHalfAngle)
+  [263] CallFunc_RotateAngleAxis_ReturnValue_1 = RotateAngleAxis(Direction, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, CallFunc_RotateAngleAxis_ReturnValue)
+  [318] ReturnValue = CallFunc_RotateAngleAxis_ReturnValue_1
+  [345] return ReturnValue
+  [355] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_bow_aim_shot_action(10)
+  [15] return nothing
+  [17] end

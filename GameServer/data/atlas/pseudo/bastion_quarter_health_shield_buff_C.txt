@@ -1,0 +1,99 @@
+# bastion_quarter_health_shield_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_bastion_quarter_health_shield_buff
+  [0] push @1743
+  [5] goto computed(EntryPoint)
+  [15] push @225
+  [20] push @125
+  [25] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.ShieldEfficacyGEHandle)
+  [54] if !(CallFunc_IsGameplayEffectActive_ReturnValue) pop
+  [64] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = self.OwnerAbilitySystemComponent.RemoveActiveGameplayEffect(self.ShieldEfficacyGEHandle, -1)
+  [124] pop
+  [125] CallFunc_IsGameplayEffectActive_ReturnValue_1 = IsGameplayEffectActive(self.LimitHealthGEHandle)
+  [154] if !(CallFunc_IsGameplayEffectActive_ReturnValue_1) pop
+  [164] CallFunc_RemoveActiveGameplayEffect_ReturnValue = self.OwnerAbilitySystemComponent.RemoveActiveGameplayEffect(self.LimitHealthGEHandle, -1)
+  [224] pop
+  [225] K2_ClearAndInvalidateTimerHandle(self, self.RefreshShieldHandle)
+  [245] pop
+  [246] ReceiveBeginPlay()
+  [256] pop
+  [257] RemoveShield()
+  [271] CallFunc_SafeDivide_ReturnValue = SafeDivide(self.HealthReduction, 1.25)
+  [317] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [337] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(shieldable_bpc_C)
+  [388] CallFunc_GetComponentByClass_ReturnValue.AddShield(CallFunc_SafeDivide_ReturnValue, 50.0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Shield.Source.Bastion'})}, -1.0, -1.0, false, CallFunc_AddShield_AddedShieldSuccessfully, CallFunc_AddShield_GUID)
+  [534] if !(CallFunc_AddShield_AddedShieldSuccessfully) pop
+  [544] self.ShieldGUID = CallFunc_AddShield_GUID
+  [571] pop
+  [572] OnAdded()
+  [582] CallFunc_MakeOutgoingSpec_ReturnValue = self.OwnerAbilitySystemComponent.MakeOutgoingSpec(ce_shield_efficacy_ge_C, 0.0, GameplayEffectContextHandle{})
+  [664] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', 0.15)
+  [719] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = self.OwnerAbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [778] self.ShieldEfficacyGEHandle = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [805] pop
+  [806] OnRemoved()
+  [816] RemoveShield()
+  [830] goto @15
+  [835] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(self.OwnerAbilitySystemComponent, GameplayAttribute{'MaxHealth', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [959] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [988] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 0.25)
+  [1034] self.HealthReduction = CallFunc_Multiply_DoubleDouble_ReturnValue_2
+  [1061] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1081] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_1.GetComponentByClass(shieldable_bpc_C)
+  [1132] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [1161] if !(CallFunc_IsValid_ReturnValue) pop
+  [1171] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1191] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_1.GetComponentByClass(shieldable_bpc_C)
+  [1242] CallFunc_GetComponentByClass_ReturnValue_1.GetShieldValueFromTaggedShields(GameplayTag{'Shield.Source.Bastion'}, CallFunc_GetShieldValueFromTaggedShields_TotalShieldValue)
+  [1314] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.HealthReduction, 2.0)
+  [1360] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_GetShieldValueFromTaggedShields_TotalShieldValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1398] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [1408] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetShieldValueFromTaggedShields_TotalShieldValue, 0.0)
+  [1446] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @257
+  [1460] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.HealthReduction, 2.0)
+  [1506] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1526] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(shieldable_bpc_C)
+  [1577] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, CallFunc_GetShieldValueFromTaggedShields_TotalShieldValue)
+  [1623] CallFunc_SafeDivide_ReturnValue_1 = SafeDivide(CallFunc_Subtract_DoubleDouble_ReturnValue, 1.25)
+  [1669] CallFunc_GetComponentByClass_ReturnValue.AddShieldValueToExisingShield(self.ShieldGUID, CallFunc_SafeDivide_ReturnValue_1, false, CallFunc_AddShieldValueToExisingShield_Succeeded, CallFunc_AddShieldValueToExisingShield_NewShieldAmount)
+  [1742] pop
+  [1743] return nothing
+  [1745] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_bastion_quarter_health_shield_buff(572)
+  [15] return nothing
+  [17] end
+
+=== OnRemoved
+  [0] ExecuteUbergraph_bastion_quarter_health_shield_buff(806)
+  [15] return nothing
+  [17] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_bastion_quarter_health_shield_buff(246)
+  [15] return nothing
+  [17] end
+
+=== RefreshShields
+  [0] ExecuteUbergraph_bastion_quarter_health_shield_buff(835)
+  [15] return nothing
+  [17] end
+
+=== RemoveShield
+  [0] push @356
+  [5] push @303
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(shieldable_bpc_C)
+  [81] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [110] if !(CallFunc_IsValid_ReturnValue) pop
+  [120] CallFunc_IsValid_Guid_ReturnValue = IsValid_Guid(self.ShieldGUID)
+  [149] if !(CallFunc_IsValid_Guid_ReturnValue) pop
+  [159] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [179] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(shieldable_bpc_C)
+  [230] CallFunc_GetComponentByClass_ReturnValue.TryRemoveShieldByGUID(self.ShieldGUID, GameplayTag{'Shield.RemovalReason.ManuallyRemoved.ByGUID'})
+  [302] pop
+  [303] self.ShieldGUID = Guid{0, 0, 0, 0}
+  [355] pop
+  [356] return nothing
+  [358] end

@@ -1,0 +1,11 @@
+shared_leave_combat_if_out_of_range_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  [root if current_target_is_valid_btdeco  (ShouldBeValid=false)]
+  [root if archon_distance_check_btdeco  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance={"BlackboardKeyName": "EnterCombatRange"}, MaxDistance={"ConstantFloat": 999999.0})]
+  Sequence
+    [if ForceSuccess]
+    1) try_set_behemoth_state_bttask  (State=Alerted)
+    [if ForceSuccess]
+    2) try_set_behemoth_state_bttask  (State=Combat, StateChangeType=End)

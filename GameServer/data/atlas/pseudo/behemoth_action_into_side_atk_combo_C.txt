@@ -1,0 +1,249 @@
+# behemoth_action_into_side_atk_combo_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AngleMeetsThreshold
+  [0] if !(CompareAbsoluteValues) goto @263
+  [14] CallFunc_Abs_ReturnValue = Abs(Angle)
+  [51] CallFunc_Abs_ReturnValue_1 = Abs(ThresholdMax)
+  [88] CallFunc_Abs_ReturnValue_2 = Abs(ThresholdMin)
+  [125] CallFunc_LessEqual_DoubleDouble_ReturnValue_1 = LessEqual_DoubleDouble(CallFunc_Abs_ReturnValue, CallFunc_Abs_ReturnValue_1)
+  [163] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_Abs_ReturnValue, CallFunc_Abs_ReturnValue_2)
+  [201] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_DoubleDouble_ReturnValue, CallFunc_LessEqual_DoubleDouble_ReturnValue_1)
+  [239] ThresholdMet = CallFunc_BooleanAND_ReturnValue
+  [258] goto @396
+  [263] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(Angle, ThresholdMax)
+  [301] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(Angle, ThresholdMin)
+  [339] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [377] ThresholdMet = CallFunc_BooleanAND_ReturnValue_1
+  [396] return nothing
+  [398] end
+
+=== CanContinueCombo
+  [0] if !(self.IsRepeatable) goto @76
+  [14] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.RepeatCount, self.MaxTimesToRepeat)
+  [52] Can Continue = CallFunc_Less_IntInt_ReturnValue
+  [71] goto @87
+  [76] Can Continue = true
+  [87] return nothing
+  [89] end
+
+=== CanRepeatCombo
+  [0] if !(self.IsRepeatable) goto @261
+  [14] CallFunc_GetNumQueuedActions_ReturnValue = GetNumQueuedActions()
+  [42] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_GetNumQueuedActions_ReturnValue, 0)
+  [76] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @277
+  [90] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.RepeatCount, self.MaxTimesToRepeat)
+  [128] CallFunc_RandomInteger_ReturnValue = RandomInteger(101)
+  [161] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.ChanceOfRepeatingAction, CallFunc_RandomInteger_ReturnValue)
+  [199] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_IntInt_ReturnValue, CallFunc_Greater_IntInt_ReturnValue)
+  [237] ReturnValue = CallFunc_BooleanAND_ReturnValue
+  [256] goto @288
+  [261] ReturnValue = false
+  [272] goto @288
+  [277] ReturnValue = false
+  [288] return ReturnValue
+  [298] end
+
+=== ClearScores
+  [0] self.LeftScore = 0
+  [23] self.RightScore = 0
+  [46] return nothing
+  [48] end
+
+=== ExecuteUbergraph_behemoth_action_into_side_atk_combo
+  [0] push @2152
+  [5] goto computed(EntryPoint)
+  [15] QueueComboStoppedSequence()
+  [29] pop
+  [30] push @127
+  [35] Default__KismetArrayLibrary.Array_Get(self.RightSideMontages, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [94] QueueMontageGameplayAction(CallFunc_Array_Get_Item_2, CallFunc_QueueMontageGameplayAction_WasQueued_1)
+  [126] pop
+  [127] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [169] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [196] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.RightSideMontages)
+  [255] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [293] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @339
+  [307] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [334] goto @30
+  [339] CallFunc_CanRepeatCombo_ReturnValue = CanRepeatCombo()
+  [363] if !(CallFunc_CanRepeatCombo_ReturnValue) pop
+  [373] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(self.RepeatCount, 1)
+  [415] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_4
+  [442] self.RepeatCount = Temp_int_Variable
+  [469] CallFunc_GetNumQueuedActions_ReturnValue = GetNumQueuedActions()
+  [497] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(CallFunc_GetNumQueuedActions_ReturnValue, self.NumGameplayActionsUntilCombo)
+  [543] self.NumGameplayActionsUntilCombo = CallFunc_Add_IntInt_ReturnValue_3
+  [570] pop
+  [571] Temp_int_Array_Index_Variable = 0
+  [594] goto @196
+  [599] Temp_int_Array_Index_Variable_1 = 0
+  [622] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayersWithinArea_PlayersFound)
+  [681] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue)
+  [719] if !(CallFunc_Less_IntInt_ReturnValue_3) goto @848
+  [733] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_3
+  [760] push @1610
+  [765] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayersWithinArea_PlayersFound, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [824] UpdateScores(CallFunc_Array_Get_Item)
+  [847] pop
+  [848] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(self.LeftScore, 0)
+  [882] CallFunc_EqualEqual_IntInt_ReturnValue_1 = EqualEqual_IntInt(self.RightScore, 0)
+  [916] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_IntInt_ReturnValue, CallFunc_EqualEqual_IntInt_ReturnValue_1)
+  [954] if !(CallFunc_BooleanAND_ReturnValue) goto @1249
+  [968] Temp_int_Loop_Counter_Variable = 0
+  [991] Temp_int_Array_Index_Variable_2 = 0
+  [1014] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.NoSideChosenMontages)
+  [1073] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [1111] if !(CallFunc_Less_IntInt_ReturnValue) goto @339
+  [1125] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable
+  [1152] push @1684
+  [1157] Default__KismetArrayLibrary.Array_Get(self.NoSideChosenMontages, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_1)
+  [1216] QueueMontageGameplayAction(CallFunc_Array_Get_Item_1, CallFunc_QueueMontageGameplayAction_WasQueued)
+  [1248] pop
+  [1249] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(self.LeftScore, self.RightScore)
+  [1287] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1582
+  [1301] Temp_int_Loop_Counter_Variable_2 = 0
+  [1324] Temp_int_Array_Index_Variable_3 = 0
+  [1347] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.LeftSideMontages)
+  [1406] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [1444] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @339
+  [1458] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_2
+  [1485] push @1758
+  [1490] Default__KismetArrayLibrary.Array_Get(self.LeftSideMontages, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_3)
+  [1549] QueueMontageGameplayAction(CallFunc_Array_Get_Item_3, CallFunc_QueueMontageGameplayAction_WasQueued_2)
+  [1581] pop
+  [1582] Temp_int_Loop_Counter_Variable_1 = 0
+  [1605] goto @571
+  [1610] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [1652] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_5
+  [1679] goto @622
+  [1684] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1726] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1753] goto @1014
+  [1758] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [1800] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [1827] goto @1347
+  [1832] ReceivedOnComboExitTransitionWindowOpened()
+  [1842] CallFunc_GetCurrentActionIndex_ReturnValue = GetCurrentActionIndex()
+  [1870] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(self.NumGameplayActionsUntilCombo, 1)
+  [1912] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetCurrentActionIndex_ReturnValue, CallFunc_Subtract_IntInt_ReturnValue)
+  [1950] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [1960] CanContinueCombo(CallFunc_CanContinueCombo_Can_Continue)
+  [1983] if !(CallFunc_CanContinueCombo_Can_Continue) goto @2071
+  [1997] GetPlayersWithinArea(CallFunc_GetPlayersWithinArea_PlayersFound, CallFunc_GetPlayersWithinArea_FoundPlayers)
+  [2029] if !(CallFunc_GetPlayersWithinArea_FoundPlayers) goto @15
+  [2043] Temp_int_Loop_Counter_Variable_3 = 0
+  [2066] goto @599
+  [2071] QueueComboStoppedSequence()
+  [2085] pop
+  [2086] ReceiveOnStarted()
+  [2096] CallFunc_GetNumGameplayActions_ReturnValue = GetNumGameplayActions()
+  [2124] self.NumGameplayActionsUntilCombo = CallFunc_GetNumGameplayActions_ReturnValue
+  [2151] pop
+  [2152] return nothing
+  [2154] end
+
+=== GetPlayersWithinArea
+  [0] push @1189
+  [5] array{}
+  [16] array{}
+  [27] GetPlayerStatesAndCharacters(self, true, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [57] Temp_int_Loop_Counter_Variable = 0
+  [80] Temp_int_Array_Index_Variable = 0
+  [103] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [162] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [200] if !(CallFunc_Less_IntInt_ReturnValue) goto @971
+  [214] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [241] push @1115
+  [246] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [305] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_Array_Get_Item, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [424] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [453] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [491] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [529] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [539] CallFunc_GetOwningGameplayActionComponent_ReturnValue = GetOwningGameplayActionComponent()
+  [559] CallFunc_GetOwner_ReturnValue = CallFunc_GetOwningGameplayActionComponent_ReturnValue.GetOwner()
+  [601] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [651] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [710] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_Array_Get_Item.K2_GetActorLocation()
+  [760] Default__archon_function_library_C.IsWithinDistanceFast(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1, self.Radius, self, CallFunc_IsWithinDistanceFast_IsWithinDistance)
+  [833] if !(CallFunc_IsWithinDistanceFast_IsWithinDistance) pop
+  [843] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [902] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(Players, CallFunc_Array_Get_Item)
+  [970] pop
+  [971] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Players)
+  [1030] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [1064] PlayersFound = Players
+  [1091] FoundPlayers = CallFunc_Greater_IntInt_ReturnValue
+  [1110] goto @1189
+  [1115] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1157] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1184] goto @103
+  [1189] return nothing
+  [1191] end
+
+=== QueueComboStoppedSequence
+  [0] push @387
+  [5] if !(self.QueuedComboStoppedSequence) goto @20
+  [19] pop
+  [20] Temp_int_Loop_Counter_Variable = 0
+  [43] Temp_int_Array_Index_Variable = 0
+  [66] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ComboStoppedSequence)
+  [125] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [163] if !(CallFunc_Less_IntInt_ReturnValue) goto @301
+  [177] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [204] push @313
+  [209] Default__KismetArrayLibrary.Array_Get(self.ComboStoppedSequence, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [268] QueueMontageGameplayAction(CallFunc_Array_Get_Item, CallFunc_QueueMontageGameplayAction_WasQueued)
+  [300] pop
+  [301] self.QueuedComboStoppedSequence = true
+  [312] pop
+  [313] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [355] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [382] goto @66
+  [387] return nothing
+  [389] end
+
+=== QueueMontageGameplayAction
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Montage.Montage)
+  [38] if !(CallFunc_IsValid_ReturnValue) goto @167
+  [52] CallFunc_GetOwningGameplayActionComponent_ReturnValue = GetOwningGameplayActionComponent()
+  [72] CallFunc_CreateInstancedMontageGameplayAction_ReturnValue = CreateInstancedMontageGameplayAction(CallFunc_GetOwningGameplayActionComponent_ReturnValue, Montage)
+  [110] CallFunc_Authority_QueueAction_ReturnValue = Authority_QueueAction(CallFunc_CreateInstancedMontageGameplayAction_ReturnValue)
+  [143] WasQueued = CallFunc_Authority_QueueAction_ReturnValue
+  [162] goto @178
+  [167] WasQueued = false
+  [178] return nothing
+  [180] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_behemoth_action_into_side_atk_combo(2086)
+  [15] return nothing
+  [17] end
+
+=== ReceivedOnComboExitTransitionWindowOpened
+  [0] ExecuteUbergraph_behemoth_action_into_side_atk_combo(1832)
+  [15] return nothing
+  [17] end
+
+=== UpdateScores
+  [0] ClearScores()
+  [14] CallFunc_K2_GetActorLocation_ReturnValue = Player.K2_GetActorLocation()
+  [64] CallFunc_GetOwningGameplayActionComponent_ReturnValue = GetOwningGameplayActionComponent()
+  [84] CallFunc_GetOwner_ReturnValue = CallFunc_GetOwningGameplayActionComponent_ReturnValue.GetOwner()
+  [126] Default__archon_function_library_C.GetTopdownAngleBetween(CallFunc_GetOwner_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_K2_GetActorLocation_ReturnValue, self, CallFunc_GetTopdownAngleBetween_Angle)
+  [215] AngleToPlayer = CallFunc_GetTopdownAngleBetween_Angle
+  [242] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(0.0, AngleToPlayer)
+  [280] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @460
+  [294] AngleMeetsThreshold(AngleToPlayer, self.MinAngleOnLeftToIncreaseScore, self.MaxAngleOnLeftToIncreaseScore, true, CallFunc_AngleMeetsThreshold_ThresholdMet_1)
+  [345] if !(CallFunc_AngleMeetsThreshold_ThresholdMet_1) goto @621
+  [359] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(self.LeftScore, 1)
+  [401] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [428] self.LeftScore = Temp_int_Variable
+  [455] goto @621
+  [460] AngleMeetsThreshold(AngleToPlayer, self.MinAngleOnRightToIncreaseScore, self.MaxAngleOnRightToIncreaseScore, true, CallFunc_AngleMeetsThreshold_ThresholdMet)
+  [511] if !(CallFunc_AngleMeetsThreshold_ThresholdMet) goto @621
+  [525] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.RightScore, 1)
+  [567] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [594] self.RightScore = Temp_int_Variable_1
+  [621] return nothing
+  [623] end

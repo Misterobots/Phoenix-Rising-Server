@@ -1,0 +1,508 @@
+{
+ "name": "splitting_lava_proj_C",
+ "kind": "blueprint",
+ "parents": [
+  "sally_firebelch_proj_C",
+  "projectile_base_bp_C",
+  "ArchonProjectileBase",
+  "AbilityActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NumSplitsAvailable",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "ExposeOnSpawn"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 30
+  },
+  {
+   "name": "L_DirectionFromSourceToLavaBall",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_LeftVector",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_RightVector",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifeTimeBeforeSplit",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "ExposeOnSpawn"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 31
+  },
+  {
+   "name": "AdditionalLifeTimePerSplit",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_Location",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SplitOffset",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthKilled",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Killer",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CalculateDamageRow",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TargetActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "FinalDamageRow",
+     "type": "StructProperty<DamageTableData>"
+    },
+    {
+     "name": "DamageScale",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "Succeeded",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "HasMatchingGameplayTag",
+    "KismetSystemLibrary.IsValid",
+    "projectile_base_bp_C.CalculateDamageRow"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_splitting_lava_proj",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_2",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_3",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 204,
+   "reads": [
+    "AdditionalLifeTimePerSplit",
+    "Colliding Body",
+    "Instigator",
+    "L_DirectionFromSourceToLavaBall",
+    "L_LeftVector",
+    "L_Location",
+    "L_RightVector",
+    "LifeTimeBeforeSplit",
+    "NumSplitsAvailable",
+    "SplitOffset",
+    "Timeline_1"
+   ],
+   "sets": [
+    "L_DirectionFromSourceToLavaBall",
+    "L_LeftVector",
+    "L_Location",
+    "L_RightVector",
+    "Vertical Height Offset",
+    "VerticalHeightOffset_Native"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.GetActorForwardVector",
+    "Actor.GetComponentByClass",
+    "Actor.GetInstigator",
+    "Actor.GetInstigatorController",
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_SetActorLocation",
+    "Actor.K2_SetActorRotation",
+    "AuthRegisterSpawnedActor",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GetClosestLivePlayerCharacter",
+    "GetGroundPosAndNormal",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Conv_VectorToRotator",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.RotateAngleAxis",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.Vector_Normal2D",
+    "KismetSystemLibrary.DrawDebugSphere",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.SetDoublePropertyByName",
+    "KismetSystemLibrary.SetIntPropertyByName",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "MultiDestroy",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "RescaleAndClamp",
+    "SceneComponent.SetRelativeScale3D",
+    "SpawnSplitVFX",
+    "TimelineComponent.SetPlayRate",
+    "sally_firebelch_proj_C.ReceiveBeginPlay",
+    "sally_firebelch_proj_C.ReceiveTick"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass lightning_stars_pickup_C",
+    "BlueprintGeneratedClass spawnedactor_manager_bpc_C",
+    "BlueprintGeneratedClass splitting_lava_proj_C"
+   ]
+  },
+  {
+   "name": "GetDamageRow",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageKey",
+     "type": "NameProperty"
+    },
+    {
+     "name": "DamageRow",
+     "type": "StructProperty<DamageTableData>"
+    },
+    {
+     "name": "DamageScale",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "RowFound",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "DataTableFunctionLibrary.GetDataTableRowFromName"
+   ],
+   "authority": [],
+   "tables": [
+    "DataTable DamageTable_Generic"
+   ],
+   "assets": []
+  },
+  {
+   "name": "MultiDebug",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Pos",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiSetRotHACK",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Rot",
+     "type": "StructProperty<Rotator>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SplitAndDestroy",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "SplitSource",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SplitLavaAndDestroy",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "splitting_lava_proj_C.ExecuteUbergraph_splitting_lava_proj"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable DamageTable_Generic"
+ ],
+ "package": "/Game/Monsters/sq/sally/projectiles/splitting_lava_proj",
+ "pseudo_file": "pseudo/splitting_lava_proj_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,125 @@
+# escalation_on_damaged_lifesteal_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_escalation_on_damaged_lifesteal
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [31] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @50
+  [45] goto @2197
+  [50] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_CustomEvent_VFXTarget)
+  [86] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [115] if !(K2Node_DynamicCast_bSuccess) goto @370
+  [129] K2Node_DynamicCast_AsPlayer_Interface.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [175] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [307] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_VFXTarget)
+  [365] goto @2197
+  [370] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [381] goto @175
+  [386] MulticastOnAdded()
+  [396] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [416] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_5)
+  [452] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [481] if !(K2Node_DynamicCast_bSuccess_1) goto @2197
+  [495] Default__vfx_function_library_C.PersistentWeaponMeshEffect(K2Node_DynamicCast_AsArchon_Character, paper_weapon_nature_warmup_p, paper_dp_weapon_nature_warmup_p, 'None', self, CallFunc_PersistentWeaponMeshEffect_WeaponEffect, CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft, CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight)
+  [599] self.EffectToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffect
+  [618] self.RepeatersLeftToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft
+  [637] self.RepeatersRightToRemove = CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight
+  [656] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [676] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_RawElemental_Player_OS_Short, CallFunc_GetBuffOwner_ReturnValue_3, 0, Temp_delegate_Variable_2, false)
+  [759] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [779] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_RawElemental_Player_Lp, CallFunc_GetBuffOwner_ReturnValue_3, 0, Temp_delegate_Variable_1, false)
+  [862] goto @2197
+  [867] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [887] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [916] CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffectBySourceEffect(escalation_lifesteal_ico_ge_C, null, -1)
+  [967] Default__archon_function_library_C.TryDeactivateComponent(self.EffectToRemove, self)
+  [1013] Default__archon_function_library_C.TryDeactivateComponent(self.RepeatersLeftToRemove, self)
+  [1059] Default__archon_function_library_C.TryDeactivateComponent(self.RepeatersRightToRemove, self)
+  [1105] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1125] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Stop_Gameplay_Buff_RawElemental_Player_Lp, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1208] goto @2197
+  [1213] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1233] HealVFX(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1256] if !(self.Debug) goto @2197
+  [1270] CallFunc_Conv_DoubleToString_InDouble_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [1308] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_Conv_DoubleToString_InDouble_ImplicitCast)
+  [1345] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Damage Dealt: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [1398] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{1.0, 0.022553, 0.0, 1.0}, 5.0, 'None')
+  [1472] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [1510] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.LifestealPercent)
+  [1556] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1593] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('Health Healed: ', CallFunc_Conv_DoubleToString_ReturnValue_1)
+  [1647] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_1, true, true, LinearColor{0.0, 1.0, 0.08852, 1.0}, 5.0, 'None')
+  [1721] goto @2197
+  [1726] OnAdded()
+  [1736] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPostMitDamage)
+  [1759] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [1779] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_4.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1830] K2Node_CreateDelegate_OutputDelegate += None
+  [1871] goto @2197
+  [1876] Default__archon_function_library_C.ActorIsAlive(K2Node_CustomEvent_DamagedActor, self, CallFunc_ActorIsAlive_IsAlive)
+  [1931] if !(CallFunc_ActorIsAlive_IsAlive) goto @2197
+  [1945] Default__meter_gaining_rules_C.CanProcOnDamageEffects(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [2009] if !(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects) goto @2197
+  [2023] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [2043] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_CustomEvent_PostMitDamageSummary.MitigatedAttackDamage)
+  [2081] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.LifestealPercent)
+  [2127] Default__archon_function_library_C.HealTarget(CallFunc_GetBuffOwner_ReturnValue_1, CallFunc_GetBuffOwner_ReturnValue_1, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [2192] goto @1213
+  [2197] return nothing
+  [2199] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_VFXTarget = VFXTarget
+  [18] ExecuteUbergraph_escalation_on_damaged_lifesteal(10)
+  [33] return nothing
+  [35] end
+
+=== IsValidTarget
+  [0] array{GameplayTag{'Combat.Lantern'}, GameplayTag{'Combat.Item'}}
+  [65] CallFunc_MakeGameplayTagContainerFromArray_ReturnValue = MakeGameplayTagContainerFromArray(K2Node_MakeArray_Array)
+  [102] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(InsitgatorTags, CallFunc_MakeGameplayTagContainerFromArray_ReturnValue, false)
+  [141] if !(CallFunc_HasAnyTags_ReturnValue) goto @171
+  [155] ValidTarget = false
+  [166] goto @498
+  [171] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(DamagedActor)
+  [207] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [236] if !(K2Node_DynamicCast_bSuccess_1) goto @266
+  [250] ValidTarget = true
+  [261] goto @498
+  [266] K2Node_DynamicCast_AsMonster_Part_Actor = cast<MonsterPartActor>(DamagedActor)
+  [302] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMonster_Part_Actor)
+  [331] if !(K2Node_DynamicCast_bSuccess) goto @361
+  [345] ValidTarget = false
+  [356] goto @498
+  [361] CallFunc_GetOwner_ReturnValue = DamagedActor.GetOwner()
+  [403] K2Node_DynamicCast_AsArchon_Behemoth_1 = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [439] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth_1)
+  [468] if !(K2Node_DynamicCast_bSuccess_2) goto @487
+  [482] goto @250
+  [487] ValidTarget = false
+  [498] return nothing
+  [500] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_escalation_on_damaged_lifesteal(386)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_escalation_on_damaged_lifesteal(1726)
+  [15] return nothing
+  [17] end
+
+=== OnPostMitDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_escalation_on_damaged_lifesteal(1876)
+  [87] return nothing
+  [89] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_escalation_on_damaged_lifesteal(867)
+  [15] return nothing
+  [17] end

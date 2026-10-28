@@ -1,0 +1,106 @@
+electroquill_bt  blackboard=BlackboardData electroquill_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    6) Selector "StateChange"
+      [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"MetadataTagQuery": {"TagDictionary": [{"TagName": "Behemoth.Archetype.Electroquill"}, {"TagName": "Behemoth.Element.Umbral"}], "QueryTokenStream": [0, 1, 6, 1, 2, 2, 0, 1], "AutoDescription": " NONE(  ALL( Behemoth.Archetype.Electroquill, Behemoth.Element.Umbral ) )"}}, bShowPropertyDetails=false)]
+      1) Selector
+        1) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_electroquill_tower_spawn", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 3000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+          2) bttask_enter_aethercharge_state  (Montage=AnimMontage electroquill_aether_entry_mot)
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      [if not check_nemesis_decorator  (bInverseCondition=true)]
+      2) bttask_exit_aethercharge_state  (Montage=AnimMontage electroquill_aether_exit_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      3) Sequence
+        1) bttask_enter_rage_state  (Montage=AnimMontage electroquill_enter_rage_mot)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      4) bttask_exit_rage_state  (Montage=AnimMontage b_sq_gen_00_pers_rageexit_fwd_00_mot)
+    7) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (AttackTarget is Is Set)]
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      1) Selector
+        [if btdeco_variablecooldown  (Cooldown_Min=60, Cooldown_Max=90, StartTime=30)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"MetadataTagQuery": {"TagDictionary": [{"TagName": "Behemoth.Archetype.Electroquill"}, {"TagName": "Behemoth.Element.Umbral"}], "QueryTokenStream": [0, 1, 2, 2, 0, 1], "AutoDescription": " ALL( Behemoth.Archetype.Electroquill, Behemoth.Element.Umbral )"}}, bShowPropertyDetails=false)]
+        1) Selector
+          {service hide_behemoth_bttask  (HideOnStart=false)}
+          1) Sequence
+            {service debug_print_bts  (KeyToDisplay=TempInt, Type=Int, Enabled=false)}
+            1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TempLocation)
+            2) pivot_towards_target_bttask  (PivotTarget=bb.TempLocation, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=35)
+            3) BehemothAction  (Montage=AnimMontage b_sq_qul_um_atk_portalslide_enter_fwd_00)
+            4) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+            5) teleport_bttask  (DestinationKeyName=PounceLocation)
+              {service hide_behemoth_bttask  (ShowOnDeactivate=false)}
+            6) Sequence
+              1) set_random_blackboard_bttask  (VariableType=Int, MinValue=6, MaxValue=8, BlackboardValue=bb.TempInt)
+              2) Sequence
+                1) set_blackboard_key_bttask "TempBool = False"  (ResultKey=bb.TempBool, DataType=Bool, bShowPropertyDetails=false)
+                2) bttask_set_boolean "Do Reg Attack Next"  (Key=bb.DoCloneAttackNext)
+                [if ConditionalLoop  (TempBool is Is Not Set)]
+                3) Sequence
+                  {service debug_arrow_btservice  (ArrowEndKey=TargetActor)}
+                  1) blackboard_math_bttask "TempInt--"  (LeftSideKey=bb.TempInt, Type=Int, Operator=-, RightSideData={"ConstantInt": 1}, ResultKeyName=TempInt, bShowPropertyDetails=false)
+                  2) Selector
+                    [if Compare_btdeco "Clone Attack == True"  (LeftSideKey=bb.DoCloneAttackNext, CompareOperator===, CompareType=Bool, RightSideData={"ConstantBool": true}, bShowPropertyDetails=false)]
+                    1) RunBehavior  (BehaviorAsset=BehaviorTree electroquill_umbral_portal_slide_clone_setup)
+                    [if Compare_btdeco "Clone Attack == False"  (LeftSideKey=bb.DoCloneAttackNext, CompareOperator===, CompareType=Bool, bShowPropertyDetails=false)]
+                    2) RunBehavior  (BehaviorAsset=BehaviorTree electroquill_umbral_portal_slide_setup)
+                    3) Sequence
+                      1) set_blackboard_key_bttask "TempBool = true"  (ResultKey=bb.TempBool, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+                      2) RunBehavior  (BehaviorAsset=BehaviorTree electroquill_exit_portal_if_not_visible)
+                  [if Blackboard  (TempBool is Is Not Set)]
+                  3) Selector
+                    1) Sequence
+                      [if Compare_btdeco "TempInt <= 0"  (LeftSideKey=bb.TempInt, CompareOperator=<=, CompareType=Int, bShowPropertyDetails=false)]
+                      1) set_blackboard_key_bttask "TempBool = True"  (ResultKey=bb.TempBool, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+                      2) BehemothAction  (Montage=AnimMontage b_sq_qul_um_atk_portalslide_exit_fwd_00)
+                    2) Sequence
+                      [if Compare_btdeco "Clone Attack == False"  (LeftSideKey=bb.DoCloneAttackNext, CompareOperator===, CompareType=Bool, bShowPropertyDetails=false)]
+                      1) bttask_set_boolean  (Key=bb.DoCloneAttackNext, Value=true)
+                      2) BehemothAction  (Montage=AnimMontage b_sq_qul_um_atk_portalslide_repeating_fwd_00)
+                    3) bttask_set_boolean "Do Reg Attack Next"  (Key=bb.DoCloneAttackNext)
+          2) RunBehavior  (BehaviorAsset=BehaviorTree electroquill_exit_portal_if_not_visible)
+        [if Blackboard  (CurrentTower is Is Set)]
+        [if TagCooldown  (CooldownTag={"TagName": "BehemothAction.Electroquill.MultiballCooldown"}, CooldownDuration=30)]
+        2) Sequence
+          1) BehemothAction  (Montage=AnimMontage electroquill_activate_multiball_mot)
+        [if BTDeco_ArchonCooldown  (CooldownTime=45, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        [if not check_nemesis_decorator  (bInverseCondition=true)]
+        3) Sequence
+          1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+          2) LoopMontageUntilPastTarget  (Montage=AnimMontage electroquill_slide_temp_mot, RecoveryTime=0, LoopingSection=loop, InjuredLoopingSection=loop, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "None", "SectionName": "exit180"}]}, CollisionTest_XLenght=800, DistanceToTargetToEndEarly=500, bShowPropertyDetails=false)
+          3) LoopMontageUntilPastTarget  (Montage=AnimMontage electroquill_slide_temp_mot, RecoveryTime=0, LoopingSection=loop, InjuredLoopingSection=loop, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "None", "SectionName": "exit180"}]}, CollisionTest_XLenght=800, DistanceToTargetToEndEarly=500, bShowPropertyDetails=false)
+        [if BTDeco_ArchonCooldown  (CooldownTime=30, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+        [if check_nemesis_decorator]
+        4) Sequence
+          1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+          2) LoopMontageUntilPastTarget  (Montage=AnimMontage electroquill_nemesis_slide_temp_mot, MontagePlayRate=2, RecoveryTime=0, LoopingSection=loop, InjuredLoopingSection=loop, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "None", "SectionName": "exit180"}]}, CollisionTest_XLenght=800, DistanceToTargetToEndEarly=500, bShowPropertyDetails=false)
+          3) LoopMontageUntilPastTarget  (Montage=AnimMontage electroquill_nemesis_slide_temp_mot, MontagePlayRate=2, RecoveryTime=0, LoopingSection=loop, InjuredLoopingSection=loop, TimeLimit=5, StateToRecoverySectionTable={"statesectionpair": [{"State": "None", "SectionName": "exit180"}]}, CollisionTest_XLenght=800, DistanceToTargetToEndEarly=500, bShowPropertyDetails=false)
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      2) Selector
+        1) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      3) Selector "Reposition"
+        {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+          {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      4) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_strafeandlook_bt)
+        2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

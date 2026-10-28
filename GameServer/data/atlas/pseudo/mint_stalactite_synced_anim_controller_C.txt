@@ -1,0 +1,122 @@
+# mint_stalactite_synced_anim_controller_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_SelectMontage
+  [0] K2Node_MakeStruct_PhxAnimMontageSelection.Montage = b_lq_mint_00_atk_enviromentalsyncattack_fwd_00_mot
+  [28] K2Node_MakeStruct_PhxAnimMontageSelection.PlayRate = 1.0
+  [60] K2Node_MakeStruct_PhxAnimMontageSelection.StartTime = 0.0
+  [92] K2Node_MakeStruct_PhxAnimMontageSelection.StartSection = 'None'
+  [132] ReturnValue = K2Node_MakeStruct_PhxAnimMontageSelection
+  [159] return ReturnValue
+  [169] end
+
+=== BreakStalactite
+  [0] push @1013
+  [5] push @922
+  [10] push @549
+  [15] push @158
+  [20] CallFunc_GetSyncedAnimationTask_ReturnValue_1 = GetSyncedAnimationTask()
+  [40] K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task_1 = cast<PhxChildActorSyncedAnimationTask>(CallFunc_GetSyncedAnimationTask_ReturnValue_1)
+  [76] K2Node_DynamicCast_bSuccess_3 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task_1)
+  [105] if !(K2Node_DynamicCast_bSuccess_3) pop
+  [115] CallFunc_DetachFromParent_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task_1.DetachFromParent()
+  [157] pop
+  [158] CallFunc_GetSyncedAnimationTask_ReturnValue = GetSyncedAnimationTask()
+  [178] K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task = cast<PhxChildActorSyncedAnimationTask>(CallFunc_GetSyncedAnimationTask_ReturnValue)
+  [214] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task)
+  [243] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [253] CallFunc_GetAlignmentTargetComponent_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task.GetAlignmentTargetComponent()
+  [295] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAlignmentTargetComponent_ReturnValue)
+  [324] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [334] CallFunc_GetAlignmentTargetComponent_ReturnValue = K2Node_DynamicCast_AsPhx_Child_Actor_Synced_Animation_Task.GetAlignmentTargetComponent()
+  [376] CallFunc_GetOwner_ReturnValue = CallFunc_GetAlignmentTargetComponent_ReturnValue.GetOwner()
+  [418] K2Node_DynamicCast_AsMint_Stalactite_Hero_Bp = cast<mint_stalactite_hero_bp_C>(CallFunc_GetOwner_ReturnValue)
+  [454] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsMint_Stalactite_Hero_Bp)
+  [483] if !(K2Node_DynamicCast_bSuccess_2) pop
+  [493] K2Node_DynamicCast_AsMint_Stalactite_Hero_Bp.BreakStalactite()
+  [529] self.BrokenStalactiteActor = K2Node_DynamicCast_AsMint_Stalactite_Hero_Bp
+  [548] pop
+  [549] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [570] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @585
+  [584] pop
+  [585] CallFunc_IsValid_ReturnValue = IsValid(self.BrokenStalactiteActor)
+  [614] if !(CallFunc_IsValid_ReturnValue) pop
+  [624] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [644] K2Node_DynamicCast_AsCharacter = cast<Character>(CallFunc_GetOwningActor_ReturnValue)
+  [680] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCharacter)
+  [709] if !(K2Node_DynamicCast_bSuccess) pop
+  [719] CallFunc_GetTransform_ReturnValue = self.BrokenStalactiteActor.GetTransform()
+  [769] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [815] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(vfx_mint_megaslam_Hero_p, K2Node_DynamicCast_AsCharacter.self.Mesh, 'attach_jnt', CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale, 1, true, 0, true)
+  [921] pop
+  [922] DestroyBrokenStalactite()
+  [936] K2Node_CreateDelegate_OutputDelegate = bind(self.Internal_StartResolvingGroundCollision)
+  [959] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 1.25, false, 0.0, 0.0)
+  [1012] pop
+  [1013] return nothing
+  [1015] end
+
+=== DestroyBrokenStalactite
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.BrokenStalactiteActor)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @90
+  [43] self.BrokenStalactiteActor.DestroyBrokenStalactite()
+  [79] self.BrokenStalactiteActor = null
+  [90] return nothing
+  [92] end
+
+=== ExecuteUbergraph_mint_stalactite_synced_anim_controller
+  [0] goto computed(EntryPoint)
+  [10] Internal_ResolveGroundCollision()
+  [24] goto @110
+  [29] ReceiveOnFinished()
+  [39] DestroyBrokenStalactite()
+  [53] Internal_ResolveGroundCollision()
+  [67] goto @110
+  [72] ReceiveOnTick(K2Node_Event_DeltaTime)
+  [91] if !(self.bResolveGroundCollision) goto @110
+  [105] goto @10
+  [110] return nothing
+  [112] end
+
+=== Internal_ResolveGroundCollision
+  [0] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [20] CallFunc_GetActorEnableCollision_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.GetActorEnableCollision()
+  [62] if !(CallFunc_GetActorEnableCollision_ReturnValue) goto @1233
+  [76] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [96] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwningActor_ReturnValue_1)
+  [125] if !(CallFunc_IsValid_ReturnValue) goto @1233
+  [139] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [159] CallFunc_K2_GetRootComponent_ReturnValue = CallFunc_GetOwningActor_ReturnValue_1.K2_GetRootComponent()
+  [201] K2Node_DynamicCast_AsCapsule_Collision = cast<CapsuleComponent>(CallFunc_K2_GetRootComponent_ReturnValue)
+  [237] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCapsule_Collision)
+  [266] if !(K2Node_DynamicCast_bSuccess) goto @1233
+  [280] CallFunc_GetScaledCapsuleHalfHeight_ReturnValue = K2Node_DynamicCast_AsCapsule_Collision.GetScaledCapsuleHalfHeight()
+  [330] CallFunc_GetScaledCapsuleRadius_ReturnValue = K2Node_DynamicCast_AsCapsule_Collision.GetScaledCapsuleRadius()
+  [380] CallFunc_K2_GetComponentLocation_ReturnValue = K2Node_DynamicCast_AsCapsule_Collision.K2_GetComponentLocation()
+  [430] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1000.0}))
+  [492] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': -1000.0}))
+  [554] CallFunc_CapsuleTraceSingle_ReturnValue = CapsuleTraceSingle(self, CallFunc_Add_VectorVector_ReturnValue, CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_GetScaledCapsuleRadius_ReturnValue, CallFunc_GetScaledCapsuleHalfHeight_ReturnValue, 4, false, Temp_object_Variable, 0, CallFunc_CapsuleTraceSingle_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [708] BreakHitResult(CallFunc_CapsuleTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [889] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BreakHitResult_bInitialOverlap)
+  [918] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_BreakHitResult_bBlockingHit, CallFunc_Not_PreBool_ReturnValue)
+  [956] if !(CallFunc_BooleanAND_ReturnValue) goto @1233
+  [970] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [990] BreakHitResult(CallFunc_CapsuleTraceSingle_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [1171] CallFunc_K2_SetActorLocation_ReturnValue = CallFunc_GetOwningActor_ReturnValue.K2_SetActorLocation(CallFunc_BreakHitResult_Location, false, CallFunc_K2_SetActorLocation_SweepHitResult, true)
+  [1233] return nothing
+  [1235] end
+
+=== Internal_StartResolvingGroundCollision
+  [0] self.bResolveGroundCollision = true
+  [11] return nothing
+  [13] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_mint_stalactite_synced_anim_controller(29)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTick
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_mint_stalactite_synced_anim_controller(72)
+  [33] return nothing
+  [35] end

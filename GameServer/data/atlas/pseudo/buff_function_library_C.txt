@@ -1,0 +1,240 @@
+# buff_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AdjustBuffHeldStacks
+  [0] GetBuffClass(BuffType, __WorldContext, CallFunc_GetBuffClass_BuffClass)
+  [41] FindOrAddBuffManager(BuffOwner, CallFunc_GetBuffClass_BuffClass, __WorldContext, CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [91] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [120] if !(CallFunc_IsValid_ReturnValue) goto @189
+  [134] CallFunc_FindOrAddBuffManager_BuffManagerObj.AdjustHeldStacks(StackChange, SuppressVFX, false)
+  [189] return nothing
+  [191] end
+
+=== AdjustBuffMaxDuration
+  [0] GetBuffClass(BuffType, __WorldContext, CallFunc_GetBuffClass_BuffClass)
+  [41] FindOrAddBuffManager(BuffOwner, CallFunc_GetBuffClass_BuffClass, __WorldContext, CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [91] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [120] if !(CallFunc_IsValid_ReturnValue) goto @179
+  [134] CallFunc_FindOrAddBuffManager_BuffManagerObj.AdjustStackDuration(DurationChange)
+  [179] return nothing
+  [181] end
+
+=== AdjustBuffMaxStacks
+  [0] GetBuffClass(BuffType, __WorldContext, CallFunc_GetBuffClass_BuffClass)
+  [41] FindOrAddBuffManager(BuffOwner, CallFunc_GetBuffClass_BuffClass, __WorldContext, CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [91] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [120] if !(CallFunc_IsValid_ReturnValue) goto @179
+  [134] CallFunc_FindOrAddBuffManager_BuffManagerObj.AdjustMaxStacks(StackChange)
+  [179] return nothing
+  [181] end
+
+=== AdjustBuffTempStacks
+  [0] GetBuffClass(BuffType, __WorldContext, CallFunc_GetBuffClass_BuffClass)
+  [41] FindOrAddBuffManager(BuffOwner, CallFunc_GetBuffClass_BuffClass, __WorldContext, CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [91] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindOrAddBuffManager_BuffManagerObj)
+  [120] if !(CallFunc_IsValid_ReturnValue) goto @189
+  [134] CallFunc_FindOrAddBuffManager_BuffManagerObj.AdjustTempStacks(StackChange, SuppressVFX, false)
+  [189] return nothing
+  [191] end
+
+=== AdjustBuffTempStacksAoE
+  [0] push @731
+  [5] Default__archon_function_library_C.GetPlayerCharacters(true, true, Actor, CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [61] Temp_int_Loop_Counter_Variable = 0
+  [84] Temp_int_Array_Index_Variable = 0
+  [107] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [166] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [204] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [214] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [241] push @396
+  [246] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [305] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_Array_Get_Item, Actor)
+  [343] CallFunc_BooleanAND_ReturnValue = BooleanAND(IgnoreOwner, CallFunc_EqualEqual_ObjectObject_ReturnValue)
+  [381] if !(CallFunc_BooleanAND_ReturnValue) goto @470
+  [395] pop
+  [396] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [438] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [465] goto @107
+  [470] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [529] Default__archon_function_library_C.ActorsWithinDistanceFast(CallFunc_Array_Get_Item, Actor, Distance, __WorldContext, CallFunc_ActorsWithinDistanceFast_IsWithinDistance)
+  [610] if !(CallFunc_ActorsWithinDistanceFast_IsWithinDistance) pop
+  [620] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [679] AdjustBuffTempStacks(CallFunc_Array_Get_Item, StackChange, BuffType, false, __WorldContext)
+  [730] pop
+  [731] return nothing
+  [733] end
+
+=== ConvertNativeBuffTypeToBP
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 0)
+  [31] if !(K2Node_SwitchEnum_CmpSuccess) goto @320
+  [45] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 1)
+  [76] if !(K2Node_SwitchEnum_CmpSuccess) goto @487
+  [90] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 2)
+  [121] if !(K2Node_SwitchEnum_CmpSuccess) goto @512
+  [135] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 3)
+  [166] if !(K2Node_SwitchEnum_CmpSuccess) goto @537
+  [180] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 4)
+  [211] if !(K2Node_SwitchEnum_CmpSuccess) goto @562
+  [225] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 5)
+  [256] if !(K2Node_SwitchEnum_CmpSuccess) goto @587
+  [270] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(NativeBuffType, 6)
+  [301] if !(K2Node_SwitchEnum_CmpSuccess) goto @612
+  [315] goto @632
+  [320] PrintString(null, 'ERROR: ConvertNativeBuffTypeToBP: None EArchonBuffStackType passed through.', true, true, LinearColor{1.0, 0.0, 0.00306, 1.0}, 10.0, 'None')
+  [462] BlueprintType = 0
+  [482] goto @632
+  [487] BlueprintType = 0
+  [507] goto @632
+  [512] BlueprintType = 1
+  [532] goto @632
+  [537] BlueprintType = 2
+  [557] goto @632
+  [562] BlueprintType = 3
+  [582] goto @632
+  [587] BlueprintType = 4
+  [607] goto @632
+  [612] BlueprintType = 5
+  [632] return nothing
+  [634] end
+
+=== FindOrAddBuffManager
+  [0] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, __WorldContext)
+  [64] CallFunc_HasBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.HasBuff(BuffClass)
+  [119] if !(CallFunc_HasBuff_ReturnValue) goto @517
+  [133] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, __WorldContext)
+  [197] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(BuffClass)
+  [252] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_FindBuff_ReturnValue)
+  [281] if !(CallFunc_IsValid_ReturnValue) goto @669
+  [295] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, __WorldContext)
+  [359] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(BuffClass)
+  [414] K2Node_DynamicCast_AsBase_New_Buffs_Manager = cast<base_new_buffs_manager_C>(CallFunc_FindBuff_ReturnValue)
+  [450] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_New_Buffs_Manager)
+  [479] if !(K2Node_DynamicCast_bSuccess) goto @669
+  [493] BuffManagerObj = K2Node_DynamicCast_AsBase_New_Buffs_Manager
+  [512] goto @680
+  [517] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, __WorldContext)
+  [581] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.TryAddBuff(BuffClass, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, BuffOwner, true)
+  [664] goto @133
+  [669] BuffManagerObj = null
+  [680] return nothing
+  [682] end
+
+=== GetBuffClass
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 0)
+  [31] if !(K2Node_SwitchEnum_CmpSuccess) goto @275
+  [45] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 1)
+  [76] if !(K2Node_SwitchEnum_CmpSuccess) goto @299
+  [90] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 2)
+  [121] if !(K2Node_SwitchEnum_CmpSuccess) goto @323
+  [135] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 3)
+  [166] if !(K2Node_SwitchEnum_CmpSuccess) goto @347
+  [180] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 4)
+  [211] if !(K2Node_SwitchEnum_CmpSuccess) goto @371
+  [225] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(Stat, 5)
+  [256] if !(K2Node_SwitchEnum_CmpSuccess) goto @395
+  [270] goto @414
+  [275] BuffClass = base_new_buffs_might_manager_C
+  [294] goto @414
+  [299] BuffClass = base_new_buffs_critical_manager_C
+  [318] goto @414
+  [323] BuffClass = base_new_buffs_speed_manager_C
+  [342] goto @414
+  [347] BuffClass = base_new_buffs_vitality_manager_C
+  [366] goto @414
+  [371] BuffClass = base_new_buffs_endurance_manager_C
+  [390] goto @414
+  [395] BuffClass = base_new_buffs_defence_manager_C
+  [414] return nothing
+  [416] end
+
+=== GetBuffCurrentMaxStacks
+  [0] push @756
+  [5] push @496
+  [10] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, BuffOwner)
+  [74] GetBuffClass(BuffType, BuffOwner, CallFunc_GetBuffClass_BuffClass)
+  [115] CallFunc_HasBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.HasBuff(CallFunc_GetBuffClass_BuffClass)
+  [170] if !(CallFunc_HasBuff_ReturnValue) goto @524
+  [184] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, BuffOwner)
+  [248] GetBuffClass(BuffType, BuffOwner, CallFunc_GetBuffClass_BuffClass)
+  [289] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(CallFunc_GetBuffClass_BuffClass)
+  [344] K2Node_DynamicCast_AsBase_New_Buffs_Manager = cast<base_new_buffs_manager_C>(CallFunc_FindBuff_ReturnValue)
+  [380] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_New_Buffs_Manager)
+  [409] if !(K2Node_DynamicCast_bSuccess) pop
+  [419] K2Node_DynamicCast_AsBase_New_Buffs_Manager.GetCurrentMaxStacks(CallFunc_GetCurrentMaxStacks_MaxStacks)
+  [464] CurrentMaxStacks = CallFunc_GetCurrentMaxStacks_MaxStacks
+  [491] goto @756
+  [496] CurrentMaxStacks = 0
+  [519] goto @756
+  [524] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, BuffOwner)
+  [588] GetBuffClass(BuffType, BuffOwner, CallFunc_GetBuffClass_BuffClass)
+  [629] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(CallFunc_GetBuffClass_BuffClass)
+  [684] CallFunc_ApplyBuff_ReturnValue = ApplyBuff(BuffOwner, CallFunc_GetBuffClass_BuffClass, CallFunc_ApplyBuff_BuffAdded, Temp_struct_Variable, EX_NoInterface(), CallFunc_FindBuff_ReturnValue, true)
+  [751] goto @184
+  [756] return nothing
+  [758] end
+
+=== GetBuffCurrentStacks
+  [0] push @515
+  [5] push @492
+  [10] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, BuffOwner)
+  [74] GetBuffClass(BuffType, BuffOwner, CallFunc_GetBuffClass_BuffClass)
+  [115] CallFunc_HasBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.HasBuff(CallFunc_GetBuffClass_BuffClass)
+  [170] if !(CallFunc_HasBuff_ReturnValue) pop
+  [180] CallFunc_GetArchonBuffableComponent_ReturnValue = Default__escalation_seasonal_function_library_C.GetArchonBuffableComponent(BuffOwner, BuffOwner)
+  [244] GetBuffClass(BuffType, BuffOwner, CallFunc_GetBuffClass_BuffClass)
+  [285] CallFunc_FindBuff_ReturnValue = CallFunc_GetArchonBuffableComponent_ReturnValue.FindBuff(CallFunc_GetBuffClass_BuffClass)
+  [340] K2Node_DynamicCast_AsBase_New_Buffs_Manager = cast<base_new_buffs_manager_C>(CallFunc_FindBuff_ReturnValue)
+  [376] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_New_Buffs_Manager)
+  [405] if !(K2Node_DynamicCast_bSuccess) pop
+  [415] K2Node_DynamicCast_AsBase_New_Buffs_Manager.GetCurrentStacks(CallFunc_GetCurrentStacks_Stacks)
+  [460] CurrentStacks = CallFunc_GetCurrentStacks_Stacks
+  [487] goto @515
+  [492] CurrentStacks = 0
+  [515] return nothing
+  [517] end
+
+=== GetBuffType
+  [0] CallFunc_IsValidClass_ReturnValue = IsValidClass(BuffClass)
+  [29] if !(CallFunc_IsValidClass_ReturnValue) goto @97
+  [43] BuffType = EX_ClassContext(ObjectExpression=BuffClass,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'base_new_buffs_manager_C'", 'ObjectPath': '/Game/_shared/blueprints/buffs/base_new_buffs_manager.1'}, 'Property': {'Type': 'ByteProperty', 'Name': 'BuffType', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 1, 'PropertyFlags': 'Edit | BlueprintVisible | DisableEditOnInstance', 'Enum': {'ObjectName': "UserDefinedEnum'stat_buff_type'", 'ObjectPath': '/Game/_shared/stat_buff_type.0'}}},ContextExpression=BuffType)
+  [92] goto @117
+  [97] BuffType = 0
+  [117] return nothing
+  [119] end
+
+=== RemoveBuffStacksFromInfo
+  [0] push @1085
+  [5] CallFunc_IsValid_ReturnValue = IsValid(Victim)
+  [34] if !(CallFunc_IsValid_ReturnValue) pop
+  [44] Temp_int_Loop_Counter_Variable = 0
+  [67] Temp_int_Array_Index_Variable = 0
+  [90] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(BuffStacksInfo)
+  [149] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [187] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [197] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [224] push @587
+  [229] Default__KismetArrayLibrary.Array_Get(BuffStacksInfo, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [288] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(CallFunc_Array_Get_Item.NumStacks, 0)
+  [331] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(CallFunc_Array_Get_Item.StackType, 0)
+  [371] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_NotEqual_ByteByte_ReturnValue, CallFunc_NotEqual_IntInt_ReturnValue)
+  [409] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [419] Default__KismetArrayLibrary.Array_Get(BuffStacksInfo, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [478] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.BuffLifespanType, 0)
+  [518] if !(K2Node_SwitchEnum_CmpSuccess) goto @661
+  [532] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(CallFunc_Array_Get_Item.BuffLifespanType, 1)
+  [572] if !(K2Node_SwitchEnum_CmpSuccess) goto @873
+  [586] pop
+  [587] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [629] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [656] goto @90
+  [661] Default__KismetArrayLibrary.Array_Get(BuffStacksInfo, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [720] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(CallFunc_Array_Get_Item.NumStacks, -1)
+  [771] ConvertNativeBuffTypeToBP(CallFunc_Array_Get_Item.StackType, __WorldContext, CallFunc_ConvertNativeBuffTypeToBP_BlueprintType)
+  [821] AdjustBuffTempStacks(Victim, CallFunc_Multiply_IntInt_ReturnValue, CallFunc_ConvertNativeBuffTypeToBP_BlueprintType, false, __WorldContext)
+  [872] pop
+  [873] Default__KismetArrayLibrary.Array_Get(BuffStacksInfo, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [932] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(CallFunc_Array_Get_Item.NumStacks, -1)
+  [983] ConvertNativeBuffTypeToBP(CallFunc_Array_Get_Item.StackType, __WorldContext, CallFunc_ConvertNativeBuffTypeToBP_BlueprintType)
+  [1033] AdjustBuffHeldStacks(Victim, CallFunc_Multiply_IntInt_ReturnValue, CallFunc_ConvertNativeBuffTypeToBP_BlueprintType, false, __WorldContext)
+  [1084] pop
+  [1085] return nothing
+  [1087] end

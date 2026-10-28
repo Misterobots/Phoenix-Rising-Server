@@ -1,0 +1,66 @@
+# condition_timer_bpuc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AreChildConditionsTrue
+  [0] push @531
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ChildConditions)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @430
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @446
+  [194] Default__KismetArrayLibrary.Array_Get(self.ChildConditions, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item)
+  [282] if !(CallFunc_IsValid_ReturnValue) pop
+  [292] Default__KismetArrayLibrary.Array_Get(self.ChildConditions, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [351] CallFunc_Evaluate_ReturnValue = CallFunc_Array_Get_Item.Evaluate(PlayerController, OwningQuest)
+  [415] if !(CallFunc_Evaluate_ReturnValue) goto @520
+  [429] pop
+  [430] ReturnValue = true
+  [441] goto @531
+  [446] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [488] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [515] goto @51
+  [520] ReturnValue = false
+  [531] return ReturnValue
+  [541] end
+
+=== GetConditionID
+  [0] CallFunc_GetObjectFullPath_ReturnValue = GetObjectFullPath(self)
+  [29] ID = CallFunc_GetObjectFullPath_ReturnValue
+  [56] return nothing
+  [58] end
+
+=== OnEvaluate
+  [0] CallFunc_GetOwningPlayerController_ReturnValue = OwningQuest.GetOwningPlayerController()
+  [42] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetOwningPlayerController_ReturnValue.K2_GetPawn()
+  [84] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_K2_GetPawn_ReturnValue)
+  [113] if !(CallFunc_IsValid_ReturnValue) goto @480
+  [127] CallFunc_AreChildConditionsTrue_ReturnValue = AreChildConditionsTrue(PlayerController, OwningQuest)
+  [169] if !(CallFunc_AreChildConditionsTrue_ReturnValue) goto @496
+  [183] CallFunc_GetOwningPlayerController_ReturnValue = OwningQuest.GetOwningPlayerController()
+  [225] GetConditionID(CallFunc_GetConditionID_ID_1)
+  [248] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetOwningPlayerController_ReturnValue.K2_GetPawn()
+  [290] CallFunc_GetComponentByClass_ReturnValue = CallFunc_K2_GetPawn_ReturnValue.GetComponentByClass(quest_logic_bpc_C)
+  [341] CallFunc_GetComponentByClass_ReturnValue.GetConditionTimerValue(CallFunc_GetConditionID_ID_1, CallFunc_GetConditionTimerValue_TimerValue, CallFunc_GetConditionTimerValue_IsValid)
+  [404] if !(CallFunc_GetConditionTimerValue_IsValid) goto @715
+  [418] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetConditionTimerValue_TimerValue, self.TimeThreshold)
+  [456] ReturnValue = CallFunc_GreaterEqual_DoubleDouble_ReturnValue
+  [475] goto @923
+  [480] ReturnValue = false
+  [491] goto @923
+  [496] GetConditionID(CallFunc_GetConditionID_ID)
+  [519] CallFunc_GetOwningPlayerController_ReturnValue = OwningQuest.GetOwningPlayerController()
+  [561] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetOwningPlayerController_ReturnValue.K2_GetPawn()
+  [603] CallFunc_GetComponentByClass_ReturnValue = CallFunc_K2_GetPawn_ReturnValue.GetComponentByClass(quest_logic_bpc_C)
+  [654] CallFunc_GetComponentByClass_ReturnValue.ClearConditionTimer(CallFunc_GetConditionID_ID)
+  [699] ReturnValue = false
+  [710] goto @923
+  [715] CallFunc_GetOwningPlayerController_ReturnValue = OwningQuest.GetOwningPlayerController()
+  [757] CallFunc_K2_GetPawn_ReturnValue = CallFunc_GetOwningPlayerController_ReturnValue.K2_GetPawn()
+  [799] GetConditionID(CallFunc_GetConditionID_ID_2)
+  [822] CallFunc_GetComponentByClass_ReturnValue = CallFunc_K2_GetPawn_ReturnValue.GetComponentByClass(quest_logic_bpc_C)
+  [873] CallFunc_GetComponentByClass_ReturnValue.StartConditionTimer(CallFunc_GetConditionID_ID_2)
+  [918] goto @699
+  [923] return ReturnValue
+  [933] end

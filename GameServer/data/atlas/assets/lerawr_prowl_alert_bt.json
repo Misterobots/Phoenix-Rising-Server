@@ -1,0 +1,816 @@
+{
+ "name": "lerawr_prowl_alert_bt",
+ "package": "Archon/Content/Monsters/aq/lerawr/ai/lerawr_prowl_alert_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "Play_VO_Mnstr_AQ_Generic_Growl",
+  "Stop_VO_Mnstr_AQ_Generic_Growl",
+  "b_aq_lerawr_00_atk_pounce_fwdleft_mot",
+  "b_aq_lerawr_00_atk_pounce_fwdright_mo",
+  "b_leRawr_atk_strafe_left_01_mot",
+  "b_leRawr_atk_strafe_right_01_mot",
+  "eqs_find_nearest_live_player",
+  "lerawr_bb",
+  "lerawr_movetoandface_bt"
+ ],
+ "exports": {
+  "lerawr_prowl_alert_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_12",
+    "BlackboardAsset": "BlackboardData lerawr_bb",
+    "RootDecorators": [
+     "@behemoth_in_state_btdeco_C_5",
+     "@behemoth_in_state_btdeco_C_7"
+    ]
+   }
+  },
+  "behemoth_ak_event_btservice_C_0": {
+   "type": "behemoth_ak_event_btservice_C",
+   "props": {
+    "EventsOnActivate": [
+     "AkAudioEvent Play_VO_Mnstr_AQ_Generic_Growl"
+    ],
+    "EventsOnDeactivate": [
+     "AkAudioEvent Stop_VO_Mnstr_AQ_Generic_Growl"
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_9"
+   }
+  },
+  "behemoth_in_state_btdeco_C_5": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Alerted",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt"
+   }
+  },
+  "behemoth_in_state_btdeco_C_7": {
+   "type": "behemoth_in_state_btdeco_C",
+   "props": {
+    "State": "behemoth_states_enum::Combat",
+    "StateRequirement": "behemoth_req_state_type::ExcludedByState",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt"
+   }
+  },
+  "BTComposite_Selector_1": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_Blackboard_5"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "BTComposite_Selector_2": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_13",
+      "Decorators": [
+       "@test_rng_float_btdeco_C_7"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@rng_float_service_C_7"
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_32"
+   }
+  },
+  "BTComposite_Selector_9": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_SimpleParallel_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_SimpleParallel_3",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@behemoth_ak_event_btservice_C_0"
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_26"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@store_current_position_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunBehavior_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTComposite_Sequence_12": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_33",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_1"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_2",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_0",
+       "@BTDecorator_Blackboard_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_47",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_2"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt"
+   }
+  },
+  "BTComposite_Sequence_26": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_9",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@BTService_RunEQS_0"
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_48"
+   }
+  },
+  "BTComposite_Sequence_32": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_2",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_47"
+   }
+  },
+  "BTComposite_Sequence_33": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Selector_1",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_15",
+       "@set_behemoth_loco_mode_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTComposite_Sequence_39": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_5",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_11"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_40",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_12"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_2"
+   }
+  },
+  "BTComposite_Sequence_40": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_4",
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_8",
+       "@current_target_is_valid_btdeco_C_5"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_39"
+   }
+  },
+  "BTComposite_Sequence_44": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_6",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_13"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_45",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_14"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_3"
+   }
+  },
+  "BTComposite_Sequence_45": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_8",
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_10",
+       "@current_target_is_valid_btdeco_C_7"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_44"
+   }
+  },
+  "BTComposite_Sequence_47": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_blackboard_key_bttask_C_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_48",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_32",
+      "ChildTask": null,
+      "Decorators": [
+       "@Compare_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTComposite_Sequence_48": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_13",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@bttask_set_boolean_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_26",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_47"
+   }
+  },
+  "BTComposite_SimpleParallel_2": {
+   "type": "BTComposite_SimpleParallel",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_LoopMontageUntil_C_0",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_2"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_39",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_9"
+   }
+  },
+  "BTComposite_SimpleParallel_3": {
+   "type": "BTComposite_SimpleParallel",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_LoopMontageUntil_C_3",
+      "Decorators": [
+       "@BTDecorator_ConeCheck_3"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_44",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_9"
+   }
+  },
+  "BTDecorator_Blackboard_0": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "AttackTarget is Is Set",
+    "BlackboardKey": "bb.AttackTarget",
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTDecorator_Blackboard_5": {
+   "type": "BTDecorator_Blackboard",
+   "props": {
+    "CachedDescription": "AttackTarget is Is Set",
+    "BlackboardKey": "bb.AttackTarget",
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTDecorator_ConeCheck_2": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeHalfAngle": 90.0,
+    "ConeOrigin": "bb.SelfActor",
+    "ConeDirection": "bb.LeftPoint",
+    "Observed": "bb.CurrentPatrolPoint",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_2"
+   }
+  },
+  "BTDecorator_ConeCheck_3": {
+   "type": "BTDecorator_ConeCheck",
+   "props": {
+    "ConeHalfAngle": 90.0,
+    "ConeOrigin": "bb.SelfActor",
+    "ConeDirection": "bb.RightPoint",
+    "Observed": "bb.CurrentPatrolPoint",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_3"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_10": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.TargetActor",
+    "MinDistance": 600.0,
+    "MaxDistance": 1750.0,
+    "PredictTargetHorizFuturePosTime": 0.5,
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_45"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_15": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.CurrentPatrolPoint",
+    "MinDistance": 1500.0,
+    "MaxDistance": 99999.0,
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_8": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.TargetActor",
+    "MinDistance": 600.0,
+    "MaxDistance": 1750.0,
+    "PredictTargetHorizFuturePosTime": 0.5,
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_40"
+   }
+  },
+  "BTDecorator_ForceSuccess_0": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTDecorator_ForceSuccess_1": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTDecorator_ForceSuccess_11": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_39"
+   }
+  },
+  "BTDecorator_ForceSuccess_12": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_39"
+   }
+  },
+  "BTDecorator_ForceSuccess_13": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_44"
+   }
+  },
+  "BTDecorator_ForceSuccess_14": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_44"
+   }
+  },
+  "BTDecorator_ForceSuccess_2": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "BTDecorator_ForceSuccess_3": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_47"
+   }
+  },
+  "BTService_RunEQS_0": {
+   "type": "BTService_RunEQS",
+   "props": {
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_nearest_live_player"
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "Interval": 0.33,
+    "NodeName": "Update Nearest Player",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_26"
+   }
+  },
+  "BTTask_BehemothAction_C_13": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_mot",
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "PounceFwdLeft",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTTask_BehemothAction_C_6": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_lerawr_00_atk_pounce_fwdright_mo",
+    "TriggerCooldownOnSuccess": false,
+    "NodeName": "PounceFwdR",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "BTTask_LoopMontageUntil_C_0": {
+   "type": "BTTask_LoopMontageUntil_C",
+   "props": {
+    "Montage": "AnimMontage b_leRawr_atk_strafe_left_01_mot",
+    "LoopingSection": "Loop",
+    "TimeLimit": 3.0,
+    "CollisionTest_Length": 350.0,
+    "CollisionTestOrientation": {
+     "Pitch": 0.0,
+     "Yaw": -70.0,
+     "Roll": 0.0
+    },
+    "BlackboardComparisonSection": {
+     "BlackboardComparison": {
+      "LeftSideBlackboardVarName": "ReadyToJump"
+     },
+     "Name": "to_jump"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Looping strafe left",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_2"
+   }
+  },
+  "BTTask_LoopMontageUntil_C_3": {
+   "type": "BTTask_LoopMontageUntil_C",
+   "props": {
+    "Montage": "AnimMontage b_leRawr_atk_strafe_right_01_mot",
+    "LoopingSection": "Loop",
+    "TimeLimit": 3.0,
+    "CollisionTest_Length": 350.0,
+    "CollisionTestOrientation": {
+     "Pitch": 0.0,
+     "Yaw": 70.0,
+     "Roll": 0.0
+    },
+    "BlackboardComparisonSection": {
+     "BlackboardComparison": {
+      "LeftSideBlackboardVarName": "ReadyToJump"
+     },
+     "Name": "to_jump"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Looping Strafe Right",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_3"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 200.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.CurrentPatrolPoint",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_1"
+   }
+  },
+  "BTTask_RunBehavior_0": {
+   "type": "BTTask_RunBehavior",
+   "props": {
+    "BehaviorAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "NodeName": "Run Behavior: Move to and face",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_RunEQSQuery_13": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_nearest_live_player"
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "NodeName": "Run EQS Query: Find Nearest Player",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_48"
+   }
+  },
+  "BTTask_RunEQSQuery_5": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_nearest_live_player"
+    },
+    "BlackboardKey": "bb.ProwlLookatTarget",
+    "NodeName": "Run EQS Query: ProwlLookAtTarget",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_39"
+   }
+  },
+  "BTTask_RunEQSQuery_6": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_nearest_live_player"
+    },
+    "BlackboardKey": "bb.ProwlLookatTarget",
+    "NodeName": "Run EQS Query: ProwlLookAtTarget",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_44"
+   }
+  },
+  "bttask_set_boolean_C_1": {
+   "type": "bttask_set_boolean_C",
+   "props": {
+    "Key": "bb.ReadyToJump",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_48"
+   }
+  },
+  "Compare_btdeco_C_0": {
+   "type": "Compare_btdeco_C",
+   "props": {
+    "LeftSideKey": "bb.LoopUntil_ExitSection",
+    "CompareOperator": "Enum_CompareOperators::==",
+    "CompareType": "blackboard_comparable_key_type::Name",
+    "RightSideData": {
+     "ConstantName": "to_jump"
+    },
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_47"
+   }
+  },
+  "current_target_is_valid_btdeco_C_5": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_40"
+   }
+  },
+  "current_target_is_valid_btdeco_C_7": {
+   "type": "current_target_is_valid_btdeco_C",
+   "props": {
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_45"
+   }
+  },
+  "pivot_towards_target_bttask_C_2": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "TurnInPlace",
+    "MinAngleToTriggerPivot": 45.0,
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_12"
+   }
+  },
+  "rng_float_service_C_7": {
+   "type": "rng_float_service_C",
+   "props": {
+    "RNG_Float_key": "bb.RNG_Float",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_0": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Walk",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_33"
+   }
+  },
+  "set_blackboard_key_bttask_C_4": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.ReadyToJump",
+    "DataType": "blackboard_comparable_key_type::Bool",
+    "SourceData": {
+     "ConstantBool": true
+    },
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_40"
+   }
+  },
+  "set_blackboard_key_bttask_C_7": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.ProwlLookatTarget",
+    "DataType": "blackboard_comparable_key_type::Object",
+    "SourceData": {
+     "BlackboardKeyName": "AttackTarget"
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "Set ProwlLookAtTarget",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_47"
+   }
+  },
+  "set_blackboard_key_bttask_C_8": {
+   "type": "set_blackboard_key_bttask_C",
+   "props": {
+    "ResultKey": "bb.ReadyToJump",
+    "DataType": "blackboard_comparable_key_type::Bool",
+    "SourceData": {
+     "ConstantBool": true
+    },
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_45"
+   }
+  },
+  "store_current_position_bttask_C_1": {
+   "type": "store_current_position_bttask_C",
+   "props": {
+    "WhereToStoreResult": "bb.PounceLocation",
+    "OtherActorBlackboardName": "CurrentPatrolPoint",
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "test_rng_float_btdeco_C_7": {
+   "type": "test_rng_float_btdeco_C",
+   "props": {
+    "RNG_Float_Key": "bb.RNG_Float",
+    "ChooseIfLessThan": 0.5,
+    "TreeAsset": "BehaviorTree lerawr_prowl_alert_bt",
+    "ParentNode": "@BTComposite_Selector_2"
+   }
+  }
+ }
+}

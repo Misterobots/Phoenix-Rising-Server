@@ -1,0 +1,34 @@
+mf_turn_and_attack_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) set_blackboard_key_bttask  (ResultKey=bb.TempActor, DataType=Object, SourceData={"BlackboardKeyName": "AttackTarget"}, bShowPropertyDetails=false)
+    2) BehemothAction "glide antic"  (Montage=AnimMontage glide_chg_antic_mot, TriggerCooldownOnSuccess=false)
+    [if ForceSuccess]
+    3) Sequence
+      [if Loop]
+      1) Sequence
+        1) SimpleParallel
+          1) wait_for_past_target_bttask "Wait for past target"  (TargetKey=bb.AttackTarget, TimeWaitType=RunUntilConditionIsTrue, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}, {"X": 0.0, "Y": 0.0, "Z": 0.0}], CollisionTest_XLenght=1500, TimeAfterPassingTargetToStop=0.25)
+          2) BehemothAction "DynamicGlide"  (Montage=AnimMontage b_mf_atk_glide_chg_loop_02_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_target_los", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 4000.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TempActor)
+        3) Selector
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass atk_moonface_gust_C, bShowPropertyDetails=false)]
+          1) BehemothAction  (Montage=AnimMontage b_xf_atk_gustfromglidequickturntoglide_fwd_00_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_gust_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          2) BehemothAction  (Montage=AnimMontage b_xf_atk_windcutterfromglidequickturntoglide_fwd_00_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_wind_cut_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+          3) BehemothAction "Turn"  (Montage=AnimMontage b_mf_atk_glidequickturn_180_00_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+    4) Sequence
+      1) SimpleParallel
+        1) wait_for_past_target_bttask "Wait for past target"  (TargetKey=bb.AttackTarget, TimeWaitType=RunUntilConditionIsTrue, OffsetLocationsToNavTest=[{"X": 0.0, "Y": 200.0, "Z": 0.0}, {"X": 0.0, "Y": -200.0, "Z": 0.0}, {"X": 0.0, "Y": 0.0, "Z": 0.0}], CollisionTest_XLenght=1500, TimeAfterPassingTargetToStop=0.1)
+        2) BehemothAction "DynamicGlide"  (Montage=AnimMontage b_mf_atk_glide_chg_loop_02_mot, TriggerCooldownOnSuccess=false, StopMontageOnAbort=false)
+      2) Selector
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+        [if action_available_btdeco  (Attack Class=BlueprintGeneratedClass atk_moonface_gust_C, bShowPropertyDetails=false)]
+        1) BehemothAction  (Montage=AnimMontage b_xf_atk_gustfromglidequickturntoidle_fwd_00_mot, ActionClassToCooldown=BlueprintGeneratedClass atk_moonface_gust_C, StopMontageOnAbort=false, bShowPropertyDetails=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+        2) BehemothAction  (Montage=AnimMontage b_xf_atk_jumpslamglidetoidle_fwd_00_mot, StopMontageOnAbort=false)
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+        3) BehemothAction "Glide Recovery"  (Montage=AnimMontage moonface_glide_recovery_mot, TriggerCooldownOnSuccess=false)

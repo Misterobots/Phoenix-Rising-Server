@@ -1,0 +1,300 @@
+# weapon_meter_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Auth_DecayMeter
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [49] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(determination_ge_C, 0.0, GameplayEffectContextHandle{})
+  [131] CallFunc_GetWorldDeltaSeconds_ReturnValue_1 = GetWorldDeltaSeconds(self)
+  [160] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(DecayRate, CallFunc_GetWorldDeltaSeconds_ReturnValue_1)
+  [206] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_1, -1.0)
+  [252] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [281] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DeterminationGain', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [340] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [360] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [389] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [448] if !(self.MeterCompoundingDecay) goto @646
+  [462] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(self.MeterCompoundingDecayRate, 0.0)
+  [500] if !(CallFunc_EqualEqual_DoubleDouble_ReturnValue) goto @759
+  [514] PrintString(self, 'Meter Set to compounding decay, but no compounding decay rate set', true, true, LinearColor{1.0, 0.042603, 0.0, 1.0}, 10.0, 'None')
+  [646] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [669] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, 0.0)
+  [707] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @912
+  [721] StopMeterDecay()
+  [735] OnStopMeterDecay__DelegateSignature()
+  [754] goto @912
+  [759] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [788] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.MeterCompoundingDecayRate, CallFunc_GetWorldDeltaSeconds_ReturnValue)
+  [834] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(self.LMeterDecayRate, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [880] self.LMeterDecayRate = CallFunc_Add_DoubleDouble_ReturnValue
+  [907] goto @646
+  [912] return nothing
+  [914] end
+
+=== Auth_IncreaseMeter
+  [0] LAmountToIncrease = AmountToIncrease
+  [27] LScaled = ApplyAsScaledValue
+  [46] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_3)
+  [69] LOriginalMeter = CallFunc_GetCurrentMeter_CurrentMeterAmount_3
+  [96] if !(self.LMeterGainEnabled) goto @2676
+  [110] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(LAmountToIncrease, 0.0)
+  [148] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_Less_DoubleDouble_ReturnValue)
+  [177] if !(CallFunc_Not_PreBool_ReturnValue) goto @2357
+  [191] CallFunc_NotEqual_DoubleDouble_ReturnValue = NotEqual_DoubleDouble(LAmountToIncrease, 0.0)
+  [229] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_2)
+  [252] GetMaxMeter(CallFunc_GetMaxMeter_MaxMeter_2)
+  [275] CallFunc_Less_DoubleDouble_ReturnValue_1 = Less_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount_2, CallFunc_GetMaxMeter_MaxMeter_2)
+  [313] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Less_DoubleDouble_ReturnValue_1, CallFunc_NotEqual_DoubleDouble_ReturnValue)
+  [351] if !(CallFunc_BooleanAND_ReturnValue) goto @2676
+  [365] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [385] K2Node_DynamicCast_AsArchon_Weapon = cast<ArchonWeapon>(CallFunc_GetOwner_ReturnValue_1)
+  [421] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Weapon)
+  [450] CallFunc_IsValid_ReturnValue = IsValid(K2Node_DynamicCast_AsArchon_Weapon)
+  [479] if !(CallFunc_IsValid_ReturnValue) goto @663
+  [493] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [513] K2Node_DynamicCast_AsArchon_Weapon = cast<ArchonWeapon>(CallFunc_GetOwner_ReturnValue_1)
+  [549] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Weapon)
+  [578] CallFunc_GetPawnOwner_ReturnValue = K2Node_DynamicCast_AsArchon_Weapon.GetPawnOwner()
+  [620] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetPawnOwner_ReturnValue)
+  [649] if !(CallFunc_IsValid_ReturnValue_1) goto @2676
+  [663] Temp_real_Variable = 0.0
+  [690] CallFunc_MakeLiteralGameplayTag_ReturnValue = MakeLiteralGameplayTag(GameplayTag{'Combat.Weapon.WeaponImpact'})
+  [745] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [765] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [794] BreakGameplayCueParameters(GameplayCueParameters, CallFunc_BreakGameplayCueParameters_NormalizedMagnitude, CallFunc_BreakGameplayCueParameters_RawMagnitude, CallFunc_BreakGameplayCueParameters_EffectContext, CallFunc_BreakGameplayCueParameters_MatchedTagName, CallFunc_BreakGameplayCueParameters_OriginalTag, CallFunc_BreakGameplayCueParameters_AggregatedSourceTags, CallFunc_BreakGameplayCueParameters_AggregatedTargetTags, CallFunc_BreakGameplayCueParameters_Location, CallFunc_BreakGameplayCueParameters_Normal, CallFunc_BreakGameplayCueParameters_Instigator, CallFunc_BreakGameplayCueParameters_EffectCauser, CallFunc_BreakGameplayCueParameters_SourceObject, CallFunc_BreakGameplayCueParameters_PhysicalMaterial, CallFunc_BreakGameplayCueParameters_GameplayEffectLevel, CallFunc_BreakGameplayCueParameters_AbilityLevel, CallFunc_BreakGameplayCueParameters_TargetAttachComponent, CallFunc_BreakGameplayCueParameters_bReplicateLocationWhenUsingMinimalRepProxy)
+  [966] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(determination_ge_C, 0.0, GameplayEffectContextHandle{})
+  [1048] CallFunc_HasTag_ReturnValue = HasTag(CallFunc_BreakGameplayCueParameters_AggregatedSourceTags, CallFunc_MakeLiteralGameplayTag_ReturnValue, false)
+  [1087] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [1107] Temp_bool_Variable_1 = CallFunc_HasTag_ReturnValue
+  [1126] K2Node_DynamicCast_AsArchon_Weapon = cast<ArchonWeapon>(CallFunc_GetOwner_ReturnValue_1)
+  [1162] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Weapon)
+  [1191] Temp_bool_Variable = K2Node_DynamicCast_bSuccess
+  [1210] CallFunc_GetPawnOwner_ReturnValue = K2Node_DynamicCast_AsArchon_Weapon.GetPawnOwner()
+  [1252] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(switch(Temp_bool_Variable){false: CallFunc_GetOwner_ReturnValue_1, true: CallFunc_GetPawnOwner_ReturnValue, default: K2Node_Select_Default}, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:WeaponChargeMultiplier'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [1424] CallFunc_GetFloatAttribute_ReturnValue_1 = GetFloatAttribute(switch(Temp_bool_Variable){false: CallFunc_GetOwner_ReturnValue_1, true: CallFunc_GetPawnOwner_ReturnValue, default: K2Node_Select_Default}, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:WeaponChargePerHitBonus'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute_1)
+  [1597] Temp_bool_Variable_2 = LScaled
+  [1616] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [1645] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(LAmountToIncrease, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [1691] GetMaxMeter(CallFunc_GetMaxMeter_MaxMeter_1)
+  [1714] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue_1)
+  [1743] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_GetMaxMeter_MaxMeter_1)
+  [1789] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue, switch(Temp_bool_Variable_1){false: Temp_real_Variable, true: CallFunc_Multiply_DoubleDouble_ReturnValue_1, default: K2Node_Select_Default_1})
+  [1879] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_2){false: LAmountToIncrease, true: CallFunc_Add_DoubleDouble_ReturnValue, default: K2Node_Select_Default_2})
+  [1952] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DeterminationGain', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [2011] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2031] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [2060] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [2119] GetMaxMeter(CallFunc_GetMaxMeter_MaxMeter)
+  [2142] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_1)
+  [2165] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount_1, CallFunc_GetMaxMeter_MaxMeter)
+  [2203] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) goto @2236
+  [2217] MeterMaxed__DelegateSignature()
+  [2236] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [2259] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, LOriginalMeter)
+  [2305] GainedMeter__DelegateSignature(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [2333] MeterChanged__DelegateSignature()
+  [2352] goto @2676
+  [2357] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [2386] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [2436] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [2478] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Trying to add negative weapon meter!')
+  [2553] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [2627] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [2647] if !(CallFunc_IsShipping_ReturnValue) goto @2666
+  [2661] goto @2676
+  [2666] StackTrace()
+  [2676] return nothing
+  [2678] end
+
+=== DecreaseMeter
+  [0] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_2)
+  [23] LOriginalMeter = CallFunc_GetCurrentMeter_CurrentMeterAmount_2
+  [50] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_2)
+  [73] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount_2, 0.0)
+  [111] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @777
+  [125] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [145] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [174] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(determination_ge_C, 0.0, GameplayEffectContextHandle{})
+  [256] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_2)
+  [279] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount_2, AmountToDecreaseBy)
+  [325] CallFunc_FMax_ReturnValue = FMax(CallFunc_Subtract_DoubleDouble_ReturnValue_1, 0.0)
+  [371] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [400] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DeterminationGain', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [459] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [479] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [508] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [567] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [590] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, 0.0)
+  [628] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @661
+  [642] MeterEmpty__DelegateSignature()
+  [661] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount_1)
+  [684] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount_1, LOriginalMeter)
+  [730] ReducedMeter__DelegateSignature(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [758] MeterChanged__DelegateSignature()
+  [777] return nothing
+  [779] end
+
+=== EmptyMeter
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [43] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [72] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, -1.0)
+  [118] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(determination_ge_C, 0.0, GameplayEffectContextHandle{})
+  [200] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [229] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'DeterminationGain', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [288] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [308] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetOwner_ReturnValue)
+  [337] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [396] return nothing
+  [398] end
+
+=== ExecuteUbergraph_weapon_meter_bpc
+  [0] goto computed(EntryPoint)
+  [10] Auth_IncreaseMeter(K2Node_CustomEvent_AmountToIncrease, K2Node_CustomEvent_ApplyAsScaledValue, K2Node_CustomEvent_Parameters)
+  [51] goto @156
+  [56] SetMeterDecaying(true)
+  [71] SetDecayRate(K2Node_CustomEvent_DecayRate)
+  [94] goto @156
+  [99] SetMeterDecaying(false)
+  [114] goto @156
+  [119] if !(self.LIsMeterDecaying) goto @156
+  [133] Auth_DecayMeter(self.LMeterDecayRate)
+  [156] return nothing
+  [158] end
+
+=== FillMeter
+  [0] GetMaxMeter(CallFunc_GetMaxMeter_MaxMeter)
+  [23] SetCurrentMeter(CallFunc_GetMaxMeter_MaxMeter)
+  [46] return nothing
+  [48] end
+
+=== GainedMeter__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== GetCharacterOwner
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue.self.Instigator)
+  [78] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [107] if !(K2Node_DynamicCast_bSuccess) goto @145
+  [121] CharacterOwner = K2Node_DynamicCast_AsArchon_Character
+  [140] goto @156
+  [145] CharacterOwner = null
+  [156] return nothing
+  [158] end
+
+=== GetCurrentMeter
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetOwner_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:Determination'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [139] K2Node_FunctionResult_CurrentMeterAmount_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [168] CurrentMeterAmount = K2Node_FunctionResult_CurrentMeterAmount_ImplicitCast
+  [195] return nothing
+  [197] end
+
+=== GetIsMeterDecaying
+  [0] IsMeterDecaying = self.LIsMeterDecaying
+  [19] return nothing
+  [21] end
+
+=== GetMaxMeter
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetOwner_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:DeterminationMax'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [142] K2Node_FunctionResult_MaxMeter_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [171] MaxMeter = K2Node_FunctionResult_MaxMeter_ImplicitCast
+  [198] return nothing
+  [200] end
+
+=== GetMeterPercent
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetOwner_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:Determination'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [139] CallFunc_GetFloatAttribute_ReturnValue_1 = GetFloatAttribute(CallFunc_GetOwner_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:DeterminationMax'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute_1)
+  [261] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [290] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue_1)
+  [319] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [365] PercentMeter = CallFunc_Divide_DoubleDouble_ReturnValue
+  [392] return nothing
+  [394] end
+
+=== IncreaseMeter
+  [0] frame.K2Node_CustomEvent_AmountToIncrease = AmountToIncrease
+  [18] frame.K2Node_CustomEvent_ApplyAsScaledValue = ApplyAsScaledValue
+  [36] frame.K2Node_CustomEvent_Parameters = Parameters
+  [54] ExecuteUbergraph_weapon_meter_bpc(10)
+  [69] return nothing
+  [71] end
+
+=== IsMeterFull
+  [0] GetMaxMeter(CallFunc_GetMaxMeter_MaxMeter)
+  [23] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [46] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, CallFunc_GetMaxMeter_MaxMeter)
+  [84] MeterIsFull = CallFunc_EqualEqual_DoubleDouble_ReturnValue
+  [103] return nothing
+  [105] end
+
+=== MeterChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== MeterEmpty__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== MeterMaxed__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnStopMeterDecay__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_weapon_meter_bpc(119)
+  [33] return nothing
+  [35] end
+
+=== ReducedMeter__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== SetCurrentMeter
+  [0] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [23] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(NewMeterAmount, CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [61] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @419
+  [75] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [98] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(NewMeterAmount, CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [144] Auth_IncreaseMeter(CallFunc_Subtract_DoubleDouble_ReturnValue_1, true, GameplayCueParameters{0.0, 0.0, GameplayEffectContextHandle{}, GameplayTag{'None'}, GameplayTag{'None'}, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, Vector_NetQuantize10{0.0, 0.0, 0.0}, Vector_NetQuantizeNormal{0.0, 0.0, 0.0}, null, null, null, null, 1, 1, null, false})
+  [414] goto @586
+  [419] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [442] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(NewMeterAmount, CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [480] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @586
+  [494] GetCurrentMeter(CallFunc_GetCurrentMeter_CurrentMeterAmount)
+  [517] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetCurrentMeter_CurrentMeterAmount, NewMeterAmount)
+  [563] DecreaseMeter(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [586] return nothing
+  [588] end
+
+=== SetDecayRate
+  [0] self.LMeterDecayRate = MeterDecayRate
+  [27] return nothing
+  [29] end
+
+=== SetMeterDecaying
+  [0] self.LIsMeterDecaying = MeterDecaying
+  [19] return nothing
+  [21] end
+
+=== SetMeterGainEnabled
+  [0] self.LMeterGainEnabled = MeterGainEnabled
+  [19] return nothing
+  [21] end
+
+=== StartMeterDecay
+  [0] frame.K2Node_CustomEvent_DecayRate = DecayRate
+  [18] ExecuteUbergraph_weapon_meter_bpc(56)
+  [33] return nothing
+  [35] end
+
+=== StopMeterDecay
+  [0] ExecuteUbergraph_weapon_meter_bpc(99)
+  [15] return nothing
+  [17] end

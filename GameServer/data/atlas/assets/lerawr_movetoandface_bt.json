@@ -1,0 +1,142 @@
+{
+ "name": "lerawr_movetoandface_bt",
+ "package": "Archon/Content/Monsters/aq/lerawr/ai/lerawr_movetoandface_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot",
+  "lerawr_bb"
+ ],
+ "exports": {
+  "lerawr_movetoandface_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData lerawr_bb",
+    "RootDecorators": [
+     "@comment_btdeco_C_9"
+    ]
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_SimpleParallel_0",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_DistanceCheck_C_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@pivot_towards_target_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt"
+   }
+  },
+  "BTComposite_SimpleParallel_0": {
+   "type": "BTComposite_SimpleParallel",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@wait_for_distance_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_0": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.PounceLocation",
+    "MinDistance": 800.0,
+    "MaxDistance": 99999.0,
+    "ObservedKeyNames": [
+     "SelfActor",
+     "PounceLocation"
+    ],
+    "FlowAbortMode": "EBTFlowAbortMode::Self",
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_lerawr_00_loco_runtojumplandturn_fwd_00_mot",
+    "NodeName": "run to landturn",
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_MoveTo_0": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "AcceptableRadius": 500.0,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.PounceLocation",
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_0"
+   }
+  },
+  "comment_btdeco_C_9": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Moves to Pounce Location and nicely faces attack target",
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt"
+   }
+  },
+  "pivot_towards_target_bttask_C_0": {
+   "type": "pivot_towards_target_bttask_C",
+   "props": {
+    "PivotTarget": "bb.AttackTarget",
+    "BlendOutTime": 0.25,
+    "PivotSetToUse": "LandAndTurn",
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "wait_for_distance_bttask_C_0": {
+   "type": "wait_for_distance_bttask_C",
+   "props": {
+    "TargetKey": "bb.PounceLocation",
+    "MinDistanceData": {
+     "ConstantFloat": 1500.0
+    },
+    "MaxDistanceData": {
+     "ConstantFloat": 6000.0
+    },
+    "BlackboardKeyNameToCheck": "CanTransitToNextAnim",
+    "RequiredBlackboardKeyType": "blackboard_comparable_key_type::Bool",
+    "BlackboardCompareData": {
+     "ConstantBool": true
+    },
+    "TreeAsset": "BehaviorTree lerawr_movetoandface_bt",
+    "ParentNode": "@BTComposite_SimpleParallel_0"
+   }
+  }
+ }
+}

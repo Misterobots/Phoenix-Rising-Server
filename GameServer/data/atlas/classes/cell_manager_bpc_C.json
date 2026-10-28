@@ -1,0 +1,1219 @@
+{
+ "name": "cell_manager_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ArchonCellManagerComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 432,
+ "sdk_header": "cell_manager_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "MagnitudeToApply",
+   "type": "double",
+   "offset": "0xA8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "RankToApply",
+   "type": "int32",
+   "offset": "0xB0",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "AppliedBuffs",
+   "type": "TArray<AArchonBuff*>",
+   "offset": "0xB8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "IsApplyingEffects",
+   "type": "bool",
+   "offset": "0xC8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CurrentEffectsBeingApplied",
+   "type": "TArray<FAppliedCellEffectCounter>",
+   "offset": "0xD0",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_CurrentEffectsBeingApplied",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ArrayProperty",
+   "rep_index": 2,
+   "schema_rep_index": 2
+  },
+  {
+   "name": "HaveNewEffectsToApply",
+   "type": "bool",
+   "offset": "0xE0",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "NewEffectsToApply",
+   "type": "TArray<FAppliedCellEffectCounter>",
+   "offset": "0xE8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "RemoveEffectsAfterApplyingIsDone",
+   "type": "bool",
+   "offset": "0xF8",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "MatchingRankIndex",
+   "type": "int32",
+   "offset": "0xFC",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "GameplayEffectsToApply",
+   "type": "TArray<TSoftClassPtr<UClass>>",
+   "offset": "0x100",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "AbilitiesToApply",
+   "type": "TArray<TSoftClassPtr<UClass>>",
+   "offset": "0x110",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "BuffsToApply",
+   "type": "TArray<TSoftClassPtr<UClass>>",
+   "offset": "0x120",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "MagnitudeEffectsApplied",
+   "type": "bool",
+   "offset": "0x130",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "RankedEffectsApplied",
+   "type": "bool",
+   "offset": "0x131",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "L_AppliedBuffs",
+   "type": "TArray<AArchonBuff*>",
+   "offset": "0x138",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "Client_CellEffectsChanged",
+   "type": "TMulticastInlineDelegate<void()>",
+   "offset": "0x148",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "AppliedAbilities",
+   "type": "TArray<FGameplayAbilitySpecHandle>",
+   "offset": "0x158",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "BonusEffectsToAlwaysApply",
+   "type": "TArray<FAppliedCellEffectCounter>",
+   "offset": "0x168",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_Effects",
+   "type": "TArray<FAppliedCellEffectCounter>",
+   "offset": "0x178",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_IsInCity",
+   "type": "bool",
+   "offset": "0x188",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "L_CancelledAbilities",
+   "type": "TArray<FGameplayAbilitySpecHandle>",
+   "offset": "0x190",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "Cell Effects to Remove",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AddNewBonusEffect",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AppliedCellEffectCounter",
+     "type": "FAppliedCellEffectCounter"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyCellBonuses",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EquippedCellEffects_ApplyCellBonuses",
+     "type": "TArray<FAppliedCellEffectCounter>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyNewCellEffects",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyNextAbility",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyNextBuff",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyNextCellEffect",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ApplyNextGameplayEffect",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthAddBonusEffect",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Effect",
+     "type": "FAppliedCellEffectCounter"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AddNewBonusEffect"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthClearAllBonusEffects",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthClearBonusEffects",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AuthClearAllBonusEffects"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BP_ApplyCellBonuses",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CellEffects",
+     "type": "TArray<FAppliedCellEffectCounter>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Client_CellEffectsChanged__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_cell_manager_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 449,
+   "reads": [
+    "AbilitiesToApply",
+    "AppliedAbilities",
+    "AppliedBuffs",
+    "BonusEffectsToAlwaysApply",
+    "BuffsToApply",
+    "Cell Effects to Remove",
+    "CurrentEffectsBeingApplied",
+    "GameplayEffectsToApply",
+    "HaveNewEffectsToApply",
+    "IsApplyingEffects",
+    "L_AppliedBuffs",
+    "L_CancelledAbilities",
+    "L_Effects",
+    "L_IsInCity",
+    "MagnitudeToApply",
+    "NewEffectsToApply",
+    "OnDestroyed",
+    "RankToApply",
+    "RemoveEffectsAfterApplyingIsDone"
+   ],
+   "sets": [
+    "AbilitiesToApply",
+    "BonusEffectsToAlwaysApply",
+    "BuffsToApply",
+    "Cell Effects to Remove",
+    "GameplayEffectsToApply",
+    "HaveNewEffectsToApply",
+    "IsApplyingEffects",
+    "L_AppliedBuffs",
+    "L_Effects",
+    "L_IsInCity",
+    "MagnitudeToApply",
+    "NewEffectsToApply",
+    "RankedEffectsApplied",
+    "RemoveEffectsAfterApplyingIsDone"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AddGrantedTag",
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetGameplayAbilityFromSpecHandle",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.RemoveActiveEffectsWithGrantedTags",
+    "AbilitySystemComponent.TryActivateAbilityByClass",
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ApplyNewCellEffects",
+    "ApplyNextAbility",
+    "ApplyNextBuff",
+    "ApplyNextCellEffect",
+    "ApplyNextGameplayEffect",
+    "ArchonAbilitySystemBlueprintLibrary.CancelAbilityWithHandle",
+    "ArchonAbilitySystemBlueprintLibrary.GiveAbility",
+    "ArchonAbilitySystemComponent.BP_ClearAbility",
+    "ArchonCharacter.GetAllEquippedCellEffects",
+    "ArchonGameplayStatics.AddCellEffectToArrayBP",
+    "ArchonGameplayStatics.IsInCity",
+    "ArchonGameplayStatics.IsInLobby",
+    "ArchonGameplayStatics.UnpackRankedCellEffectsBP",
+    "BP_ApplyCellBonuses",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "GameplayStatics.GetObjectClass",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Find",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsEmpty",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetArrayLibrary.Array_RemoveItem",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.ClassIsChildOf",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.Conv_ClassToSoftClassReference",
+    "KismetSystemLibrary.Conv_SoftClassReferenceToClass",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.LoadAssetClass",
+    "LoadAndApplyBuffs",
+    "LookupCellEffectRow",
+    "MakeOutgoingSpec",
+    "OnFinishedLoadingApplyingBuffs",
+    "PostApplyRemoveCellBonuses",
+    "RemoveActiveGameplayEffectBySourceEffect",
+    "RemoveAllCellBonuses",
+    "RemoveBuff",
+    "RemoveCellBonuses",
+    "SetCurrentEffects",
+    "SetMagnitudeFromCell",
+    "SetRankFromCell",
+    "StartBuff",
+    "TryAddBuff",
+    "UtilityMethods.ArchonLogError"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass lanternactive_base_ab_C"
+   ]
+  },
+  {
+   "name": "GetCurrentAppliedCellEffects",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AppliedCellEffects",
+     "type": "TArray<FAppliedCellEffectCounter>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 3,
+   "reads": [
+    "CurrentEffectsBeingApplied"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LoadAndApplyBuffs",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDestroyed_Event_0",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnFinishedLoadingApplyingBuffs",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_86E5A9064BCF5DEBBB33BA8B895D1B40",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "TSubclassOf<UObject*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_A682E46144FAAFA2F66151855B406D18",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "TSubclassOf<UObject*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_F526342C4F02C9A0075E48B908F2675B",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "TSubclassOf<UObject*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_CurrentEffectsBeingApplied",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [
+    "Client_CellEffectsChanged"
+   ],
+   "sets": [],
+   "calls": [
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PostApplyRemoveCellBonuses",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveEndPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EndPlayReason_ReceiveEndPlay",
+     "type": "EEndPlayReason"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveAllCellBonuses",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RemoveCellBonuses",
+   "flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CellEffectsToRemove_RemoveCellBonuses",
+     "type": "TArray<FAppliedCellEffectCounter>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "cell_manager_bpc_C.ExecuteUbergraph_cell_manager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetCurrentEffects",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewEffectsBeingApplied",
+     "type": "TArray<FAppliedCellEffectCounter>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [
+    "CurrentEffectsBeingApplied"
+   ],
+   "calls": [
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_CurrentEffectsBeingApplied"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cell_manager_bpc",
+ "pseudo_file": "pseudo/cell_manager_bpc_C.txt",
+ "game_data": {
+  "data/2.1.1/ramsgate_world.json": 3
+ }
+}

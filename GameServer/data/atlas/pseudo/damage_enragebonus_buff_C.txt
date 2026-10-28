@@ -1,0 +1,273 @@
+# damage_enragebonus_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyCatalystPerkBonus
+  [0] GetCellCatalystPerkInfo(CallFunc_GetCellCatalystPerkInfo_CellEffectID, CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [41] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [79] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @187
+  [93] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [113] Default__buff_function_library_C.AdjustBuffTempStacksAoE(CallFunc_GetBuffOwner_ReturnValue, 16000000.0, self.OtherPlayersCatalystBonusStackChange, self.BuffType, true, self)
+  [187] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetCellCatalystPerkInfo_Rank, CallFunc_GetCellCatalystPerkInfo_RankRequired)
+  [225] BonusApplied = CallFunc_GreaterEqual_IntInt_ReturnValue
+  [244] return nothing
+  [246] end
+
+=== ApplyEffect
+  [0] if !(ApplyEnragedBonus) goto @114
+  [14] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [34] Default__buff_function_library_C.AdjustBuffMaxDuration(CallFunc_GetBuffOwner_ReturnValue, self.DurationBonus, self.BuffType, self)
+  [98] self.EnragedEffectApplied = true
+  [109] goto @255
+  [114] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [134] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.DurationBonus, -1.0)
+  [180] Default__buff_function_library_C.AdjustBuffMaxDuration(CallFunc_GetBuffOwner_ReturnValue_1, CallFunc_Multiply_DoubleDouble_ReturnValue, self.BuffType, self)
+  [244] self.BaseEffectApplied = true
+  [255] return nothing
+  [257] end
+
+=== ExecuteUbergraph_damage_enragebonus_buff
+  [0] push @1358
+  [5] goto computed(EntryPoint)
+  [15] push @669
+  [20] self.EnragedBehemothNearby = false
+  [31] CallFunc_GetGameState_ReturnValue = GetGameState(self)
+  [52] K2Node_DynamicCast_AsBpi_Gamestate = cast<bpi_gamestate_C>(CallFunc_GetGameState_ReturnValue)
+  [88] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBpi_Gamestate)
+  [117] if !(K2Node_DynamicCast_bSuccess) goto @710
+  [131] K2Node_DynamicCast_AsBpi_Gamestate.GetSpawnedBehemoths(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [177] Temp_int_Loop_Counter_Variable = 0
+  [200] Temp_int_Array_Index_Variable = 0
+  [223] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [282] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [320] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [330] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [357] push @756
+  [362] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [421] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_Array_Get_Item)
+  [457] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [486] if !(K2Node_DynamicCast_bSuccess_1) goto @830
+  [500] K2Node_DynamicCast_AsBehemoth_Interface.GetIsInRageState(CallFunc_GetIsInRageState_IsInRageState)
+  [546] if !(CallFunc_GetIsInRageState_IsInRageState) pop
+  [556] Default__KismetArrayLibrary.Array_Get(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [615] IsBehemothInRange(CallFunc_Array_Get_Item, CallFunc_IsBehemothInRange_InRange)
+  [647] if !(CallFunc_IsBehemothInRange_InRange) pop
+  [657] self.EnragedBehemothNearby = true
+  [668] pop
+  [669] if !(self.EnragedBehemothNearby) pop
+  [679] if !(self.EnragedEffectApplied) goto @694
+  [693] pop
+  [694] ApplyEffect(true)
+  [709] pop
+  [710] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetSpawnedBehemoths_SpawnedBehemoths)
+  [751] goto @177
+  [756] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [798] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [825] goto @223
+  [830] CallFunc_GetIsInRageState_IsInRageState = false
+  [841] goto @546
+  [846] GetStackChange(CallFunc_GetStackChange_StackChange)
+  [869] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [889] Default__buff_function_library_C.AdjustBuffTempStacks(CallFunc_GetBuffOwner_ReturnValue, CallFunc_GetStackChange_StackChange, self.BuffType, false, self)
+  [954] RefreshEffects()
+  [968] GetDuration(CallFunc_GetDuration_Duration)
+  [991] self.BuffDuration = CallFunc_GetDuration_Duration
+  [1018] K2Node_CreateDelegate_OutputDelegate = bind(self.RemoveBuff)
+  [1041] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.BuffDuration)
+  [1070] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [1127] self.BuffTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1154] ApplyCatalystPerkBonus(CallFunc_ApplyCatalystPerkBonus_BonusApplied)
+  [1177] pop
+  [1178] self.EnragedEffectApplied = false
+  [1189] pop
+  [1190] ApplyEffect(false)
+  [1205] goto @1178
+  [1210] push @1252
+  [1215] push @1293
+  [1220] K2_ClearAndInvalidateTimerHandle(self, self.BuffTimer)
+  [1240] self.BuffExpired = true
+  [1251] pop
+  [1252] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1272] RemoveBuff(CallFunc_GetBuffOwner_ReturnValue_1, self)
+  [1292] pop
+  [1293] if !(self.EnragedEffectApplied) pop
+  [1303] goto @1190
+  [1308] if !(self.BuffExpired) goto @1323
+  [1322] pop
+  [1323] RefreshEffects()
+  [1337] pop
+  [1338] MulticastOnAdded()
+  [1348] goto @846
+  [1353] goto @1338
+  [1358] return nothing
+  [1360] end
+
+=== GetBonus
+  [0] push @508
+  [5] push @433
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [95] if !(K2Node_DynamicCast_bSuccess) goto @492
+  [109] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [155] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [184] if !(CallFunc_IsValid_ReturnValue) pop
+  [194] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Damage_EnrageBonus_Potion_C)
+  [245] K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion = cast<QuickItem_Damage_EnrageBonus_Potion_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [281] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion)
+  [310] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [320] K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion.GetAmount(CallFunc_GetAmount_Amount, CallFunc_GetAmount_EnrageAmount)
+  [374] Bonus = CallFunc_GetAmount_Amount
+  [401] EnrageBonus = CallFunc_GetAmount_EnrageAmount
+  [428] goto @508
+  [433] Bonus = 0.0
+  [460] EnrageBonus = 0.0
+  [487] goto @508
+  [492] CallFunc_GetLoadout_Loadout = null
+  [503] goto @155
+  [508] return nothing
+  [510] end
+
+=== GetCellCatalystPerkInfo
+  [0] push @1201
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [71] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [122] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [167] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [226] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [264] if !(CallFunc_Less_IntInt_ReturnValue) goto @1045
+  [278] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [305] push @1127
+  [310] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [330] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [381] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [426] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [485] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item_2.CellEffectID, 'KW_BETTER_CONSUMABLE')
+  [536] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [546] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(keyword_cell_effects, 'KW_BETTER_CONSUMABLE', CallFunc_GetDataTableRowFromName_OutRow)
+  [619] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [629] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [649] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow.UniqueRankedEffects, 0, CallFunc_Array_Get_Item)
+  [713] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(cell_manager_bpc_C)
+  [764] CallFunc_GetComponentByClass_ReturnValue.GetCurrentAppliedCellEffects(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects)
+  [809] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.MagnitudesGrantedPerLevel, 0, CallFunc_Array_Get_Item_1)
+  [873] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCurrentAppliedCellEffects_AppliedCellEffects, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [932] CellEffectID = CallFunc_Array_Get_Item_2.CellEffectID
+  [968] Rank = CallFunc_Array_Get_Item_2.Rank
+  [1004] RankRequired = CallFunc_Array_Get_Item_1.RankRequired
+  [1040] goto @1201
+  [1045] CellEffectID = 'None'
+  [1076] Rank = -1
+  [1099] RankRequired = 0
+  [1122] goto @1201
+  [1127] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1169] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1196] goto @51
+  [1201] return nothing
+  [1203] end
+
+=== GetDuration
+  [0] push @729
+  [5] push @681
+  [10] push @431
+  [15] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [35] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [71] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [100] if !(K2Node_DynamicCast_bSuccess) goto @713
+  [114] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [160] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [189] if !(CallFunc_IsValid_ReturnValue) pop
+  [199] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Damage_EnrageBonus_Potion_C)
+  [250] K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion = cast<QuickItem_Damage_EnrageBonus_Potion_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [286] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion)
+  [315] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [325] K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion.GetDuration(CallFunc_GetDuration_Duration)
+  [370] K2Node_FunctionResult_Duration_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetDuration_Duration)
+  [399] Duration = K2Node_FunctionResult_Duration_ImplicitCast
+  [426] goto @729
+  [431] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(quick_item_catalog, 'QI_DAMAGE_ENRAGEBONUS_POTION', CallFunc_GetDataTableRowFromName_OutRow)
+  [504] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [514] CallFunc_GetClassFromStringClassReference_ReturnValue = GetClassFromStringClassReference(CallFunc_GetDataTableRowFromName_OutRow.ItemClass)
+  [552] K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion = cast<QuickItem_Damage_EnrageBonus_Potion_C>(CallFunc_GetClassFromStringClassReference_ReturnValue)
+  [588] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion)
+  [617] if !(K2Node_ClassDynamicCast_bSuccess) pop
+  [627] Duration = EX_ClassContext(ObjectExpression=K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'QuickItem_Damage_EnrageBonus_Potion_C'", 'ObjectPath': '/Game/Blueprints/InventoryItems/QuickItems/QuickItem_Damage_EnrageBonus_Potion.0'}, 'Property': {'Type': 'DoubleProperty', 'Name': 'BaseDuration', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 8, 'PropertyFlags': 'Edit | BlueprintVisible | DisableEditOnInstance'}},ContextExpression=BaseDuration)
+  [676] goto @729
+  [681] Duration = 0.0
+  [708] goto @729
+  [713] CallFunc_GetLoadout_Loadout = null
+  [724] goto @160
+  [729] return nothing
+  [731] end
+
+=== GetStackChange
+  [0] push @673
+  [5] push @629
+  [10] push @379
+  [15] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [35] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [71] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [100] if !(K2Node_DynamicCast_bSuccess) goto @657
+  [114] K2Node_DynamicCast_AsPlayer_Interface.GetLoadout(CallFunc_GetLoadout_Loadout)
+  [160] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetLoadout_Loadout)
+  [189] if !(CallFunc_IsValid_ReturnValue) pop
+  [199] CallFunc_GetInventoryQuickItemFromAbility_ReturnValue = CallFunc_GetLoadout_Loadout.GetInventoryQuickItemFromAbility(Ability_QuickItem_Damage_EnrageBonus_Potion_C)
+  [250] K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion = cast<QuickItem_Damage_EnrageBonus_Potion_C>(CallFunc_GetInventoryQuickItemFromAbility_ReturnValue)
+  [286] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion)
+  [315] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [325] StackChange = K2Node_DynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion.self.StackChange
+  [374] goto @673
+  [379] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(quick_item_catalog, 'QI_DAMAGE_ENRAGEBONUS_POTION', CallFunc_GetDataTableRowFromName_OutRow)
+  [452] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [462] CallFunc_GetClassFromStringClassReference_ReturnValue = GetClassFromStringClassReference(CallFunc_GetDataTableRowFromName_OutRow.ItemClass)
+  [500] K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion = cast<QuickItem_Damage_EnrageBonus_Potion_C>(CallFunc_GetClassFromStringClassReference_ReturnValue)
+  [536] K2Node_ClassDynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion)
+  [565] if !(K2Node_ClassDynamicCast_bSuccess) pop
+  [575] StackChange = EX_ClassContext(ObjectExpression=K2Node_ClassDynamicCast_AsQuick_Item_Damage_Enrage_Bonus_Potion,Offset=9,RValuePointer={'Owner': {'ObjectName': "BlueprintGeneratedClass'QuickItem_Damage_EnrageBonus_Potion_C'", 'ObjectPath': '/Game/Blueprints/InventoryItems/QuickItems/QuickItem_Damage_EnrageBonus_Potion.0'}, 'Property': {'Type': 'IntProperty', 'Name': 'StackChange', 'Flags': 'RF_Public | RF_LoadCompleted', 'ElementSize': 4, 'PropertyFlags': 'Edit | BlueprintVisible | DisableEditOnInstance'}},ContextExpression=StackChange)
+  [624] goto @673
+  [629] StackChange = 0
+  [652] goto @673
+  [657] CallFunc_GetLoadout_Loadout = null
+  [668] goto @160
+  [673] return nothing
+  [675] end
+
+=== IsBehemothInRange
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Behemoth)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @208
+  [43] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [63] CallFunc_GetSquaredDistanceTo_ReturnValue = Behemoth.GetSquaredDistanceTo(CallFunc_GetBuffOwner_ReturnValue)
+  [122] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSquaredDistanceTo_ReturnValue)
+  [151] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, self.BehemothRageRangeSq)
+  [189] InRange = CallFunc_LessEqual_DoubleDouble_ReturnValue
+  [208] return nothing
+  [210] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_damage_enragebonus_buff(1353)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_damage_enragebonus_buff(1308)
+  [33] return nothing
+  [35] end
+
+=== RefreshEffects
+  [0] ExecuteUbergraph_damage_enragebonus_buff(15)
+  [15] return nothing
+  [17] end
+
+=== RemoveBonusEffect
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [49] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.BonusBuff, -1)
+  [109] self.EnragedEffectApplied = false
+  [120] return nothing
+  [122] end
+
+=== RemoveBuff
+  [0] ExecuteUbergraph_damage_enragebonus_buff(1210)
+  [15] return nothing
+  [17] end

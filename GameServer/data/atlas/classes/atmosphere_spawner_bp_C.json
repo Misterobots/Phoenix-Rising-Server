@@ -1,0 +1,1198 @@
+{
+ "name": "atmosphere_spawner_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "AtmosphereSpawner",
+  "Actor",
+  "Object"
+ ],
+ "size": 1624,
+ "sdk_header": "atmosphere_spawner_bp_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0x580",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "reflection_sphere",
+   "type": "UStaticMeshComponent*",
+   "offset": "0x588",
+   "size": 8,
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<StaticMeshComponent>"
+  },
+  {
+   "name": "SpawnedCloudConfiguration",
+   "type": "ACloudConfiguration*",
+   "offset": "0x590",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<CloudConfiguration>"
+  },
+  {
+   "name": "SpawnedAtmosphere",
+   "type": "AAtmosphereBase*",
+   "offset": "0x598",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<AtmosphereBase>"
+  },
+  {
+   "name": "CurrentAtmosphereIndex",
+   "type": "int32",
+   "offset": "0x5A0",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "OnAtmosphereSpawned",
+   "type": "TMulticastInlineDelegate<void(AAtmosphereBase* SpawnedAtmosphere)>",
+   "offset": "0x5A8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "RequestedAtmosphereClass",
+   "type": "UClass*",
+   "offset": "0x5B8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_RequestedAtmosphereClass",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ClassProperty<Class>",
+   "rep_index": 11,
+   "schema_rep_index": 11
+  },
+  {
+   "name": "RequestedAtmosphereIndex",
+   "type": "int32",
+   "offset": "0x5C0",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_RequestedAtmosphereIndex",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "IntProperty",
+   "rep_index": 12,
+   "schema_rep_index": 12
+  },
+  {
+   "name": "IsAirshipAtmosphere",
+   "type": "bool",
+   "offset": "0x5C4",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "ExposeOnSpawn"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "DriverDeactivateEvent",
+   "type": "FTimerHandle",
+   "offset": "0x5C8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "OriginalDrivenValues",
+   "type": "FAtmosphereDrivenValueSet",
+   "offset": "0x5D0",
+   "size": 56,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<AtmosphereDrivenValueSet>"
+  },
+  {
+   "name": "TargetDrivenValues",
+   "type": "FAtmosphereDrivenValueSet",
+   "offset": "0x608",
+   "size": 56,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<AtmosphereDrivenValueSet>"
+  },
+  {
+   "name": "IntensityCurve",
+   "type": "UCurveFloat*",
+   "offset": "0x640",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<CurveFloat>"
+  },
+  {
+   "name": "Epsilon",
+   "type": "double",
+   "offset": "0x648",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "DoubleProperty"
+  },
+  {
+   "name": "atmosphere_controller",
+   "type": "UObject*",
+   "offset": "0x650",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Object>"
+  }
+ ],
+ "components": [
+  {
+   "name": "reflection_sphere",
+   "class": "UStaticMeshComponent",
+   "source": "property"
+  },
+  {
+   "name": "reflection_sphere",
+   "class": "StaticMeshComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ClearAllAtmospheresAndClouds",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetAllActorsOfClass",
+    "K2_DestroyActor",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass atmospheres_base_bp_C"
+   ]
+  },
+  {
+   "name": "ClientSpawnAtmosphereByClass",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Class_0",
+     "type": "UClass*"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientSpawnAtmosphereByIndex",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredAtmosphereIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientUnloadAtmosphere",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CycleAtmosphere",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DriveLighting",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "target_values",
+     "type": "FAtmosphereDrivenValueSet"
+    },
+    {
+     "name": "atmosphere_controller",
+     "type": "UObject*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_atmosphere_spawner_bp",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 223,
+   "reads": [
+    "ChildActor",
+    "ChildActorComponent",
+    "ChildCloudConfiguration",
+    "CurrentAtmosphereIndex",
+    "DriverDeactivateEvent",
+    "Epsilon",
+    "OnAtmosphereSpawned",
+    "OriginalDrivenValues",
+    "SpawnOffset",
+    "SpawnedAtmosphere",
+    "SpawnedCloudConfiguration",
+    "TargetDrivenValues",
+    "atmosphere_controller"
+   ],
+   "sets": [
+    "CurrentAtmosphereIndex",
+    "DriverDeactivateEvent",
+    "OriginalDrivenValues",
+    "RequestedAtmosphereClass",
+    "RequestedAtmosphereIndex",
+    "SpawnedAtmosphere",
+    "SpawnedCloudConfiguration",
+    "TargetDrivenValues",
+    "atmosphere_controller"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "Actor.HasAuthority",
+    "Actor.K2_GetRootComponent",
+    "ArchonGameplayStatics.GetArchonGameUserSettings",
+    "ArchonGameplayStatics.IsInCity",
+    "AtmosphereBase.SetAtmosphereSpawner",
+    "AutoPlayerUtilityLibrary.LoadAssetClassSynchronously",
+    "ClearAllAtmospheresAndClouds",
+    "ClientSpawnAtmosphereByClass",
+    "ClientSpawnAtmosphereByIndex",
+    "ClientUnloadAtmosphere",
+    "GameUserSettings.GetVisualEffectQuality",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetPlayerController",
+    "GetInterpolatedAtmosphereValues",
+    "GetNextAtmosphereIndex",
+    "HideAndDestroy",
+    "K2_DestroyActor",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakTransform",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.FMax",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.NotEqual_ClassClass",
+    "KismetMathLibrary.NotEqual_IntInt",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.IsValidClass",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.LoadAssetClass",
+    "LoadAtmosphereHelper",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "OnRep_RequestedAtmosphereClass",
+    "OnRep_RequestedAtmosphereIndex",
+    "RetrieveDrivenValues",
+    "SceneComponent.K2_GetComponentLocation",
+    "SceneComponent.SetVisibility",
+    "ServerRemoveChildActors",
+    "SetAtmosphereSpawner",
+    "SetDrivenValues",
+    "SpawnAtmosphereHelper",
+    "SpawnCloudConfigurationHelper"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsDedicatedServer",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetInterpolatedAtmosphereValues",
+   "flags": [
+    "Protected",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Timer",
+     "type": "FTimerHandle"
+    },
+    {
+     "name": "InterpolatedValues",
+     "type": "FAtmosphereDrivenValueSet"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 108,
+   "reads": [
+    "Epsilon",
+    "OriginalDrivenValues",
+    "TargetDrivenValues"
+   ],
+   "sets": [],
+   "calls": [
+    "CurveFloat.GetFloatValue",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Conv_ColorToLinearColor",
+    "KismetMathLibrary.Conv_LinearColorToColor",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Lerp",
+    "KismetMathLibrary.LinearColorLerp",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_LinearColorFloat",
+    "KismetMathLibrary.Percent_FloatFloat",
+    "KismetMathLibrary.SelectFloat",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_GetTimerElapsedTimeHandle",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAtmosphereSpawned__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SpawnedAtmosphere",
+     "type": "AAtmosphereBase*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnInterpolationInComplete",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_821AFFF2440532FF365760A1104153C3",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "TSubclassOf<UObject*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_RequestedAtmosphereClass",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "RequestedAtmosphereClass"
+   ],
+   "sets": [],
+   "calls": [
+    "ClientSpawnAtmosphereByClass",
+    "KismetSystemLibrary.IsDedicatedServer"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_RequestedAtmosphereIndex",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 6,
+   "reads": [
+    "RequestedAtmosphereIndex"
+   ],
+   "sets": [],
+   "calls": [
+    "ClientSpawnAtmosphereByIndex",
+    "KismetSystemLibrary.IsDedicatedServer"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RestoreLighting",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RetrieveDrivenValues",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CurrentAtmosphereSettings",
+     "type": "FAtmosphereDrivenValueSet"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 56,
+   "reads": [
+    "FogDensity",
+    "FogInscatteringLuminance",
+    "Intensity",
+    "Settings",
+    "SpawnedAtmosphere"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetRootComponent",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_LinearColorToColor",
+    "KismetMathLibrary.Less_IntInt",
+    "SceneComponent.GetChildrenComponents"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerRemoveChildActors",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 16,
+   "reads": [
+    "ChildActor",
+    "ChildActorComponent",
+    "ChildCloudConfiguration"
+   ],
+   "sets": [],
+   "calls": [
+    "K2_DestroyActor",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "TearOff"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerRequestAtmosphereByClass",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Class_0",
+     "type": "UClass*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerRequestAtmosphereByIndex",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DesiredAtmosphereIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerUnloadAtmosphereByClass",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ServerUnloadAtmosphereByIndex",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetDrivenValues",
+   "flags": [
+    "Protected",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "target_values",
+     "type": "FAtmosphereDrivenValueSet"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Protected",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 47,
+   "reads": [
+    "Settings",
+    "SpawnedAtmosphere"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetRootComponent",
+    "ExponentialHeightFogComponent.SetFogDensity",
+    "ExponentialHeightFogComponent.SetFogInscatteringColor",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_ColorToLinearColor",
+    "KismetMathLibrary.Less_IntInt",
+    "LightComponent.SetIntensity",
+    "SceneComponent.GetChildrenComponents",
+    "SkyLightComponent.SetIntensity"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnAtmosphereClass",
+   "flags": [
+    "Event",
+    "Public",
+    "HasOutParams",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "AtmosphereClass_SpawnAtmosphereClass",
+     "type": "TSoftClassPtr<UClass*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnAtmosphereCurrentIndex",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "atmosphere_spawner_bp_C.ExecuteUbergraph_atmosphere_spawner_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UserConstructionScript",
+   "flags": [
+    "Event",
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 20,
+   "reads": [
+    "ChildActor",
+    "ChildActorComponent",
+    "ChildCloudConfiguration",
+    "cloud_configuration",
+    "cloud_configuration_transform",
+    "tuning_mode"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.K2_SetActorTransform",
+    "ChildActorComponent.SetChildActorClass",
+    "InitEditorAtmosphere",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/World/atmospheres/blueprints/atmospheres/production/atmosphere_spawner_bp",
+ "pseudo_file": "pseudo/atmosphere_spawner_bp_C.txt",
+ "game_data": {
+  "data/2.1.1/islands/Adventure_IslandA_D24.contract.json": 2
+ }
+}

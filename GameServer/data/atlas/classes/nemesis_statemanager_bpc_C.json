@@ -1,0 +1,304 @@
+{
+ "name": "nemesis_statemanager_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IsInSecondPhase",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 2
+  },
+  {
+   "name": "Owning Behemoth",
+   "type": "ObjectProperty<Bp_Behemoth_C>",
+   "bp_type": "ObjectProperty<Bp_Behemoth_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 3
+  },
+  {
+   "name": "EnterSecondPhaseDispatcher",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 4
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "Apply Tags",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [
+    "AbilitySystemComponent",
+    "Owning Behemoth"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass nemesis_phase_two_ge_C"
+   ]
+  },
+  {
+   "name": "CheckForSecondPhase",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [
+    "IsInSecondPhase",
+    "Owning Behemoth"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonBehemoth.GetCurrentHealthPercent",
+    "EnterSecondPhase",
+    "KismetMathLibrary.Less_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EnterSecondPhase",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "EnterSecondPhaseDispatcher"
+   ],
+   "sets": [
+    "IsInSecondPhase"
+   ],
+   "calls": [
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "None",
+    "SetComponentTickEnabled"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EnterSecondPhaseDispatcher__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_nemesis_statemanager_bpc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "CheckForSecondPhase"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetIsInSecondPhase",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "IsInSecondPhase",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Private",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "IsInSecondPhase"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HealBehemoth",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Private",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "Owning Behemoth"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonBehemoth.GetMaxHealth",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass heal_by_amount_ge_C"
+   ]
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "nemesis_statemanager_bpc_C.ExecuteUbergraph_nemesis_statemanager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "nemesis_statemanager_bpc_C.ExecuteUbergraph_nemesis_statemanager_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Monsters/_shared/blueprints/nemesis_statemanager_bpc",
+ "pseudo_file": "pseudo/nemesis_statemanager_bpc_C.txt",
+ "game_data": {}
+}

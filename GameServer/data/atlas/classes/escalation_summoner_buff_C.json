@@ -1,0 +1,247 @@
+{
+ "name": "escalation_summoner_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveSummons",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CleanUpPreviousSpawn",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Class",
+     "type": "ClassProperty<Class>"
+    },
+    {
+     "name": "AdditionalLifespan",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 15,
+   "reads": [
+    "ActiveSummons"
+   ],
+   "sets": [],
+   "calls": [
+    "BlueprintMapLibrary.Map_Find",
+    "GetLifeSpan",
+    "KismetSystemLibrary.IsValid",
+    "SetLifeSpan"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_escalation_summoner_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 34,
+   "reads": [
+    "PlayerState"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "ArchonBuff.MulticastOnAdded",
+    "ArchonGameplayStatics.GetArchonLocalPlayer",
+    "ArchonLocalPlayer.GetChatClient",
+    "InsertStatusMessage",
+    "KismetSystemLibrary.IsValid",
+    "KismetTextLibrary.Conv_StringToText",
+    "KismetTextLibrary.Format",
+    "PlayerState.GetPlayerName",
+    "TextMulti"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "FindSpawn",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_GetActorRotation",
+    "ArchonBuff.GetBuffOwner",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.Subtract_VectorVector"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MulticastOnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_summoner_buff_C.ExecuteUbergraph_escalation_summoner_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnRandomSummon",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 31,
+   "reads": [
+    "ActiveSummons"
+   ],
+   "sets": [],
+   "calls": [
+    "AkGameplayStatics.PostEventAtLocation",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.SpawnActorFromClassWrapper",
+    "BlueprintMapLibrary.Map_Add",
+    "CleanUpPreviousSpawn",
+    "FindSpawn",
+    "GetLifeSpan",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.RandomIntegerInRange",
+    "KismetMathLibrary.TransformLocation",
+    "SetLifeSpan"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_vfx_summoner_spawn",
+    "BlueprintGeneratedClass escalation_summoner_crit_aura_actor_C",
+    "BlueprintGeneratedClass escalation_summoner_explosive_actor_C",
+    "BlueprintGeneratedClass escalation_summoner_healer_actor_C"
+   ]
+  },
+  {
+   "name": "TextMulti",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Name",
+     "type": "StrProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_summoner_buff_C.ExecuteUbergraph_escalation_summoner_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/escalation/summoner_amp/escalation_summoner_buff",
+ "pseudo_file": "pseudo/escalation_summoner_buff_C.txt",
+ "game_data": {}
+}

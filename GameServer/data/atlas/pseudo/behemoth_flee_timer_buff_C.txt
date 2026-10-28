@@ -1,0 +1,56 @@
+# behemoth_flee_timer_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CustomModifyDamageEventData
+  [0] CallFunc_HasTag_ReturnValue = HasTag(DamageTags, GameplayTag{'Combat.Behemoth.PhysicalAttack'}, true)
+  [57] if !(CallFunc_HasTag_ReturnValue) goto @347
+  [71] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(DamageEventData.AdditiveDamageMultiplier)
+  [109] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 1.0)
+  [155] K2Node_SetFieldsInStruct_AdditiveDamageMultiplier_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [184] DamageEventData.AdditiveDamageMultiplier = K2Node_SetFieldsInStruct_AdditiveDamageMultiplier_ImplicitCast
+  [220] K2Node_SetFieldsInStruct_StructOut = DamageEventData
+  [247] ModifiedDamageEventData = true
+  [258] OverriddenDamageEventData = K2Node_SetFieldsInStruct_StructOut
+  [285] ShouldOverrideDamageTags = false
+  [296] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [342] goto @558
+  [347] ModifiedDamageEventData = false
+  [358] OverriddenDamageEventData = DamageEventData{EX_ArrayConst(InnerProperty={'Path': ['PreMitigationDamages', 'PreMitigationDamages'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, EX_ArrayConst(InnerProperty={'Path': ['Multipliers', 'Multipliers'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['ResistanceDeltas', 'ResistanceDeltas'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['PostResistDamages', 'PostResistDamages'], 'ResolvedOwner': {'ObjectName': "Class'DamageEventData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0}
+  [501] ShouldOverrideDamageTags = false
+  [512] OverriddenDamageTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [558] return nothing
+  [560] end
+
+=== ExecuteUbergraph_behemoth_flee_timer_buff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [30] if !(CallFunc_HasAuthority_ReturnValue) goto @675
+  [44] K2Node_CreateDelegate_OutputDelegate = bind(self.StartFlee)
+  [67] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [96] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.EndTimerData.StartTimestamp)
+  [134] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [180] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.EndTimerData.Duration)
+  [218] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [264] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [293] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [350] PrintString(self, 'Set up Flee', true, true, LinearColor{1.0, 0.09369, 0.886282, 1.0}, 5.0, 'None')
+  [428] goto @675
+  [433] PrintString(self, 'Start Flee', true, true, LinearColor{1.0, 0.09369, 0.886282, 1.0}, 5.0, 'None')
+  [510] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [530] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [566] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [595] if !(K2Node_DynamicCast_bSuccess) goto @664
+  [609] K2Node_DynamicCast_AsBehemoth_Interface.TrySetState_interface(5, 0, CallFunc_TrySetState_interface_Success)
+  [659] goto @675
+  [664] CallFunc_TrySetState_interface_Success = false
+  [675] return nothing
+  [677] end
+
+=== Start Timer To Flee
+  [0] ExecuteUbergraph_behemoth_flee_timer_buff(10)
+  [15] return nothing
+  [17] end
+
+=== StartFlee
+  [0] ExecuteUbergraph_behemoth_flee_timer_buff(433)
+  [15] return nothing
+  [17] end

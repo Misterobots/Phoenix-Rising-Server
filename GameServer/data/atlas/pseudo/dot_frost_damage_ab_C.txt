@@ -1,0 +1,103 @@
+# dot_frost_damage_ab_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyEffect
+  [0] CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue = MakeOutgoingGameplayEffectSpec(dot_frost_damage_ge_C, 1.0)
+  [42] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.FreezeDuration)
+  [71] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [130] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'ResistanceReducePercent', 0.5)
+  [185] CallFunc_SetEffectContext_ReturnValue = SetEffectContext(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1, EffectContectHandle)
+  [231] CallFunc_AbilityTargetDataFromActor_ReturnValue = AbilityTargetDataFromActor(TargetActor)
+  [268] CallFunc_K2_ApplyGameplayEffectSpecToTarget_ReturnValue = K2_ApplyGameplayEffectSpecToTarget(CallFunc_SetEffectContext_ReturnValue, CallFunc_AbilityTargetDataFromActor_ReturnValue)
+  [314] return nothing
+  [316] end
+
+=== DisableOtherParts
+  [0] push @1240
+  [5] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [33] CallFunc_GetOwner_ReturnValue = CallFunc_GetActorInfo_ReturnValue.OwnerActor.GetOwner()
+  [84] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [120] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [149] if !(K2Node_DynamicCast_bSuccess) pop
+  [159] CallFunc_K2_GetComponentsByClass_ReturnValue = K2Node_DynamicCast_AsArchon_Behemoth.K2_GetComponentsByClass(MonsterPartComponent)
+  [218] LMonsterParts = CallFunc_K2_GetComponentsByClass_ReturnValue
+  [245] Temp_int_Loop_Counter_Variable = 0
+  [268] Temp_int_Array_Index_Variable = 0
+  [291] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(LMonsterParts)
+  [350] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [388] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [398] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [425] push @1166
+  [430] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [458] Default__KismetArrayLibrary.Array_Get(LMonsterParts, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [517] CallFunc_NotEqual_ObjectObject_ReturnValue = NotEqual_ObjectObject(CallFunc_Array_Get_Item.self.MonsterPartActor, CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [586] if !(CallFunc_NotEqual_ObjectObject_ReturnValue) pop
+  [596] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [624] Default__KismetArrayLibrary.Array_Get(LMonsterParts, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [683] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'None'}
+  [737] K2Node_MakeStruct_GameplayEventData.Instigator = CallFunc_GetActorInfo_ReturnValue.OwnerActor
+  [774] K2Node_MakeStruct_GameplayEventData.Target = CallFunc_Array_Get_Item.self.MonsterPartActor
+  [824] K2Node_MakeStruct_GameplayEventData.OptionalObject = null
+  [844] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [864] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [905] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [960] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [1015] K2Node_MakeStruct_GameplayEventData.EventMagnitude = 0.0
+  [1047] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [1088] SendGameplayEventToActor(CallFunc_Array_Get_Item.self.MonsterPartActor, GameplayTag{'Event.OnStopFreeze'}, K2Node_MakeStruct_GameplayEventData)
+  [1165] pop
+  [1166] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1208] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1235] goto @291
+  [1240] return nothing
+  [1242] end
+
+=== ExecuteUbergraph_dot_frost_damage_ab
+  [0] goto computed(EntryPoint)
+  [10] return nothing
+  [12] end
+
+=== IsFreezeUser
+  [0] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(Player, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonDamageAttributeSet:FrostPower'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [116] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [145] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [183] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [221] IsFreezeUser = CallFunc_BooleanAND_ReturnValue
+  [240] return nothing
+  [242] end
+
+=== K2_ActivateAbility
+  [0] ExecuteUbergraph_dot_frost_damage_ab(10)
+  [15] return nothing
+  [17] end
+
+=== ScaleFreezeThresholdByFrostWeaponUsers
+  [0] push @778
+  [5] if !(self.FreezeThesholdScaledByFrostPlayerCount) goto @20
+  [19] pop
+  [20] Default__archon_function_library_C.GetPlayerCharacters(true, true, self, CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [68] Temp_int_Loop_Counter_Variable = 0
+  [91] Temp_int_Array_Index_Variable = 0
+  [114] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerCharacters_PlayerCharacters)
+  [173] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [211] if !(CallFunc_Less_IntInt_ReturnValue) goto @455
+  [225] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [252] push @704
+  [257] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [316] IsFreezeUser(CallFunc_Array_Get_Item_1, CallFunc_IsFreezeUser_IsFreezeUser)
+  [348] if !(CallFunc_IsFreezeUser_IsFreezeUser) pop
+  [358] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(FrostWeaponUserCount, 1)
+  [400] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [427] FrostWeaponUserCount = Temp_int_Variable
+  [454] pop
+  [455] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.FreeseThresholdScalePerFrostPlayer)
+  [514] CallFunc_Min_ReturnValue = Min(FrostWeaponUserCount, CallFunc_Array_Length_ReturnValue)
+  [560] Default__KismetArrayLibrary.Array_Get(self.FreeseThresholdScalePerFrostPlayer, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item)
+  [619] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Array_Get_Item, self.FreezeTheshold)
+  [665] self.FreezeTheshold = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [692] self.FreezeThesholdScaledByFrostPlayerCount = true
+  [703] pop
+  [704] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [746] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [773] goto @114
+  [778] return nothing
+  [780] end

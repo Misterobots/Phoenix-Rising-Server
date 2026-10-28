@@ -1,0 +1,38 @@
+# register_zero_health_n_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== DoesActorHaveZeroHealth
+  [0] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(Actor, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [119] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [148] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [186] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [224] bReturnValue = CallFunc_BooleanAND_ReturnValue
+  [243] return nothing
+  [245] end
+
+=== GetNotifyName
+  [0] ReturnValue = 'Authority_RegisterZeroHealth'
+  [48] return ReturnValue
+  [58] end
+
+=== Received_Notify
+  [0] push @326
+  [5] push @299
+  [10] push @208
+  [15] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [57] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue)
+  [86] if !(CallFunc_IsValid_ReturnValue) goto @315
+  [100] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [142] OwningActor = CallFunc_GetOwner_ReturnValue
+  [161] DoesActorHaveZeroHealth(OwningActor, CallFunc_DoesActorHaveZeroHealth_bReturnValue)
+  [193] if !(CallFunc_DoesActorHaveZeroHealth_bReturnValue) goto @315
+  [207] pop
+  [208] CallFunc_HasAuthority_ReturnValue = OwningActor.HasAuthority()
+  [250] if !(CallFunc_HasAuthority_ReturnValue) goto @283
+  [264] TryStartBleedout(OwningActor)
+  [283] ReturnValue = false
+  [294] goto @326
+  [299] ReturnValue = true
+  [310] goto @326
+  [315] ReturnValue = false
+  [326] return ReturnValue
+  [336] end

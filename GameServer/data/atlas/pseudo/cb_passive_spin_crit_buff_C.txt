@@ -1,0 +1,119 @@
+# cb_passive_spin_crit_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== BeginCritDeactivation
+  [0] ExecuteUbergraph_cb_passive_spin_crit_buff(1313)
+  [15] return nothing
+  [17] end
+
+=== DeactivateCrit
+  [0] ExecuteUbergraph_cb_passive_spin_crit_buff(1441)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_cb_passive_spin_crit_buff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_HasTag_ReturnValue_4 = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.ChainBlades.SwingingBlades'}, false)
+  [67] if !(CallFunc_HasTag_ReturnValue_4) goto @100
+  [81] BeginCritDeactivation()
+  [95] goto @2393
+  [100] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.Weapon.WeaponImpact'}, false)
+  [157] CallFunc_HasTag_ReturnValue_1 = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.ChainBlades.SwingingBlades'}, false)
+  [214] CallFunc_HasTag_ReturnValue_2 = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.ChainBlades.BlenderAttack'}, false)
+  [271] CallFunc_HasTag_ReturnValue_3 = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.ChainBlades.RangedAttack'}, false)
+  [328] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_HasTag_ReturnValue_3, CallFunc_HasTag_ReturnValue_2)
+  [366] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_BooleanOR_ReturnValue, CallFunc_HasTag_ReturnValue_1)
+  [404] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BooleanOR_ReturnValue_1)
+  [433] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_HasTag_ReturnValue)
+  [471] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(self.CritActive)
+  [500] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue_1)
+  [538] if !(CallFunc_BooleanAND_ReturnValue_1) goto @2393
+  [552] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [573] CallFunc_RandomInteger_ReturnValue = RandomInteger(101)
+  [606] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_RandomInteger_ReturnValue, 6)
+  [640] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_Less_IntInt_ReturnValue, CallFunc_IsServer_ReturnValue)
+  [678] if !(CallFunc_BooleanAND_ReturnValue_2) goto @2393
+  [692] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [712] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [741] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [761] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(cb_passive_spin_crit_ico_ge_C, 0.0, GameplayEffectContextHandle{})
+  [843] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [872] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.BP_ApplyGameplayEffectSpecToTarget(CallFunc_MakeOutgoingSpec_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [940] self.CritHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [967] CallFunc_IsValid_ReturnValue = IsValid(self.ConditionalAttackModifierComponent)
+  [996] if !(CallFunc_IsValid_ReturnValue) goto @1208
+  [1010] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AttackModifiersWhileCritActive)
+  [1069] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [1103] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1208
+  [1117] CallFunc_AddModifiers_ReturnValue = self.ConditionalAttackModifierComponent.AddModifiers(self.AttackModifiersWhileCritActive, 0)
+  [1181] self.AttackModifierHandle = CallFunc_AddModifiers_ReturnValue
+  [1208] self.CritActive = true
+  [1219] VFXAudio()
+  [1233] goto @2393
+  [1238] CallFunc_GetComponentByClass_ReturnValue = self.ArchonCharacter.GetComponentByClass(ArchonConditionalAttackModifierComponent)
+  [1289] self.ConditionalAttackModifierComponent = CallFunc_GetComponentByClass_ReturnValue
+  [1308] goto @2393
+  [1313] K2_ClearAndInvalidateTimerHandle(self, self.CritTimer)
+  [1333] K2Node_CreateDelegate_OutputDelegate = bind(self.DeactivateCrit)
+  [1356] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.75, false, 0.0, 0.0)
+  [1409] self.CritTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [1436] goto @2393
+  [1441] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.CritHandle)
+  [1470] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @1696
+  [1484] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1504] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [1533] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_2.RemoveActiveGameplayEffect(self.CritHandle, -1)
+  [1593] CallFunc_IsValid_Guid_ReturnValue = IsValid_Guid(self.AttackModifierHandle)
+  [1622] if !(CallFunc_IsValid_Guid_ReturnValue) goto @1696
+  [1636] self.ConditionalAttackModifierComponent.RemoveModifiers(self.AttackModifierHandle)
+  [1677] Invalidate_Guid(self.AttackModifierHandle)
+  [1696] self.CritActive = false
+  [1707] goto @2393
+  [1712] MulticastOnAdded()
+  [1722] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [1742] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_5)
+  [1778] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [1807] if !(K2Node_DynamicCast_bSuccess_1) goto @2393
+  [1821] self.ArchonCharacter = K2Node_DynamicCast_AsArchon_Character_1
+  [1840] CallFunc_GetComponentByClass_ReturnValue_1 = self.ArchonCharacter.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [1891] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnPostDamageDealt)
+  [1914] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [1955] goto @1238
+  [1960] goto @1712
+  [1965] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [1985] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_3)
+  [2021] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [2050] if !(K2Node_DynamicCast_bSuccess) goto @2393
+  [2064] Default__vfx_function_library_C.PersistentWeaponMeshEffect(K2Node_DynamicCast_AsArchon_Character, null, tungsten_weapon_passive_buff_p, 'None', self, CallFunc_PersistentWeaponMeshEffect_WeaponEffect, CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft, CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight)
+  [2160] Default__vfx_function_library_C.SetElementalParticleColor(K2Node_DynamicCast_AsArchon_Character, CallFunc_PersistentWeaponMeshEffect_WeaponEffectLeft, self)
+  [2215] Default__vfx_function_library_C.SetElementalParticleColor(K2Node_DynamicCast_AsArchon_Character, CallFunc_PersistentWeaponMeshEffect_WeaponEffectRight, self)
+  [2270] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [2290] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_CB_Serrated_Blades, CallFunc_GetBuffOwner_ReturnValue_4, 0, Temp_delegate_Variable, false)
+  [2373] goto @2393
+  [2378] ReceiveDestroyed()
+  [2388] goto @1441
+  [2393] return nothing
+  [2395] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_cb_passive_spin_crit_buff(1960)
+  [15] return nothing
+  [17] end
+
+=== OnPostDamageDealt
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_cb_passive_spin_crit_buff(10)
+  [87] return nothing
+  [89] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_cb_passive_spin_crit_buff(2378)
+  [15] return nothing
+  [17] end
+
+=== VFXAudio
+  [0] ExecuteUbergraph_cb_passive_spin_crit_buff(1965)
+  [15] return nothing
+  [17] end

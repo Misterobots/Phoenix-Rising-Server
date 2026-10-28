@@ -1,0 +1,124 @@
+{
+ "name": "eqs_host_spitter_spawn",
+ "package": "Archon/Content/Monsters/tp/host/ai/eqs_host_spitter_spawn",
+ "type": "EnvQuery",
+ "refs": [
+  "eqcontext_all_live_players_predicted_1s_C",
+  "eqcontext_host_spitters_owned_by_self_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_0": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MinDistanceFromQuerier"
+   }
+  },
+  "AIDataProvider_QueryParams_1": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MaxDistanceFromQuerier"
+   }
+  },
+  "eqs_host_spitter_spawn": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_random_navtrace_nearby",
+    "Options": [
+     "@EnvQueryOption_1"
+    ]
+   }
+  },
+  "EnvQueryGenerator_OnCircle_0": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "NumberOfPoints": {
+     "DefaultValue": 20
+    },
+    "PointOnCircleSpacingMethod": "EPointOnCircleSpacingMethod::ByNumberOfPoints",
+    "bCenterCircleArcCorrectly": true,
+    "TraceData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_1": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_0",
+    "Tests": [
+     "@EnvQueryTest_Distance_0",
+     "@EnvQueryTest_Distance_1",
+     "@EnvQueryTest_Distance_2"
+    ]
+   }
+  },
+  "EnvQueryTest_Distance_0": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "FloatValueMin": {
+     "DataBinding": "@AIDataProvider_QueryParams_0",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 9999999.0,
+     "DataBinding": "@AIDataProvider_QueryParams_1",
+     "DataField": "FloatValue"
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_1": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass eqcontext_host_spitters_owned_by_self_C",
+    "TestOrder": 1,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "ClampMinType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ClampMaxType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ScoreClampMax": {
+     "DefaultValue": 3000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "ReferenceValue": {
+     "DefaultValue": 800.0
+    },
+    "bDefineReferenceValue": true,
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_2": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass eqcontext_all_live_players_predicted_1s_C",
+    "TestOrder": 2,
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "ClampMinType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ClampMaxType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ScoreClampMax": {
+     "DefaultValue": 1000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": 0.5
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

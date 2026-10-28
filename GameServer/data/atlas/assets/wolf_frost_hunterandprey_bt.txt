@@ -1,0 +1,24 @@
+wolf_frost_hunterandprey_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Hunter and Prey"]
+  Sequence
+    [if ForceSuccess]
+    1) Sequence
+      1) RunEQSQuery "Run EQS Query: get space near patrol"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_lerawr_get_space_pos", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 4000.0, "BBKey": "bb.None"}, {"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "GoalDistance", "ParamType": "EAIParamType::Float", "Value": 2000.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+      2) set_blackboard_key_bttask  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+    2) PerformActionClass  (ActionClass=BlueprintGeneratedClass wolf_frost_hunterandprey_atk_C)
+    3) Sequence "Charging"
+      1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 8000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+      2) RunBehavior "Run Behavior: Run and Pounce"  (BehaviorAsset=BehaviorTree wolf_frost_runandpounce_bt)
+      3) Sequence
+        1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass wolf_frost_jumpslam_atk_C", "BlueprintGeneratedClass wolf_frost_tailswipe_l_atk_C", "BlueprintGeneratedClass wolf_frost_tailswipe_r_atk_C"], ChosenActionKey=bb.ChosenAttack)
+        2) Selector
+          [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass wolf_frost_jumpslam_atk_C, bShowPropertyDetails=false)]
+          1) BehemothAction "Jump Slam"  (Montage=AnimMontage b_wolf_frost_jumpslam_atk_mot, bShowPropertyDetails=false)
+          [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass wolf_frost_tailswipe_l_atk_C, bShowPropertyDetails=false)]
+          2) BehemothAction "Tail swipe Left"  (Montage=AnimMontage b_wolf_frost_tailswipe_l_atk_mot, bShowPropertyDetails=false)
+          [if BTDeco_CheckChosenAction  (ActionClass=BlueprintGeneratedClass wolf_frost_tailswipe_r_atk_C, bShowPropertyDetails=false)]
+          3) BehemothAction "Tail swipe right"  (Montage=AnimMontage b_wolf_frost_tailswipe_r_atk_mot, bShowPropertyDetails=false)
+      4) Wait  (WaitTime=1)

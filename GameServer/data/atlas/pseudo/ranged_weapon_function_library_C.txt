@@ -1,0 +1,28 @@
+# ranged_weapon_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthOnHitRangedTarget
+  [0] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(HitActor)
+  [29] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [58] if !(CallFunc_IsValid_ReturnValue) goto @176
+  [72] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(HitActor)
+  [101] CallFunc_HasAnyMatchingGameplayTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasAnyMatchingGameplayTags(TagsToIgnore)
+  [157] if !(CallFunc_HasAnyMatchingGameplayTags_ReturnValue) goto @176
+  [171] goto @872
+  [176] K2Node_DynamicCast_AsDamage_Interface = cast<damage_interface_C>(InstigatorActor)
+  [212] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsDamage_Interface)
+  [241] if !(K2Node_DynamicCast_bSuccess) goto @690
+  [255] K2Node_DynamicCast_AsDamage_Interface.GetDamageRow(DamageRowName, CallFunc_GetDamageRow_DamageRow, CallFunc_GetDamageRow_DamageScale, CallFunc_GetDamageRow_RowFound)
+  [328] if !(CallFunc_GetDamageRow_RowFound) goto @872
+  [342] CallFunc_GetController_ReturnValue = InstigatorActor.self.Instigator.GetController()
+  [406] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_GetDamageRow_DamageScale, DamageScale)
+  [452] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = AttackGUID
+  [488] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = CallFunc_GetDamageRow_DamageRow.AssetTags
+  [533] CallFunc_ApplyArchonPointDamageFromTable_DamageScale_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [562] Default__ArchonGameplayStatics.ApplyArchonPointDamageFromTable(HitActor, CallFunc_GetDamageRow_DamageRow, ImpactDirection, HitResult, CallFunc_GetController_ReturnValue, DamageCauser, DamageType_Cutting_C, K2Node_MakeStruct_ArchonExtendedDamageInfo, HitComponent, CallFunc_ApplyArchonPointDamageFromTable_DamageScale_ImplicitCast, null)
+  [685] goto @872
+  [690] CallFunc_GetDamageRow_DamageRow = DamageTableData{0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0, null, null, EX_ArrayConst(InnerProperty={'Path': ['RemoveBuffStacksList', 'RemoveBuffStacksList'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AssetTags', 'AssetTags'], 'ResolvedOwner': {'ObjectName': "Class'DamageTableData'", 'ObjectPath': '/Script/Archon'}},Values=)}
+  [829] CallFunc_GetDamageRow_DamageScale = 0.0
+  [856] CallFunc_GetDamageRow_RowFound = false
+  [867] goto @328
+  [872] return nothing
+  [874] end

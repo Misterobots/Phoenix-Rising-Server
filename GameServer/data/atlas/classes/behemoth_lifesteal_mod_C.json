@@ -1,0 +1,313 @@
+{
+ "name": "behemoth_lifesteal_mod_C",
+ "kind": "blueprint",
+ "parents": [
+  "base_hunt_modifier_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Percent Max Health to Heal",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L Heal Amount",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L Per Part Health",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LMonsterParts",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ExecuteUbergraph_behemoth_lifesteal_mod",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_Event_DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    },
+    {
+     "name": "CallFunc_K2_GetComponentsByClass_ReturnValue",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 120,
+   "reads": [
+    "Instigator",
+    "L Heal Amount",
+    "L Per Part Health",
+    "LMonsterParts",
+    "MonsterPartActor",
+    "OnHitWithPhysicalAttack",
+    "Percent Max Health to Heal"
+   ],
+   "sets": [
+    "L Heal Amount",
+    "L Per Part Health",
+    "LMonsterParts"
+   ],
+   "calls": [
+    "AIBlueprintHelperLibrary.GetBlackboard",
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToTarget",
+    "Actor.GetComponentByClass",
+    "Actor.K2_GetComponentsByClass",
+    "Actor.K2_GetRootComponent",
+    "ActorComponent.GetOwner",
+    "ArchonBuff.GetBuffOwner",
+    "BlackboardComponent.GetValueAsFloat",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetMesh",
+    "GetMissingHealth",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_DoubleToString",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.MakeLiteralName",
+    "KismetSystemLibrary.PrintString",
+    "MakeOutgoingSpec",
+    "SpawnParticle",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass behemoth_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass heal_by_amount_ge_C",
+    "ParticleSystem heal_behemoth_p"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_lifesteal_mod_C.ExecuteUbergraph_behemoth_lifesteal_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDamageGiven",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageReceived",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageReceiver",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_lifesteal_mod_C.ExecuteUbergraph_behemoth_lifesteal_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnHitPlayer",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageInfo",
+     "type": "StructProperty<ArchonAbilityDamageInfo>"
+    },
+    {
+     "name": "DamageDealt",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_lifesteal_mod_C.ExecuteUbergraph_behemoth_lifesteal_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_lifesteal_mod_C.ExecuteUbergraph_behemoth_lifesteal_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnParticle",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewParam",
+     "type": "ObjectProperty<MeshComponent>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "behemoth_lifesteal_mod_C.ExecuteUbergraph_behemoth_lifesteal_mod"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/buffs/HuntModifiers/behemoth_lifesteal_mod",
+ "pseudo_file": "pseudo/behemoth_lifesteal_mod_C.txt",
+ "game_data": {}
+}

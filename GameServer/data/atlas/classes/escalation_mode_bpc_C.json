@@ -1,0 +1,1028 @@
+{
+ "name": "escalation_mode_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "EscalationGameModeComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "sequence_markers",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "current_sequence_marker",
+   "type": "ObjectProperty<escalation_sequence_marker_bpc_C>",
+   "bp_type": "ObjectProperty<escalation_sequence_marker_bpc_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayersHandledEoH",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "player_to_sequence_marker_map",
+   "type": "MapProperty",
+   "bp_type": "MapProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Session Start Time",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerAdvancedEscalation",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PlayerRelicChosen",
+   "type": "MulticastInlineDelegateProperty",
+   "bp_type": "MulticastInlineDelegateProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AdvanceIslandSequence",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [
+    "current_sequence_marker",
+    "forward_traversal_actor",
+    "next_marker"
+   ],
+   "sets": [
+    "current_sequence_marker"
+   ],
+   "calls": [
+    "AuthSetVentActive",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AdvanceIslandSequenceForPlayer",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerController",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "PlayerAdvancedEscalation",
+    "current_sequence_marker"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonPlayerController.GetPlayerEscalationComponent",
+    "AuthActivateEscalationVentPlatform",
+    "AuthSequenceMoveNext",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthGameStateChanged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "NewState",
+     "type": "EnumProperty<EEscalationGameModeState>"
+    },
+    {
+     "name": "StateTransitionType",
+     "type": "EnumProperty<EStateTransitionType>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BuildIslandSequence",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CallFunc_Get_All_Archon_Player_Controllers_Archon_Player_Controllers",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Protected",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 68,
+   "reads": [
+    "sequence_index",
+    "sequence_markers"
+   ],
+   "sets": [
+    "current_sequence_marker"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonPlayerController.GetPlayerEscalationComponent",
+    "AuthLinkSequenceMarker",
+    "GameplayStatics.GetAllActorsOfClass",
+    "Get All Archon Player Controllers",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Set",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass BP_PatrolCenterPoint_C",
+    "BlueprintGeneratedClass escalation_sequence_marker_bpc_C"
+   ]
+  },
+  {
+   "name": "DetermineRoundLocation",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "RoundIndex",
+     "type": "IntProperty"
+    },
+    {
+     "name": "EncounterDefintion",
+     "type": "StructProperty<EncounterDefinition>"
+    },
+    {
+     "name": "RoundTransform",
+     "type": "StructProperty<Transform>"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetTransform_ReturnValue",
+     "type": "StructProperty<Transform>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 83,
+   "reads": [
+    "ConnectedAetherVent",
+    "sequence_markers"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GetDistanceSqr",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_IsValidIndex",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakTransform",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.Divide_VectorFloat",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeTransform",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass BP_PatrolCenterPoint_C"
+   ]
+  },
+  {
+   "name": "Event_OnEscalationCrystalInteracted",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "User",
+     "type": "ObjectProperty<ArchonInteractionUserComponent>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_escalation_mode_bpc",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "CallFunc_Map_Keys_Keys",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_Event_Player_1",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "K2Node_Event_Modifiers",
+     "type": "MapProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_CustomEvent_GrantedItem",
+     "type": "StructProperty<GiveItemInfo>"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedBehemoths_SpawnedBehemoths",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerStates",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_Event_Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 284,
+   "reads": [
+    "EscalationGameStateComponent",
+    "EscalationMatchReport",
+    "LastEncounterGenerationResults",
+    "MatchReport",
+    "OnHuntEnded",
+    "OnItemWithCustomDataReceived",
+    "OnRoundStarted",
+    "OnUserCompletedInteraction",
+    "PlayerArray",
+    "PlayerState",
+    "Session Start Time",
+    "Success",
+    "base_interactioncode_component",
+    "current_sequence_marker",
+    "escalation_gamestate_bpc",
+    "sequence_buff_gatherable"
+   ],
+   "sets": [
+    "Danger",
+    "Session Start Time"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.GetOwner",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ActorIsAlive",
+    "AdvanceIslandSequence",
+    "ArchonGameplayStatics.GetArchonGameState",
+    "ArchonGameplayStatics.GetPlayerStatesAndCharacters",
+    "ArchonPlayerController.GetPlayerEscalationComponent",
+    "AuthDissolveBehemoth",
+    "AuthEnableInteractable",
+    "AuthTryShowManualLootNotification",
+    "BlueprintMapLibrary.Map_Find",
+    "BlueprintMapLibrary.Map_Keys",
+    "BlueprintTypeConversions.ConvertMapType",
+    "BuildIslandSequence",
+    "EscalationGameModeComponent.GetCapstoneBehemothName",
+    "EscalationGameModeComponent.OnPlayerActivatedCrystal",
+    "EscalationGameStateComponent.GetCurrentExperienceRewards",
+    "EscalationGameStateComponent.GetCurrentRound",
+    "EscalationMatchReport.GetRoundReport",
+    "GameplayStatics.GetAllActorsOfClass",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetGameState",
+    "GetDangerLevel",
+    "GetSpawnedBehemoths",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetMathLibrary.Round",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetStringLibrary.EqualEqual_StriStri",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnEscalationCrystalInteracted",
+    "OnEventEndingBegin",
+    "OnRelicSelected",
+    "OverrideAllBreakPartLoot",
+    "Pawn.GetController",
+    "PlayerEscalationComponent.GrantEscalationExperience",
+    "RefreshPlayerSeasonalPowerImpl",
+    "ReviveFromBleedOut",
+    "StartEndOfMatchCeremony",
+    "StartSequenceTransition",
+    "setDanger"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass bpgm_loot_override_bpc_C"
+   ]
+  },
+  {
+   "name": "GrantEndOfRoundRewards",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 29,
+   "reads": [
+    "EscalationGameStateComponent"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonPlayerController.GetPlayerEscalationComponent",
+    "AuthTryShowManualLootNotification",
+    "EscalationGameModeComponent.OnPlayerActivatedCrystal",
+    "EscalationGameStateComponent.GetExperienceRewardsForRound",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Round",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.IsValid",
+    "PlayerEscalationComponent.GetRoundForCrystalReward",
+    "PlayerEscalationComponent.GrantEscalationExperience",
+    "PlayerEscalationComponent.GrantOrbs",
+    "PlayerEscalationComponent.IsMaxLevel"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnEndOfMatchReportGenerated",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_GetAllActorsOfClass_OutActors",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 25,
+   "reads": [
+    "MatchReport",
+    "Success"
+   ],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.GetArchonGameState",
+    "AuthDisableCrystalAtEndOfHunt",
+    "GameplayStatics.GetAllActorsOfClass",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetSystemLibrary.K2_SetTimer"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_buff_gatherable_bp_C"
+   ]
+  },
+  {
+   "name": "OnEndOfMatchTimeout",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 43,
+   "reads": [
+    "HuntMatchReport",
+    "MatchReport",
+    "PlayerArray",
+    "PlayerMatchReport",
+    "PlayersHandledEoH"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "ActorComponent.GetOwner",
+    "GameplayStatics.GetGameState",
+    "GrantEndOfRoundRewards",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "MatchEndedForPlayer"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnEscalationCrystalInteracted",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerController",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 36,
+   "reads": [
+    "CurrentState",
+    "EscalationGameStateComponent",
+    "HuntMatchReport",
+    "MatchReport",
+    "PlayerMatchReport",
+    "PlayerState",
+    "PlayersHandledEoH"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ActorComponent.GetOwner",
+    "Client_OnEscalationCrystalInteracted",
+    "EscalationGameModeComponent.SpawnRelics",
+    "GameplayStatics.GetGameState",
+    "GrantEndOfRoundRewards",
+    "KismetArrayLibrary.Array_AddUnique",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "MatchEndedForPlayer"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_player_state_bpc_C"
+   ]
+  },
+  {
+   "name": "OnEventEndingBegin",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnHuntEnded_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "bSuccess",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnItemWithCustomDataReceived",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "GrantedItem",
+     "type": "StructProperty<GiveItemInfo>"
+    },
+    {
+     "name": "ReceivingPlayerState",
+     "type": "ObjectProperty<ArchonPlayerState>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRelicSelected",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PlayerController",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "AdvancesEscalation",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [
+    "EscalationGameStateComponent",
+    "PlayerRelicChosen",
+    "PlayerState"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "AdvanceIslandSequenceForPlayer",
+    "Client_OnRelicSelected",
+    "EscalationGameStateComponent.GetCurrentRound",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_player_state_bpc_C"
+   ]
+  },
+  {
+   "name": "OnRoundStarted_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Round",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayerAdvancedEscalation__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CurrentMarker",
+     "type": "ObjectProperty<escalation_sequence_marker_bpc_C>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "PlayerRelicChosen__DelegateSignature",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "RoundChosenFrom",
+     "type": "IntProperty"
+    },
+    {
+     "name": "PlayerState",
+     "type": "ObjectProperty<PlayerState>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshPlayerSeasonalPower",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "Modifiers",
+     "type": "MapProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "RefreshPlayerSeasonalPowerImpl",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "Modifiers",
+     "type": "MapProperty"
+    },
+    {
+     "name": "CallFunc_Map_Keys_Keys",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 43,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.AssignSetByCallerMagnitude",
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemComponent.BP_ApplyGameplayEffectSpecToSelf",
+    "AbilitySystemComponent.RemoveActiveEffectsWithTags",
+    "BlueprintMapLibrary.Map_Find",
+    "BlueprintMapLibrary.Map_Keys",
+    "BlueprintMapLibrary.Map_Length",
+    "Controller.K2_GetPawn",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "MakeOutgoingSpec"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass escalation_seasonal_power_ge_C"
+   ]
+  },
+  {
+   "name": "RelicSelectedBP",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "ObjectProperty<ArchonPlayerController>"
+    },
+    {
+     "name": "bAdvancesEscalation",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartSequenceTransition",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_mode_bpc_C.ExecuteUbergraph_escalation_mode_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/gamemodes/escalation/base_blueprints/escalation_mode_bpc",
+ "pseudo_file": "pseudo/escalation_mode_bpc_C.txt",
+ "game_data": {}
+}

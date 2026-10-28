@@ -1,0 +1,58 @@
+# glitter_encased_debuff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_glitter_encased_debuff
+  [0] goto computed(EntryPoint)
+  [10] OnAdded()
+  [20] CallFunc_IsValid_ReturnValue = IsValid(self.EncasedObject)
+  [49] if !(CallFunc_IsValid_ReturnValue) goto @373
+  [63] self.EncasedObject.SetActorScale3D(self.EncasedObjectScale)
+  [104] CallFunc_K2_GetActorLocation_ReturnValue = self.EncasedObject.K2_GetActorLocation()
+  [154] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [200] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z, self.ZOffset)
+  [246] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_Add_DoubleDouble_ReturnValue)
+  [301] CallFunc_K2_SetActorLocation_ReturnValue = self.EncasedObject.K2_SetActorLocation(CallFunc_MakeVector_ReturnValue, false, CallFunc_K2_SetActorLocation_SweepHitResult, true)
+  [363] goto @373
+  [368] goto @10
+  [373] return nothing
+  [375] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_glitter_encased_debuff(368)
+  [15] return nothing
+  [17] end
+
+=== ShouldSpawnEncasedObject
+  [0] push @807
+  [5] BuffOwnerLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [48] array{}
+  [59] GetAllActorsOfClass(self, encased_object_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [88] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [147] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [181] if !(CallFunc_Greater_IntInt_ReturnValue) goto @298
+  [195] push @314
+  [200] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [220] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [270] BuffOwnerLocation = CallFunc_K2_GetActorLocation_ReturnValue
+  [297] pop
+  [298] Result = true
+  [309] goto @807
+  [314] Temp_int_Loop_Counter_Variable = 0
+  [337] Temp_int_Array_Index_Variable = 0
+  [360] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [419] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [457] if !(CallFunc_Less_IntInt_ReturnValue) goto @796
+  [471] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [498] push @722
+  [503] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [562] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_Array_Get_Item.K2_GetActorLocation()
+  [612] CallFunc_Vector_Distance_ReturnValue = Vector_Distance(CallFunc_K2_GetActorLocation_ReturnValue_1, BuffOwnerLocation)
+  [658] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Vector_Distance_ReturnValue, self.EncasedClearanceArea)
+  [696] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [706] Result = false
+  [717] goto @807
+  [722] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [764] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [791] goto @360
+  [796] Result = true
+  [807] return nothing
+  [809] end

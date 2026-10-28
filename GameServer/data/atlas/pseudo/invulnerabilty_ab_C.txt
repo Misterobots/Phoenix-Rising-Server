@@ -1,0 +1,35 @@
+# invulnerabilty_ab_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ExecuteUbergraph_invulnerabilty_ab
+  [0] goto computed(EntryPoint)
+  [10] K2_EndAbility()
+  [24] goto @878
+  [29] GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess = NotEqual_TagTag(K2Node_Event_EventData.EventTag, 'Abilities.StoptInvulnerability')
+  [99] if !(GameplayTagsK2Node_SwitchGameplayTag_CmpSuccess) goto @849
+  [113] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [141] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetActorInfo_ReturnValue.OwnerActor)
+  [179] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:EvadeInvulnerabilityMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [315] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_EventData.EventMagnitude)
+  [353] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [382] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [428] CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue = MakeOutgoingGameplayEffectSpec(invulnerabilty_duration_ge_C, 1.0)
+  [470] CallFunc_MakeLiteralGameplayTag_ReturnValue = MakeLiteralGameplayTag(GameplayTag{'Abilities.StartInvulnerabilityDodge'})
+  [525] CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue_1 = MakeOutgoingGameplayEffectSpec(invulnerabilty_dodge_duration_ge_C, 1.0)
+  [567] CallFunc_MatchesTag_ReturnValue = MatchesTag(K2Node_Event_EventData.EventTag, CallFunc_MakeLiteralGameplayTag_ReturnValue, false)
+  [615] Temp_bool_Variable = CallFunc_MatchesTag_ReturnValue
+  [634] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [663] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(switch(Temp_bool_Variable){false: CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue, true: CallFunc_MakeOutgoingGameplayEffectSpec_ReturnValue_1, default: K2Node_Select_Default}, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [766] CallFunc_K2_ApplyGameplayEffectSpecToOwner_ReturnValue = K2_ApplyGameplayEffectSpecToOwner(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [803] self.LastInvulnGEHandle = CallFunc_K2_ApplyGameplayEffectSpecToOwner_ReturnValue
+  [830] K2_EndAbility()
+  [844] goto @878
+  [849] BP_RemoveGameplayEffectFromOwnerWithHandle(self.LastInvulnGEHandle, -1)
+  [873] goto @10
+  [878] return nothing
+  [880] end
+
+=== K2_ActivateAbilityFromEvent
+  [0] frame.K2Node_Event_EventData = EventData
+  [18] ExecuteUbergraph_invulnerabilty_ab(29)
+  [33] return nothing
+  [35] end

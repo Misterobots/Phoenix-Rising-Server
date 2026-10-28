@@ -1,0 +1,59 @@
+lerawr_prowl_alert_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  Sequence
+    [if ForceSuccess]
+    1) Sequence
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.CurrentPatrolPoint, MinDistance=1500, MaxDistance=99999)]
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      1) Selector
+        [if Blackboard  (AttackTarget is Is Set)]
+        1) Sequence
+          1) store_current_position_bttask  (WhereToStoreResult=bb.PounceLocation, OtherActorBlackboardName=CurrentPatrolPoint)
+          2) RunBehavior "Run Behavior: Move to and face"  (BehaviorAsset=BehaviorTree lerawr_movetoandface_bt)
+        2) MoveTo  (AcceptableRadius=200, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.CurrentPatrolPoint)
+    [if ForceSuccess]
+    [if Blackboard  (AttackTarget is Is Set)]
+    2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace, MinAngleToTriggerPivot=45)
+    [if ForceSuccess]
+    3) Sequence
+      1) set_blackboard_key_bttask "Set ProwlLookAtTarget"  (ResultKey=bb.ProwlLookatTarget, DataType=Object, SourceData={"BlackboardKeyName": "AttackTarget"}, bShowPropertyDetails=false)
+      [if ForceSuccess]
+      2) Sequence
+        1) RunEQSQuery "Run EQS Query: Find Nearest Player"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player"}, BlackboardKey=bb.TargetActor)
+        2) bttask_set_boolean  (Key=bb.ReadyToJump)
+        3) Sequence
+          {service RunEQS "Update Nearest Player"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player"}, BlackboardKey=bb.TargetActor, Interval=0.33)}
+          1) Selector
+            {service behemoth_ak_event_btservice  (EventsOnActivate=["AkAudioEvent Play_VO_Mnstr_AQ_Generic_Growl"], EventsOnDeactivate=["AkAudioEvent Stop_VO_Mnstr_AQ_Generic_Growl"])}
+            1) SimpleParallel
+              [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfActor, ConeDirection=bb.LeftPoint, Observed=bb.CurrentPatrolPoint)]
+              1) LoopMontageUntil "Looping strafe left"  (Montage=AnimMontage b_leRawr_atk_strafe_left_01_mot, LoopingSection=Loop, TimeLimit=3, CollisionTest_Length=350, CollisionTestOrientation={"Pitch": 0.0, "Yaw": -70.0, "Roll": 0.0}, BlackboardComparisonSection={"BlackboardComparison": {"LeftSideBlackboardVarName": "ReadyToJump"}, "Name": "to_jump"}, bShowPropertyDetails=false)
+              2) Sequence
+                [if ForceSuccess]
+                1) RunEQSQuery "Run EQS Query: ProwlLookAtTarget"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player"}, BlackboardKey=bb.ProwlLookatTarget)
+                [if ForceSuccess]
+                2) Sequence
+                  [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=600, MaxDistance=1750, PredictTargetHorizFuturePosTime=0.5)]
+                  [if current_target_is_valid_btdeco]
+                  1) set_blackboard_key_bttask  (ResultKey=bb.ReadyToJump, DataType=Bool, SourceData={"ConstantBool": true})
+            2) SimpleParallel
+              [if ConeCheck  (ConeHalfAngle=90, ConeOrigin=bb.SelfActor, ConeDirection=bb.RightPoint, Observed=bb.CurrentPatrolPoint)]
+              1) LoopMontageUntil "Looping Strafe Right"  (Montage=AnimMontage b_leRawr_atk_strafe_right_01_mot, LoopingSection=Loop, TimeLimit=3, CollisionTest_Length=350, CollisionTestOrientation={"Pitch": 0.0, "Yaw": 70.0, "Roll": 0.0}, BlackboardComparisonSection={"BlackboardComparison": {"LeftSideBlackboardVarName": "ReadyToJump"}, "Name": "to_jump"}, bShowPropertyDetails=false)
+              2) Sequence
+                [if ForceSuccess]
+                1) RunEQSQuery "Run EQS Query: ProwlLookAtTarget"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearest_live_player"}, BlackboardKey=bb.ProwlLookatTarget)
+                [if ForceSuccess]
+                2) Sequence
+                  [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=600, MaxDistance=1750, PredictTargetHorizFuturePosTime=0.5)]
+                  [if current_target_is_valid_btdeco]
+                  1) set_blackboard_key_bttask  (ResultKey=bb.ReadyToJump, DataType=Bool, SourceData={"ConstantBool": true})
+      [if Compare_btdeco  (LeftSideKey=bb.LoopUntil_ExitSection, CompareOperator===, CompareType=Name, RightSideData={"ConstantName": "to_jump"})]
+      3) Sequence
+        1) Selector
+          {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+          [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.5)]
+          1) BehemothAction "PounceFwdLeft"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_mot, TriggerCooldownOnSuccess=false)
+          2) BehemothAction "PounceFwdR"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdright_mo, TriggerCooldownOnSuccess=false)

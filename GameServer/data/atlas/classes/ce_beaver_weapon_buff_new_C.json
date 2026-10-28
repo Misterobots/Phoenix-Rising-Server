@@ -1,0 +1,705 @@
+{
+ "name": "ce_beaver_weapon_buff_new_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OwnerMaxHealth",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "IncomingDamageCurve",
+   "type": "ObjectProperty<CurveFloat>",
+   "bp_type": "ObjectProperty<CurveFloat>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageMaxHealthPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BaseTimeUntilEnrage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EnrageTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimerReductionPercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TimerTimeRemaining",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveBuff",
+   "type": "ObjectProperty<ArchonBuff>",
+   "bp_type": "ObjectProperty<ArchonBuff>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BehemothInCombat",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CountdownEffect",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ProcReadyGE",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WarmupVFXTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WarmupVFXState",
+   "type": "ByteProperty<ce_beaver_weapon_warmup_state_enum>",
+   "bp_type": "ByteProperty<ce_beaver_weapon_warmup_state_enum>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WarmupBuffA",
+   "type": "ObjectProperty<ArchonBuff>",
+   "bp_type": "ObjectProperty<ArchonBuff>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Rage VFX",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "WarmupTime",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "Apply Warmup VFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 20,
+   "reads": [
+    "EnrageTimer",
+    "WarmupTime"
+   ],
+   "sets": [
+    "WarmupBuffA"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonBuff.GetBuffOwner",
+    "Check In Combat",
+    "GameplayModifierFunctionLibrary.ApplyBuff",
+    "HasBuff",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "Remove VFX"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_beaver_weapon_warmupa_C"
+   ]
+  },
+  {
+   "name": "Buff Removed",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Check In Combat",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "InCombat",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetCurrentSpawnedBehemoths_CurrentSpawnedBehemoths",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 56,
+   "reads": [
+    "BehemothInCombat"
+   ],
+   "sets": [
+    "BehemothInCombat"
+   ],
+   "calls": [
+    "Actor.GetDistanceTo",
+    "ArchonBuff.GetBuffOwner",
+    "BehemothInState",
+    "GameplayStatics.GetGameMode",
+    "GetCurrentSpawnedBehemoths",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DamageTakenDelegate_event",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Damage",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "DamageType",
+     "type": "ObjectProperty<DamageType>"
+    },
+    {
+     "name": "InstigatedBy",
+     "type": "ObjectProperty<Controller>"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DealtDamage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EnrageEvent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_beaver_weapon_buff_new",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "Temp_struct_Variable",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "K2Node_CustomEvent_DamageType",
+     "type": "ObjectProperty<DamageType>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 143,
+   "reads": [
+    "BaseTimeUntilEnrage",
+    "CellEffectMagnitude",
+    "CountdownEffect",
+    "DamageMaxHealthPercent",
+    "EnrageTimer",
+    "IncomingDamageCurve",
+    "OnDestroyed",
+    "OnPostMitigationDealtAnyDamage",
+    "OnTakeAnyDamage",
+    "OwnerAbilitySystemComponent",
+    "OwnerMaxHealth",
+    "PlayerKnockedout",
+    "TimerReductionPercent",
+    "TimerTimeRemaining",
+    "WarmupVFXTimer"
+   ],
+   "sets": [
+    "DamageMaxHealthPercent",
+    "OwnerMaxHealth",
+    "TimerReductionPercent",
+    "TimerTimeRemaining",
+    "WarmupVFXTimer"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "Actor.GetInstigator",
+    "Apply Warmup VFX",
+    "ArchonBuff.GetBuffOwner",
+    "Check In Combat",
+    "CurveFloat.GetFloatValue",
+    "GameplayModifierFunctionLibrary.ApplyBuff",
+    "GameplayModifierFunctionLibrary.RemoveGameplayEffect",
+    "Get Global Event Dispatcher",
+    "GetArchonBuffableComponent",
+    "GetBleedOutState",
+    "GetPlayerInterface",
+    "HasBuff",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.FClamp",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "KismetSystemLibrary.K2_SetTimer",
+    "Remove VFX",
+    "RemoveBuffByClass",
+    "Set Enrage Timer",
+    "SetMagnitudeFromCell",
+    "StartBuff",
+    "base_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_beaver_weapon_enrage_effects_buff_C",
+    "BlueprintGeneratedClass ce_beaver_weapon_enraged_buff_C",
+    "BlueprintGeneratedClass ce_beaver_weapon_warmupa_C",
+    "BlueprintGeneratedClass ce_beaver_weapon_warmupb_C",
+    "BlueprintGeneratedClass ce_beaver_weapon_warmupc_C",
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Player Knockout",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player",
+     "type": "InterfaceProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Remove VFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "WarmupBuffA"
+   ],
+   "sets": [
+    "WarmupVFXState"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "ArchonBuff.GetBuffOwner",
+    "GameplayModifierFunctionLibrary.RemoveBuff",
+    "HasBuff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_beaver_weapon_warmupa_C"
+   ]
+  },
+  {
+   "name": "Set Enrage Timer",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Time",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 23,
+   "reads": [
+    "CountdownEffect"
+   ],
+   "sets": [
+    "CountdownEffect",
+    "EnrageTimer"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonAbilitySystemComponent.SetActiveGameplayEffectTimeRemaining",
+    "ArchonBuff.GetBuffOwner",
+    "GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDuration",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.K2_SetTimerDelegate"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass ce_beaver_weapon_countdown_ge_C"
+   ]
+  },
+  {
+   "name": "WarmupVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_beaver_weapon_buff_new_C.ExecuteUbergraph_ce_beaver_weapon_buff_new"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "CurveFloat ce_beaver_weapon_damage_curve"
+ ],
+ "package": "/Game/_shared/blueprints/cells/Content/GnasherWeapons/ce_beaver_weapon_buff_new",
+ "pseudo_file": "pseudo/ce_beaver_weapon_buff_new_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,90 @@
+# base_input_numhits_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AdditionalEffectsOnActivation
+  [0] ExecuteUbergraph_base_input_numhits_buff(1423)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_base_input_numhits_buff
+  [0] goto computed(EntryPoint)
+  [10] AdditionalEffectsOnActivation()
+  [24] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [44] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [73] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.RemoveActiveGameplayEffect(self.StackCounterGE, -1)
+  [133] goto @1423
+  [138] Try Activate Effect(true, CallFunc_Try_Activate_Effect_ActivatedEffect)
+  [162] goto @10
+  [167] OnAdded()
+  [177] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [197] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [248] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnPostWeaponHitComplete_Event_0)
+  [271] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [312] goto @1423
+  [317] self.CurrentNumHits = Temp_int_Variable
+  [344] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Temp_int_Variable, self.NumHitsRequired)
+  [382] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) goto @424
+  [396] self.CurrentNumHits = 0
+  [419] goto @138
+  [424] K2Node_CreateDelegate_OutputDelegate = bind(self.ResetCount)
+  [447] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenAttacks)
+  [476] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [533] self.DecayTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [560] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [580] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [609] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [638] if !(CallFunc_IsValid_ReturnValue) goto @1423
+  [652] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [672] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [701] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(self.GameplayStackClass, 0.0, GameplayEffectContextHandle{})
+  [783] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenAttacks)
+  [812] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [871] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [891] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [920] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [979] self.StackCounterGE = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [1006] goto @1423
+  [1011] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentNumHits, 1)
+  [1053] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1080] goto @317
+  [1085] self.CurrentNumHits = 0
+  [1108] goto @1423
+  [1113] OnDamageReceived(K2Node_Event_DamageReceived, K2Node_Event_InstigatedBy, K2Node_Event_DamageCauser, K2Node_Event_DamageInfo)
+  [1159] if !(self.ResetCounterOnTakeDamage) goto @1423
+  [1173] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [1193] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_3)
+  [1222] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue_2.RemoveActiveGameplayEffect(self.StackCounterGE, -1)
+  [1282] goto @1423
+  [1287] Default__meter_gaining_rules_C.CanProcOnDamageEffects(K2Node_CustomEvent_DamagedActor, K2Node_CustomEvent_DamageAndInstigatorTags, self, CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects)
+  [1351] if !(CallFunc_CanProcOnDamageEffects_CanProcOnDamageEffects) goto @1423
+  [1365] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(K2Node_CustomEvent_DamageAndInstigatorTags, self.ExcludeHitsWithTags, false)
+  [1404] if !(CallFunc_HasAnyTags_ReturnValue) goto @1011
+  [1418] goto @1423
+  [1423] return nothing
+  [1425] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_base_input_numhits_buff(167)
+  [15] return nothing
+  [17] end
+
+=== OnDamageReceived
+  [0] frame.K2Node_Event_DamageReceived = DamageReceived
+  [18] frame.K2Node_Event_InstigatedBy = InstigatedBy
+  [36] frame.K2Node_Event_DamageCauser = DamageCauser
+  [54] frame.K2Node_Event_DamageInfo = DamageInfo
+  [72] ExecuteUbergraph_base_input_numhits_buff(1113)
+  [87] return nothing
+  [89] end
+
+=== OnPostWeaponHitComplete_Event_0
+  [0] frame.K2Node_CustomEvent_DamageAndInstigatorTags = DamageAndInstigatorTags
+  [18] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [36] frame.K2Node_CustomEvent_FinalDamageAmount = FinalDamageAmount
+  [54] ExecuteUbergraph_base_input_numhits_buff(1287)
+  [69] return nothing
+  [71] end
+
+=== ResetCount
+  [0] ExecuteUbergraph_base_input_numhits_buff(1085)
+  [15] return nothing
+  [17] end

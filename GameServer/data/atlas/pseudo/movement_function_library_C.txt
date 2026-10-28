@@ -1,0 +1,216 @@
+# movement_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AdjustPositionToFollowGround
+  [0] push @897
+  [5] CallFunc_IsValid_ReturnValue = IsValid(Actor)
+  [34] if !(CallFunc_IsValid_ReturnValue) goto @613
+  [48] push @661
+  [53] array{Actor}
+  [73] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [123] Default__archon_function_library_C.GetGroundPosAndNormal(CallFunc_K2_GetActorLocation_ReturnValue, 250.0, K2Node_MakeArray_Array, 0, MaxDistanceToSearchForGround, Actor, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [233] if !(CallFunc_GetGroundPosAndNormal_HitGround) goto @743
+  [247] L_GroundPosition = CallFunc_GetGroundPosAndNormal_GroundPos
+  [274] BreakVector(L_GroundPosition, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [320] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [370] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [416] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Z, DesiredGroundOffset)
+  [462] CallFunc_FInterpTo_ReturnValue = FInterpTo(CallFunc_BreakVector_Z_1, CallFunc_Add_DoubleDouble_ReturnValue, DeltaTime, HeightAdjustSpeed)
+  [526] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_FInterpTo_ReturnValue)
+  [581] UpdatedPosition = CallFunc_MakeVector_ReturnValue
+  [608] goto @897
+  [613] UpdatedPosition = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [656] goto @897
+  [661] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [711] UpdatedPosition = CallFunc_K2_GetActorLocation_ReturnValue
+  [738] goto @897
+  [743] if !(FallIfGroundNotFound) pop
+  [753] CallFunc_K2_GetActorLocation_ReturnValue = Actor.K2_GetActorLocation()
+  [803] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 9999.0}))
+  [865] L_GroundPosition = CallFunc_Subtract_VectorVector_ReturnValue
+  [892] goto @274
+  [897] return nothing
+  [899] end
+
+=== FindSafeLocation
+  [0] push @2223
+  [5] MaxDistance = 6000.0
+  [32] DistanceIntervals = 50.0
+  [59] Temp_bool_Variable = false
+  [70] Temp_int_Variable = 1
+  [93] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_Variable)
+  [122] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(MaxDistance, DistanceIntervals)
+  [168] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [205] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_FTrunc_ReturnValue)
+  [243] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_LessEqual_IntInt_ReturnValue)
+  [281] if !(CallFunc_BooleanAND_ReturnValue) goto @1658
+  [295] push @1709
+  [300] CallFunc_K2_GetActorLocation_ReturnValue = PlayerCharacter.K2_GetActorLocation()
+  [350] CallFunc_GetTransform_ReturnValue = PlayerCharacter.GetTransform()
+  [400] Default__archon_function_library_C.XY(CallFunc_K2_GetActorLocation_ReturnValue, PlayerCharacter, CallFunc_XY_Out)
+  [463] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [509] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(-1.0, 1.0)
+  [555] CallFunc_RandomFloatInRange_ReturnValue_1 = RandomFloatInRange(-1.0, 1.0)
+  [601] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_RandomFloatInRange_ReturnValue_1, CallFunc_RandomFloatInRange_ReturnValue, 0.0)
+  [656] CallFunc_Normal_ReturnValue = Normal(CallFunc_MakeVector_ReturnValue, 0.0001)
+  [698] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_Normal_ReturnValue, CallFunc_XY_Out)
+  [744] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [786] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(Temp_int_Variable)
+  [823] CallFunc_Multiply_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [852] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast_2, DistanceIntervals)
+  [898] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_2, MinDistance)
+  [944] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Normal_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue)
+  [990] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_BreakTransform_Location)
+  [1036] ProjectPointToNavigationForActor(PlayerCharacter, CallFunc_Add_VectorVector_ReturnValue, CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_ProjectPointToNavigationForActor_Success, null, EX_VectorConst(Value={'X': 1000.0, 'Y': 1000.0, 'Z': 2000.0}))
+  [1108] if !(CallFunc_ProjectPointToNavigationForActor_Success) pop
+  [1118] CallFunc_GetScaledCapsuleHalfHeight_ReturnValue = CapsuleComponent.GetScaledCapsuleHalfHeight()
+  [1168] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetScaledCapsuleHalfHeight_ReturnValue)
+  [1197] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, 3.0)
+  [1243] CallFunc_MakeVector_ReturnValue_2 = MakeVector(0.0, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1298] CallFunc_GetScaledCapsuleRadius_ReturnValue = CapsuleComponent.GetScaledCapsuleRadius()
+  [1348] CallFunc_Multiply_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_GetScaledCapsuleRadius_ReturnValue)
+  [1377] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast_1, 3.0)
+  [1423] array{7, 11, 8, 5, 6}
+  [1444] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_MakeVector_ReturnValue_2)
+  [1490] CallFunc_CapsuleOverlapActors_Radius_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [1519] CallFunc_CapsuleOverlapActors_HalfHeight_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1548] array{}
+  [1559] CallFunc_CapsuleOverlapActors_ReturnValue = CapsuleOverlapActors(PlayerCharacter, CallFunc_Add_VectorVector_ReturnValue_2, CallFunc_CapsuleOverlapActors_Radius_ImplicitCast, CallFunc_CapsuleOverlapActors_HalfHeight_ImplicitCast, K2Node_MakeArray_Array, null, Temp_object_Variable, CallFunc_CapsuleOverlapActors_OutActors)
+  [1643] if !(CallFunc_CapsuleOverlapActors_ReturnValue) goto @1826
+  [1657] pop
+  [1658] SafeLocation = ReturnTransform
+  [1685] FoundLocation = LocationFound
+  [1704] goto @2223
+  [1709] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_Variable)
+  [1738] if !(CallFunc_Not_PreBool_ReturnValue) goto @1658
+  [1752] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [1794] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1821] goto @93
+  [1826] CallFunc_GetTransform_ReturnValue = PlayerCharacter.GetTransform()
+  [1876] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1922] CallFunc_GetScaledCapsuleHalfHeight_ReturnValue = CapsuleComponent.GetScaledCapsuleHalfHeight()
+  [1972] CallFunc_MakeVector_Z_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetScaledCapsuleHalfHeight_ReturnValue)
+  [2001] CallFunc_MakeVector_ReturnValue_1 = MakeVector(0.0, 0.0, CallFunc_MakeVector_Z_ImplicitCast)
+  [2056] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_MakeVector_ReturnValue_1)
+  [2102] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_BreakTransform_Rotation, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2173] ReturnTransform = CallFunc_MakeTransform_ReturnValue
+  [2200] LocationFound = true
+  [2211] Temp_bool_Variable = true
+  [2222] pop
+  [2223] return nothing
+  [2225] end
+
+=== GetCollisionChannelsThisComponentRespondsTo
+  [0] push @740
+  [5] Temp_int_Variable_1 = 0
+  [28] Temp_int_Variable = 0
+  [51] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(33)
+  [84] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Variable_1, CallFunc_MakeLiteralInt_ReturnValue)
+  [122] if !(CallFunc_Less_IntInt_ReturnValue) goto @634
+  [136] CallFunc_Conv_IntToByte_ReturnValue_1 = Conv_IntToByte(Temp_int_Variable_1)
+  [173] CallFunc_GetEnumeratorValueFromIndex_ReturnValue = GetEnumeratorValueFromIndex(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue_1)
+  [219] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(CallFunc_GetEnumeratorValueFromIndex_ReturnValue)
+  [256] Temp_int_Variable = CallFunc_Conv_ByteToInt_ReturnValue
+  [283] push @666
+  [288] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [325] CallFunc_GetValidValue_ReturnValue = GetValidValue(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue)
+  [371] CallFunc_GetCollisionResponseToChannel_ReturnValue = PrimitiveComponent.GetCollisionResponseToChannel(CallFunc_GetValidValue_ReturnValue)
+  [434] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_GetCollisionResponseToChannel_ReturnValue, ResponseTypeDesired)
+  [472] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [482] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [519] CallFunc_GetValidValue_ReturnValue = GetValidValue(ECollisionChannel, CallFunc_Conv_IntToByte_ReturnValue)
+  [565] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_MatchingChannels, CallFunc_GetValidValue_ReturnValue)
+  [633] pop
+  [634] MatchingChannels = L_MatchingChannels
+  [661] goto @740
+  [666] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [708] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [735] goto @51
+  [740] return nothing
+  [742] end
+
+=== GetObjectTypesThisComponentRespondsTo
+  [0] push @689
+  [5] GetCollisionChannelsThisComponentRespondsTo(PrimitiveComponent, ResponseTypeDesired, PrimitiveComponent, CallFunc_GetCollisionChannelsThisComponentRespondsTo_MatchingChannels)
+  [55] Temp_int_Loop_Counter_Variable = 0
+  [78] Temp_int_Array_Index_Variable = 0
+  [101] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetCollisionChannelsThisComponentRespondsTo_MatchingChannels)
+  [160] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [198] if !(CallFunc_Less_IntInt_ReturnValue) goto @583
+  [212] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [239] push @615
+  [244] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCollisionChannelsThisComponentRespondsTo_MatchingChannels, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [303] CallFunc_ConvertCollisionChannelToObjectType_ReturnValue = ConvertCollisionChannelToObjectType(CallFunc_Array_Get_Item)
+  [340] CallFunc_MakeLiteralByte_ReturnValue = MakeLiteralByte(31)
+  [370] CallFunc_LessEqual_ByteByte_ReturnValue = LessEqual_ByteByte(CallFunc_ConvertCollisionChannelToObjectType_ReturnValue, CallFunc_MakeLiteralByte_ReturnValue)
+  [408] if !(CallFunc_LessEqual_ByteByte_ReturnValue) pop
+  [418] Default__KismetArrayLibrary.Array_Get(CallFunc_GetCollisionChannelsThisComponentRespondsTo_MatchingChannels, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [477] CallFunc_ConvertCollisionChannelToObjectType_ReturnValue = ConvertCollisionChannelToObjectType(CallFunc_Array_Get_Item)
+  [514] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_MatchingObjectTypes, CallFunc_ConvertCollisionChannelToObjectType_ReturnValue)
+  [582] pop
+  [583] MatchingObjectTypes = L_MatchingObjectTypes
+  [610] goto @689
+  [615] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [657] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [684] goto @101
+  [689] return nothing
+  [691] end
+
+=== PullCharacter
+  [0] push @2048
+  [5] L_PullTarget = TargetActor
+  [24] L_PullSourcePos = PullSourcePos
+  [51] Default__archon_function_library_C.ActorIsAlive(L_PullTarget, L_PullTarget, CallFunc_ActorIsAlive_IsAlive)
+  [114] if !(CallFunc_ActorIsAlive_IsAlive) pop
+  [124] push @1036
+  [129] CallFunc_K2_GetActorLocation_ReturnValue_1 = L_PullTarget.K2_GetActorLocation()
+  [179] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(L_PullSourcePos, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [225] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue_1, L_PullTarget, CallFunc_XY_Out)
+  [288] CallFunc_VSize_ReturnValue = VSize(CallFunc_XY_Out)
+  [325] L_DistFromSource = CallFunc_VSize_ReturnValue
+  [352] CallFunc_K2_GetActorLocation_ReturnValue_1 = L_PullTarget.K2_GetActorLocation()
+  [402] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(L_PullSourcePos, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [448] Default__archon_function_library_C.XY(CallFunc_Subtract_VectorVector_ReturnValue_1, L_PullTarget, CallFunc_XY_Out)
+  [511] CallFunc_Divide_VectorFloat_ReturnValue = Divide_VectorFloat(CallFunc_XY_Out, L_DistFromSource)
+  [557] L_DirToSource = CallFunc_Divide_VectorFloat_ReturnValue
+  [584] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(L_DistFromSource, IdealPullDistance)
+  [630] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Subtract_DoubleDouble_ReturnValue, MinPullDistanceFromSource, MaxPullDistanceFromSource)
+  [685] L_TargetDistFromSource = CallFunc_FClamp_ReturnValue
+  [712] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(L_DirToSource, -1.0)
+  [758] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Multiply_VectorFloat_ReturnValue, L_TargetDistFromSource)
+  [804] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(L_PullSourcePos, CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [850] L_PullTargetPos = CallFunc_Add_VectorVector_ReturnValue
+  [877] array{}
+  [888] Default__archon_function_library_C.GetGroundPosAndNormal(L_PullTargetPos, 1000.0, K2Node_MakeArray_Array, 0, 1750.0, L_PullTarget, CallFunc_GetGroundPosAndNormal_GroundPos, CallFunc_GetGroundPosAndNormal_GroundNormal, CallFunc_GetGroundPosAndNormal_HitGround)
+  [998] if !(CallFunc_GetGroundPosAndNormal_HitGround) pop
+  [1008] L_PullTargetPos = CallFunc_GetGroundPosAndNormal_GroundPos
+  [1035] pop
+  [1036] CallFunc_GetComponentByClass_ReturnValue = L_PullTarget.GetComponentByClass(ArchonBuffableComponent)
+  [1087] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [1116] if !(CallFunc_IsValid_ReturnValue) pop
+  [1126] CallFunc_GetComponentByClass_ReturnValue = L_PullTarget.GetComponentByClass(ArchonBuffableComponent)
+  [1177] CallFunc_TryAddBuff_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuff(BuffToApply, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, Instigator, false)
+  [1260] if !(CallFunc_TryAddBuff_BuffAdded) pop
+  [1270] push @1864
+  [1275] K2Node_DynamicCast_AsBase_Jump_Warp_Buff = cast<base_jump_warp_buff_C>(CallFunc_TryAddBuff_ReturnValue)
+  [1311] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBase_Jump_Warp_Buff)
+  [1340] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [1350] CallFunc_K2_GetRootComponent_ReturnValue = L_PullTarget.K2_GetRootComponent()
+  [1392] K2Node_DynamicCast_AsCapsule_Collision = cast<CapsuleComponent>(CallFunc_K2_GetRootComponent_ReturnValue)
+  [1428] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsCapsule_Collision)
+  [1457] if !(K2Node_DynamicCast_bSuccess) pop
+  [1467] CallFunc_K2_GetActorLocation_ReturnValue = L_PullTarget.K2_GetActorLocation()
+  [1517] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(L_PullTargetPos, CallFunc_K2_GetActorLocation_ReturnValue)
+  [1563] CallFunc_VSizeXY_ReturnValue = VSizeXY(CallFunc_Subtract_VectorVector_ReturnValue)
+  [1600] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_VSizeXY_ReturnValue, PullDuration)
+  [1646] CallFunc_FMax_ReturnValue = FMax(CallFunc_Divide_DoubleDouble_ReturnValue, 100.0)
+  [1692] Default__archon_function_library_C.FindLobbedProjectileAim(CallFunc_K2_GetActorLocation_ReturnValue, L_PullTargetPos, CallFunc_FMax_ReturnValue, PullPeakHeight, K2Node_DynamicCast_AsCapsule_Collision, CallFunc_FindLobbedProjectileAim_Velocity, CallFunc_FindLobbedProjectileAim_TotalGravity)
+  [1791] K2Node_DynamicCast_AsBase_Jump_Warp_Buff.AuthInitialize(L_PullTargetPos, PullPeakHeight, CallFunc_FindLobbedProjectileAim_TotalGravity, K2Node_DynamicCast_AsCapsule_Collision)
+  [1863] pop
+  [1864] CallFunc_TryAddBuff_ReturnValue.FlushNetDormancy()
+  [1896] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(PullDuration)
+  [1925] CallFunc_TryAddBuff_ReturnValue.self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [1974] MarkPropertyDirtyFromRepIndex(CallFunc_TryAddBuff_ReturnValue, 10, 'MaxDuration')
+  [2011] CallFunc_TryAddBuff_ReturnValue.StartBuff()
+  [2047] pop
+  [2048] return nothing
+  [2050] end

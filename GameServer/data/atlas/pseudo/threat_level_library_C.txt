@@ -1,0 +1,320 @@
+# threat_level_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddFlatValueToRewardMap
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(MinMaxMap, RewardName, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @398
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(MinMaxMap, RewardName, CallFunc_Map_Find_Value)
+  [152] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Map_Find_Value.Min, Amount)
+  [207] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(CallFunc_Map_Find_Value.Max, Amount)
+  [262] K2Node_MakeStruct_min_and_max_rewards_1.Min = CallFunc_Add_IntInt_ReturnValue
+  [298] K2Node_MakeStruct_min_and_max_rewards_1.Max = CallFunc_Add_IntInt_ReturnValue_1
+  [334] Default__BlueprintMapLibrary.Map_Add(MinMaxMap, RewardName, K2Node_MakeStruct_min_and_max_rewards_1)
+  [393] goto @529
+  [398] K2Node_MakeStruct_min_and_max_rewards.Min = Amount
+  [434] K2Node_MakeStruct_min_and_max_rewards.Max = Amount
+  [470] Default__BlueprintMapLibrary.Map_Add(MinMaxMap, RewardName, K2Node_MakeStruct_min_and_max_rewards)
+  [529] return nothing
+  [531] end
+
+=== GetChallengeLevelRowForPower
+  [0] push @784
+  [5] push @671
+  [10] CallFunc_IsValid_ReturnValue = IsValid(ChallengeLevelTable)
+  [39] if !(CallFunc_IsValid_ReturnValue) pop
+  [49] array{}
+  [60] GetDataTableRowNames(ChallengeLevelTable, CallFunc_GetDataTableRowNames_OutRowNames)
+  [88] Temp_int_Loop_Counter_Variable = 0
+  [111] Temp_int_Array_Index_Variable = 0
+  [134] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowNames_OutRowNames)
+  [193] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [231] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [241] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [268] push @710
+  [273] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [332] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(ChallengeLevelTable, CallFunc_Array_Get_Item, CallFunc_GetDataTableRowFromName_OutRow)
+  [401] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [411] RowData = CallFunc_GetDataTableRowFromName_OutRow
+  [438] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(RowData.RecommendedPower, DesiredPower)
+  [485] if !(CallFunc_EqualEqual_IntInt_ReturnValue) pop
+  [495] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowNames_OutRowNames, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [554] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_Array_Get_Item)
+  [591] CallFunc_Conv_StringToInt_ReturnValue = Conv_StringToInt(CallFunc_Conv_NameToString_ReturnValue)
+  [628] FoundRow = true
+  [639] Level = CallFunc_Conv_StringToInt_ReturnValue
+  [666] goto @784
+  [671] FoundRow = false
+  [682] Level = -1
+  [705] goto @784
+  [710] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [752] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [779] goto @134
+  [784] return nothing
+  [786] end
+
+=== GetPlayerHuntThreatLevelRewards
+  [0] push @2929
+  [5] L_MatchmakerHuntData = MatchmakerHuntTableData{DataTableRowHandle{null, 'None'}, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, 0, '', 0.0, Hunt_BehemothInfo{'', EX_SoftObjectConst(Value='None'), 0.0, 0.0}, EX_ArrayConst(InnerProperty={'Path': ['AdditionalBehemoths', 'AdditionalBehemoths'], 'ResolvedOwner': {'ObjectName': "Class'MatchmakerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['AdditionalSpecificBehemoths', 'AdditionalSpecificBehemoths'], 'ResolvedOwner': {'ObjectName': "Class'MatchmakerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), DataTableRowHandle{null, 'None'}, EX_ArrayConst(InnerProperty={'Path': ['MapList', 'MapList'], 'ResolvedOwner': {'ObjectName': "Class'MatchmakerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), null, EX_ArrayConst(InnerProperty={'Path': ['Modifiers', 'Modifiers'], 'ResolvedOwner': {'ObjectName': "Class'MatchmakerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 4, Hunt_UnlockInfo{EX_ArrayConst(InnerProperty={'Path': ['Quests', 'Quests'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 'None', 1, 'None', -1, EX_ArrayConst(InnerProperty={'Path': ['RequiredRanks', 'RequiredRanks'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, null, 'None', EX_ArrayConst(InnerProperty={'Path': ['PlayerJourneyMapNodes', 'PlayerJourneyMapNodes'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=)}, Hunt_UnlockInfo{EX_ArrayConst(InnerProperty={'Path': ['Quests', 'Quests'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 'None', 1, 'None', -1, EX_ArrayConst(InnerProperty={'Path': ['RequiredRanks', 'RequiredRanks'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, null, 'None', EX_ArrayConst(InnerProperty={'Path': ['PlayerJourneyMapNodes', 'PlayerJourneyMapNodes'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=)}, false, DataTableRowHandle{null, 'None'}}
+  [495] push @1094
+  [500] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(PlayerHuntID)
+  [537] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_hunts_table, CallFunc_Conv_StringToName_ReturnValue, CallFunc_GetDataTableRowFromName_OutRow)
+  [606] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [616] Temp_int_Loop_Counter_Variable_4 = 0
+  [639] Temp_int_Array_Index_Variable_3 = 0
+  [662] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowFromName_OutRow.MatchmakerHuntIDs)
+  [730] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_4, CallFunc_Array_Length_ReturnValue)
+  [768] if !(CallFunc_Less_IntInt_ReturnValue) goto @1153
+  [782] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_4
+  [809] push @2312
+  [814] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow.MatchmakerHuntIDs, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [882] CallFunc_GetDataTableRowFromName_ReturnValue_1 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(CallFunc_Array_Get_Item.DataTable, CallFunc_Array_Get_Item.RowName, CallFunc_GetDataTableRowFromName_OutRow_1)
+  [969] if !(CallFunc_GetDataTableRowFromName_ReturnValue_1) pop
+  [979] L_MatchmakerHuntData = CallFunc_GetDataTableRowFromName_OutRow_1
+  [1006] push @2795
+  [1011] push @2386
+  [1016] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_TotalBehemoths, L_MatchmakerHuntData.SpecificBehemoth)
+  [1093] pop
+  [1094] ItemMinAndMax = L_ItemMinAndMax
+  [1121] ProgressionMinAndMax = L_ProgressionMinAndMax
+  [1148] goto @2929
+  [1153] Temp_int_Loop_Counter_Variable = 0
+  [1176] Temp_int_Array_Index_Variable_1 = 0
+  [1199] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(L_TotalBehemoths)
+  [1258] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [1296] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [1306] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [1333] push @2238
+  [1338] Default__KismetArrayLibrary.Array_Get(L_TotalBehemoths, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [1397] CallFunc_Conv_StringToName_ReturnValue_1 = Conv_StringToName(CallFunc_Array_Get_Item_1.BehemothName)
+  [1443] Default__bp_loot_item_library_C.GetBehemothRewardsBasedOnPlayerHunt(CallFunc_Conv_StringToName_ReturnValue_1, PlayerHuntID, __WorldContext, CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ItemRewards, CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ProgressionRewards)
+  [1524] push @1851
+  [1529] Temp_int_Loop_Counter_Variable_3 = 0
+  [1552] Temp_int_Array_Index_Variable = 0
+  [1575] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ItemRewards)
+  [1634] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_4)
+  [1672] if !(CallFunc_Less_IntInt_ReturnValue_4) pop
+  [1682] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_3
+  [1709] push @2855
+  [1714] Default__KismetArrayLibrary.Array_Get(CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ItemRewards, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_4)
+  [1773] UpdateMinAndMaxRewardBounds(L_ItemMinAndMax, CallFunc_Array_Get_Item_4.Item.RowName, CallFunc_Array_Get_Item_4.Quantity, __WorldContext)
+  [1850] pop
+  [1851] Temp_int_Loop_Counter_Variable_1 = 0
+  [1874] Temp_int_Array_Index_Variable_4 = 0
+  [1897] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ProgressionRewards)
+  [1956] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [1994] if !(CallFunc_Less_IntInt_ReturnValue_3) pop
+  [2004] Temp_int_Array_Index_Variable_4 = Temp_int_Loop_Counter_Variable_1
+  [2031] push @2164
+  [2036] Default__KismetArrayLibrary.Array_Get(CallFunc_GetBehemothRewardsBasedOnPlayerHunt_ProgressionRewards, Temp_int_Array_Index_Variable_4, CallFunc_Array_Get_Item_3)
+  [2095] UpdateMinAndMaxRewardBounds(L_ProgressionMinAndMax, CallFunc_Array_Get_Item_3.Track, CallFunc_Array_Get_Item_3.Rank, __WorldContext)
+  [2163] pop
+  [2164] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2206] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2233] goto @1897
+  [2238] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2280] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2307] goto @1199
+  [2312] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Loop_Counter_Variable_4, 1)
+  [2354] Temp_int_Loop_Counter_Variable_4 = CallFunc_Add_IntInt_ReturnValue_4
+  [2381] goto @662
+  [2386] Temp_int_Loop_Counter_Variable_2 = 0
+  [2409] Temp_int_Array_Index_Variable_2 = 0
+  [2432] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(L_MatchmakerHuntData.AdditionalBehemoths)
+  [2500] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_1)
+  [2538] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [2548] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_2
+  [2575] push @2721
+  [2580] Default__KismetArrayLibrary.Array_Get(L_MatchmakerHuntData.AdditionalBehemoths, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item_2)
+  [2648] Default__KismetArrayLibrary.Array_Append(L_TotalBehemoths, CallFunc_Array_Get_Item_2.self.Behemoths)
+  [2720] pop
+  [2721] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [2763] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [2790] goto @2432
+  [2795] Default__KismetArrayLibrary.Array_Append(L_TotalBehemoths, L_MatchmakerHuntData.AdditionalSpecificBehemoths)
+  [2854] pop
+  [2855] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [2897] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [2924] goto @1575
+  [2929] return nothing
+  [2931] end
+
+=== GetPossibleRewardsForPlayerHunt
+  [0] push @2721
+  [5] L_HuntData = PlayerHuntTableData{EX_TextConst(Value={'SourceString': ''}), EX_TextConst(Value={'SourceString': ''}), DataTableRowHandle{null, 'None'}, EX_ArrayConst(InnerProperty={'Path': ['MatchmakerHuntIDs', 'MatchmakerHuntIDs'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 0, EX_ArrayConst(InnerProperty={'Path': ['MatchmakerHuntsByTag', 'MatchmakerHuntsByTag'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, DataTableRowHandle{null, 'None'}, 0, 0, 0, false, false, false, 'None', EX_ArrayConst(InnerProperty={'Path': ['HuntSuccessConditionalRewards', 'HuntSuccessConditionalRewards'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 'None', 'None', EX_ArrayConst(InnerProperty={'Path': ['HuntSuccessProgress', 'HuntSuccessProgress'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['FirstCompletionSuccessProgress', 'FirstCompletionSuccessProgress'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['ConditionalBoostedRewards', 'ConditionalBoostedRewards'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['UI_RewardLimitedByItems', 'UI_RewardLimitedByItems'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), '', 'None', 'None', EX_ArrayConst(InnerProperty={'Path': ['HuntFailureProgress', 'HuntFailureProgress'], 'ResolvedOwner': {'ObjectName': "Class'PlayerHuntTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, false, Hunt_UnlockInfo{EX_ArrayConst(InnerProperty={'Path': ['Quests', 'Quests'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 'None', 1, 'None', -1, EX_ArrayConst(InnerProperty={'Path': ['RequiredRanks', 'RequiredRanks'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, null, 'None', EX_ArrayConst(InnerProperty={'Path': ['PlayerJourneyMapNodes', 'PlayerJourneyMapNodes'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=)}, Hunt_UnlockInfo{EX_ArrayConst(InnerProperty={'Path': ['Quests', 'Quests'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0, 'None', 1, 'None', -1, EX_ArrayConst(InnerProperty={'Path': ['RequiredRanks', 'RequiredRanks'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, null, 'None', EX_ArrayConst(InnerProperty={'Path': ['PlayerJourneyMapNodes', 'PlayerJourneyMapNodes'], 'ResolvedOwner': {'ObjectName': "Class'Hunt_UnlockInfo'", 'ObjectPath': '/Script/Archon'}},Values=)}}
+  [598] push @834
+  [603] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(PlayerHuntID)
+  [640] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(player_hunts_table, CallFunc_Conv_StringToName_ReturnValue, CallFunc_GetDataTableRowFromName_OutRow)
+  [709] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [719] L_HuntData = CallFunc_GetDataTableRowFromName_OutRow
+  [746] push @1717
+  [751] push @1267
+  [756] push @993
+  [761] L_SuccessItemReward = L_HuntData.HuntSuccessReward
+  [797] L_SuccessProgressReward = L_HuntData.HuntSuccessProgress
+  [833] pop
+  [834] SuccessItemReward = L_SuccessItemMinMaxes
+  [861] SuccessProgressReward = L_SuccessProgressMinMaxes
+  [888] FirstCompletionItemReward = L_FirstCompletionItemReward
+  [915] FirstCompletionSuccessProgress = L_FirstCompletionSuccessProgress
+  [942] HasHuntPassReward = L_HasHuntPassReward
+  [961] HuntPassReward = L_HuntPassReward
+  [988] goto @2721
+  [993] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(L_HuntData.FirstCompletionSuccessProgress)
+  [1061] CallFunc_NotEqual_NameName_ReturnValue = NotEqual_NameName(L_HuntData.FirstCompletionSuccessReward, 'None')
+  [1112] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_2, 0)
+  [1146] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_NotEqual_NameName_ReturnValue, CallFunc_Greater_IntInt_ReturnValue_1)
+  [1184] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [1194] L_FirstCompletionSuccessProgress = L_HuntData.FirstCompletionSuccessProgress
+  [1230] L_FirstCompletionItemReward = L_HuntData.FirstCompletionSuccessReward
+  [1266] pop
+  [1267] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(WorldContextObject)
+  [1296] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [1332] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [1361] if !(K2Node_DynamicCast_bSuccess) pop
+  [1371] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(PlayerController, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [1431] if !(CallFunc_GetCurrentHuntPassSeasonData_ReturnValue) pop
+  [1441] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(PlayerController, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [1501] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_GetCurrentHuntPassSeasonData_HuntPassData.HuntRewardItemAmount, 0)
+  [1544] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [1554] CallFunc_GetCurrentHuntPassSeasonData_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.GetCurrentHuntPassSeasonData(PlayerController, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData)
+  [1614] CallFunc_MakeGrantItemRewardData_ReturnValue = MakeGrantItemRewardData(CallFunc_GetCurrentHuntPassSeasonData_HuntPassData.HuntRewardItemId, CallFunc_GetCurrentHuntPassSeasonData_HuntPassData.HuntRewardItemAmount)
+  [1678] L_HuntPassReward = CallFunc_MakeGrantItemRewardData_ReturnValue
+  [1705] L_HasHuntPassReward = true
+  [1716] pop
+  [1717] push @1832
+  [1722] push @2256
+  [1727] GetPlayerHuntThreatLevelRewards(PlayerHuntID, __WorldContext, CallFunc_GetPlayerHuntThreatLevelRewards_ItemMinAndMax, CallFunc_GetPlayerHuntThreatLevelRewards_ProgressionMinAndMax)
+  [1777] L_SuccessItemMinMaxes = CallFunc_GetPlayerHuntThreatLevelRewards_ItemMinAndMax
+  [1804] L_SuccessProgressMinMaxes = CallFunc_GetPlayerHuntThreatLevelRewards_ProgressionMinAndMax
+  [1831] pop
+  [1832] Temp_int_Loop_Counter_Variable_1 = 0
+  [1855] Temp_int_Array_Index_Variable = 0
+  [1878] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(L_SuccessProgressReward)
+  [1937] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1975] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1985] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [2012] push @2182
+  [2017] Default__KismetArrayLibrary.Array_Get(L_SuccessProgressReward, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2076] CallFunc_Conv_StringToName_ReturnValue_1 = Conv_StringToName(CallFunc_Array_Get_Item.Track)
+  [2122] AddFlatValueToRewardMap(L_SuccessProgressMinMaxes, CallFunc_Conv_StringToName_ReturnValue_1, CallFunc_Array_Get_Item.Amount, __WorldContext)
+  [2181] pop
+  [2182] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2224] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [2251] goto @1878
+  [2256] UnpackHuntBundleItems(L_SuccessItemReward, __WorldContext, CallFunc_UnpackHuntBundleItems_UnpackedItems)
+  [2297] Temp_int_Loop_Counter_Variable = 0
+  [2320] Temp_int_Array_Index_Variable_1 = 0
+  [2343] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_UnpackHuntBundleItems_UnpackedItems)
+  [2402] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [2440] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2450] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [2477] push @2647
+  [2482] Default__KismetArrayLibrary.Array_Get(CallFunc_UnpackHuntBundleItems_UnpackedItems, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2541] CallFunc_Conv_StringToName_ReturnValue_2 = Conv_StringToName(CallFunc_Array_Get_Item_1.Item)
+  [2587] AddFlatValueToRewardMap(L_SuccessItemMinMaxes, CallFunc_Conv_StringToName_ReturnValue_2, CallFunc_Array_Get_Item_1.Amount, __WorldContext)
+  [2646] pop
+  [2647] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2689] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2716] goto @2343
+  [2721] return nothing
+  [2723] end
+
+=== GetThreatLevelForBehemoth
+  [0] push @468
+  [5] push @333
+  [10] Default__behemoth_function_library_C.GetBehemothMetadata(BehemothMetadataName, __WorldContext, CallFunc_GetBehemothMetadata_Out_Row, CallFunc_GetBehemothMetadata_FoundMetadata)
+  [82] if !(CallFunc_GetBehemothMetadata_FoundMetadata) pop
+  [92] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(CallFunc_GetBehemothMetadata_Out_Row.ThreatLevel)
+  [138] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Conv_IntToString_ReturnValue)
+  [175] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(threat_level_table, CallFunc_Conv_StringToName_ReturnValue, CallFunc_GetDataTableRowFromName_OutRow)
+  [244] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [254] Success = true
+  [265] ThreatLevel = CallFunc_GetBehemothMetadata_Out_Row.ThreatLevel
+  [301] ThreatLevelData = CallFunc_GetDataTableRowFromName_OutRow
+  [328] goto @468
+  [333] Success = false
+  [344] ThreatLevel = 0
+  [367] ThreatLevelData = threat_level_data{EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'threat_level_data'", 'ObjectPath': '/Game/_shared/blueprints/structs/threat_level_data.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'Rewards_3_6B6944A449AC232EFB15AD956E714EA8', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'Rewards_3_6B6944A449AC232EFB15AD956E714EA8', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 48, 'Struct': {'ObjectName': "UserDefinedStruct'tagged_item_and_progress_rewards'", 'ObjectPath': '/Game/_shared/blueprints/structs/tagged_item_and_progress_rewards.0'}}}},Values=), 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0, 0, 0}
+  [468] return nothing
+  [470] end
+
+=== GetTuningPresetFromThreatLevelRow
+  [0] K2Node_MakeStruct_behemoth_tuning_data.HealthScale = ThreatLevelRow.HealthScale
+  [45] K2Node_MakeStruct_behemoth_tuning_data.BonusPctOfMaxHealthToParts = ThreatLevelRow.BonusPctOfMaxHealthToParts
+  [90] K2Node_MakeStruct_behemoth_tuning_data.PartHealthScale = ThreatLevelRow.PartHealthScale
+  [135] K2Node_MakeStruct_behemoth_tuning_data.BonusPctOfMaxHealthToExpose = ThreatLevelRow.BonusPctOfMaxHealthToExpose
+  [180] K2Node_MakeStruct_behemoth_tuning_data.ExposeHealthScale = ThreatLevelRow.ExposeHealthScale
+  [225] K2Node_MakeStruct_behemoth_tuning_data.StaggerHealthScale = ThreatLevelRow.StaggerHealthScale
+  [270] K2Node_MakeStruct_behemoth_tuning_data.DamageScale = ThreatLevelRow.DamageScale
+  [315] K2Node_MakeStruct_behemoth_tuning_data.ElementalHealthScale = ThreatLevelRow.ElementalHealthScale
+  [360] TuningPreset = K2Node_MakeStruct_behemoth_tuning_data
+  [387] return nothing
+  [389] end
+
+=== UnpackHuntBundleItems
+  [0] push @1354
+  [5] push @825
+  [10] CallFunc_GetDataTableRowFromName_ReturnValue = Default__DataTableFunctionLibrary.GetDataTableRowFromName(bundles_hunt_rewards_open_beta, BundleItemId, CallFunc_GetDataTableRowFromName_OutRow)
+  [79] if !(CallFunc_GetDataTableRowFromName_ReturnValue) pop
+  [89] push @857
+  [94] Temp_int_Loop_Counter_Variable = 0
+  [117] Temp_int_Array_Index_Variable_1 = 0
+  [140] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowFromName_OutRow.Bundle.BundledResultTables)
+  [217] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [255] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [265] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [292] push @1280
+  [297] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow.Bundle.BundledResultTables, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [374] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_Array_Get_Item_1)
+  [411] CallFunc_GetDataTableRowFromName_ReturnValue_1 = Default__DataTableFunctionLibrary.GetDataTableRowFromName(DT_hunt_rewards_open_beta, CallFunc_Conv_StringToName_ReturnValue, CallFunc_GetDataTableRowFromName_OutRow_1)
+  [480] if !(CallFunc_GetDataTableRowFromName_ReturnValue_1) pop
+  [490] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowFromName_OutRow_1.Items)
+  [558] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_2, 0)
+  [592] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [602] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow_1.Items, 0, CallFunc_Array_Get_Item_2)
+  [666] K2Node_MakeStruct_PlayFabCatalogItemQuantity.Item = CallFunc_Array_Get_Item_2.ResultItem
+  [711] K2Node_MakeStruct_PlayFabCatalogItemQuantity.Amount = CallFunc_Array_Get_Item_2.Amount
+  [756] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(UnpackedBundleItems, K2Node_MakeStruct_PlayFabCatalogItemQuantity)
+  [824] pop
+  [825] UnpackedItems = UnpackedBundleItems
+  [852] goto @1354
+  [857] Temp_int_Loop_Counter_Variable_1 = 0
+  [880] Temp_int_Array_Index_Variable = 0
+  [903] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDataTableRowFromName_OutRow.Bundle.BundledItemsWithQuantity)
+  [980] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1018] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1028] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1055] push @1206
+  [1060] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDataTableRowFromName_OutRow.Bundle.BundledItemsWithQuantity, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1137] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(UnpackedBundleItems, CallFunc_Array_Get_Item)
+  [1205] pop
+  [1206] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1248] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1275] goto @903
+  [1280] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1322] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1349] goto @140
+  [1354] return nothing
+  [1356] end
+
+=== UpdateMinAndMaxRewardBounds
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(MinMaxMap, RewardName, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @385
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(MinMaxMap, RewardName, CallFunc_Map_Find_Value)
+  [152] L_MinAndMaxRewards = CallFunc_Map_Find_Value
+  [179] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(RewardAmount, L_MinAndMaxRewards.Max)
+  [226] if !(CallFunc_Greater_IntInt_ReturnValue) goto @521
+  [240] K2Node_MakeStruct_min_and_max_rewards.Min = L_MinAndMaxRewards.Min
+  [285] K2Node_MakeStruct_min_and_max_rewards.Max = RewardAmount
+  [321] Default__BlueprintMapLibrary.Map_Add(MinMaxMap, RewardName, K2Node_MakeStruct_min_and_max_rewards)
+  [380] goto @722
+  [385] K2Node_MakeStruct_min_and_max_rewards_2.Min = RewardAmount
+  [421] K2Node_MakeStruct_min_and_max_rewards_2.Max = RewardAmount
+  [457] Default__BlueprintMapLibrary.Map_Add(MinMaxMap, RewardName, K2Node_MakeStruct_min_and_max_rewards_2)
+  [516] goto @722
+  [521] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(RewardAmount, L_MinAndMaxRewards.Min)
+  [568] if !(CallFunc_Less_IntInt_ReturnValue) goto @722
+  [582] K2Node_MakeStruct_min_and_max_rewards_1.Min = RewardAmount
+  [618] K2Node_MakeStruct_min_and_max_rewards_1.Max = L_MinAndMaxRewards.Max
+  [663] Default__BlueprintMapLibrary.Map_Add(MinMaxMap, RewardName, K2Node_MakeStruct_min_and_max_rewards_1)
+  [722] return nothing
+  [724] end

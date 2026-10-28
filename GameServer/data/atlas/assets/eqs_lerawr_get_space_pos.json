@@ -1,0 +1,293 @@
+{
+ "name": "eqs_lerawr_get_space_pos",
+ "package": "Archon/Content/Monsters/_shared/eqs_queries/eqs_lerawr_get_space_pos",
+ "type": "EnvQuery",
+ "refs": [
+  "EQContext_Enemy_C",
+  "RecastFilter_UseDefaultArea",
+  "eqcontext_all_live_players_predicted_1s_C"
+ ],
+ "exports": {
+  "AIDataProvider_QueryParams_12": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "OnCircle.CircleRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_13": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "OnCircle.CircleRadius"
+   }
+  },
+  "AIDataProvider_QueryParams_11": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "MinDistance"
+   }
+  },
+  "AIDataProvider_QueryParams_6": {
+   "type": "AIDataProvider_QueryParams",
+   "props": {
+    "ParamName": "GoalDistance"
+   }
+  },
+  "eqs_lerawr_get_space_pos": {
+   "type": "EnvQuery",
+   "props": {
+    "QueryName": "eqs_get_space_near_patrol_pt",
+    "Options": [
+     "@EnvQueryOption_7",
+     "@EnvQueryOption_10"
+    ]
+   }
+  },
+  "EnvQueryGenerator_OnCircle_3": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DefaultValue": 5000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_12",
+     "DataField": "FloatValue"
+    },
+    "NumberOfPoints": {
+     "DefaultValue": 25
+    },
+    "PointOnCircleSpacingMethod": "EPointOnCircleSpacingMethod::ByNumberOfPoints",
+    "TraceData": {
+     "VersionNum": 1,
+     "NavigationFilter": "Class RecastFilter_UseDefaultArea",
+     "ExtentX": 1.0,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryGenerator_OnCircle_6": {
+   "type": "EnvQueryGenerator_OnCircle",
+   "props": {
+    "CircleRadius": {
+     "DefaultValue": 5000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_13",
+     "DataField": "FloatValue"
+    },
+    "NumberOfPoints": {
+     "DefaultValue": 25
+    },
+    "PointOnCircleSpacingMethod": "EPointOnCircleSpacingMethod::ByNumberOfPoints",
+    "TraceData": {
+     "VersionNum": 1,
+     "NavigationFilter": "Class RecastFilter_UseDefaultArea",
+     "ExtentX": 1.0,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility"
+    },
+    "ProjectionData": {
+     "VersionNum": 1,
+     "SerializedChannel": "ECollisionChannel::ECC_Visibility",
+     "TraceMode": "EEnvQueryTrace::Navigation"
+    },
+    "VerNum": 1
+   }
+  },
+  "EnvQueryOption_10": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_6",
+    "Tests": [
+     "@EnvQueryTest_Distance_26",
+     "@EnvQueryTest_Distance_27",
+     "@EnvQueryTest_ArchonNavTrace_8",
+     "@EnvQueryTest_ArchonNavTrace_14",
+     "@EnvQueryTest_Distance_28"
+    ]
+   }
+  },
+  "EnvQueryOption_7": {
+   "type": "EnvQueryOption",
+   "props": {
+    "Generator": "@EnvQueryGenerator_OnCircle_3",
+    "Tests": [
+     "@EnvQueryTest_Distance_19",
+     "@EnvQueryTest_Distance_20",
+     "@EnvQueryTest_ArchonNavTrace_6",
+     "@EnvQueryTest_ArchonNavTrace_13",
+     "@EnvQueryTest_Distance_21"
+    ]
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_13": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_14": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_6": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "Context": "BlueprintGeneratedClass EQContext_Enemy_C",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_ArchonNavTrace_8": {
+   "type": "EnvQueryTest_ArchonNavTrace",
+   "props": {
+    "Context": "BlueprintGeneratedClass EQContext_Enemy_C",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_19": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": 2500.0
+    },
+    "FloatValueMax": {
+     "DefaultValue": 5000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": 0.5
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_20": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass eqcontext_all_live_players_predicted_1s_C",
+    "TestPurpose": "EEnvTestPurpose::Filter",
+    "MultipleContextScoreOp": "EEnvTestScoreOperator::MinScore",
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": 1500.0,
+     "DataBinding": "@AIDataProvider_QueryParams_11",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 5000.0,
+     "DataField": "FloatValue"
+    },
+    "ClampMinType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ClampMaxType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ScoreClampMin": {
+     "DefaultValue": 1500.0
+    },
+    "ScoreClampMax": {
+     "DefaultValue": 6000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "ReferenceValue": {
+     "DefaultValue": 3000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_6",
+     "DataField": "FloatValue"
+    },
+    "bDefineReferenceValue": true,
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_21": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_Enemy_C",
+    "FloatValueMin": {
+     "DefaultValue": 2500.0
+    },
+    "FloatValueMax": {
+     "DefaultValue": 4000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_26": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": 2500.0
+    },
+    "FloatValueMax": {
+     "DefaultValue": 5000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": 0.5
+    },
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_27": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass eqcontext_all_live_players_predicted_1s_C",
+    "TestPurpose": "EEnvTestPurpose::Score",
+    "MultipleContextScoreOp": "EEnvTestScoreOperator::MinScore",
+    "FilterType": "EEnvTestFilterType::Minimum",
+    "FloatValueMin": {
+     "DefaultValue": 1500.0,
+     "DataBinding": "@AIDataProvider_QueryParams_11",
+     "DataField": "FloatValue"
+    },
+    "FloatValueMax": {
+     "DefaultValue": 5000.0,
+     "DataField": "FloatValue"
+    },
+    "ClampMinType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ClampMaxType": "EEnvQueryTestClamping::SpecifiedValue",
+    "ScoreClampMax": {
+     "DefaultValue": 3000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "ReferenceValue": {
+     "DefaultValue": 3000.0,
+     "DataBinding": "@AIDataProvider_QueryParams_6",
+     "DataField": "FloatValue"
+    },
+    "bDefineReferenceValue": true,
+    "VerNum": 2
+   }
+  },
+  "EnvQueryTest_Distance_28": {
+   "type": "EnvQueryTest_Distance",
+   "props": {
+    "TestMode": "EEnvTestDistance::Distance2D",
+    "DistanceTo": "BlueprintGeneratedClass EQContext_Enemy_C",
+    "FloatValueMin": {
+     "DefaultValue": 2000.0
+    },
+    "FloatValueMax": {
+     "DefaultValue": 5000.0
+    },
+    "ScoringFactor": {
+     "DefaultValue": -1.0
+    },
+    "VerNum": 2
+   }
+  }
+ }
+}

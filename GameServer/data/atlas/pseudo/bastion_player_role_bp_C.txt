@@ -1,0 +1,138 @@
+# bastion_player_role_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateGameplayEvent
+  [0] ActivateGameplayEvent(EventName)
+  [19] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(EventName, 'ComeOnAndSlam')
+  [61] if !(K2Node_SwitchName_CmpSuccess) goto @80
+  [75] goto @94
+  [80] ComeOnAndSlamEvent()
+  [94] return nothing
+  [96] end
+
+=== BP_HandleEquip
+  [0] ExecuteUbergraph_bastion_player_role_bp(785)
+  [15] return nothing
+  [17] end
+
+=== BP_HandleUnequip
+  [0] ExecuteUbergraph_bastion_player_role_bp(780)
+  [15] return nothing
+  [17] end
+
+=== CanActivateAbilityBP
+  [0] push @163
+  [5] push @136
+  [10] push @50
+  [15] CallFunc_CanActivateAbilityBP_ReturnValue = CanActivateAbilityBP()
+  [35] if !(CallFunc_CanActivateAbilityBP_ReturnValue) goto @152
+  [49] pop
+  [50] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(self.ShieldableComponent.self.CachedShieldValue, 0.0)
+  [110] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) pop
+  [120] ReturnValue = false
+  [131] goto @163
+  [136] ReturnValue = true
+  [147] goto @163
+  [152] ReturnValue = false
+  [163] return ReturnValue
+  [173] end
+
+=== ComeOnAndSlamEvent
+  [0] push @1970
+  [5] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [26] if !(CallFunc_IsServer_ReturnValue) pop
+  [36] Temp_int_Loop_Counter_Variable = 0
+  [59] Temp_int_Array_Index_Variable = 0
+  [82] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ShieldableComponent.self.ShieldData)
+  [163] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [201] if !(CallFunc_Less_IntInt_ReturnValue) goto @598
+  [215] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [242] push @1822
+  [247] Default__KismetArrayLibrary.Array_Get(self.ShieldableComponent.self.ShieldData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [328] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.ShieldValue)
+  [366] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(TotalShields, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [412] TotalShields = CallFunc_Add_DoubleDouble_ReturnValue
+  [439] Default__KismetArrayLibrary.Array_Get(self.ShieldableComponent.self.ShieldData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [520] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(ShieldGUIDs, CallFunc_Array_Get_Item.ShieldGUID)
+  [597] pop
+  [598] Temp_int_Loop_Counter_Variable_1 = 0
+  [621] Temp_int_Array_Index_Variable_1 = 0
+  [644] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(ShieldGUIDs)
+  [703] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [741] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @919
+  [755] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [782] push @1896
+  [787] Default__KismetArrayLibrary.Array_Get(ShieldGUIDs, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [846] self.ShieldableComponent.TryRemoveShieldByGUID(CallFunc_Array_Get_Item_1, GameplayTag{'Shield.RemovalReason.ManuallyRemoved.ByGUID'})
+  [918] pop
+  [919] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(TotalShields)
+  [956] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Total shields: ', CallFunc_Conv_DoubleToString_ReturnValue)
+  [1010] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1084] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1104] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [1140] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [1169] if !(K2Node_DynamicCast_bSuccess) pop
+  [1179] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1199] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [1249] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1286] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, aoe_simple_playerowned_bastion_C, CallFunc_Conv_VectorToTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue)
+  [1336] CallFunc_SafeDivide_ReturnValue = SafeDivide(TotalShields, 10.0)
+  [1382] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_SafeDivide_ReturnValue, 2.0)
+  [1428] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageScale', CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1469] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', 250.0)
+  [1510] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1530] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetOwner_ReturnValue)
+  [1571] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'SingleHitDamageMultiplier', 1.0)
+  [1612] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [1653] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [1673] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [1723] CallFunc_Conv_VectorToTransform_ReturnValue = Conv_VectorToTransform(CallFunc_K2_GetActorLocation_ReturnValue)
+  [1760] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_Conv_VectorToTransform_ReturnValue)
+  [1798] Multi_SlamFX(TotalShields)
+  [1821] pop
+  [1822] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1864] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1891] goto @82
+  [1896] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1938] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1965] goto @644
+  [1970] return nothing
+  [1972] end
+
+=== ExecuteUbergraph_bastion_player_role_bp
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [31] if !(CallFunc_IsServer_ReturnValue) goto @50
+  [45] goto @790
+  [50] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(K2Node_CustomEvent_ShieldMagnitude, 1000.0)
+  [88] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @373
+  [102] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [122] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [172] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, ability_bastion_land_light_p, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 2.0, 'Y': 2.0, 'Z': 2.0}), true, 0, true)
+  [265] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [285] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_Omnicell_Bastion_Explosion_Smaller, CallFunc_GetOwner_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [368] goto @790
+  [373] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [393] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [443] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, ability_bastion_land_p, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 2.0, 'Y': 2.0, 'Z': 2.0}), true, 0, true)
+  [536] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [556] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_Omnicell_Bastion_Explosion_Bigger, CallFunc_GetOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [639] goto @790
+  [644] BP_HandleUnequip()
+  [654] self.ShieldableComponent = null
+  [665] goto @790
+  [670] goto @10
+  [675] BP_HandleEquip()
+  [685] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [705] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.GetComponentByClass(shieldable_bpc_C)
+  [756] self.ShieldableComponent = CallFunc_GetComponentByClass_ReturnValue
+  [775] goto @790
+  [780] goto @644
+  [785] goto @675
+  [790] return nothing
+  [792] end
+
+=== Multi_SlamFX
+  [0] frame.K2Node_CustomEvent_ShieldMagnitude = ShieldMagnitude
+  [18] ExecuteUbergraph_bastion_player_role_bp(670)
+  [33] return nothing
+  [35] end

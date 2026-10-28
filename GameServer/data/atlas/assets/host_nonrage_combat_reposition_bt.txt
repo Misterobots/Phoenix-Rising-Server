@@ -1,0 +1,16 @@
+host_nonrage_combat_reposition_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if Blackboard  (TopScore Is Equal To 0.000000)]
+  [root if current_target_is_valid_btdeco  (FlowAbortMode=Self)]
+  [root if behemoth_in_state_btdeco  (State=Combat)]
+  Selector
+    {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+    [if btdeco_variablecooldown  (Cooldown_Min=3, Cooldown_Max=5)]
+    1) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_host_perimeter_reposition"}, BlackboardKey=bb.MoveDestination)
+      2) move_towards_point_bttask
+    [if not ConeCheck  (ConeHalfAngle=22, ConeOrigin=bb.SelfPos, ConeDirection=bb.FrontPoint, Observed=bb.AttackTarget, bInverseCondition=true)]
+    [if Blackboard  (AttackTarget is Is Set)]
+    2) Sequence
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, TimeInFutureToPredict=0.5)

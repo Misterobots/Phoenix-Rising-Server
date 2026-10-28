@@ -1,0 +1,355 @@
+# ce_host_weapons_frost_sprite_stacks_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddSpriteVFX
+  [0] FindGoodSpot(CallFunc_FIndGoodSpot_GoodSpot)
+  [23] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [43] CallFunc_GetActorForwardVector_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.GetActorForwardVector()
+  [93] CallFunc_MakeRotFromX_ReturnValue = MakeRotFromX(CallFunc_GetActorForwardVector_ReturnValue)
+  [130] BreakRotator(CallFunc_MakeRotFromX_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [176] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [205] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 90.0)
+  [251] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [280] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [327] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, host_weapon_sprites_v3_p, CallFunc_FIndGoodSpot_GoodSpot, CallFunc_MakeRotator_ReturnValue, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [404] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SpawnEmitterAtLocation_ReturnValue)
+  [433] if !(CallFunc_IsValid_ReturnValue) goto @736
+  [447] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [467] CallFunc_GetTransform_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.GetTransform()
+  [517] CallFunc_InverseTransformLocation_ReturnValue = InverseTransformLocation(CallFunc_GetTransform_ReturnValue, CallFunc_FIndGoodSpot_GoodSpot)
+  [563] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.OffsetPositions, CallFunc_InverseTransformLocation_ReturnValue)
+  [631] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 2.0)
+  [677] Default__BlueprintMapLibrary.Map_Add(self.ParticlesAndOffsets, CallFunc_SpawnEmitterAtLocation_ReturnValue, CallFunc_RandomFloatInRange_ReturnValue)
+  [736] return nothing
+  [738] end
+
+=== AddStack
+  [0] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [49] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.MakeOutgoingSpec(ce_host_weapons_stacking_icon_ge_C, 0.0, GameplayEffectContextHandle{})
+  [131] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(self.SpriteDuration)
+  [160] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [219] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [239] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [268] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [336] self.StackHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [363] CallFunc_CanAddStacks_ReturnValue = CanAddStacks()
+  [387] if !(CallFunc_CanAddStacks_ReturnValue) goto @611
+  [401] if !(false) goto @537
+  [407] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentStacks, 1)
+  [449] CallFunc_Min_ReturnValue = Min(CallFunc_Add_IntInt_ReturnValue, 0)
+  [491] self.CurrentStacks = CallFunc_Min_ReturnValue
+  [518] AddVFX_Multi()
+  [532] goto @611
+  [537] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(self.CurrentStacks, 1)
+  [579] self.CurrentStacks = CallFunc_Add_IntInt_ReturnValue
+  [606] goto @518
+  [611] return nothing
+  [613] end
+
+=== AddStacks
+  [0] frame.K2Node_CustomEvent_Stacks = Stacks
+  [18] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(3907)
+  [33] return nothing
+  [35] end
+
+=== AddVFX_Multi
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4017)
+  [15] return nothing
+  [17] end
+
+=== CanAddStacks
+  [0] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(self.CurrentStacks, self.MaxStacks)
+  [38] ReturnValue = CallFunc_Less_IntInt_ReturnValue
+  [57] return ReturnValue
+  [67] end
+
+=== ClearBuffs
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(3935)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff
+  [0] push @4805
+  [5] goto computed(EntryPoint)
+  [15] self.DamagePerSprite = 70.0
+  [42] pop
+  [43] FlushNetDormancy()
+  [53] CallFunc_GetCurrentWeapon_ReturnValue = self.Character.GetCurrentWeapon()
+  [95] self.Weapon = CallFunc_GetCurrentWeapon_ReturnValue
+  [114] MarkPropertyDirtyFromRepIndex(self, 17, 'Weapon')
+  [143] CallFunc_IsValid_ReturnValue_1 = IsValid(self.Weapon)
+  [172] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [182] push @323
+  [187] CallFunc_GetBuffOwner_ReturnValue_6 = GetBuffOwner()
+  [207] Default__legendary_ability_function_library_C.GetTalentStatusUE(CallFunc_GetBuffOwner_ReturnValue_6, self, CallFunc_GetTalentStatusUE_TalentUE01Active, CallFunc_GetTalentStatusUE_TalentUE02Active, CallFunc_GetTalentStatusUE_TalentUE03Active, CallFunc_GetTalentStatusUE_TalentUE04Active, CallFunc_GetTalentStatusUE_TalentUE05Active)
+  [298] push @817
+  [303] self.Talent UE03Active = CallFunc_GetTalentStatusUE_TalentUE03Active
+  [322] pop
+  [323] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 1)
+  [376] if !(K2Node_SwitchEnum_CmpSuccess) goto @793
+  [390] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 2)
+  [443] if !(K2Node_SwitchEnum_CmpSuccess) goto @859
+  [457] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 3)
+  [510] if !(K2Node_SwitchEnum_CmpSuccess) goto @883
+  [524] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 4)
+  [577] if !(K2Node_SwitchEnum_CmpSuccess) goto @907
+  [591] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 5)
+  [644] if !(K2Node_SwitchEnum_CmpSuccess) goto @931
+  [658] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 6)
+  [711] if !(K2Node_SwitchEnum_CmpSuccess) goto @955
+  [725] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.Weapon.self.WeaponType, 7)
+  [778] if !(K2Node_SwitchEnum_CmpSuccess) goto @979
+  [792] pop
+  [793] self.MaxStacks = 6
+  [816] pop
+  [817] if !(CallFunc_GetTalentStatusUE_TalentUE04Active) pop
+  [827] self.ElementalDamagePerSprite = 70.0
+  [854] goto @15
+  [859] self.MaxStacks = 6
+  [882] pop
+  [883] self.MaxStacks = 6
+  [906] pop
+  [907] self.MaxStacks = 6
+  [930] pop
+  [931] self.MaxStacks = 6
+  [954] pop
+  [955] self.MaxStacks = 6
+  [978] pop
+  [979] self.MaxStacks = 6
+  [1002] pop
+  [1003] push @2213
+  [1008] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1067] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item)
+  [1096] if !(CallFunc_IsValid_ReturnValue) pop
+  [1106] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1165] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.ParticlesAndOffsets, CallFunc_Array_Get_Item, CallFunc_Map_Find_Value)
+  [1234] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.SpriteFloatTimeline_Height_0532C3424B95616226F893B7AE093BBB)
+  [1263] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Map_Find_Value, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [1309] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, 2.0)
+  [1355] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, 1.0)
+  [1393] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [1448] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_SelectFloat_ReturnValue)
+  [1477] CallFunc_GetFloatValue_ReturnValue = self.Curve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [1536] K2Node_VariableSet_LNewHeight_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [1565] self.LNewHeight = K2Node_VariableSet_LNewHeight_ImplicitCast
+  [1592] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.LNewHeight, 10.0)
+  [1638] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [1693] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1752] Default__KismetArrayLibrary.Array_Get(self.OffsetPositions, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1811] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [1831] CallFunc_GetTransform_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_4.GetTransform()
+  [1881] CallFunc_TransformLocation_ReturnValue = TransformLocation(CallFunc_GetTransform_ReturnValue, CallFunc_Array_Get_Item_2)
+  [1927] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_TransformLocation_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [1973] CallFunc_Array_Get_Item.K2_SetWorldLocation(CallFunc_Add_VectorVector_ReturnValue, false, CallFunc_K2_SetWorldLocation_SweepHitResult, false)
+  [2025] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(self.LNewHeight)
+  [2054] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [2101] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2160] CallFunc_Array_Get_Item.K2_AddWorldRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_AddWorldRotation_SweepHitResult, false)
+  [2212] pop
+  [2213] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2255] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2282] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [2341] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [2379] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2389] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [2416] goto @1003
+  [2421] Temp_int_Array_Index_Variable = 0
+  [2444] goto @2282
+  [2449] Temp_int_Loop_Counter_Variable = 0
+  [2472] goto @2421
+  [2477] push @2667
+  [2482] AddStack()
+  [2496] HandleOnNextHitGE()
+  [2510] K2_ClearAndInvalidateTimerHandle(self, self.TimerHandle)
+  [2530] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.ClearBuffs)
+  [2553] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.SpriteDuration)
+  [2582] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [2639] self.TimerHandle = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [2666] pop
+  [2667] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Variable, 1)
+  [2709] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue_2
+  [2736] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, K2Node_CustomEvent_Stacks)
+  [2774] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [2784] goto @2477
+  [2789] push @3306
+  [2794] Temp_object_Variable = host_weapon_sprites_fizzle_p
+  [2813] Temp_object_Variable_1 = host_weapon_sprites_proc_p
+  [2832] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys_1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2891] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item_1.K2_GetComponentLocation()
+  [2941] Temp_bool_Variable = K2Node_CustomEvent_Procced
+  [2960] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, switch(Temp_bool_Variable){false: Temp_object_Variable, true: Temp_object_Variable_1, default: K2Node_Select_Default}, CallFunc_K2_GetComponentLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [3097] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [3117] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Raw_Fizzleout_Frost_Sprites, CallFunc_GetBuffOwner_ReturnValue_3, 0, Temp_delegate_Variable, false)
+  [3200] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys_1, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [3259] Default__archon_function_library_C.TryDeactivateComponent(CallFunc_Array_Get_Item_1, self)
+  [3305] pop
+  [3306] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [3348] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [3375] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys_1)
+  [3434] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [3472] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @3518
+  [3486] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [3513] goto @2789
+  [3518] Default__BlueprintMapLibrary.Map_Clear(self.ParticlesAndOffsets)
+  [3559] pop
+  [3560] Temp_int_Loop_Counter_Variable_1 = 0
+  [3583] Temp_int_Array_Index_Variable_1 = 0
+  [3606] goto @3375
+  [3611] MulticastOnAdded()
+  [3621] self.SpriteFloatTimeline.PlayFromStart()
+  [3653] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [3673] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.GetComponentByClass(player_eventdispatcher_bpc_C)
+  [3724] K2Node_CreateDelegate_OutputDelegate = bind(self.PostMitDamage)
+  [3747] K2Node_CreateDelegate_OutputDelegate += None
+  [3788] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [3808] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [3844] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [3873] if !(K2Node_DynamicCast_bSuccess) pop
+  [3883] self.Character = K2Node_DynamicCast_AsArchon_Character
+  [3902] goto @43
+  [3907] Temp_int_Variable = 1
+  [3930] goto @2736
+  [3935] Reset(false)
+  [3950] pop
+  [3951] array{}
+  [3962] Default__BlueprintMapLibrary.Map_Keys(self.ParticlesAndOffsets, CallFunc_Map_Keys_Keys)
+  [4012] goto @2449
+  [4017] AddSpriteVFX()
+  [4031] pop
+  [4032] self.SpriteFloatTimeline.PlayFromStart()
+  [4064] pop
+  [4065] CallFunc_HasTag_ReturnValue = HasTag(K2Node_CustomEvent_DamageTags, GameplayTag{'Combat.Weapon.WeaponImpact'}, false)
+  [4122] CallFunc_MakeLiteralGameplayTagContainer_ReturnValue = MakeLiteralGameplayTagContainer(GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Abilities.Cells.HostWeapons'})})
+  [4205] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [4225] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [4254] CallFunc_GetAbilitySystemComponent_ReturnValue.GetOwnedGameplayTags(CallFunc_GetOwnedGameplayTags_TagContainer)
+  [4300] CallFunc_HasAnyTags_ReturnValue = HasAnyTags(CallFunc_GetOwnedGameplayTags_TagContainer, CallFunc_MakeLiteralGameplayTagContainer_ReturnValue, false)
+  [4339] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_HasAnyTags_ReturnValue, CallFunc_HasTag_ReturnValue)
+  [4377] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [4387] if !(self.Talent UE03Active) goto @4697
+  [4401] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [4421] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_5.GetComponentByClass(shieldable_bpc_C)
+  [4472] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(self.CurrentStacks, 40)
+  [4514] CallFunc_Conv_IntToDouble_ReturnValue = Conv_IntToDouble(CallFunc_Multiply_IntInt_ReturnValue)
+  [4551] CallFunc_GetComponentByClass_ReturnValue_1.AddShield(CallFunc_Conv_IntToDouble_ReturnValue, 50.0, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'Shield.Source.FrostCBTalent'})}, -1.0, 300.0, false, CallFunc_AddShield_AddedShieldSuccessfully, CallFunc_AddShield_GUID)
+  [4697] Reset(true)
+  [4712] pop
+  [4713] array{}
+  [4724] Default__BlueprintMapLibrary.Map_Keys(self.ParticlesAndOffsets, CallFunc_Map_Keys_Keys_1)
+  [4774] goto @3560
+  [4779] goto @3951
+  [4784] goto @4032
+  [4789] Reset(false)
+  [4804] pop
+  [4805] return nothing
+  [4807] end
+
+=== FindGoodSpot
+  [0] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.Weapon.self.WeaponType, 6)
+  [53] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @824
+  [67] CallFunc_RandomFloatInRange_ReturnValue_3 = RandomFloatInRange(50.0, 100.0)
+  [113] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [133] CallFunc_RandomFloatInRange_ReturnValue_4 = RandomFloatInRange(-100.0, -25.0)
+  [179] CallFunc_K2_GetActorLocation_ReturnValue_2 = CallFunc_GetBuffOwner_ReturnValue_3.K2_GetActorLocation()
+  [229] CallFunc_GetBuffOwner_ReturnValue_4 = GetBuffOwner()
+  [249] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue_2, CallFunc_BreakVector_X_2, CallFunc_BreakVector_Y_2, CallFunc_BreakVector_Z_2)
+  [295] CallFunc_GetActorForwardVector_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_4.GetActorForwardVector()
+  [345] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue_3, CallFunc_BreakVector_Z_2)
+  [391] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_GetActorForwardVector_ReturnValue_1, -75.0)
+  [437] CallFunc_GetBuffOwner_ReturnValue_5 = GetBuffOwner()
+  [457] CallFunc_RandomFloatInRange_ReturnValue_5 = RandomFloatInRange(-50.0, 50.0)
+  [503] CallFunc_K2_GetActorLocation_ReturnValue_3 = CallFunc_GetBuffOwner_ReturnValue_5.K2_GetActorLocation()
+  [553] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [599] BreakVector(CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_BreakVector_X_3, CallFunc_BreakVector_Y_3, CallFunc_BreakVector_Z_3)
+  [645] CallFunc_Add_DoubleDouble_ReturnValue_4 = Add_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue_5, CallFunc_BreakVector_X_3)
+  [691] CallFunc_Add_DoubleDouble_ReturnValue_5 = Add_DoubleDouble(CallFunc_BreakVector_Y_3, CallFunc_RandomFloatInRange_ReturnValue_4)
+  [737] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_Add_DoubleDouble_ReturnValue_4, CallFunc_Add_DoubleDouble_ReturnValue_5, CallFunc_Add_DoubleDouble_ReturnValue_3)
+  [792] GoodSpot = CallFunc_MakeVector_ReturnValue_1
+  [819] goto @1576
+  [824] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(-50.0, 50.0)
+  [870] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [890] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [910] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [960] CallFunc_GetActorForwardVector_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.GetActorForwardVector()
+  [1010] CallFunc_RandomFloatInRange_ReturnValue_1 = RandomFloatInRange(-150.0, 150.0)
+  [1056] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetActorForwardVector_ReturnValue, -75.0)
+  [1102] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [1122] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1168] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetBuffOwner_ReturnValue_2.K2_GetActorLocation()
+  [1218] BreakVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [1264] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [1310] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_BreakVector_Y, CallFunc_RandomFloatInRange_ReturnValue_1)
+  [1356] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue, CallFunc_BreakVector_X)
+  [1402] CallFunc_RandomFloatInRange_ReturnValue_2 = RandomFloatInRange(50.0, 100.0)
+  [1448] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue_2, CallFunc_BreakVector_Z_1)
+  [1494] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_Add_DoubleDouble_ReturnValue_1, CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [1549] GoodSpot = CallFunc_MakeVector_ReturnValue
+  [1576] return nothing
+  [1578] end
+
+=== HandleOnNextHitGE
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [49] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.OnNextHitHandle, -1)
+  [109] CallFunc_Multiply_IntFloat_ReturnValue_1 = Multiply_IntFloat(self.CurrentStacks, self.DamagePerSprite)
+  [155] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [175] CallFunc_GetAbilitySystemComponent_ReturnValue_2 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_2)
+  [204] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_2.MakeOutgoingSpec(ce_host_weapons_on_next_hit_ge_C, 0.0, GameplayEffectContextHandle{})
+  [286] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Multiply_IntFloat_ReturnValue_1)
+  [315] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1)
+  [374] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(self.CurrentStacks, self.ElementalDamagePerSprite)
+  [420] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_IntFloat_ReturnValue)
+  [449] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'ElementalMagnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [508] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [528] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [557] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1, CallFunc_GetAbilitySystemComponent_ReturnValue_1)
+  [625] self.OnNextHitHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [652] return nothing
+  [654] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(3611)
+  [15] return nothing
+  [17] end
+
+=== OnWeaponUnequip
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4789)
+  [15] return nothing
+  [17] end
+
+=== PostMitDamage
+  [0] frame.K2Node_CustomEvent_PostMitDamageSummary = PostMitDamageSummary
+  [18] frame.K2Node_CustomEvent_DamageTags = DamageTags
+  [36] frame.K2Node_CustomEvent_DamagedActor = DamagedActor
+  [54] frame.K2Node_CustomEvent_Context = Context
+  [72] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4065)
+  [87] return nothing
+  [89] end
+
+=== RemoveVFX_Multi
+  [0] frame.K2Node_CustomEvent_Procced = Procced
+  [18] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4713)
+  [33] return nothing
+  [35] end
+
+=== Reset
+  [0] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [49] CallFunc_RemoveActiveGameplayEffect_ReturnValue_1 = CallFunc_GetAbilitySystemComponent_ReturnValue_1.RemoveActiveGameplayEffect(self.OnNextHitHandle, -1)
+  [109] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [129] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [158] CallFunc_RemoveActiveGameplayEffect_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveGameplayEffect(self.StackHandle, -1)
+  [218] self.CurrentStacks = 0
+  [241] RemoveVFX_Multi(Procced)
+  [264] return nothing
+  [266] end
+
+=== SpriteFloatTimeline__FinishedFunc
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4784)
+  [15] return nothing
+  [17] end
+
+=== SpriteFloatTimeline__UpdateFunc
+  [0] ExecuteUbergraph_ce_host_weapons_frost_sprite_stacks_buff(4779)
+  [15] return nothing
+  [17] end

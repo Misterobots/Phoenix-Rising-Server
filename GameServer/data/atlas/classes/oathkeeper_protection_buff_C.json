@@ -1,0 +1,298 @@
+{
+ "name": "oathkeeper_protection_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ProtectingCharacter",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Damage Event Data",
+   "type": "StructProperty<DamageEventData>",
+   "bp_type": "StructProperty<DamageEventData>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TotalDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OathkeeperDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Extended Damage Info",
+   "type": "StructProperty<ArchonExtendedDamageInfo>",
+   "bp_type": "StructProperty<ArchonExtendedDamageInfo>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ProtectorDamageReduction",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CustomModifyDamageEventData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "HasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ModifiedDamageEventData",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "ShouldOverrideDamageTags",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 49,
+   "reads": [
+    "Extended Damage Info",
+    "OathkeeperDamage",
+    "ProtectingCharacter",
+    "ProtectorDamageReduction",
+    "TotalDamage"
+   ],
+   "sets": [
+    "OathkeeperDamage",
+    "TotalDamage"
+   ],
+   "calls": [
+    "ArchonBuff.GetBuffOwner",
+    "ArchonGameplayStatics.ApplyArchonTrueDamage",
+    "IsCharacterInvulnerable",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetSystemLibrary.IsServer",
+    "ModifyDamageEventdata",
+    "MultiVFX/SFXonAbsorb"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_oathkeeper_protection_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 31,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.ReceiveBeginPlay",
+    "ArchonBuff.GetBuffOwner",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetSkeletalMeshComponent",
+    "MultiVFX/SFXonApplied"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "ParticleSystem oathkeepers_activation_p",
+    "ParticleSystem oathkeepers_dmg_absorb_p",
+    "ParticleSystem oathkeepers_dmg_taken_p"
+   ]
+  },
+  {
+   "name": "MultiVFX/SFXonAbsorb",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AbsorbingActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "ProtectedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "oathkeeper_protection_buff_C.ExecuteUbergraph_oathkeeper_protection_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiVFX/SFXonApplied",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "oathkeeper_protection_buff_C.ExecuteUbergraph_oathkeeper_protection_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "oathkeeper_protection_buff_C.ExecuteUbergraph_oathkeeper_protection_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Buffs/oathkeeper_protection_buff",
+ "pseudo_file": "pseudo/oathkeeper_protection_buff_C.txt",
+ "game_data": {}
+}

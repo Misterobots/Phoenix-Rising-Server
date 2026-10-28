@@ -1,0 +1,723 @@
+# behemoth_statemanager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AlterTimeOfPersistantStateChange
+  [0] push @819
+  [5] push @702
+  [10] Temp_int_Loop_Counter_Variable = 0
+  [33] Temp_int_Array_Index_Variable = 0
+  [56] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DesiredStateChanges)
+  [115] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [153] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [163] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [190] push @745
+  [195] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [254] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(StateToChange, CallFunc_Array_Get_Item.StateToChange)
+  [301] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [311] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [370] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.ServerGameTime)
+  [408] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, DeltaChange)
+  [454] K2Node_SetFieldsInStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [483] CallFunc_Array_Get_Item.ServerGameTime = K2Node_SetFieldsInStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast
+  [519] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item
+  [546] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [575] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_SetFieldsInStruct_StructOut.ServerGameTime)
+  [613] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [659] FoundAStateChange = true
+  [670] NewTimeUntilFinish = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [697] goto @819
+  [702] FoundAStateChange = false
+  [713] NewTimeUntilFinish = -1.0
+  [740] goto @819
+  [745] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [787] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [814] goto @56
+  [819] return nothing
+  [821] end
+
+=== AuthOnStateChanged_Event_0
+  [0] frame.K2Node_CustomEvent_State = State
+  [18] frame.K2Node_CustomEvent_What_Happened = What Happened
+  [36] ExecuteUbergraph_behemoth_statemanager_bpc(15889)
+  [51] return nothing
+  [53] end
+
+=== CheckStateChangeValidity
+  [0] push @2399
+  [5] LocalTransitionAllowed = true
+  [16] Temp_int_Loop_Counter_Variable_3 = 0
+  [39] Temp_int_Array_Index_Variable_3 = 0
+  [62] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.StateInfos)
+  [121] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue_1)
+  [159] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @948
+  [173] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_3
+  [200] push @993
+  [205] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [264] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(Trigger State, CallFunc_Array_Get_Item_1.State)
+  [311] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [321] Temp_int_Loop_Counter_Variable_2 = 0
+  [344] Temp_int_Array_Index_Variable_1 = 0
+  [367] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [426] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.DisallowedStates)
+  [494] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_3)
+  [532] if !(CallFunc_Less_IntInt_ReturnValue_3) goto @1067
+  [546] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [573] push @2325
+  [578] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [637] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.DisallowedStates, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [705] self.OwningBehemoth.IsInState(CallFunc_Array_Get_Item_3, CallFunc_IsInState_InState_1)
+  [759] if !(CallFunc_IsInState_InState_1) pop
+  [769] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [828] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.DisallowedStates, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_3)
+  [896] StateThatFailed = CallFunc_Array_Get_Item_3
+  [923] Result = 1
+  [943] goto @2399
+  [948] StateThatFailed = 0
+  [968] Result = 0
+  [988] goto @2399
+  [993] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [1035] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_3
+  [1062] goto @62
+  [1067] Temp_int_Loop_Counter_Variable = 0
+  [1090] Temp_int_Array_Index_Variable = 0
+  [1113] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [1172] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.RequiredStates)
+  [1240] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_2)
+  [1278] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @1773
+  [1292] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1319] push @1699
+  [1324] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [1383] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.RequiredStates, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1451] self.OwningBehemoth.IsInState(CallFunc_Array_Get_Item_2, CallFunc_IsInState_InState)
+  [1505] if !(CallFunc_IsInState_InState) goto @1520
+  [1519] pop
+  [1520] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item_1)
+  [1579] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.RequiredStates, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1647] StateThatFailed = CallFunc_Array_Get_Item_2
+  [1674] Result = 2
+  [1694] goto @2399
+  [1699] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1741] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [1768] goto @1113
+  [1773] Temp_int_Loop_Counter_Variable_1 = 0
+  [1796] Temp_int_Array_Index_Variable_2 = 0
+  [1819] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Condition.ConditionRequirements)
+  [1887] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1925] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1935] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable_1
+  [1962] push @2251
+  [1967] Default__KismetArrayLibrary.Array_Get(Condition.ConditionRequirements, Temp_int_Array_Index_Variable_2, CallFunc_Array_Get_Item)
+  [2035] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self.OwningBehemoth)
+  [2064] Default__archon_function_library_C.CompareBlackboardValues(CallFunc_GetBlackboard_ReturnValue, CallFunc_Array_Get_Item.LeftSideBlackboardVarName, CallFunc_Array_Get_Item.Operator, CallFunc_Array_Get_Item.Type, CallFunc_Array_Get_Item.RightSideData, self, CallFunc_CompareBlackboardValues_Result)
+  [2191] if !(CallFunc_CompareBlackboardValues_Result) goto @2206
+  [2205] pop
+  [2206] StateThatFailed = 0
+  [2226] Result = 3
+  [2246] goto @2399
+  [2251] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [2293] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [2320] goto @1819
+  [2325] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [2367] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [2394] goto @367
+  [2399] return nothing
+  [2401] end
+
+=== ExecuteUbergraph_behemoth_statemanager_bpc
+  [0] push @15894
+  [5] goto computed(EntryPoint)
+  [15] push @923
+  [20] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [57] CallFunc_GetValidValue_ReturnValue = GetValidValue(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue)
+  [103] CallFunc_NotEqual_ByteByte_ReturnValue = NotEqual_ByteByte(CallFunc_GetValidValue_ReturnValue, 0)
+  [134] if !(CallFunc_NotEqual_ByteByte_ReturnValue) pop
+  [144] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [164] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetOwner_ReturnValue_3)
+  [200] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [229] if !(K2Node_DynamicCast_bSuccess_1) goto @1225
+  [243] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [280] CallFunc_GetValidValue_ReturnValue = GetValidValue(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue)
+  [326] K2Node_DynamicCast_AsBehemoth_Interface.BehemothInState(CallFunc_GetValidValue_ReturnValue, CallFunc_BehemothInState_IsInState)
+  [381] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Variable)
+  [418] CallFunc_GetValidValue_ReturnValue = GetValidValue(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue)
+  [464] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_GetValidValue_ReturnValue)
+  [510] CallFunc_Concat_StrStr_ReturnValue_12 = Concat_StrStr(CallFunc_GetEnumeratorUserFriendlyName_ReturnValue, ': ')
+  [551] Temp_struct_Variable = LinearColor{0.84, 0.606756, 0.0, 1.0}
+  [603] Temp_struct_Variable_1 = LinearColor{0.25, 0.20486, 0.0, 1.0}
+  [655] Temp_string_Variable_2 = 'Active'
+  [681] Temp_string_Variable_3 = ''
+  [701] Temp_bool_Variable_2 = CallFunc_BehemothInState_IsInState
+  [720] Temp_bool_Variable_1 = CallFunc_BehemothInState_IsInState
+  [739] CallFunc_Concat_StrStr_ReturnValue_57 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_12, switch(Temp_bool_Variable_2){false: Temp_string_Variable_3, true: Temp_string_Variable_2, default: K2Node_Select_Default_3})
+  [829] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_57, true, false, switch(Temp_bool_Variable_1){false: Temp_struct_Variable_1, true: Temp_struct_Variable, default: K2Node_Select_Default_4}, 0.01, 'None')
+  [922] pop
+  [923] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable_1, 1)
+  [965] Temp_int_Variable_1 = CallFunc_Add_IntInt_ReturnValue
+  [992] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(29)
+  [1025] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Variable_1, CallFunc_MakeLiteralInt_ReturnValue)
+  [1063] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [1073] CallFunc_Conv_IntToByte_ReturnValue_1 = Conv_IntToByte(Temp_int_Variable_1)
+  [1110] CallFunc_GetEnumeratorValueFromIndex_ReturnValue = GetEnumeratorValueFromIndex(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue_1)
+  [1156] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(CallFunc_GetEnumeratorValueFromIndex_ReturnValue)
+  [1193] Temp_int_Variable = CallFunc_Conv_ByteToInt_ReturnValue
+  [1220] goto @15
+  [1225] CallFunc_BehemothInState_IsInState = false
+  [1236] goto @381
+  [1241] Temp_int_Variable = 0
+  [1264] goto @992
+  [1269] Temp_int_Variable_1 = 0
+  [1292] goto @1241
+  [1297] push @7843
+  [1302] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1361] GetIndexOfStateChange(CallFunc_Array_Get_Item.EntryConditions, K2Node_CustomEvent_State, K2Node_CustomEvent_What_Happened, CallFunc_GetIndexOfStateChange_FoundIndex)
+  [1420] self.L_FoundEntry = CallFunc_GetIndexOfStateChange_FoundIndex
+  [1447] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_What_Happened, 0)
+  [1478] if !(K2Node_SwitchEnum_CmpSuccess) goto @1538
+  [1492] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_What_Happened, 1)
+  [1523] if !(K2Node_SwitchEnum_CmpSuccess) goto @8051
+  [1537] pop
+  [1538] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1597] CallFunc_Array_Find_ReturnValue_1 = Default__KismetArrayLibrary.Array_Find(CallFunc_Array_Get_Item.DisallowedStates, K2Node_CustomEvent_State)
+  [1674] self.L_FoundCancel = CallFunc_Array_Find_ReturnValue_1
+  [1701] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.L_FoundEntry, 0)
+  [1735] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(self.L_FoundCancel, 0)
+  [1769] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_GreaterEqual_IntInt_ReturnValue_1)
+  [1807] if !(CallFunc_BooleanAND_ReturnValue) goto @1911
+  [1821] ThrowDuplicateRuleError('Rule found for both entry and exit in statemanager for ', K2Node_CustomEvent_State, K2Node_CustomEvent_What_Happened)
+  [1910] pop
+  [1911] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(self.L_FoundEntry, 0)
+  [1945] CallFunc_GreaterEqual_IntInt_ReturnValue_1 = GreaterEqual_IntInt(self.L_FoundCancel, 0)
+  [1979] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_GreaterEqual_IntInt_ReturnValue_1)
+  [2017] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [2027] push @2101
+  [2032] CallFunc_GreaterEqual_IntInt_ReturnValue_2 = GreaterEqual_IntInt(self.L_FoundEntry, 0)
+  [2066] if !(CallFunc_GreaterEqual_IntInt_ReturnValue_2) goto @8219
+  [2080] self.L_EnterOrCancel = 0
+  [2100] pop
+  [2101] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.L_EnterOrCancel, 0)
+  [2132] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @2192
+  [2146] K2Node_SwitchEnum_CmpSuccess_2 = NotEqual_ByteByte(self.L_EnterOrCancel, 1)
+  [2177] if !(K2Node_SwitchEnum_CmpSuccess_2) goto @8284
+  [2191] pop
+  [2192] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2251] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [2319] CheckStateChangeValidity(CallFunc_Array_Get_Item_1, CallFunc_Array_Get_Item.State, CallFunc_CheckStateChangeValidity_StateThatFailed, CallFunc_CheckStateChangeValidity_Result)
+  [2378] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result, 0)
+  [2409] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @7148
+  [2423] push @8376
+  [2428] self.L_FoundDuplicate = false
+  [2439] Temp_bool_True_if_break_was_hit_Variable = false
+  [2450] Temp_int_Loop_Counter_Variable_1 = 0
+  [2473] Temp_int_Array_Index_Variable_1 = 0
+  [2496] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [2525] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.DesiredStateChanges)
+  [2584] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [2622] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue_3)
+  [2660] if !(CallFunc_BooleanAND_ReturnValue_1) pop
+  [2670] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_1
+  [2697] push @10220
+  [2702] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2761] CallFunc_Conv_ByteToInt_ReturnValue_1 = Conv_ByteToInt(CallFunc_Array_Get_Item.State)
+  [2807] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [2875] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.ScalingDelay)
+  [2943] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [2985] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [3019] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [3048] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue_1, CallFunc_Array_Get_Item_2)
+  [3107] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2.Index)
+  [3162] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.ScalingDelay, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item_3)
+  [3230] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_3)
+  [3259] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, CallFunc_Greater_IntInt_ReturnValue)
+  [3314] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [3360] K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [3389] K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime = K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast
+  [3425] K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [3454] K2Node_MakeStruct_behemoth_statemanager_timedevent.RequestEnteredTimestamp = K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast
+  [3490] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateToChange = CallFunc_Array_Get_Item.State
+  [3535] K2Node_MakeStruct_behemoth_statemanager_timedevent.ConditionThatCausedEvent = CallFunc_Array_Get_Item_1
+  [3571] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateThatTriggeredEvent = CallFunc_Array_Get_Item.State
+  [3616] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_5)
+  [3675] CallFunc_EqualEqual_ByteByte_ReturnValue_3 = EqualEqual_ByteByte(CallFunc_Array_Get_Item_5.StateToChange, K2Node_MakeStruct_behemoth_statemanager_timedevent.StateToChange)
+  [3731] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_3) pop
+  [3741] self.L_FoundDuplicate = true
+  [3752] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [3811] CallFunc_Conv_ByteToInt_ReturnValue_1 = Conv_ByteToInt(CallFunc_Array_Get_Item.State)
+  [3857] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [3925] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.ScalingDelay)
+  [3993] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [4035] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [4069] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [4098] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue_1, CallFunc_Array_Get_Item_2)
+  [4157] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2.Index)
+  [4212] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.ScalingDelay, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item_3)
+  [4280] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_3)
+  [4309] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, CallFunc_Greater_IntInt_ReturnValue)
+  [4364] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [4410] K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [4439] K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime = K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast
+  [4475] K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [4504] K2Node_MakeStruct_behemoth_statemanager_timedevent.RequestEnteredTimestamp = K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast
+  [4540] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateToChange = CallFunc_Array_Get_Item.State
+  [4585] K2Node_MakeStruct_behemoth_statemanager_timedevent.ConditionThatCausedEvent = CallFunc_Array_Get_Item_1
+  [4621] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateThatTriggeredEvent = CallFunc_Array_Get_Item.State
+  [4666] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_5)
+  [4725] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime)
+  [4763] CallFunc_Less_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_5.ServerGameTime)
+  [4801] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, CallFunc_Less_DoubleDouble_B_ImplicitCast)
+  [4839] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @10294
+  [4853] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [4912] CallFunc_Conv_ByteToInt_ReturnValue_1 = Conv_ByteToInt(CallFunc_Array_Get_Item.State)
+  [4958] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [5026] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.ScalingDelay)
+  [5094] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [5136] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [5170] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [5199] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue_1, CallFunc_Array_Get_Item_2)
+  [5258] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2.Index)
+  [5313] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.ScalingDelay, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item_3)
+  [5381] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_3)
+  [5410] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, CallFunc_Greater_IntInt_ReturnValue)
+  [5465] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [5511] K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [5540] K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime = K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast
+  [5576] K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [5605] K2Node_MakeStruct_behemoth_statemanager_timedevent.RequestEnteredTimestamp = K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast
+  [5641] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateToChange = CallFunc_Array_Get_Item.State
+  [5686] K2Node_MakeStruct_behemoth_statemanager_timedevent.ConditionThatCausedEvent = CallFunc_Array_Get_Item_1
+  [5722] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateThatTriggeredEvent = CallFunc_Array_Get_Item.State
+  [5767] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_5)
+  [5826] CallFunc_FMin_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_5.ServerGameTime)
+  [5864] CallFunc_FMin_B_ImplicitCast = cast<CST_FloatToDouble>(K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime)
+  [5902] CallFunc_FMin_ReturnValue = FMin(CallFunc_FMin_A_ImplicitCast, CallFunc_FMin_B_ImplicitCast)
+  [5948] K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_FMin_ReturnValue)
+  [5977] K2Node_MakeStruct_behemoth_statemanager_timedevent_1.ServerGameTime = K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast_1
+  [6013] K2Node_MakeStruct_behemoth_statemanager_timedevent_1.RequestEnteredTimestamp = CallFunc_Array_Get_Item_5.RequestEnteredTimestamp
+  [6058] K2Node_MakeStruct_behemoth_statemanager_timedevent_1.StateToChange = CallFunc_Array_Get_Item_5.StateToChange
+  [6103] K2Node_MakeStruct_behemoth_statemanager_timedevent_1.ConditionThatCausedEvent = K2Node_MakeStruct_behemoth_statemanager_timedevent.ConditionThatCausedEvent
+  [6148] K2Node_MakeStruct_behemoth_statemanager_timedevent_1.StateThatTriggeredEvent = K2Node_MakeStruct_behemoth_statemanager_timedevent.StateThatTriggeredEvent
+  [6193] Default__KismetArrayLibrary.Array_Set(self.DesiredStateChanges, 0, K2Node_MakeStruct_behemoth_statemanager_timedevent_1, false)
+  [6249] push @10961
+  [6254] if !(self.ShowDebugInfo) pop
+  [6264] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr('Transition ', ' Enter ')
+  [6314] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, '  time updated (')
+  [6369] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, '')
+  [6408] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_8, ' -> ')
+  [6451] CallFunc_Concat_StrStr_ReturnValue_10 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_9, '')
+  [6490] CallFunc_Concat_StrStr_ReturnValue_11 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_10, ') because we added a dupe from  ')
+  [6561] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [6620] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [6688] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_4 = GetEnumeratorUserFriendlyName(behemoth_state_event, CallFunc_Array_Get_Item_1.StateChangeType)
+  [6743] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_6 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_1.StateVar)
+  [6798] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_8 = GetEnumeratorUserFriendlyName(behemoth_statecondition_type, CallFunc_Array_Get_Item_1.ConditionType)
+  [6853] CallFunc_Concat_StrStr_ReturnValue_25 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_11, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_8)
+  [6899] CallFunc_Concat_StrStr_ReturnValue_27 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_25, ' - ')
+  [6941] CallFunc_Concat_StrStr_ReturnValue_29 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_27, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_4)
+  [6987] CallFunc_Concat_StrStr_ReturnValue_31 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_29, ' ')
+  [7027] CallFunc_Concat_StrStr_ReturnValue_33 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_31, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_6)
+  [7073] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_33, true, true, LinearColor{0.93, 0.893584, 0.045833, 1.0}, 6.0, 'None')
+  [7147] pop
+  [7148] if !(self.ShowDebugInfo) pop
+  [7158] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result, 1)
+  [7189] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @7294
+  [7203] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result, 2)
+  [7234] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @10973
+  [7248] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result, 3)
+  [7279] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @11523
+  [7293] pop
+  [7294] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Transition ', ' Enter ')
+  [7344] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' ')
+  [7384] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [7443] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_2 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item.State)
+  [7498] CallFunc_Concat_StrStr_ReturnValue_16 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_2)
+  [7544] CallFunc_Concat_StrStr_ReturnValue_18 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_16, ' disallowed because behemoth  ')
+  [7613] CallFunc_Concat_StrStr_ReturnValue_19 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_18, ' is in disallowed state ')
+  [7676] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_14 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_CheckStateChangeValidity_StateThatFailed)
+  [7722] CallFunc_Concat_StrStr_ReturnValue_42 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_19, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_14)
+  [7768] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_42, true, true, LinearColor{0.93, 0.022478, 0.0, 1.0}, 6.0, 'None')
+  [7842] pop
+  [7843] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [7885] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue_1
+  [7912] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.StateInfos)
+  [7971] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [8009] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [8019] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [8046] goto @1297
+  [8051] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [8110] CallFunc_Array_Find_ReturnValue = Default__KismetArrayLibrary.Array_Find(CallFunc_Array_Get_Item.RequiredStates, K2Node_CustomEvent_State)
+  [8187] self.L_FoundCancel = CallFunc_Array_Find_ReturnValue
+  [8214] goto @1701
+  [8219] CallFunc_GreaterEqual_IntInt_ReturnValue_3 = GreaterEqual_IntInt(self.L_FoundCancel, 0)
+  [8253] if !(CallFunc_GreaterEqual_IntInt_ReturnValue_3) pop
+  [8263] self.L_EnterOrCancel = 1
+  [8283] pop
+  [8284] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [8343] RemoveQueuedStateChanges(CallFunc_Array_Get_Item.State)
+  [8375] pop
+  [8376] if !(self.L_FoundDuplicate) goto @8391
+  [8390] pop
+  [8391] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [8450] CallFunc_Conv_ByteToInt_ReturnValue_1 = Conv_ByteToInt(CallFunc_Array_Get_Item.State)
+  [8496] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [8564] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item_1.ScalingDelay)
+  [8632] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_Array_Length_ReturnValue_1, 1)
+  [8674] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [8708] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [8737] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue_1, CallFunc_Array_Get_Item_2)
+  [8796] CallFunc_Min_ReturnValue = Min(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_Array_Get_Item_2.Index)
+  [8851] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item_1.ScalingDelay, CallFunc_Min_ReturnValue, CallFunc_Array_Get_Item_3)
+  [8919] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_3)
+  [8948] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 0.0, CallFunc_Greater_IntInt_ReturnValue)
+  [9003] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_SelectFloat_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [9049] K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [9078] K2Node_MakeStruct_behemoth_statemanager_timedevent.ServerGameTime = K2Node_MakeStruct_ServerGameTime_2_E9CDD6B34B1372753E1588B6DBA55B3A_ImplicitCast
+  [9114] K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [9143] K2Node_MakeStruct_behemoth_statemanager_timedevent.RequestEnteredTimestamp = K2Node_MakeStruct_RequestEnteredTimestamp_19_8FBC53D742418FEBADFF31957DB36BB7_ImplicitCast
+  [9179] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateToChange = CallFunc_Array_Get_Item.State
+  [9224] K2Node_MakeStruct_behemoth_statemanager_timedevent.ConditionThatCausedEvent = CallFunc_Array_Get_Item_1
+  [9260] K2Node_MakeStruct_behemoth_statemanager_timedevent.StateThatTriggeredEvent = CallFunc_Array_Get_Item.State
+  [9305] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.DesiredStateChanges, K2Node_MakeStruct_behemoth_statemanager_timedevent)
+  [9373] if !(self.ShowDebugInfo) pop
+  [9383] CallFunc_Concat_StrStr_ReturnValue_13 = Concat_StrStr('Added new transition: ', ' Enter ')
+  [9444] CallFunc_Concat_StrStr_ReturnValue_14 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_13, ' ')
+  [9484] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [9543] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_1 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item.State)
+  [9598] CallFunc_Concat_StrStr_ReturnValue_15 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_14, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_1)
+  [9644] CallFunc_Concat_StrStr_ReturnValue_17 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_15, ' because ')
+  [9692] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [9760] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_10 = GetEnumeratorUserFriendlyName(behemoth_state_event, CallFunc_Array_Get_Item_1.StateChangeType)
+  [9815] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_11 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_1.StateVar)
+  [9870] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_12 = GetEnumeratorUserFriendlyName(behemoth_statecondition_type, CallFunc_Array_Get_Item_1.ConditionType)
+  [9925] CallFunc_Concat_StrStr_ReturnValue_36 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_17, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_12)
+  [9971] CallFunc_Concat_StrStr_ReturnValue_37 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_36, ' - ')
+  [10013] CallFunc_Concat_StrStr_ReturnValue_38 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_37, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_11)
+  [10059] CallFunc_Concat_StrStr_ReturnValue_39 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_38, ' ')
+  [10099] CallFunc_Concat_StrStr_ReturnValue_40 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_39, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_10)
+  [10145] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_40, true, true, LinearColor{0.93, 0.893584, 0.045833, 1.0}, 6.0, 'None')
+  [10219] pop
+  [10220] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [10262] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_2
+  [10289] goto @2496
+  [10294] if !(self.ShowDebugInfo) pop
+  [10304] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [10363] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.EntryConditions, self.L_FoundEntry, CallFunc_Array_Get_Item_1)
+  [10431] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_5 = GetEnumeratorUserFriendlyName(behemoth_state_event, CallFunc_Array_Get_Item_1.StateChangeType)
+  [10486] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_7 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_1.StateVar)
+  [10541] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_9 = GetEnumeratorUserFriendlyName(behemoth_statecondition_type, CallFunc_Array_Get_Item_1.ConditionType)
+  [10596] CallFunc_Concat_StrStr_ReturnValue_26 = Concat_StrStr('Ignored slower duplicate transition "', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_9)
+  [10672] CallFunc_Concat_StrStr_ReturnValue_28 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_26, ' - ')
+  [10714] CallFunc_Concat_StrStr_ReturnValue_30 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_28, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_5)
+  [10760] CallFunc_Concat_StrStr_ReturnValue_32 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_30, ' ')
+  [10800] CallFunc_Concat_StrStr_ReturnValue_34 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_32, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_7)
+  [10846] CallFunc_Concat_StrStr_ReturnValue_35 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_34, '"')
+  [10886] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_35, true, true, LinearColor{0.93, 0.893584, 0.045833, 1.0}, 6.0, 'None')
+  [10960] pop
+  [10961] Temp_bool_True_if_break_was_hit_Variable = true
+  [10972] pop
+  [10973] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr('Transition ', ' Enter ')
+  [11023] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' ')
+  [11063] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [11122] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item.State)
+  [11177] CallFunc_Concat_StrStr_ReturnValue_20 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3)
+  [11223] CallFunc_Concat_StrStr_ReturnValue_22 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_20, ' disallowed because behemoth  ')
+  [11292] CallFunc_Concat_StrStr_ReturnValue_24 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_22, " isn't in required state ")
+  [11356] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_13 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_CheckStateChangeValidity_StateThatFailed)
+  [11402] CallFunc_Concat_StrStr_ReturnValue_41 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_24, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_13)
+  [11448] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_41, true, true, LinearColor{0.93, 0.022478, 0.0, 1.0}, 6.0, 'None')
+  [11522] pop
+  [11523] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr('Transition ', ' Enter ')
+  [11573] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, ' ')
+  [11613] Default__KismetArrayLibrary.Array_Get(self.StateInfos, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [11672] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item.State)
+  [11727] CallFunc_Concat_StrStr_ReturnValue_21 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_3)
+  [11773] CallFunc_Concat_StrStr_ReturnValue_23 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_21, ' disallowed because an entrycondition failed')
+  [11856] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_23, true, true, LinearColor{0.93, 0.022478, 0.0, 1.0}, 6.0, 'None')
+  [11930] pop
+  [11931] Temp_int_Array_Index_Variable = 0
+  [11954] goto @7912
+  [11959] push @14805
+  [11964] push @12605
+  [11969] if !(self.ShowDebugInfo) pop
+  [11979] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [12008] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [12067] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_15 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_4.StateToChange)
+  [12122] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_4.ServerGameTime)
+  [12160] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [12206] CallFunc_Conv_DoubleToText_ReturnValue = Conv_DoubleToText(CallFunc_Subtract_DoubleDouble_ReturnValue, 0, false, true, 1, 324, 0, 3)
+  [12267] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue)
+  [12304] CallFunc_Concat_StrStr_ReturnValue_52 = Concat_StrStr('Transition: ', ' begin ')
+  [12355] CallFunc_Concat_StrStr_ReturnValue_53 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_52, ' ')
+  [12395] CallFunc_Concat_StrStr_ReturnValue_54 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_53, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_15)
+  [12441] CallFunc_Concat_StrStr_ReturnValue_55 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_54, ' in ')
+  [12484] CallFunc_Concat_StrStr_ReturnValue_56 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_55, CallFunc_Conv_TextToString_ReturnValue)
+  [12530] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_56, true, false, LinearColor{0.93, 0.468495, 0.0, 1.0}, 0.01, 'None')
+  [12604] pop
+  [12605] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [12664] CheckStateChangeValidity(CallFunc_Array_Get_Item_4.ConditionThatCausedEvent, CallFunc_Array_Get_Item_4.StateThatTriggeredEvent, CallFunc_CheckStateChangeValidity_StateThatFailed_1, CallFunc_CheckStateChangeValidity_Result_1)
+  [12732] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result_1, 0)
+  [12763] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_2) goto @13916
+  [12777] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [12806] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [12865] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_4.ServerGameTime)
+  [12903] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [12941] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @13819
+  [12955] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [13014] self.OwningBehemoth.TrySetState(CallFunc_Array_Get_Item_4.StateToChange, 0, CallFunc_TrySetState_Success)
+  [13079] push @13768
+  [13084] if !(self.ShowDebugInfo) pop
+  [13094] Temp_struct_Variable_2 = LinearColor{1.0, 0.033549, 0.153251, 1.0}
+  [13146] Temp_struct_Variable_3 = LinearColor{0.083052, 1.0, 0.0, 1.0}
+  [13198] Temp_string_Variable_4 = 'Failed!'
+  [13225] Temp_string_Variable_5 = 'Succeeded!'
+  [13255] CallFunc_Concat_StrStr_ReturnValue_43 = Concat_StrStr('Trying to ', ' begin ')
+  [13304] CallFunc_Concat_StrStr_ReturnValue_44 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_43, ' ')
+  [13344] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [13403] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_16 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_4.StateToChange)
+  [13458] CallFunc_Concat_StrStr_ReturnValue_45 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_44, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_16)
+  [13504] Temp_bool_Variable_4 = CallFunc_TrySetState_Success
+  [13523] CallFunc_Concat_StrStr_ReturnValue_46 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_45, ' - ')
+  [13565] Temp_bool_Variable_3 = CallFunc_TrySetState_Success
+  [13584] CallFunc_Concat_StrStr_ReturnValue_47 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_46, switch(Temp_bool_Variable_4){false: Temp_string_Variable_4, true: Temp_string_Variable_5, default: K2Node_Select_Default})
+  [13674] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_47, true, true, switch(Temp_bool_Variable_3){false: Temp_struct_Variable_2, true: Temp_struct_Variable_3, default: K2Node_Select_Default_1}, 6.0, 'None')
+  [13767] pop
+  [13768] Default__KismetArrayLibrary.Array_Remove(self.DesiredStateChanges, self.DesiredStateChangeIndex)
+  [13818] pop
+  [13819] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(self.DesiredStateChangeIndex, 1)
+  [13861] Temp_int_Variable_2 = CallFunc_Add_IntInt_ReturnValue_3
+  [13888] self.DesiredStateChangeIndex = Temp_int_Variable_2
+  [13915] pop
+  [13916] push @14758
+  [13921] if !(self.ShowDebugInfo) pop
+  [13931] K2Node_SwitchEnum_CmpSuccess_3 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result_1, 1)
+  [13962] if !(K2Node_SwitchEnum_CmpSuccess_3) goto @14156
+  [13976] K2Node_SwitchEnum_CmpSuccess_3 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result_1, 2)
+  [14007] if !(K2Node_SwitchEnum_CmpSuccess_3) goto @14156
+  [14021] K2Node_SwitchEnum_CmpSuccess_3 = NotEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result_1, 3)
+  [14052] if !(K2Node_SwitchEnum_CmpSuccess_3) goto @14067
+  [14066] pop
+  [14067] PrintString(self, 'EntryCondition failed', true, true, LinearColor{1.0, 0.0, 0.093488, 1.0}, 6.0, 'None')
+  [14155] pop
+  [14156] Temp_string_Variable = 'Disallowed state '
+  [14193] Temp_string_Variable_1 = 'Required state '
+  [14228] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, self.DesiredStateChangeIndex, CallFunc_Array_Get_Item_4)
+  [14287] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_17 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_4.StateToChange)
+  [14342] CallFunc_Concat_StrStr_ReturnValue_48 = Concat_StrStr('Transition ', CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_17)
+  [14392] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_CheckStateChangeValidity_Result_1, 1)
+  [14423] CallFunc_Concat_StrStr_ReturnValue_49 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_48, ' removed because of ')
+  [14482] Temp_bool_Variable = CallFunc_EqualEqual_ByteByte_ReturnValue_1
+  [14501] CallFunc_Concat_StrStr_ReturnValue_50 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_49, switch(Temp_bool_Variable){false: Temp_string_Variable_1, true: Temp_string_Variable, default: K2Node_Select_Default_2})
+  [14591] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_18 = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_CheckStateChangeValidity_StateThatFailed_1)
+  [14637] CallFunc_Concat_StrStr_ReturnValue_51 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_50, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue_18)
+  [14683] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_51, true, true, LinearColor{1.0, 0.0, 0.093488, 1.0}, 6.0, 'None')
+  [14757] pop
+  [14758] Default__KismetArrayLibrary.Array_Remove(self.DesiredStateChanges, 0)
+  [14804] pop
+  [14805] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.DesiredStateChanges)
+  [14864] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(self.DesiredStateChangeIndex, CallFunc_Array_Length_ReturnValue_2)
+  [14902] if !(CallFunc_Less_IntInt_ReturnValue_2) pop
+  [14912] goto @11959
+  [14917] Temp_int_Loop_Counter_Variable = 0
+  [14940] goto @11931
+  [14945] pop
+  [14946] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [14966] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [15008] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [15018] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [15038] K2Node_DynamicCast_AsBp_Behemoth = cast<Bp_Behemoth_C>(CallFunc_GetOwner_ReturnValue_2)
+  [15074] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Behemoth)
+  [15103] if !(K2Node_DynamicCast_bSuccess) pop
+  [15113] self.OwningBehemoth = K2Node_DynamicCast_AsBp_Behemoth
+  [15132] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthOnStateChanged_Event_0)
+  [15155] K2Node_CreateDelegate_OutputDelegate += None
+  [15196] Temp_int_Variable_3 = 0
+  [15219] Temp_int_Variable_4 = 0
+  [15242] CallFunc_MakeLiteralInt_ReturnValue_1 = MakeLiteralInt(29)
+  [15275] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Variable_3, CallFunc_MakeLiteralInt_ReturnValue_1)
+  [15313] if !(CallFunc_Less_IntInt_ReturnValue_4) pop
+  [15323] CallFunc_Conv_IntToByte_ReturnValue_2 = Conv_IntToByte(Temp_int_Variable_3)
+  [15360] CallFunc_GetEnumeratorValueFromIndex_ReturnValue_1 = GetEnumeratorValueFromIndex(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue_2)
+  [15406] CallFunc_Conv_ByteToInt_ReturnValue_2 = Conv_ByteToInt(CallFunc_GetEnumeratorValueFromIndex_ReturnValue_1)
+  [15443] Temp_int_Variable_4 = CallFunc_Conv_ByteToInt_ReturnValue_2
+  [15470] push @15695
+  [15475] CallFunc_Conv_IntToByte_ReturnValue_3 = Conv_IntToByte(Temp_int_Variable_4)
+  [15512] CallFunc_GetValidValue_ReturnValue_1 = GetValidValue(behemoth_states_enum, CallFunc_Conv_IntToByte_ReturnValue_3)
+  [15558] K2Node_MakeStruct_behemoth_state_int_pair.State = CallFunc_GetValidValue_ReturnValue_1
+  [15594] K2Node_MakeStruct_behemoth_state_int_pair.Index = 0
+  [15626] CallFunc_Array_Add_ReturnValue_1 = Default__KismetArrayLibrary.Array_Add(self.DelayScalingIndex, K2Node_MakeStruct_behemoth_state_int_pair)
+  [15694] pop
+  [15695] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(Temp_int_Variable_3, 1)
+  [15737] Temp_int_Variable_3 = CallFunc_Add_IntInt_ReturnValue_4
+  [15764] goto @15242
+  [15769] push @15874
+  [15774] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [15794] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [15836] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [15846] self.DesiredStateChangeIndex = 0
+  [15869] goto @14805
+  [15874] if !(self.ShowDebugInfo) pop
+  [15884] goto @1269
+  [15889] goto @14917
+  [15894] return nothing
+  [15896] end
+
+=== GetIndexOfStateChange
+  [0] push @693
+  [5] LocalFoundIndex = -1
+  [28] Temp_int_Loop_Counter_Variable = 0
+  [51] Temp_int_Array_Index_Variable = 0
+  [74] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(ConditionArray)
+  [133] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [171] if !(CallFunc_Less_IntInt_ReturnValue) goto @494
+  [185] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [212] push @526
+  [217] Default__KismetArrayLibrary.Array_Get(ConditionArray, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [276] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(StateEvent, CallFunc_Array_Get_Item.StateChangeType)
+  [323] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(State, CallFunc_Array_Get_Item.StateVar)
+  [370] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [408] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [418] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(LocalFoundIndex, -1)
+  [452] if !(CallFunc_EqualEqual_IntInt_ReturnValue) goto @600
+  [466] LocalFoundIndex = Temp_int_Array_Index_Variable
+  [493] pop
+  [494] FoundIndex = LocalFoundIndex
+  [521] goto @693
+  [526] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [568] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [595] goto @74
+  [600] ThrowDuplicateRuleError('Duplicate state transition rules found in statemanager for', State, StateEvent)
+  [692] pop
+  [693] return nothing
+  [695] end
+
+=== GetStateDelayIndex
+  [0] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(State)
+  [37] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Array_Get_Item)
+  [96] Index = CallFunc_Array_Get_Item.Index
+  [132] return nothing
+  [134] end
+
+=== GetTimeUntilStateChange
+  [0] push @818
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DesiredStateChanges)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @674
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @744
+  [194] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.StateToChange, State)
+  [300] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) pop
+  [310] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [339] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [398] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.ServerGameTime)
+  [436] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RequestEnteredTimestamp)
+  [474] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [520] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.ServerGameTime)
+  [558] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [604] WaitingForStateChange = true
+  [615] TotalDuration = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [642] RemainingTime = CallFunc_Subtract_DoubleDouble_ReturnValue_1
+  [669] goto @818
+  [674] WaitingForStateChange = false
+  [685] TotalDuration = -1.0
+  [712] RemainingTime = -1.0
+  [739] goto @818
+  [744] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [786] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [813] goto @51
+  [818] return nothing
+  [820] end
+
+=== IncrementStateDelayIndex
+  [0] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(State)
+  [37] Default__KismetArrayLibrary.Array_Get(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue, CallFunc_Array_Get_Item)
+  [96] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(CallFunc_Array_Get_Item.Index, 1)
+  [147] K2Node_MakeStruct_behemoth_state_int_pair.State = CallFunc_Array_Get_Item.State
+  [192] K2Node_MakeStruct_behemoth_state_int_pair.Index = CallFunc_Add_IntInt_ReturnValue
+  [228] Default__KismetArrayLibrary.Array_Set(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue, K2Node_MakeStruct_behemoth_state_int_pair, false)
+  [288] return nothing
+  [290] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_behemoth_statemanager_bpc(14946)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_behemoth_statemanager_bpc(15769)
+  [33] return nothing
+  [35] end
+
+=== RemoveQueuedStateChanges
+  [0] push @1051
+  [5] StateChangeIndex = 0
+  [28] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.DesiredStateChanges)
+  [87] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(StateChangeIndex, CallFunc_Array_Length_ReturnValue)
+  [125] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [135] push @28
+  [140] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, 0, CallFunc_Array_Get_Item)
+  [195] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.StateToChange, State)
+  [242] if !(CallFunc_EqualEqual_ByteByte_ReturnValue) goto @903
+  [256] push @1000
+  [261] if !(self.ShowDebugInfo) pop
+  [271] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Removed transition: ', 'begin')
+  [328] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' ')
+  [368] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [397] Default__KismetArrayLibrary.Array_Get(self.DesiredStateChanges, StateChangeIndex, CallFunc_Array_Get_Item_1)
+  [456] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.ServerGameTime)
+  [494] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [540] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(behemoth_states_enum, CallFunc_Array_Get_Item_1.StateToChange)
+  [595] CallFunc_Conv_DoubleToText_ReturnValue = Conv_DoubleToText(CallFunc_Subtract_DoubleDouble_ReturnValue, 0, false, true, 1, 324, 0, 2)
+  [656] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [702] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue)
+  [739] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' in ')
+  [782] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Conv_TextToString_ReturnValue)
+  [828] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, true, true, LinearColor{0.93, 0.0, 0.558424, 1.0}, 5.0, 'None')
+  [902] pop
+  [903] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(StateChangeIndex, 1)
+  [945] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [972] StateChangeIndex = Temp_int_Variable
+  [999] pop
+  [1000] Default__KismetArrayLibrary.Array_Remove(self.DesiredStateChanges, StateChangeIndex)
+  [1050] pop
+  [1051] return nothing
+  [1053] end
+
+=== SetStateDelayIndex
+  [0] K2Node_MakeStruct_behemoth_state_int_pair.State = State
+  [36] K2Node_MakeStruct_behemoth_state_int_pair.Index = Value
+  [72] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(State)
+  [109] Default__KismetArrayLibrary.Array_Set(self.DelayScalingIndex, CallFunc_Conv_ByteToInt_ReturnValue, K2Node_MakeStruct_behemoth_state_int_pair, false)
+  [169] return nothing
+  [171] end
+
+=== ThrowDuplicateRuleError
+  [0] CallFunc_Conv_ByteToString_ReturnValue = Conv_ByteToString(StateEvent)
+  [37] CallFunc_Conv_ByteToString_ReturnValue_1 = Conv_ByteToString(State)
+  [74] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(Base Error Text, ' (')
+  [115] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [144] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self.OwningBehemoth)
+  [181] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [231] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, CallFunc_GetDisplayName_ReturnValue_1)
+  [277] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, ') =')
+  [319] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' - ')
+  [361] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_ByteToString_ReturnValue)
+  [407] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, ' ')
+  [447] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, CallFunc_Conv_ByteToString_ReturnValue_1)
+  [493] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, ')')
+  [533] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Concat_StrStr_ReturnValue_8)
+  [579] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_9, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [653] StackTrace()
+  [663] return nothing
+  [665] end
+
+=== UpdateSpecialCaseSignificanceManagement
+  [0] frame.K2Node_Event_NewSignificance = NewSignificance
+  [18] ExecuteUbergraph_behemoth_statemanager_bpc(14945)
+  [33] return nothing
+  [35] end
+
+=== UsesSpecialCaseSignificanceManagement
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

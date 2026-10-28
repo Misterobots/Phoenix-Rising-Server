@@ -1,0 +1,85 @@
+{
+ "name": "shadowcat_backup_if_close_bt",
+ "package": "Archon/Content/Monsters/aq/shadowcat/ai/shadowcat_backup_if_close_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_aq_sdc_00_atk_bwdshuffle_bwd_00_mot",
+  "eqs_find_nearest_live_player",
+  "lerawr_bb"
+ ],
+ "exports": {
+  "archon_distance_check_btdeco_C_0": {
+   "type": "archon_distance_check_btdeco_C",
+   "props": {
+    "Origin": "bb.SelfPos",
+    "Target": "bb.TargetActor",
+    "PredictTargetHorizFuturePosTime": 1.0,
+    "MaxDistance": {
+     "ConstantFloat": 1250.0
+    },
+    "bShowPropertyDetails": false,
+    "NodeName": "TargetActor <= 1250 in 1 sec",
+    "TreeAsset": "BehaviorTree shadowcat_backup_if_close_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "shadowcat_backup_if_close_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData lerawr_bb",
+    "RootDecorators": [
+     "@BTDecorator_ForceSuccess_2"
+    ]
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_BehemothAction_C_0",
+      "Decorators": [
+       "@archon_distance_check_btdeco_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree shadowcat_backup_if_close_bt"
+   }
+  },
+  "BTDecorator_ForceSuccess_2": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree shadowcat_backup_if_close_bt"
+   }
+  },
+  "BTTask_BehemothAction_C_0": {
+   "type": "BTTask_BehemothAction_C",
+   "props": {
+    "Montage": "AnimMontage b_aq_sdc_00_atk_bwdshuffle_bwd_00_mot",
+    "TreeAsset": "BehaviorTree shadowcat_backup_if_close_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_nearest_live_player"
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree shadowcat_backup_if_close_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  }
+ }
+}

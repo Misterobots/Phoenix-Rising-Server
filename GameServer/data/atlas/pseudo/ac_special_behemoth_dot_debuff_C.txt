@@ -1,0 +1,185 @@
+# ac_special_behemoth_dot_debuff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthApplyPartDamage
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(1713)
+  [15] return nothing
+  [17] end
+
+=== AuthDoDamage
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2004)
+  [15] return nothing
+  [17] end
+
+=== DamageToDeal
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [59] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue)
+  [96] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [125] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.DamagePerFiveSeconds, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [171] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, self.DamageAmp)
+  [217] Damage = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [244] return nothing
+  [246] end
+
+=== DealPointDamage
+  [0] DamageToDeal(CallFunc_DamageToDeal_Damage)
+  [23] CallFunc_GetSocketLocation_ReturnValue = self.Mesh.GetSocketLocation(EX_ArrayGetByRef(ArrayVariable=MonsterPart.self.PhATBones,ArrayIndex=0))
+  [114] CallFunc_MakeVector_ReturnValue = MakeVector(1.0, 0.0, 0.0)
+  [169] CallFunc_MakeHitResult_ReturnValue = MakeHitResult(false, false, 0.0, 0.0, CallFunc_GetSocketLocation_ReturnValue, CallFunc_GetSocketLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), null, null, null, 'None', 'None', 0, 0, 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [371] array{GameplayTag{'DamageType.Dot'}, GameplayTag{'DamageType.Blunt'}, GameplayTag{'DamageType.CantStagger'}}
+  [463] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = Guid{0, 0, 0, 0}
+  [524] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = K2Node_MakeArray_Array
+  [560] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [580] CallFunc_ApplyArchonElementalPointDamage_BaseDamage_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_DamageToDeal_Damage)
+  [609] Default__ArchonGameplayStatics.ApplyArchonElementalPointDamage(MonsterPart.self.MonsterPartActor, CallFunc_ApplyArchonElementalPointDamage_BaseDamage_ImplicitCast, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, CallFunc_MakeVector_ReturnValue, CallFunc_MakeHitResult_ReturnValue, CallFunc_GetInstigatorController_ReturnValue, self, null, K2Node_MakeStruct_ArchonExtendedDamageInfo)
+  [764] return nothing
+  [766] end
+
+=== DotLoop
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2005)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_ac_special_behemoth_dot_debuff
+  [0] push @2320
+  [5] goto computed(EntryPoint)
+  [15] self.MaxDuration = 40.0
+  [38] MarkPropertyDirtyFromRepIndex(self, 10, 'MaxDuration')
+  [67] pop
+  [68] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [110] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [137] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [196] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [234] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [244] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [271] Default__KismetArrayLibrary.Array_Get(self.AllMonsterParts, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [330] DealPointDamage(CallFunc_Array_Get_Item)
+  [353] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.DamageTickTime, 0.20000000298023224)
+  [399] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [458] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue_1)
+  [495] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [524] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [570] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [599] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=68), 1851274669, 'ExecuteUbergraph_ac_special_behemoth_dot_debuff', self})
+  [657] pop
+  [658] FlushNetDormancy()
+  [668] K2Node_VariableSet_TimeRemaining_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [697] self.TimeRemaining = K2Node_VariableSet_TimeRemaining_ImplicitCast
+  [724] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [753] self.DamageAmp = 1.0
+  [780] pop
+  [781] FlushNetDormancy()
+  [791] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(K2Node_CustomEvent_Extension, self.TimeRemaining)
+  [837] CallFunc_FMin_A_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [866] CallFunc_FMin_ReturnValue = FMin(CallFunc_FMin_A_ImplicitCast, CallFunc_Add_DoubleDouble_ReturnValue)
+  [912] self.TimeRemaining = CallFunc_FMin_ReturnValue
+  [939] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [968] pop
+  [969] FlushNetDormancy()
+  [979] goto @15
+  [984] Temp_int_Array_Index_Variable = 0
+  [1007] goto @137
+  [1012] K2Node_CreateDelegate_OutputDelegate = bind(self.DotLoop)
+  [1035] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 5.0, true, 0.0, 0.0)
+  [1088] AuthApplyPartDamage()
+  [1102] CallFunc_GetInstigator_ReturnValue_5 = GetInstigator()
+  [1122] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetInstigator_ReturnValue_5)
+  [1151] CallFunc_HasMatchingGameplayTag_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.HasMatchingGameplayTag(GameplayTag{'weapon.talent.d24.sp05'})
+  [1225] if !(CallFunc_HasMatchingGameplayTag_ReturnValue) pop
+  [1235] goto @969
+  [1240] MulticastOnAdded()
+  [1250] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1270] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Fire_Grow_Burst, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [1353] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [1373] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Wep_Impact_Monster_Stagger_Elemental, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [1456] CallFunc_IsValid_ReturnValue = IsValid(self.VFX_0)
+  [1485] if !(CallFunc_IsValid_ReturnValue) pop
+  [1495] CallFunc_GetInstigator_ReturnValue_4 = GetInstigator()
+  [1515] Default__vfx_function_library_C.GetElementalParticleColorVector(CallFunc_GetInstigator_ReturnValue_4, self, CallFunc_GetElementalParticleColorVector_ColorVector)
+  [1570] self.VFX_0.SetVectorParameter('ParticleColor', CallFunc_GetElementalParticleColorVector_ColorVector)
+  [1628] pop
+  [1629] Default__KismetArrayLibrary.Array_Shuffle(self.AllMonsterParts)
+  [1670] Temp_int_Loop_Counter_Variable = 0
+  [1693] goto @984
+  [1698] OnAdded()
+  [1708] goto @1012
+  [1713] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1733] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1769] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [1798] if !(K2Node_DynamicCast_bSuccess) goto @1988
+  [1812] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [1858] self.Mesh = CallFunc_GetMesh_SkeletalMesh
+  [1877] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1897] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.K2_GetComponentsByClass(monsterpart_bpc_C)
+  [1956] self.AllMonsterParts = CallFunc_K2_GetComponentsByClass_ReturnValue
+  [1983] goto @1629
+  [1988] CallFunc_GetMesh_SkeletalMesh = null
+  [1999] goto @1858
+  [2004] pop
+  [2005] AuthApplyPartDamage()
+  [2019] pop
+  [2020] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [2040] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue)
+  [2069] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [2079] StartPersistentAudio()
+  [2089] pop
+  [2090] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [2110] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_1)
+  [2139] if !(CallFunc_IsLocalCharacter_ReturnValue_1) pop
+  [2149] Stop Persistent Audio()
+  [2159] pop
+  [2160] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [2180] CallFunc_IsLocalCharacter_ReturnValue_2 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_2)
+  [2209] if !(CallFunc_IsLocalCharacter_ReturnValue_2) pop
+  [2219] StartPersistentVFX()
+  [2229] pop
+  [2230] CallFunc_GetInstigator_ReturnValue_3 = GetInstigator()
+  [2250] CallFunc_IsLocalCharacter_ReturnValue_3 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_3)
+  [2279] if !(CallFunc_IsLocalCharacter_ReturnValue_3) pop
+  [2289] StopPersistentVFX()
+  [2299] pop
+  [2300] MulticastOnRefreshed()
+  [2310] goto @658
+  [2315] goto @781
+  [2320] return nothing
+  [2322] end
+
+=== ExtendTime
+  [0] frame.K2Node_CustomEvent_Extension = Extension
+  [18] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2315)
+  [33] return nothing
+  [35] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(1240)
+  [15] return nothing
+  [17] end
+
+=== MulticastOnRefreshed
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2300)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(1698)
+  [15] return nothing
+  [17] end
+
+=== StartPersistentAudio
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2020)
+  [15] return nothing
+  [17] end
+
+=== StartPersistentVFX
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2160)
+  [15] return nothing
+  [17] end
+
+=== Stop Persistent Audio
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2090)
+  [15] return nothing
+  [17] end
+
+=== StopPersistentVFX
+  [0] ExecuteUbergraph_ac_special_behemoth_dot_debuff(2230)
+  [15] return nothing
+  [17] end

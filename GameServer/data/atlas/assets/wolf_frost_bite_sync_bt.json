@@ -1,0 +1,246 @@
+{
+ "name": "wolf_frost_bite_sync_bt",
+ "package": "Archon/Content/Monsters/aq/wolf_frost/ai/wolf_frost_bite_sync_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_wolf_frost_frigidbite_syncatk_miss_mot",
+  "eqs_find_live_player_in_view_within_distance",
+  "lerawr_bb",
+  "wolf_frost_bite_synced_anim_controller_C"
+ ],
+ "exports": {
+  "wolf_frost_bite_sync_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_0",
+    "BlackboardAsset": "BlackboardData lerawr_bb"
+   }
+  },
+  "BTComposite_Sequence_0": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_7",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_18",
+      "ChildTask": null,
+      "Decorators": [
+       "@ticket_is_available_btdeco_C_0",
+       "@ticket_is_available_btdeco_C_1",
+       "@BTDecorator_DistanceCheck_C_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt"
+   }
+  },
+  "BTComposite_Sequence_16": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@consume_ticket_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_PhxWaitForSyncedAnimationCompletion_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "BTComposite_Sequence_18": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@consume_ticket_bttask_C_4",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@perform_action_montage_bttask_C_13",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_4"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_16",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_PhxHasSyncedAnimation_0"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDecorator_DistanceCheck_C_0": {
+   "type": "BTDecorator_DistanceCheck_C",
+   "props": {
+    "Origin": "bb.SelfActor",
+    "Target": "bb.TargetActor",
+    "MaxDistance": 1600.0,
+    "ObservedKeyNames": [
+     "SelfActor",
+     "AttackTarget"
+    ],
+    "NodeName": "Is Not Too Close?",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTDecorator_ForceSuccess_4": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "BTDecorator_PhxHasSyncedAnimation_0": {
+   "type": "BTDecorator_PhxHasSyncedAnimation",
+   "props": {
+    "ControllerClass": "BlueprintGeneratedClass wolf_frost_bite_synced_anim_controller_C",
+    "NodeName": "Was Bite Successful?",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "BTTask_PhxWaitForSyncedAnimationCompletion_0": {
+   "type": "BTTask_PhxWaitForSyncedAnimationCompletion",
+   "props": {
+    "ControllerClass": "BlueprintGeneratedClass wolf_frost_bite_synced_anim_controller_C",
+    "NodeName": "Wait for Synced Pounce Completion",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "BTTask_RunEQSQuery_7": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance",
+     "QueryConfig": [
+      {
+       "ParamName": "Dot.FloatValueMin",
+       "ParamType": "EAIParamType::Float",
+       "Value": 0.85,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Dot.FloatValueMax",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Distance.FloatValueMin",
+       "ParamType": "EAIParamType::Float",
+       "Value": 400.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Distance.FloatValueMax",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1600.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Distance.ScoringFactor",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.TargetActor",
+    "NodeName": "Try to get the best player in view",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "BTTask_Wait_3": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "consume_ticket_bttask_C_3": {
+   "type": "consume_ticket_bttask_C",
+   "props": {
+    "TicketCategory": "SyncAttack",
+    "TargetBBKey": "TargetActor",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_16"
+   }
+  },
+  "consume_ticket_bttask_C_4": {
+   "type": "consume_ticket_bttask_C",
+   "props": {
+    "TicketCategory": "SyncAttackEntrance",
+    "TargetBBKey": "TargetActor",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "perform_action_montage_bttask_C_13": {
+   "type": "perform_action_montage_bttask_C",
+   "props": {
+    "Montage": "AnimMontage b_wolf_frost_frigidbite_syncatk_miss_mot",
+    "NodeName": "Synced Pounce Entrance",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_18"
+   }
+  },
+  "ticket_is_available_btdeco_C_0": {
+   "type": "ticket_is_available_btdeco_C",
+   "props": {
+    "TicketDispatcherBBKey": "TargetActor",
+    "FindAnyTicketsWithTheseTags": [
+     "AI.Tickets.SyncAttackEntrance"
+    ],
+    "NodeName": "Is Sync Attack Entrance Ticket Available?",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  },
+  "ticket_is_available_btdeco_C_1": {
+   "type": "ticket_is_available_btdeco_C",
+   "props": {
+    "TicketDispatcherBBKey": "TargetActor",
+    "FindAnyTicketsWithTheseTags": [
+     "AI.Tickets.SyncAttack"
+    ],
+    "NodeName": "Is Sync Attack Ticket Available?",
+    "TreeAsset": "BehaviorTree wolf_frost_bite_sync_bt",
+    "ParentNode": "@BTComposite_Sequence_0"
+   }
+  }
+ }
+}

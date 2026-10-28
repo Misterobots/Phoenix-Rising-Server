@@ -1,0 +1,149 @@
+# escalation_on_crit_dot_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthApplyPartDamage
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1230)
+  [15] return nothing
+  [17] end
+
+=== AuthDoDamage
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1521)
+  [15] return nothing
+  [17] end
+
+=== DamageToDeal
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [59] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue)
+  [96] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [125] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TotalDotDamage, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [171] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, self.DamageAmp)
+  [217] Damage = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [244] return nothing
+  [246] end
+
+=== DealPointDamage
+  [0] DamageToDeal(CallFunc_DamageToDeal_Damage)
+  [23] CallFunc_GetSocketLocation_ReturnValue = self.Mesh.GetSocketLocation(EX_ArrayGetByRef(ArrayVariable=MonsterPart.self.PhATBones,ArrayIndex=0))
+  [114] CallFunc_MakeVector_ReturnValue = MakeVector(1.0, 0.0, 0.0)
+  [169] CallFunc_MakeHitResult_ReturnValue = MakeHitResult(false, false, 0.0, 0.0, CallFunc_GetSocketLocation_ReturnValue, CallFunc_GetSocketLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), null, null, null, 'None', 'None', 0, 0, 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [371] array{GameplayTag{'DamageType.Dot'}}
+  [409] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = Guid{0, 0, 0, 0}
+  [470] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = K2Node_MakeArray_Array
+  [506] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [526] CallFunc_ApplyArchonElementalPointDamage_BaseDamage_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_DamageToDeal_Damage)
+  [555] Default__ArchonGameplayStatics.ApplyArchonElementalPointDamage(MonsterPart.self.MonsterPartActor, CallFunc_ApplyArchonElementalPointDamage_BaseDamage_ImplicitCast, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, CallFunc_MakeVector_ReturnValue, CallFunc_MakeHitResult_ReturnValue, CallFunc_GetInstigatorController_ReturnValue, self, null, K2Node_MakeStruct_ArchonExtendedDamageInfo)
+  [710] return nothing
+  [712] end
+
+=== DotLoop
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1522)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_escalation_on_crit_dot_bp
+  [0] push @1807
+  [5] goto computed(EntryPoint)
+  [15] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [57] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [84] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [143] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [181] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [191] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [218] Default__KismetArrayLibrary.Array_Get(self.AllMonsterParts, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [277] DealPointDamage(CallFunc_Array_Get_Item)
+  [300] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.DamageTickTime, 0.20000000298023224)
+  [346] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.AllMonsterParts)
+  [405] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Array_Length_ReturnValue_1)
+  [442] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [471] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [517] CallFunc_Delay_Duration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [546] Delay(self, CallFunc_Delay_Duration_ImplicitCast, LatentActionInfo{EX_SkipOffsetConst(Value=15), 2004863605, 'ExecuteUbergraph_escalation_on_crit_dot_bp', self})
+  [604] pop
+  [605] Temp_int_Array_Index_Variable = 0
+  [628] goto @84
+  [633] K2Node_CreateDelegate_OutputDelegate = bind(self.DotLoop)
+  [656] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.DamageTickTime)
+  [685] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [742] AuthApplyPartDamage()
+  [756] pop
+  [757] MulticastOnAdded()
+  [767] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [787] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Fire_Grow_Burst, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable_1, false)
+  [870] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [890] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Wep_Impact_Monster_Stagger_Elemental, CallFunc_GetBuffOwner_ReturnValue, 0, Temp_delegate_Variable, false)
+  [973] CallFunc_IsValid_ReturnValue = IsValid(self.VFX_0)
+  [1002] if !(CallFunc_IsValid_ReturnValue) pop
+  [1012] CallFunc_GetInstigator_ReturnValue_4 = GetInstigator()
+  [1032] Default__vfx_function_library_C.GetElementalParticleColorVector(CallFunc_GetInstigator_ReturnValue_4, self, CallFunc_GetElementalParticleColorVector_ColorVector)
+  [1087] self.VFX_0.SetVectorParameter('ParticleColor', CallFunc_GetElementalParticleColorVector_ColorVector)
+  [1145] pop
+  [1146] Default__KismetArrayLibrary.Array_Shuffle(self.AllMonsterParts)
+  [1187] Temp_int_Loop_Counter_Variable = 0
+  [1210] goto @605
+  [1215] OnAdded()
+  [1225] goto @633
+  [1230] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1250] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1286] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [1315] if !(K2Node_DynamicCast_bSuccess) goto @1505
+  [1329] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [1375] self.Mesh = CallFunc_GetMesh_SkeletalMesh
+  [1394] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1414] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_1.K2_GetComponentsByClass(monsterpart_bpc_C)
+  [1473] self.AllMonsterParts = CallFunc_K2_GetComponentsByClass_ReturnValue
+  [1500] goto @1146
+  [1505] CallFunc_GetMesh_SkeletalMesh = null
+  [1516] goto @1375
+  [1521] pop
+  [1522] AuthApplyPartDamage()
+  [1536] pop
+  [1537] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [1557] CallFunc_IsLocalCharacter_ReturnValue = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue)
+  [1586] if !(CallFunc_IsLocalCharacter_ReturnValue) pop
+  [1596] StartPersistentAudio()
+  [1606] pop
+  [1607] CallFunc_GetInstigator_ReturnValue_1 = GetInstigator()
+  [1627] CallFunc_IsLocalCharacter_ReturnValue_1 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_1)
+  [1656] if !(CallFunc_IsLocalCharacter_ReturnValue_1) pop
+  [1666] pop
+  [1667] CallFunc_GetInstigator_ReturnValue_2 = GetInstigator()
+  [1687] CallFunc_IsLocalCharacter_ReturnValue_2 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_2)
+  [1716] if !(CallFunc_IsLocalCharacter_ReturnValue_2) pop
+  [1726] StartPersistentVFX()
+  [1736] pop
+  [1737] CallFunc_GetInstigator_ReturnValue_3 = GetInstigator()
+  [1757] CallFunc_IsLocalCharacter_ReturnValue_3 = IsLocalCharacter(CallFunc_GetInstigator_ReturnValue_3)
+  [1786] if !(CallFunc_IsLocalCharacter_ReturnValue_3) pop
+  [1796] StopPersistentVFX()
+  [1806] pop
+  [1807] return nothing
+  [1809] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(757)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1215)
+  [15] return nothing
+  [17] end
+
+=== StartPersistentAudio
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1537)
+  [15] return nothing
+  [17] end
+
+=== StartPersistentVFX
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1667)
+  [15] return nothing
+  [17] end
+
+=== Stop Persistent Audio
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1607)
+  [15] return nothing
+  [17] end
+
+=== StopPersistentVFX
+  [0] ExecuteUbergraph_escalation_on_crit_dot_bp(1737)
+  [15] return nothing
+  [17] end

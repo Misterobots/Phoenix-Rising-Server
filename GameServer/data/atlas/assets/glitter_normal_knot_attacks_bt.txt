@@ -1,0 +1,65 @@
+glitter_normal_knot_attacks_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    1) PhxPerformGameplayAction "Manta -> Knot"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+    2) Selector
+      1) Sequence
+        1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+        [if ConditionalLoop  (TargetActor is Is Set)]
+        [if comment_btdeco "AM: Conditional Loops don't return failure for some reason"]
+        2) Selector
+          1) Sequence
+            1) Wait  (WaitTime=1, RandomDeviation=0.5)
+            2) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 5000.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+            3) Selector
+              [if passes_behemoth_requirements_btdeco "Head Part Required"  (BehemothRequirements={"RequireIntactPartName": "Head", "PartRequirements": {"PartNamesToCheck": ["Head"]}}, bShowPropertyDetails=false)]
+              [if Cooldown  (CooldownTime=10)]
+              1) Selector
+                [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=1200, MaxDistance=5000)]
+                [if btdeco_percentchance  (PercentChance=0.75)]
+                1) Sequence "Knot to Lazer"
+                  1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_knot_to_lazer_bt)
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  [if ForceSuccess]
+                  2) Sequence
+                    1) PhxPerformGameplayAction "Knot -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                    2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+                [if DistanceCheck  (Origin=bb.SelfPos, Target=bb.TargetActor, MinDistance=1200, MaxDistance=2500)]
+                2) Sequence "Knot to Projectile"
+                  1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_knot_to_projectile_bt)
+                  [if btdeco_percentchance  (PercentChance=0.5)]
+                  [if ForceSuccess]
+                  2) Sequence
+                    1) PhxPerformGameplayAction "Knot -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                    2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+              [if comment_btdeco "Knot to Snake Bite"]
+              [if btdeco_percentchance  (PercentChance=0.6)]
+              2) Sequence
+                1) RunEQSQuery "Try to get the best player in view"  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_in_view_within_distance", "QueryConfig": [{"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 400.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 2500.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+                2) PhxPerformGameplayAction "Knot -> Snake Bite"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                [if ForceSuccess]
+                3) Selector
+                  [if btdeco_percentchance  (PercentChance=0.75)]
+                  1) PhxPerformGameplayAction "Snake Bite -> Knot"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                  2) Sequence
+                    1) PhxPerformGameplayAction "Snake Bite -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                    2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+              3) Selector
+                [if comment_btdeco "Knot to Tail Swipe"]
+                [if btdeco_percentchance  (PercentChance=0.6)]
+                1) Sequence
+                  1) Selector
+                    [if btdeco_percentchance  (PercentChance=0.5)]
+                    1) PhxPerformGameplayAction "Knot -> Tail Swipe Left"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                    2) PhxPerformGameplayAction "Knot -> Tail Swipe Right"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                  2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+                2) Sequence
+                  1) PhxPerformGameplayAction "Knot -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+                  2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+          2) Sequence "Failsafe"
+            1) PhxPerformGameplayAction "Knot -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+            2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)
+      2) Sequence "Failsafe"
+        1) PhxPerformGameplayAction "Knot -> Manta"  (ActionChooser=@PhxGameplayActionInstanceChooser_0)
+        2) ClearBBVar "Clear Target Actor"  (BBVar=bb.TargetActor)

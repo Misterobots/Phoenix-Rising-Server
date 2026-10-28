@@ -1,0 +1,49 @@
+lerawr_beta_attacks_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if DistanceCheck  (Origin=bb.SelfPos, Target=bb.AttackTarget, MinDistance=0, MaxDistance=3000)]
+  Selector "Small Combos"
+    {service rng_float_service  (RNG_Float_key=bb.RNG_Float, bCallTickOnSearchStart=true, bRestartTimerOnEachActivation=true)}
+    [if Cooldown  (CooldownTime=10)]
+    1) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_players_in_arc", "QueryConfig": [{"ParamName": "Distance.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.0, "BBKey": "bb.None"}, {"ParamName": "Distance.FloatValueMax", "ParamType": "EAIParamType::Float", "Value": 1250.0, "BBKey": "bb.None"}, {"ParamName": "Distance.ScoringFactor", "ParamType": "EAIParamType::Float", "Value": 1.0, "BBKey": "bb.None"}, {"ParamName": "Dot.FloatValueMin", "ParamType": "EAIParamType::Float", "Value": 0.2, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.TargetActor)
+      2) BehemothAction "personality_02"  (Montage=AnimMontage b_aq_gen_00_pers_personality_00_mot)
+    [if DistanceToLocCheck  (Origin=bb.SelfPos, Target=bb.KnownTargetsAvgPos, MinDistance=0, MaxDistance=1200)]
+    [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.33)]
+    [if BTDeco_ArchonCooldown  (CooldownTime=10, TimerGameTimeStart=bb.CurrentFightStateStartTime)]
+    2) Sequence
+      1) Sequence
+        [if compare_targets_and_sides  (Radius=1200)]
+        1) EvaluateSpecificAction  (ActionClassesToTest=["BlueprintGeneratedClass lerawr_sidegore_l_atk_C", "BlueprintGeneratedClass lerawr_sidegore_r_atk_C"], ChosenActionKey=bb.ChosenAttack)
+        2) Selector
+          {service rng_float_service  (RNG_Float_key=bb.RNG_Float, Interval=0.1, RandomDeviation=0)}
+          [if compare_targets_and_sides  (Radius=1100, CompareType=MoreOnLeft)]
+          1) BehemothAction "sidegore_l"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_left_00_mot)
+          [if compare_targets_and_sides  (Radius=1100, CompareType=MoreOnRight)]
+          2) BehemothAction "sidegore_r"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_right_00_mot)
+          [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.5)]
+          [if compare_targets_and_sides  (Radius=1200, CompareType=MoreOnLeft)]
+          [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.5)]
+          3) BehemothAction "sidegore_l"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_left_00_mot)
+          4) BehemothAction "sidegore_r"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_right_00_mot)
+      [if compare_targets_and_sides  (Radius=1400)]
+      2) Selector
+        [if compare_targets_and_sides  (Radius=2000, CompareType=MoreOnLeft)]
+        1) BehemothAction "sidegorecommited_left"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_left_00_mot)
+        [if compare_targets_and_sides  (Radius=2000, CompareType=MoreOnRight)]
+        2) BehemothAction "sidegorecommited_right"  (Montage=AnimMontage b_aq_lerawr_00_atk_sidegorecommitted_right_00_mot)
+    [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=1)]
+    3) Sequence
+      {service distance_from_target_service  (Distance_key=bb.DistanceFromAttackTarget, Target_key=bb.AttackTarget, Interval=998, bRestartTimerOnEachActivation=true)}
+      1) audio_exit_flee_state_bttask
+      [if Loop  (NumLoops=2)]
+      2) Sequence
+        1) RunEQSQuery "Run EQS Query:PounceLocation"  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1400.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) set_blackboard_key_bttask "Set ShouldFaceAttackTarget"  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+        3) RunBehavior "Run Behavior: JumpTo"  (BehaviorAsset=BehaviorTree lerawr_jumpto_bt)
+        4) Selector
+          {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+          [if test_rng_float_btdeco  (RNG_Float_Key=bb.RNG_Float, ChooseIfLessThan=0.5)]
+          1) BehemothAction "PounceFwdLeft"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_mot)
+          2) BehemothAction "PounceFwdR"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdright_mo, TriggerCooldownOnSuccess=false)
+      3) BehemothAction  (Montage=AnimMontage b_lerawr_tiredcycle_mot)

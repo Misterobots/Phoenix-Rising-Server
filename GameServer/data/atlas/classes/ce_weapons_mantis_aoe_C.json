@@ -1,0 +1,496 @@
+{
+ "name": "ce_weapons_mantis_aoe_C",
+ "kind": "blueprint",
+ "parents": [
+  "aoe_base_bp_C",
+  "ArchonAoe",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "legendary_boomerang_projectile_p",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CapsuleCollision",
+   "type": "ObjectProperty<CapsuleComponent>",
+   "bp_type": "ObjectProperty<CapsuleComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ProjectileMovement",
+   "type": "ObjectProperty<ProjectileMovementComponent>",
+   "bp_type": "ObjectProperty<ProjectileMovementComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CellRank",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "ExposeOnSpawn"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageScale",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TargetHeight",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "StartCheckingDistanceToOwner",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HomingAccelCurve",
+   "type": "ObjectProperty<CurveFloat>",
+   "bp_type": "ObjectProperty<CurveFloat>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "HomingTargetActor",
+   "type": "ObjectProperty<mantis_aoe_homing_actor_C>",
+   "bp_type": "ObjectProperty<mantis_aoe_homing_actor_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "CapsuleCollision",
+   "class": "CapsuleComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "legendary_boomerang_projectile_p",
+   "class": "ParticleSystemComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "ProjectileMovement",
+   "class": "ProjectileMovementComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CheckDistanceToOwnerForDestroy",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "StartCheckingDistanceToOwner"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetDistanceTo",
+    "Actor.GetOwner",
+    "K2_DestroyActor",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CheckDistanceToOwnerForHomingChange",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 10,
+   "reads": [
+    "HomingAccelCurve",
+    "ProjectileMovement",
+    "StartCheckingDistanceToOwner"
+   ],
+   "sets": [
+    "HomingAccelerationMagnitude"
+   ],
+   "calls": [
+    "Actor.GetDistanceTo",
+    "Actor.GetOwner",
+    "CurveFloat.GetFloatValue",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DealAoeDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "CapsuleCollision",
+    "CellRank"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.HasAuthority",
+    "Apply Ao EDamage",
+    "KismetMathLibrary.EqualEqual_IntInt"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DealDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_weapons_mantis_aoe_C.ExecuteUbergraph_ce_weapons_mantis_aoe"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_weapons_mantis_aoe",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 43,
+   "reads": [
+    "DefaultSceneRoot",
+    "HomingTargetActor",
+    "ProjectileMovement"
+   ],
+   "sets": [
+    "HomingTargetActor",
+    "HomingTargetComponent",
+    "StartCheckingDistanceToOwner"
+   ],
+   "calls": [
+    "Actor.GetInstigator",
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_GetRootComponent",
+    "Actor.ReceiveDestroyed",
+    "Actor.ReceiveTick",
+    "AkGameplayStatics.PostEventAtLocation",
+    "ArchonGameplayStatics.IsLocalCharacter",
+    "CheckDistanceToOwnerForHomingChange",
+    "DealAoeDamage",
+    "FollowGround",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "K2_DestroyActor",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "SceneComponent.K2_GetComponentToWorld",
+    "aoe_base_bp_C.ReceiveBeginPlay"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "AkAudioEvent Play_Generic_Elemental_Shock_Strike_Small_Danger_Zone",
+    "BlueprintGeneratedClass mantis_aoe_homing_actor_C",
+    "ParticleSystem amp_s11a_shock_player_exp_p"
+   ]
+  },
+  {
+   "name": "FollowGround",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Temp_object_Variable",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 15,
+   "reads": [
+    "DefaultSceneRoot",
+    "TargetHeight"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.BreakHitResult",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BreakVector",
+    "KismetMathLibrary.MakeVector",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetSystemLibrary.LineTraceSingle",
+    "SceneComponent.K2_AddWorldOffset",
+    "SceneComponent.K2_GetComponentLocation"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetCustomDamageScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TargetActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "TargetComponent",
+     "type": "ObjectProperty<PrimitiveComponent>"
+    },
+    {
+     "name": "Scale",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [
+    "DamageScale"
+   ],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_weapons_mantis_aoe_C.ExecuteUbergraph_ce_weapons_mantis_aoe"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveDestroyed",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_weapons_mantis_aoe_C.ExecuteUbergraph_ce_weapons_mantis_aoe"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_weapons_mantis_aoe_C.ExecuteUbergraph_ce_weapons_mantis_aoe"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnParticles",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Location",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_weapons_mantis_aoe_C.ExecuteUbergraph_ce_weapons_mantis_aoe"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "CurveFloat mantis_aoe_homing_accel"
+ ],
+ "package": "/Game/_shared/blueprints/cells/Content/Mantis/ce_weapons_mantis_aoe",
+ "pseudo_file": "pseudo/ce_weapons_mantis_aoe_C.txt",
+ "game_data": {}
+}

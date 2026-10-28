@@ -1,0 +1,32 @@
+glitter_normal_bt  blackboard=BlackboardData glitter_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service distance_from_target_service  (Distance_key=bb.DistanceFromAttackTarget, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    [if BTDeco_MemberOfClassIsPresent "Check for patrol"  (ClassToTest=BlueprintGeneratedClass BP_PatrolCenterPoint_C, bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+    [if Blackboard  (InFleeState is Is Set)]
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_state_change_bt)
+    [if btdeco_variablecooldown  (Cooldown_Min=5, Cooldown_Max=7)]
+    6) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_mounted_attacks_bt)
+    7) Selector
+      [if passes_behemoth_requirements_btdeco "Heroic"  (BehemothRequirements={"MetadataTagQuery": {"TagDictionary": [{"TagName": "Behemoth.Glitter.Heroic"}], "QueryTokenStream": [0, 1, 2, 1, 0], "AutoDescription": " ALL( Behemoth.Glitter.Heroic )"}}, bShowPropertyDetails=false)]
+      1) RunBehavior  (BehaviorAsset=BehaviorTree glitter_heroic_combat_bt)
+      [if passes_behemoth_requirements_btdeco "Normal"  (BehemothRequirements={"MetadataTagQuery": {"TagDictionary": [{"TagName": "Behemoth.Glitter.Normal"}], "QueryTokenStream": [0, 1, 2, 1, 0], "AutoDescription": " ALL( Behemoth.Glitter.Normal )"}}, bShowPropertyDetails=false)]
+      2) RunBehavior  (BehaviorAsset=BehaviorTree glitter_normal_combat_bt)
+    [if btdeco_variablecooldown  (Cooldown_Min=15, Cooldown_Max=20, StartTime=30)]
+    8) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+    9) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+      {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+    10) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_inalert_protectvent_facetarget_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+    11) perform_action_montage_bttask "Manta Personality"  (Montage=AnimMontage b_glitter_normal_state_manta_flex_mot)

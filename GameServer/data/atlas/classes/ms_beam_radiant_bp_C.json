@@ -1,0 +1,363 @@
+{
+ "name": "ms_beam_radiant_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "ms_beam_base_bp_C",
+  "base_beam_bp_C",
+  "ArchonBeam",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ParticleSystem",
+   "type": "ObjectProperty<ParticleSystemComponent>",
+   "bp_type": "ObjectProperty<ParticleSystemComponent>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BeamDamageScale",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BonusDamage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BeamScaleIncrement",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BeamScaleDecrement",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DistanceToDropoff",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bClientRequestedBeamShutOff",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 15
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "ParticleSystem",
+   "class": "ParticleSystemComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthHitTarget_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Hit",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ms_beam_radiant_bp_C.ExecuteUbergraph_ms_beam_radiant_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ms_beam_radiant_bp",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 62,
+   "reads": [
+    "AuthHitTarget",
+    "NormalizedBeamLength",
+    "OwningPawn",
+    "bClientRequestedBeamShutOff",
+    "particle_system_beam"
+   ],
+   "sets": [
+    "BonusDamage",
+    "bClientRequestedBeamShutOff"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "Actor.FlushNetDormancy",
+    "Actor.GetComponentByClass",
+    "AnimInstance.GetCurrentActiveMontage",
+    "AuthStopGameplay",
+    "GetSkeletalMeshComponent",
+    "HasMatchingGameplayTag",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetMathLibrary.Not_PreBool",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "SetBeamDamageScale",
+    "SetFloatParameter",
+    "ShutBeamOff",
+    "SkeletalMeshComponent.GetAnimInstance",
+    "UtilityMethods.ArchonLogError",
+    "base_beam_bp_C.ReceiveBeginPlay",
+    "base_beam_bp_C.ReceiveTick"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_ms_melee_super_beam_fwd_01_mot",
+    "BlueprintGeneratedClass player_gameplay_bpc_C"
+   ]
+  },
+  {
+   "name": "GetBeamDamageScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "HitActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Scale",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 44,
+   "reads": [
+    "BeamDamageScale",
+    "BonusDamage",
+    "DistanceToDropoff"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetOwner",
+    "Actor.K2_GetActorLocation",
+    "GetDistanceSqr",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Sqrt",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ms_beam_radiant_bp_C.ExecuteUbergraph_ms_beam_radiant_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ms_beam_radiant_bp_C.ExecuteUbergraph_ms_beam_radiant_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SetBeamDamageScale",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Hit",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [
+    "BeamDamageScale",
+    "BeamScaleDecrement",
+    "BeamScaleIncrement"
+   ],
+   "sets": [
+    "BeamDamageScale"
+   ],
+   "calls": [
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.FClamp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShutBeamOff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Shutoff",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetServer",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "server",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ms_beam_radiant_bp_C.ExecuteUbergraph_ms_beam_radiant_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/game/abilities/weapons/MSpear/ms_beam_radiant_bp",
+ "pseudo_file": "pseudo/ms_beam_radiant_bp_C.txt",
+ "game_data": {}
+}

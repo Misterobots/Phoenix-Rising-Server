@@ -1,0 +1,391 @@
+{
+ "name": "ArchonHittableComponent",
+ "kind": "native",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 272,
+ "sdk_header": "Archon_classes.hpp",
+ "properties": [
+  {
+   "name": "OutstandingHits_Server",
+   "type": "TMap<FGuid, FPendingHitEntry_Server>",
+   "offset": "0xA0",
+   "size": 80,
+   "flags": [
+    "Transient",
+    "ContainsInstancedReference",
+    "NativeAccessSpecifierPrivate"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "OutstandingHits_Client",
+   "type": "TArray<FPendingHitEntry_Client>",
+   "offset": "0xF0",
+   "size": 16,
+   "flags": [
+    "ZeroConstructor",
+    "Transient",
+    "ContainsInstancedReference",
+    "NativeAccessSpecifierPrivate"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "EventDispatcher",
+   "type": "UArchonCharacterEventDispatcherComponent*",
+   "offset": "0x100",
+   "size": 8,
+   "flags": [
+    "ExportObject",
+    "ZeroConstructor",
+    "Transient",
+    "InstancedReference",
+    "NoDestructor",
+    "HasGetValueTypeHash",
+    "NativeAccessSpecifierPrivate"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AbilitySystem",
+   "type": "UAbilitySystemComponent*",
+   "offset": "0x108",
+   "size": 8,
+   "flags": [
+    "ExportObject",
+    "ZeroConstructor",
+    "Transient",
+    "InstancedReference",
+    "NoDestructor",
+    "HasGetValueTypeHash",
+    "NativeAccessSpecifierPrivate"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "EventDispatcher",
+   "class": "UArchonCharacterEventDispatcherComponent",
+   "source": "property"
+  },
+  {
+   "name": "AbilitySystem",
+   "class": "UAbilitySystemComponent",
+   "source": "property"
+  }
+ ],
+ "functions": [
+  {
+   "name": "BP_TryHit",
+   "flags": [
+    "Final",
+    "BlueprintAuthorityOnly",
+    "Native",
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Damager",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "EventInstigator",
+     "type": "AController*"
+    },
+    {
+     "name": "DamageCauser",
+     "type": "AActor*"
+    },
+    {
+     "name": "DamageTypeClass",
+     "type": "TSubclassOf<UDamageType*>"
+    },
+    {
+     "name": "ExtendedDamageInfo",
+     "type": "FArchonExtendedDamageInfo"
+    },
+    {
+     "name": "HitComponent",
+     "type": "UPrimitiveComponent*"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x2336CA0"
+  },
+  {
+   "name": "BroadcastReceivedHitDelegate",
+   "flags": [
+    "Final",
+    "Native",
+    "Private",
+    "HasOutParams"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Damager",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "ResultDamageTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x2336F80"
+  },
+  {
+   "name": "BroadcastReceivedHitWhileInvulnerableDelegate",
+   "flags": [
+    "Final",
+    "Native",
+    "Private",
+    "HasOutParams"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Damager",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "ResultDamageTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "InvulnerabilityTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x2337150"
+  },
+  {
+   "name": "ClientTryHit",
+   "flags": [
+    "Final",
+    "Net",
+    "NetReliable",
+    "Native",
+    "Event",
+    "Private",
+    "HasDefaults",
+    "NetClient"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HitID",
+     "type": "FGuid"
+    },
+    {
+     "name": "Damager",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "ResultDamageTags",
+     "type": "FGameplayTagContainer"
+    },
+    {
+     "name": "bHitWouldHaveSucceededOnServer",
+     "type": "bool"
+    }
+   ],
+   "rpc": "client",
+   "native": true,
+   "rva": "0x2337460"
+  },
+  {
+   "name": "GetInvulnerabilityTagsForAttack",
+   "flags": [
+    "Final",
+    "Native",
+    "Private",
+    "HasOutParams",
+    "Const"
+   ],
+   "ret": "FGameplayTagContainer",
+   "params": [
+    {
+     "name": "AttackTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x2337DD0"
+  },
+  {
+   "name": "MakeHitEventParams",
+   "flags": [
+    "Final",
+    "Native",
+    "Private",
+    "HasOutParams",
+    "Const"
+   ],
+   "ret": "FArchonHitEventParams",
+   "params": [
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "ResultDamageTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x23380B0"
+  },
+  {
+   "name": "OnHitAccepted_Client",
+   "flags": [
+    "Event",
+    "Protected",
+    "HasOutParams",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Damager",
+     "type": "AActor*"
+    },
+    {
+     "name": "Params_0",
+     "type": "FArchonCombatHitParams"
+    },
+    {
+     "name": "bHitWouldHaveSucceededOnServer",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "OnHitRefused_Client",
+   "flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "bHitWouldHaveSucceededOnServer",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null
+  },
+  {
+   "name": "ProcessHitOnServer",
+   "flags": [
+    "Final",
+    "Native",
+    "Private",
+    "HasOutParams"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HitEntry",
+     "type": "FPendingHitEntry_Server"
+    }
+   ],
+   "rpc": null,
+   "native": true,
+   "rva": "0x2338620"
+  },
+  {
+   "name": "ServerAcceptHit",
+   "flags": [
+    "Final",
+    "Net",
+    "NetReliable",
+    "Native",
+    "Event",
+    "Private",
+    "NetServer",
+    "HasDefaults",
+    "NetValidate"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HitID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": "server",
+   "native": true,
+   "rva": "0x2338820"
+  },
+  {
+   "name": "ServerRefuseHit",
+   "flags": [
+    "Final",
+    "Net",
+    "NetReliable",
+    "Native",
+    "Event",
+    "Private",
+    "NetServer",
+    "HasDefaults",
+    "NetValidate"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "HitID",
+     "type": "FGuid"
+    },
+    {
+     "name": "InvulnerabilityTags",
+     "type": "FGameplayTagContainer"
+    }
+   ],
+   "rpc": "server",
+   "native": true,
+   "rva": "0x2338900"
+  }
+ ],
+ "tables": [],
+ "game_data": {}
+}

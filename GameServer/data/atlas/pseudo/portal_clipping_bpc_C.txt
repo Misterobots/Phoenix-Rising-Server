@@ -1,0 +1,77 @@
+# portal_clipping_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ClearClippingPortal
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.CurrentPortalActor)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @107
+  [43] K2Node_CreateDelegate_OutputDelegate = bind(self.OnPortalDestroyed)
+  [66] K2Node_CreateDelegate_OutputDelegate -= None
+  [107] self.CurrentPortalActor = null
+  [118] MarkPropertyDirtyFromRepIndex(self, 2, 'CurrentPortalActor')
+  [147] SetComponentTickEnabled(false)
+  [162] if !(ShowOnClear) goto @247
+  [176] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [196] Default__behemoth_function_library_C.StopClippingThroughPortal(CallFunc_GetOwner_ReturnValue, self)
+  [242] goto @463
+  [247] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [267] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [303] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [332] if !(K2Node_DynamicCast_bSuccess) goto @447
+  [346] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [392] CallFunc_GetMesh_SkeletalMesh.SetScalarParameterValueOnMaterials('portal_on', 0.0)
+  [442] goto @463
+  [447] CallFunc_GetMesh_SkeletalMesh = null
+  [458] goto @392
+  [463] return nothing
+  [465] end
+
+=== ClearCurrentPortalActor
+  [0] frame.K2Node_Event_ShowOnClear = ShowOnClear
+  [18] ExecuteUbergraph_portal_clipping_bpc(10)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_portal_clipping_bpc
+  [0] goto computed(EntryPoint)
+  [10] ClearClippingPortal(K2Node_Event_ShowOnClear)
+  [33] goto @460
+  [38] CallFunc_IsValid_ReturnValue = IsValid(self.CurrentPortalActor)
+  [67] if !(CallFunc_IsValid_ReturnValue) goto @460
+  [81] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [101] Default__behemoth_function_library_C.ClipThroughPortal(self.CurrentPortalActor, CallFunc_GetOwner_ReturnValue, self)
+  [156] if !(self.DebugDraw) goto @460
+  [170] CallFunc_GetActorForwardVector_ReturnValue = self.CurrentPortalActor.GetActorForwardVector()
+  [220] CallFunc_K2_GetActorLocation_ReturnValue = self.CurrentPortalActor.K2_GetActorLocation()
+  [270] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetActorForwardVector_ReturnValue, 500.0)
+  [316] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [362] DrawDebugArrow(self, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_Add_VectorVector_ReturnValue, 2500.0, LinearColor{1.0, 0.0, 0.16507, 1.0}, 0.1, 10.0)
+  [440] goto @460
+  [445] ClearClippingPortal(true)
+  [460] return nothing
+  [462] end
+
+=== OnPortalDestroyed
+  [0] frame.K2Node_CustomEvent_PortalActor = PortalActor
+  [18] ExecuteUbergraph_portal_clipping_bpc(445)
+  [33] return nothing
+  [35] end
+
+=== OnRep_DebugDraw
+  [0] return nothing
+  [2] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_portal_clipping_bpc(38)
+  [33] return nothing
+  [35] end
+
+=== SetClippingPortal
+  [0] CallFunc_IsValid_ReturnValue = IsValid(PortalActor)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @170
+  [43] self.CurrentPortalActor = PortalActor
+  [62] MarkPropertyDirtyFromRepIndex(self, 2, 'CurrentPortalActor')
+  [91] K2Node_CreateDelegate_OutputDelegate = bind(self.SetClippingPortal)
+  [114] K2Node_CreateDelegate_OutputDelegate += None
+  [155] SetComponentTickEnabled(true)
+  [170] return nothing
+  [172] end

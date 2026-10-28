@@ -1,0 +1,12 @@
+sub_flee_arrive  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "After arriving, move to point and heal up"]
+  [root if comment_btdeco "Requires MoveDestination - should be point near currentcontrolpoint"]
+  [root if comment_btdeco "Requires NextPatrolPoint"]
+  Sequence
+    1) Sequence
+      {service LookAlongPath  (HelperKey=bb.TargetActor)}
+      [if ForceSuccess]
+      1) MoveTo  (AcceptableRadius=200, bAllowPartialPath=false, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_arrive_internal_bt)

@@ -1,0 +1,89 @@
+paper_umbral_bt  blackboard=BlackboardData paper_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections "UpdateDirections"}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, EvaluateOnlyOnSearchStart=true)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2.5)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=1)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_arena_unburrow_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree shared_deaggro_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree shared_flee_burrow_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyToExitAetherCharge is Is Set)]
+      1) bttask_exit_aethercharge_state  (Montage=AnimMontage b_aq_pap_00_state_chargeexit_fwd_00_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      2) Sequence
+        [if ForceSuccess]
+        1) Selector
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartStateRequirements": ["behemoth_part_type::Disabled"]}}, bShowPropertyDetails=false)]
+          1) bttask_enter_rage_state  (Montage=AnimMontage b_aq_pap_um_state_rageenter_fwd_00_mot)
+        2) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      3) bttask_exit_rage_state  (Montage=AnimMontage b_aq_pap_00_state_rageexit_fwd_00_mot)
+      4) Sequence
+        [if Blackboard  (ReadyToEnterAetherCharge is Is Set)]
+        1) bttask_enter_aethercharge_state  (Montage=AnimMontage b_aq_pap_um_state_aetherenter_fwd_00_mot)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_combat_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+      4) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_enter_alerted_bt)
+    9) Selector "Selector_AttackOrNonAttack"
+      [if Blackboard  (TopScore Is Greater Than 0.000000)]
+      1) Selector
+        [if comment_btdeco "Teleports the behmoth to the edge of the arena"]
+        [if btdeco_variablecooldown  (Cooldown_Min=60, Cooldown_Max=90, StartTime=45, bShowPropertyDetails=false)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartNamesToCheck": ["Tail"], "PartStateRequirements": ["behemoth_part_type::Severable"]}}, bShowPropertyDetails=false)]
+        1) Sequence
+          1) generic_action_bttask "Burrow"  (ActionType=Burrow, RequireThatActionExists=true)
+          2) Sequence
+            {service hide_behemoth_bttask  (Interval=0.01, RandomDeviation=0)}
+            {service staggerproof_behemoth_bttask}
+            1) Wait  (WaitTime=2)
+            2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt_tethered", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 600.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 800.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.MoveDestination)
+            3) vector_math_bttask  (VectorA=MoveDestination, VectorB=KnownTargetsAvgPos, Operation=-)
+            4) vector_math_bttask  (VectorA=MoveDestination, VectorB=TempLocation, Result=TempLookAtPosition)
+            5) teleport_bttask "Teleport"  (FacingTargetKeyName=TempLookAtPosition, BlendOutTime=0)
+          3) generic_action_bttask "Unburrow"  (ActionType=Unburrow, RequireThatActionExists=true)
+          4) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, PivotSetToUse=TurnInPlace)
+          5) BehemothAction  (Montage=AnimMontage b_aq_pap_um_atk_podspawn_fwd_00)
+        [if btdeco_variablecooldown  (Cooldown_Min=45, Cooldown_Max=60, StartTime=30, bShowPropertyDetails=false)]
+        [if behemoth_in_state_btdeco  (State=AtherCharged)]
+        [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"PartRequirements": {"PartNamesToCheck": ["Antlers"]}}, bShowPropertyDetails=false)]
+        2) Sequence
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_get_some_space_reposition", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor", "RunMode": "EEnvQueryRunMode::AllMatching"}, BlackboardKey=bb.OrbSpawnPos)
+          2) pivot_towards_target_bttask  (PivotTarget=bb.OrbSpawnPos, BlendOutTime=0.25)
+          3) BehemothAction "Spawn Orb"  (Montage=AnimMontage b_aq_pap_um_atk_orb_fwd_00)
+        [if btdeco_variablecooldown  (Cooldown_Min=30, Cooldown_Max=45, StartTime=15, bShowPropertyDetails=false)]
+        3) RunBehavior  (BehaviorAsset=BehaviorTree paper_umbral_dolphindive_bt)
+        4) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"StateRequirement": "behemoth_states_enum::Rage", "StateRequirementType": "behemoth_req_state_type::ExcludedByState"}, bShowPropertyDetails=false)]
+      [if btdeco_variablecooldown  (Cooldown_Min=160, Cooldown_Max=210, StartTime=210)]
+      2) Sequence
+        {service clear_forcepersonalityanim_ondeact_btservice}
+        [if ForceSuccess]
+        1) Sequence
+          [if current_target_is_down_btdeco]
+          1) set_blackboard_key_bttask "Set ForcePersonalityAnim to True"  (ResultKey=bb.ForcePersonalityAnim, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+        2) get_player_target_bttask
+        3) RotateTowardsTarget  (Target=bb.AttackTarget)
+        [if ForceSuccess]
+        4) Sequence
+          1) generic_action_bttask  (ActionType=Growl)
+      [if behemoth_in_state_btdeco  (State=Combat)]
+      3) Selector "Reposition"
+        {service get_action_helper_btservice  (ActionHelperKey=bb.CurrentHelper)}
+        1) Selector
+          [if set_behemoth_loco_mode_btdeco  (LocoType=Run)]
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_combat_reposition_bt)
+            {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack, Interval=0.2, bCallTickOnSearchStart=true)}
+      4) Selector
+        {service try_pick_new_target_bts  (Interval=2)}
+        1) Sequence
+          1) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)
+          [if btdeco_variablecooldown  (Cooldown_Min=15, Cooldown_Max=45)]
+          2) BehemothAction  (Montage=AnimMontage b_aq_pap_00_pers_personality_fwd_00_mot)

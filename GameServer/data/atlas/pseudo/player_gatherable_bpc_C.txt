@@ -1,0 +1,94 @@
+# player_gatherable_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ClientOnGatherableSpawned
+  [0] frame.K2Node_Event_Gatherable = Gatherable
+  [18] ExecuteUbergraph_player_gatherable_bpc(15)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_player_gatherable_bpc
+  [0] push @436
+  [5] goto computed(EntryPoint)
+  [15] UpdateGatherableVisibility(K2Node_Event_Gatherable)
+  [38] pop
+  [39] push @127
+  [44] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsWithInterface_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [103] UpdateGatherableVisibility(CallFunc_Array_Get_Item)
+  [126] pop
+  [127] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [169] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [196] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsWithInterface_OutActors)
+  [255] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [293] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [303] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [330] goto @39
+  [335] Temp_int_Array_Index_Variable = 0
+  [358] goto @196
+  [363] Temp_int_Loop_Counter_Variable = 0
+  [386] goto @335
+  [391] array{}
+  [402] GetAllActorsWithInterface(self, BPI_Gatherable_C, CallFunc_GetAllActorsWithInterface_OutActors)
+  [431] goto @363
+  [436] return nothing
+  [438] end
+
+=== FindSeasonalGatherables
+  [0] push @552
+  [5] push @446
+  [10] array{}
+  [21] GetAllActorsOfClass(self, gatherable_item_seasonal_base_bp_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [50] Temp_int_Loop_Counter_Variable = 0
+  [73] Temp_int_Array_Index_Variable = 0
+  [96] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetAllActorsOfClass_OutActors)
+  [155] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [193] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [203] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [230] push @478
+  [235] Default__KismetArrayLibrary.Array_Get(CallFunc_GetAllActorsOfClass_OutActors, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [294] CallFunc_Array_Get_Item.GetTrackingID(CallFunc_GetTrackingID_TrackingID)
+  [340] CallFunc_Conv_GuidToString_ReturnValue = Conv_GuidToString(CallFunc_GetTrackingID_TrackingID)
+  [377] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(SeasonalGatherables, CallFunc_Conv_GuidToString_ReturnValue)
+  [445] pop
+  [446] ReturnValue = SeasonalGatherables
+  [473] goto @552
+  [478] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [520] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [547] goto @96
+  [552] return ReturnValue
+  [562] end
+
+=== OnRefreshGatherableStatus
+  [0] ExecuteUbergraph_player_gatherable_bpc(391)
+  [15] return nothing
+  [17] end
+
+=== UpdateGatherableVisibility
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Gatherable)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @947
+  [43] K2Node_DynamicCast_AsBPI_Gatherable_1 = cast<BPI_Gatherable_C>(Gatherable)
+  [79] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Gatherable_1)
+  [108] if !(K2Node_DynamicCast_bSuccess_1) goto @874
+  [122] K2Node_DynamicCast_AsBPI_Gatherable_1.GetTrackingID(CallFunc_GetTrackingID_TrackingID)
+  [168] CallFunc_Conv_GuidToString_ReturnValue = Conv_GuidToString(CallFunc_GetTrackingID_TrackingID)
+  [205] CallFunc_IsGatherableAvailable_ReturnValue = IsGatherableAvailable(CallFunc_Conv_GuidToString_ReturnValue)
+  [234] K2Node_DynamicCast_AsBPI_Gatherable = cast<BPI_Gatherable_C>(Gatherable)
+  [270] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Gatherable)
+  [299] if !(K2Node_DynamicCast_bSuccess) goto @931
+  [313] CallFunc_SetGatherableVisible_ReturnValue = K2Node_DynamicCast_AsBPI_Gatherable.SetGatherableVisible(CallFunc_IsGatherableAvailable_ReturnValue)
+  [369] if !(self.DebugGatherables) goto @947
+  [383] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(Gatherable)
+  [420] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('GATHERABLE - player_gatherable_bpc: Gatherable ', CallFunc_GetDisplayName_ReturnValue)
+  [506] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' with tracking ID ')
+  [563] CallFunc_Conv_GuidToString_ReturnValue = Conv_GuidToString(CallFunc_GetTrackingID_TrackingID)
+  [600] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_GuidToString_ReturnValue)
+  [646] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, ' has current availability: ')
+  [712] CallFunc_Conv_BoolToString_ReturnValue = Conv_BoolToString(CallFunc_IsGatherableAvailable_ReturnValue)
+  [749] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, CallFunc_Conv_BoolToString_ReturnValue)
+  [795] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_4, false, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [869] goto @947
+  [874] CallFunc_GetTrackingID_TrackingID = Guid{0, 0, 0, 0}
+  [926] goto @168
+  [931] CallFunc_SetGatherableVisible_ReturnValue = false
+  [942] goto @369
+  [947] return nothing
+  [949] end

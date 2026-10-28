@@ -1,0 +1,286 @@
+{
+ "name": "gatherable_snowball_pile_frostwolf_limited_bpd_C",
+ "kind": "blueprint",
+ "parents": [
+  "gatherable_snowball_pile_frostwolf_bp_C",
+  "gatherable_snowball_pile_bp_C",
+  "gatherable_item_base_bp_C",
+  "mesh_swap_interaction_bp_C",
+  "ArchonMeshSwapInteractionActor",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "generic_eventdispatcher_bpc",
+   "type": "ObjectProperty<generic_eventdispatcher_bpc_C>",
+   "bp_type": "ObjectProperty<generic_eventdispatcher_bpc_C>",
+   "flags": [
+    "BlueprintVisible",
+    "InstancedReference",
+    "NonTransactional"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SnowballsPerPile",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SnowballsRemaining",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "PileDepletedVFX",
+   "type": "ObjectProperty<ParticleSystem>",
+   "bp_type": "ObjectProperty<ParticleSystem>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  },
+  {
+   "name": "generic_eventdispatcher_bpc",
+   "class": "generic_eventdispatcher_bpc_C",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "CanUserStartInteraction ",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "User",
+     "type": "ObjectProperty<ArchonInteractionUserComponent>"
+    },
+    {
+     "name": "CanUse",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 22,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "AnimInstance.GetCurrentActiveMontage",
+    "GetSkeletalMeshComponent",
+    "KismetMathLibrary.EqualEqual_ObjectObject",
+    "KismetSystemLibrary.IsValid",
+    "SkeletalMeshComponent.GetAnimInstance",
+    "gatherable_snowball_pile_bp_C.CanUserStartInteraction "
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_ua_combat_item_throw_fwd_snowball_01"
+   ]
+  },
+  {
+   "name": "ExecuteUbergraph_gatherable_snowball_pile_frostwolf_limited_bpd",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 37,
+   "reads": [
+    "DefaultSceneRoot",
+    "GenericEvent",
+    "PileDepletedVFX",
+    "SnowballsRemaining",
+    "generic_eventdispatcher_bpc"
+   ],
+   "sets": [
+    "GrenadeAbilityClass",
+    "SnowballsRemaining"
+   ],
+   "calls": [
+    "Actor.ReceiveTick",
+    "GameplayStatics.SpawnEmitterAtLocation",
+    "K2_DestroyActor",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsServer",
+    "MultiSpawnVFX",
+    "None",
+    "SceneComponent.K2_GetComponentLocation",
+    "SetActorHiddenInGame",
+    "gatherable_snowball_pile_bp_C.ReceiveBeginPlay",
+    "gatherable_snowball_pile_frostwolf_bp_C.OnUserCompletedInteraction"
+   ],
+   "authority": [
+    "IsDedicatedServer",
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass Ability_QuickItem_Grenade_Snowball_Hunt_C"
+   ]
+  },
+  {
+   "name": "MultiSpawnVFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Location",
+     "type": "StructProperty<Vector>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherable_snowball_pile_frostwolf_limited_bpd_C.ExecuteUbergraph_gatherable_snowball_pile_frostwolf_limited_bpd"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnUserCompletedInteraction",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "User",
+     "type": "ObjectProperty<ArchonInteractionUserComponent>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherable_snowball_pile_frostwolf_limited_bpd_C.ExecuteUbergraph_gatherable_snowball_pile_frostwolf_limited_bpd"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherable_snowball_pile_frostwolf_limited_bpd_C.ExecuteUbergraph_gatherable_snowball_pile_frostwolf_limited_bpd"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "gatherable_snowball_pile_frostwolf_limited_bpd_C.ExecuteUbergraph_gatherable_snowball_pile_frostwolf_limited_bpd"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Blueprints/Gatherables/gatherable_snowball_pile_frostwolf_limited_bpd",
+ "pseudo_file": "pseudo/gatherable_snowball_pile_frostwolf_limited_bpd_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,283 @@
+# spline_fx_spawner_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateNextPosition
+  [0] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(NormalizedDistance, 0.0)
+  [38] Temp_real_Variable = 9.999999747378752e-05
+  [65] CallFunc_GetSplineLength_ReturnValue = Spline.GetSplineLength()
+  [115] CallFunc_GetWorldDeltaSeconds_ReturnValue = GetWorldDeltaSeconds(self)
+  [144] Temp_bool_Variable = CallFunc_EqualEqual_DoubleDouble_ReturnValue
+  [163] CallFunc_FInterpTo_Constant_ReturnValue = FInterpTo_Constant(NormalizedDistance, 1.0, CallFunc_GetWorldDeltaSeconds_ReturnValue, RandomLifetime)
+  [227] CallFunc_Ease_ReturnValue = Ease(0.0, 1.0, switch(Temp_bool_Variable){false: CallFunc_FInterpTo_Constant_ReturnValue, true: Temp_real_Variable, default: K2Node_Select_Default}, 0, 2.0, 2)
+  [342] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSplineLength_ReturnValue)
+  [371] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Ease_ReturnValue, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [417] CallFunc_GetRotationAtDistanceAlongSpline_Distance_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [446] CallFunc_GetRotationAtDistanceAlongSpline_ReturnValue = Spline.GetRotationAtDistanceAlongSpline(CallFunc_GetRotationAtDistanceAlongSpline_Distance_ImplicitCast, 1)
+  [507] CallFunc_GetLocationAtDistanceAlongSpline_Distance_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [536] CallFunc_GetLocationAtDistanceAlongSpline_ReturnValue = Spline.GetLocationAtDistanceAlongSpline(CallFunc_GetLocationAtDistanceAlongSpline_Distance_ImplicitCast, 1)
+  [597] NormalizedDistanceOut = CallFunc_Ease_ReturnValue
+  [624] PoisitionOnSpline = CallFunc_GetLocationAtDistanceAlongSpline_ReturnValue
+  [651] RotationOnSpline = CallFunc_GetRotationAtDistanceAlongSpline_ReturnValue
+  [678] return nothing
+  [680] end
+
+=== DestroyRemainingParticles
+  [0] push @369
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.SpawnedComponents)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @295
+  [190] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] CallFunc_Array_Get_Item.ParticleReference.Deactivate()
+  [294] pop
+  [295] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [337] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [364] goto @51
+  [369] return nothing
+  [371] end
+
+=== ExecuteUbergraph_spline_fx_spawner_bpc
+  [0] push @3517
+  [5] goto computed(EntryPoint)
+  [15] OnParticleDeactivated__DelegateSignature()
+  [34] pop
+  [35] Temp_int_Loop_Counter_Variable = 0
+  [58] Temp_int_Array_Index_Variable = 0
+  [81] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.SpawnedComponents)
+  [140] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [178] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [188] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [215] push @2135
+  [220] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [279] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_Array_Get_Item.AkStartEventReference)
+  [317] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_Array_Get_Item.ParticleReference)
+  [355] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue_2, CallFunc_IsValid_ReturnValue_1)
+  [393] if !(CallFunc_BooleanAND_ReturnValue) goto @2209
+  [407] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [466] CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.NormalizedDistance)
+  [504] CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RandomLifetime)
+  [542] CalculateNextPosition(CallFunc_Array_Get_Item.SplineComponent, CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast, CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast, CallFunc_CalculateNextPosition_NormalizedDistanceOut, CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline)
+  [619] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [690] CallFunc_Array_Get_Item.ParticleReference.K2_SetWorldTransform(CallFunc_MakeTransform_ReturnValue, false, CallFunc_K2_SetWorldTransform_SweepHitResult, false)
+  [751] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [810] CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.NormalizedDistance)
+  [848] CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RandomLifetime)
+  [886] CalculateNextPosition(CallFunc_Array_Get_Item.SplineComponent, CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast, CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast, CallFunc_CalculateNextPosition_NormalizedDistanceOut, CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline)
+  [963] CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1 = GreaterEqual_DoubleDouble(CallFunc_CalculateNextPosition_NormalizedDistanceOut, 1.0)
+  [1001] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue_1) goto @2921
+  [1015] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1074] CallFunc_Array_Get_Item.ParticleReference.Deactivate()
+  [1119] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1178] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item.AkStartEventReference)
+  [1216] if !(CallFunc_IsValid_ReturnValue) goto @1384
+  [1230] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1289] CallFunc_PostAkEvent_ReturnValue = CallFunc_Array_Get_Item.AkStartEventReference.PostAkEvent(CallFunc_Array_Get_Item.AkStopEvent, 0, Temp_delegate_Variable)
+  [1384] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1443] CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.NormalizedDistance)
+  [1481] CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RandomLifetime)
+  [1519] CalculateNextPosition(CallFunc_Array_Get_Item.SplineComponent, CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast, CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast, CallFunc_CalculateNextPosition_NormalizedDistanceOut, CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline)
+  [1596] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, CallFunc_Array_Get_Item.ImpactParticle, CallFunc_CalculateNextPosition_PoisitionOnSpline, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [1698] CallFunc_GetAkComponent_ReturnValue_1 = GetAkComponent(CallFunc_SpawnEmitterAtLocation_ReturnValue_1, CallFunc_GetAkComponent_ComponentCreated_1, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [1776] CallFunc_IsValid_ReturnValue_3 = IsValid(CallFunc_GetAkComponent_ReturnValue_1)
+  [1805] if !(CallFunc_IsValid_ReturnValue_3) goto @1964
+  [1819] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1878] CallFunc_PostAkEvent_ReturnValue_2 = CallFunc_GetAkComponent_ReturnValue_1.PostAkEvent(CallFunc_Array_Get_Item.AkImpactEvent, 0, Temp_delegate_Variable_2)
+  [1964] Default__KismetArrayLibrary.Array_Remove(self.SpawnedComponents, Temp_int_Array_Index_Variable)
+  [2014] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.SpawnedComponents)
+  [2073] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [2107] SetComponentTickEnabled(CallFunc_Greater_IntInt_ReturnValue)
+  [2130] goto @15
+  [2135] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2177] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2204] goto @81
+  [2209] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [2238] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2297] CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.StartTime)
+  [2335] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, CallFunc_GreaterEqual_DoubleDouble_B_ImplicitCast)
+  [2373] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [2383] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2442] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, CallFunc_Array_Get_Item.ParticleClass, CallFunc_Array_Get_Item.StartingVector, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), true, 0, true)
+  [2553] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.PersistantParticles, CallFunc_SpawnEmitterAtLocation_ReturnValue)
+  [2621] CallFunc_GetAkComponent_ReturnValue = GetAkComponent(CallFunc_SpawnEmitterAtLocation_ReturnValue, CallFunc_GetAkComponent_ComponentCreated, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0)
+  [2699] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2758] CallFunc_PostAkEvent_ReturnValue_1 = CallFunc_GetAkComponent_ReturnValue.PostAkEvent(CallFunc_Array_Get_Item.AkStartEvent, 0, Temp_delegate_Variable_1)
+  [2844] EX_ArrayGetByRef(ArrayVariable=self.SpawnedComponents,ArrayIndex=Temp_int_Array_Index_Variable).ParticleReference = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [2882] EX_ArrayGetByRef(ArrayVariable=self.SpawnedComponents,ArrayIndex=Temp_int_Array_Index_Variable).AkStartEventReference = CallFunc_GetAkComponent_ReturnValue
+  [2920] pop
+  [2921] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [2980] CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.NormalizedDistance)
+  [3018] CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RandomLifetime)
+  [3056] CalculateNextPosition(CallFunc_Array_Get_Item.SplineComponent, CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast, CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast, CallFunc_CalculateNextPosition_NormalizedDistanceOut, CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline)
+  [3133] CallFunc_SetFloatParameter_Param_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateNextPosition_NormalizedDistanceOut)
+  [3162] CallFunc_Array_Get_Item.ParticleReference.SetFloatParameter('FloatCurveParam', CallFunc_SetFloatParameter_Param_ImplicitCast)
+  [3229] Default__KismetArrayLibrary.Array_Get(self.SpawnedComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [3288] CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.NormalizedDistance)
+  [3326] CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.RandomLifetime)
+  [3364] CalculateNextPosition(CallFunc_Array_Get_Item.SplineComponent, CallFunc_CalculateNextPosition_NormalizedDistance_ImplicitCast, CallFunc_CalculateNextPosition_RandomLifetime_ImplicitCast, CallFunc_CalculateNextPosition_NormalizedDistanceOut, CallFunc_CalculateNextPosition_PoisitionOnSpline, CallFunc_CalculateNextPosition_RotationOnSpline)
+  [3441] K2Node_SetFieldsInStruct_NormalizedDistance_39_87FA962D4E780A115EFA0AA45E7C5DA6_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_CalculateNextPosition_NormalizedDistanceOut)
+  [3470] EX_ArrayGetByRef(ArrayVariable=self.SpawnedComponents,ArrayIndex=Temp_int_Array_Index_Variable).NormalizedDistance = K2Node_SetFieldsInStruct_NormalizedDistance_39_87FA962D4E780A115EFA0AA45E7C5DA6_ImplicitCast
+  [3516] pop
+  [3517] return nothing
+  [3519] end
+
+=== InitializeSplineFX
+  [0] push @5678
+  [5] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [26] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @41
+  [40] pop
+  [41] push @521
+  [46] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(TargetArray (Scene Component))
+  [105] self.SpawnCount = CallFunc_Array_Length_ReturnValue
+  [132] CallFunc_NotEqual_VectorVector_ReturnValue = NotEqual_VectorVector(Location Override (Optional), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), 0.0001)
+  [191] CallFunc_K2_GetActorLocation_ReturnValue = ActorSource.K2_GetActorLocation()
+  [241] Temp_bool_Variable = CallFunc_NotEqual_VectorVector_ReturnValue
+  [260] self.SourceLocation = switch(Temp_bool_Variable){false: CallFunc_K2_GetActorLocation_ReturnValue, true: Location Override (Optional), default: K2Node_Select_Default}
+  [331] self.VerticalOffset = VerticalOffset
+  [358] self.SourceRadius = SourceRadius
+  [385] self.TargetArray = TargetArray (Scene Component)
+  [412] self.SplineArray = SplineArray
+  [439] self.MaxDistanceFalloff (Units) = MaxDistanceFalloff (Units)
+  [466] self.Min Distance Speed Multiplier = MinDistanceSpeed (Multiplier)
+  [493] self.Maxc Distance Speed Multiplier = MaxDistanceSpeed (Multiplier)
+  [520] pop
+  [521] Temp_int_Variable = 0
+  [544] CallFunc_Subtract_IntInt_ReturnValue_1 = Subtract_IntInt(self.SpawnCount, 1)
+  [586] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue_1)
+  [624] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [634] push @5307
+  [639] self.CurrentIndex = Temp_int_Variable
+  [666] CallFunc_RandomFloatInRange_ReturnValue_1 = RandomFloatInRange(MinLife (Seconds), MaxLife (Seconds))
+  [712] self.Random Life = CallFunc_RandomFloatInRange_ReturnValue_1
+  [739] CallFunc_RandomFloatInRange_ReturnValue_2 = RandomFloatInRange(0.0, 360.0)
+  [785] self.RandomRotationOnX = CallFunc_RandomFloatInRange_ReturnValue_2
+  [812] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(MinDelay, MaxDelay)
+  [858] CallFunc_EqualEqual_IntInt_ReturnValue = EqualEqual_IntInt(self.CurrentIndex, 0)
+  [892] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [921] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, CallFunc_RandomFloatInRange_ReturnValue)
+  [967] Temp_real_Variable = 0.0
+  [994] Temp_bool_Variable_1 = CallFunc_EqualEqual_IntInt_ReturnValue
+  [1013] StartTime = switch(Temp_bool_Variable_1){false: CallFunc_Add_DoubleDouble_ReturnValue, true: Temp_real_Variable, default: K2Node_Select_Default_1}
+  [1084] Default__KismetArrayLibrary.Array_Get(self.SplineArray, self.CurrentIndex, CallFunc_Array_Get_Item_1)
+  [1143] self.CurrentSpline = CallFunc_Array_Get_Item_1
+  [1162] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.VerticalOffset)
+  [1217] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(360, self.SpawnCount)
+  [1259] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(Temp_int_Variable, CallFunc_Divide_IntInt_ReturnValue)
+  [1305] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [1342] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_Conv_IntToFloat_ReturnValue)
+  [1389] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [1426] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, self.SourceRadius)
+  [1472] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, self.SourceLocation)
+  [1518] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [1564] self.CurrentSpline.K2_SetWorldLocation(CallFunc_Add_VectorVector_ReturnValue_1, false, CallFunc_K2_SetWorldLocation_SweepHitResult, false)
+  [1616] Default__KismetArrayLibrary.Array_Get(self.TargetArray, self.CurrentIndex, CallFunc_Array_Get_Item)
+  [1675] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [1725] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.VerticalOffset)
+  [1780] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(360, self.SpawnCount)
+  [1822] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(Temp_int_Variable, CallFunc_Divide_IntInt_ReturnValue)
+  [1868] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [1905] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_Conv_IntToFloat_ReturnValue)
+  [1952] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [1989] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, self.SourceRadius)
+  [2035] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, self.SourceLocation)
+  [2081] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [2127] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_Add_VectorVector_ReturnValue_1, CallFunc_K2_GetComponentLocation_ReturnValue)
+  [2173] self.CurrentSpline.K2_SetWorldRotation(CallFunc_FindLookAtRotation_ReturnValue, false, CallFunc_K2_SetWorldRotation_SweepHitResult, false)
+  [2225] if !(RandomRotationOnX) goto @2367
+  [2239] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(self.RandomRotationOnX)
+  [2268] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, 0.0, 0.0)
+  [2315] self.CurrentSpline.K2_AddRelativeRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_AddRelativeRotation_SweepHitResult, false)
+  [2367] Default__KismetArrayLibrary.Array_Get(self.TargetArray, self.CurrentIndex, CallFunc_Array_Get_Item)
+  [2426] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [2476] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.VerticalOffset)
+  [2531] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(360, self.SpawnCount)
+  [2573] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(Temp_int_Variable, CallFunc_Divide_IntInt_ReturnValue)
+  [2619] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [2656] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_Conv_IntToFloat_ReturnValue)
+  [2703] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [2740] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, self.SourceRadius)
+  [2786] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, self.SourceLocation)
+  [2832] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [2878] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_Add_VectorVector_ReturnValue_1)
+  [2924] CallFunc_VSize_ReturnValue_1 = VSize(CallFunc_Subtract_VectorVector_ReturnValue_1)
+  [2961] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(CallFunc_VSize_ReturnValue_1, 0.009999999776482582)
+  [3007] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [3069] self.CurrentSpline.SetWorldScale3D(CallFunc_Multiply_VectorFloat_ReturnValue_1)
+  [3110] CallFunc_EqualEqual_DoubleDouble_ReturnValue = EqualEqual_DoubleDouble(self.Maxc Distance Speed Multiplier, 0.0)
+  [3148] CallFunc_EqualEqual_DoubleDouble_ReturnValue_1 = EqualEqual_DoubleDouble(self.Min Distance Speed Multiplier, 0.0)
+  [3186] CallFunc_EqualEqual_DoubleDouble_ReturnValue_2 = EqualEqual_DoubleDouble(self.MaxDistanceFalloff (Units), 0.0)
+  [3224] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_DoubleDouble_ReturnValue_2, CallFunc_EqualEqual_DoubleDouble_ReturnValue_1)
+  [3262] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_EqualEqual_DoubleDouble_ReturnValue)
+  [3300] if !(CallFunc_BooleanAND_ReturnValue_1) goto @5381
+  [3314] self.FalloffSpeedMult = 1.0
+  [3341] if !(PrintDistance (Debug)) goto @3658
+  [3355] Default__KismetArrayLibrary.Array_Get(self.TargetArray, self.CurrentIndex, CallFunc_Array_Get_Item)
+  [3414] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [3464] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, self.SourceLocation)
+  [3510] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [3547] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(CallFunc_VSize_ReturnValue)
+  [3584] PrintString(self, CallFunc_Conv_DoubleToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [3658] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.VerticalOffset)
+  [3713] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(360, self.SpawnCount)
+  [3755] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(Temp_int_Variable, CallFunc_Divide_IntInt_ReturnValue)
+  [3801] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [3838] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_Conv_IntToFloat_ReturnValue)
+  [3885] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [3922] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, self.SourceRadius)
+  [3968] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, self.SourceLocation)
+  [4014] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [4060] self.CurrentSpline.SetLocationAtSplinePoint(0, CallFunc_Add_VectorVector_ReturnValue_1, 1, true)
+  [4109] Default__KismetArrayLibrary.Array_Get(self.TargetArray, self.CurrentIndex, CallFunc_Array_Get_Item)
+  [4168] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [4218] CallFunc_GetNumberOfSplinePoints_ReturnValue = self.CurrentSpline.GetNumberOfSplinePoints()
+  [4268] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetNumberOfSplinePoints_ReturnValue, 1)
+  [4310] self.CurrentSpline.SetLocationAtSplinePoint(CallFunc_Subtract_IntInt_ReturnValue, CallFunc_K2_GetComponentLocation_ReturnValue, 1, true)
+  [4363] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(1.0, self.Random Life)
+  [4409] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, self.FalloffSpeedMult)
+  [4455] CallFunc_MakeVector_ReturnValue = MakeVector(0.0, 0.0, self.VerticalOffset)
+  [4510] CallFunc_Divide_IntInt_ReturnValue = Divide_IntInt(360, self.SpawnCount)
+  [4552] CallFunc_Multiply_IntInt_ReturnValue = Multiply_IntInt(Temp_int_Variable, CallFunc_Divide_IntInt_ReturnValue)
+  [4598] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Multiply_IntInt_ReturnValue)
+  [4635] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(0.0, 0.0, CallFunc_Conv_IntToFloat_ReturnValue)
+  [4682] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue_1)
+  [4719] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, self.SourceRadius)
+  [4765] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, self.SourceLocation)
+  [4811] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeVector_ReturnValue)
+  [4857] K2Node_MakeStruct_spline_fx_component_instance.SplineComponent = self.CurrentSpline
+  [4885] K2Node_MakeStruct_spline_fx_component_instance.NormalizedDistance = 0.0
+  [4917] K2Node_MakeStruct_spline_fx_component_instance.ImpactParticle = ImpactParticle
+  [4945] K2Node_MakeStruct_RandomLifetime_46_A269FF2D4CF9AAC84012F28B08DD08AF_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [4974] K2Node_MakeStruct_spline_fx_component_instance.RandomLifetime = K2Node_MakeStruct_RandomLifetime_46_A269FF2D4CF9AAC84012F28B08DD08AF_ImplicitCast
+  [5010] K2Node_MakeStruct_StartTime_52_317D3E4C4915D9EEFBCBB6903E3AA109_ImplicitCast = cast<CST_DoubleToFloat>(StartTime)
+  [5039] K2Node_MakeStruct_spline_fx_component_instance.StartTime = K2Node_MakeStruct_StartTime_52_317D3E4C4915D9EEFBCBB6903E3AA109_ImplicitCast
+  [5075] K2Node_MakeStruct_spline_fx_component_instance.StartingVector = CallFunc_Add_VectorVector_ReturnValue_1
+  [5111] K2Node_MakeStruct_spline_fx_component_instance.ParticleClass = ParticleSystem
+  [5139] K2Node_MakeStruct_spline_fx_component_instance.AkStartEvent = AkStartEvent
+  [5167] K2Node_MakeStruct_spline_fx_component_instance.AkStopEvent = AkStopEvent
+  [5195] K2Node_MakeStruct_spline_fx_component_instance.AkImpactEvent = AkImpactEvent
+  [5223] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.SpawnedComponents, K2Node_MakeStruct_spline_fx_component_instance)
+  [5291] SetComponentTickEnabled(true)
+  [5306] pop
+  [5307] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [5349] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [5376] goto @544
+  [5381] Default__KismetArrayLibrary.Array_Get(self.TargetArray, self.CurrentIndex, CallFunc_Array_Get_Item)
+  [5440] CallFunc_K2_GetComponentLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetComponentLocation()
+  [5490] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_K2_GetComponentLocation_ReturnValue, self.SourceLocation)
+  [5536] CallFunc_VSize_ReturnValue = VSize(CallFunc_Subtract_VectorVector_ReturnValue)
+  [5573] CallFunc_MapRangeClamped_ReturnValue = MapRangeClamped(CallFunc_VSize_ReturnValue, 0.0, self.MaxDistanceFalloff (Units), self.Min Distance Speed Multiplier, self.Maxc Distance Speed Multiplier)
+  [5646] self.FalloffSpeedMult = CallFunc_MapRangeClamped_ReturnValue
+  [5673] goto @3341
+  [5678] return nothing
+  [5680] end
+
+=== OnParticleDeactivated__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_spline_fx_spawner_bpc(35)
+  [33] return nothing
+  [35] end

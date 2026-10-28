@@ -1,0 +1,479 @@
+# shadowcat_portal_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthFindAndLockTarget
+  [0] FlushNetDormancy()
+  [10] self.PortalTarget = null
+  [21] MarkPropertyDirtyFromRepIndex(self, 11, 'PortalTarget')
+  [50] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [70] Default__targetting_function_library_C.SimpleTargettingCheck(self, TargettingType, 3000.0, true, CallFunc_GetInstigatorController_ReturnValue, 0.10000000149011612, self, CallFunc_SimpleTargettingCheck_Target, CallFunc_SimpleTargettingCheck_TargetLoc, CallFunc_SimpleTargettingCheck_FoundTarget)
+  [172] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SimpleTargettingCheck_Target)
+  [201] if !(CallFunc_IsValid_ReturnValue) goto @443
+  [215] Default__archon_function_library_C.GetTopdownAngleBetween(self, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_SimpleTargettingCheck_TargetLoc, self, CallFunc_GetTopdownAngleBetween_Angle)
+  [296] CallFunc_Abs_ReturnValue = Abs(CallFunc_GetTopdownAngleBetween_Angle)
+  [333] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_Abs_ReturnValue, self.MaxAimAngle)
+  [371] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @443
+  [385] FlushNetDormancy()
+  [395] self.PortalTarget = CallFunc_SimpleTargettingCheck_Target
+  [414] MarkPropertyDirtyFromRepIndex(self, 11, 'PortalTarget')
+  [443] return nothing
+  [445] end
+
+=== AuthSetShadowcatPeeking
+  [0] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [21] if !(CallFunc_IsServer_ReturnValue) goto @173
+  [35] CallFunc_NotEqual_BoolBool_ReturnValue = NotEqual_BoolBool(IsPeeking, self.IsShadowcatPeeking)
+  [73] if !(CallFunc_NotEqual_BoolBool_ReturnValue) goto @173
+  [87] FlushNetDormancy()
+  [97] self.IsShadowcatPeeking = IsPeeking
+  [116] MarkPropertyDirtyFromRepIndex(self, 12, 'IsShadowcatPeeking')
+  [145] OnRep_IsShadowcatPeeking()
+  [159] OnRep_IsShadowcatPeeking()
+  [173] return nothing
+  [175] end
+
+=== AuthSetTelegraphActive
+  [0] MulticastSetTelegraph(TelegraphedAction, TelegraphActive, TelegraphTime)
+  [41] return nothing
+  [43] end
+
+=== CloneAttack
+  [0] L_Rot = EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0})
+  [43] GetPortalAttackPosition(300.0, CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir)
+  [84] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [104] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetPortalAttackPosition_SpawnPos, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [166] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [202] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [231] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_GetPortalAttackPosition_AimDir, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [302] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, self.CloneProjectileToSpawn, CallFunc_MakeTransform_ReturnValue, 1, K2Node_DynamicCast_AsArchon_Behemoth)
+  [352] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OriginPortal', self)
+  [385] Default__KismetSystemLibrary.SetStructurePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageGUID', self.CloneDamageGUID)
+  [448] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [468] K2Node_DynamicCast_AsArchon_Behemoth = cast<ArchonBehemoth>(CallFunc_GetOwner_ReturnValue)
+  [504] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Behemoth)
+  [533] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsArchon_Behemoth)
+  [574] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetPortalAttackPosition_SpawnPos, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 100.0}))
+  [636] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Subtract_VectorVector_ReturnValue, CallFunc_GetPortalAttackPosition_AimDir, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [707] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [745] return nothing
+  [747] end
+
+=== ClosePortal
+  [0] ExecuteUbergraph_shadowcat_portal_bp(3013)
+  [15] return nothing
+  [17] end
+
+=== DelayedCloneAttack
+  [0] self.CloneDamageGUID = DamageGUID
+  [27] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(Delay, 0.0)
+  [65] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @98
+  [79] CloneAttack()
+  [93] goto @207
+  [98] K2Node_CreateDelegate_OutputDelegate = bind(self.CloneAttack)
+  [121] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(Delay)
+  [150] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [207] return nothing
+  [209] end
+
+=== DoTelegraphEnd
+  [0] ExecuteUbergraph_shadowcat_portal_bp(5399)
+  [15] return nothing
+  [17] end
+
+=== DoTwistTele
+  [0] frame.K2Node_CustomEvent_Time = Time
+  [18] ExecuteUbergraph_shadowcat_portal_bp(6089)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_shadowcat_portal_bp
+  [0] push @6624
+  [5] goto computed(EntryPoint)
+  [15] SetUpPortal()
+  [29] pop
+  [30] self.PortalVFX.SetFloatParameter('dissolve', self.TwistTelegraph_NewTrack_0_04AD76804A83CE4F2867099E2C9BB547)
+  [88] pop
+  [89] pop
+  [90] self.Timeline_0.Reverse()
+  [122] pop
+  [123] self.Timeline_0.Play()
+  [155] pop
+  [156] ReceiveBeginPlay()
+  [166] push @2998
+  [171] push @529
+  [176] push @406
+  [181] push @221
+  [186] push @196
+  [191] goto @15
+  [196] if !(self.OpenPortalOnPlay) pop
+  [206] OpenPortal()
+  [220] pop
+  [221] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.ActiveDuration, 0.0)
+  [259] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [269] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.ClosePortal)
+  [292] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.ActiveDuration)
+  [321] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [378] self.ActiveDurationTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [405] pop
+  [406] CallFunc_K2_GetActorLocation_ReturnValue = K2_GetActorLocation()
+  [434] CallFunc_PostEventAtLocation_ReturnValue = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Umbral_Portal_Open, CallFunc_K2_GetActorLocation_ReturnValue, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [528] pop
+  [529] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [550] if !(CallFunc_IsServer_ReturnValue) pop
+  [560] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 0)
+  [591] if !(K2Node_SwitchEnum_CmpSuccess) goto @1596
+  [605] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 1)
+  [636] if !(K2Node_SwitchEnum_CmpSuccess) goto @1596
+  [650] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 2)
+  [681] if !(K2Node_SwitchEnum_CmpSuccess) goto @1596
+  [695] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 3)
+  [726] if !(K2Node_SwitchEnum_CmpSuccess) goto @1596
+  [740] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 5)
+  [771] if !(K2Node_SwitchEnum_CmpSuccess) goto @1402
+  [785] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.PortalInitialAiming, 6)
+  [816] if !(K2Node_SwitchEnum_CmpSuccess) goto @831
+  [830] pop
+  [831] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [851] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetInstigatorController_ReturnValue)
+  [880] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetBlackboard_ReturnValue)
+  [909] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [919] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [939] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetInstigatorController_ReturnValue)
+  [968] CallFunc_MakeLiteralName_ReturnValue_2 = MakeLiteralName('PatternLocation')
+  [1009] CallFunc_GetLocationFromEntry_ReturnValue_1 = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(CallFunc_MakeLiteralName_ReturnValue_2, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [1069] CallFunc_MakeLiteralName_ReturnValue_3 = MakeLiteralName('PatternAimLocation')
+  [1110] CallFunc_GetLocationFromEntry_ReturnValue_3 = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(CallFunc_MakeLiteralName_ReturnValue_3, CallFunc_GetLocationFromEntry_ResultLocation_3)
+  [1170] CallFunc_Subtract_VectorVector_ReturnValue_1 = Subtract_VectorVector(CallFunc_GetLocationFromEntry_ResultLocation_3, CallFunc_GetLocationFromEntry_ResultLocation_1)
+  [1216] CallFunc_K2_GetActorLocation_ReturnValue_5 = K2_GetActorLocation()
+  [1244] CallFunc_Normal_ReturnValue_1 = Normal(CallFunc_Subtract_VectorVector_ReturnValue_1, 0.0001)
+  [1286] CallFunc_Multiply_VectorFloat_ReturnValue_1 = Multiply_VectorFloat(CallFunc_Normal_ReturnValue_1, 1000.0)
+  [1332] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue_1, CallFunc_K2_GetActorLocation_ReturnValue_5)
+  [1378] MulticastAimPortal(CallFunc_Add_VectorVector_ReturnValue_1)
+  [1401] pop
+  [1402] CallFunc_K2_GetActorLocation_ReturnValue_3 = K2_GetActorLocation()
+  [1430] CallFunc_GetActorForwardVector_ReturnValue = self.Instigator.GetActorForwardVector()
+  [1480] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetActorForwardVector_ReturnValue, 1000.0)
+  [1526] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_K2_GetActorLocation_ReturnValue_3, CallFunc_Multiply_VectorFloat_ReturnValue)
+  [1572] MulticastAimPortal(CallFunc_Add_VectorVector_ReturnValue)
+  [1595] pop
+  [1596] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [1616] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetInstigatorController_ReturnValue)
+  [1645] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBlackboard_ReturnValue)
+  [1674] if !(CallFunc_IsValid_ReturnValue) pop
+  [1684] Temp_real_Variable = 0.0
+  [1711] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [1731] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetInstigatorController_ReturnValue)
+  [1760] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(self.PortalInitialAiming, 3)
+  [1791] CallFunc_K2_GetActorLocation_ReturnValue_2 = K2_GetActorLocation()
+  [1819] Temp_real_Variable_1 = 0.5
+  [1846] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('PatternAimLocation')
+  [1887] CallFunc_GetInstigatorController_ReturnValue_1 = GetInstigatorController()
+  [1907] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('PatternLocation')
+  [1948] CallFunc_GetBlackboard_ReturnValue_1 = GetBlackboard(CallFunc_GetInstigatorController_ReturnValue_1)
+  [1977] CallFunc_GetLocationFromEntry_ReturnValue = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(CallFunc_MakeLiteralName_ReturnValue_1, CallFunc_GetLocationFromEntry_ResultLocation)
+  [2037] CallFunc_GetLocationFromEntry_ReturnValue_2 = CallFunc_GetBlackboard_ReturnValue_1.GetLocationFromEntry(CallFunc_MakeLiteralName_ReturnValue, CallFunc_GetLocationFromEntry_ResultLocation_2)
+  [2097] CallFunc_Subtract_VectorVector_ReturnValue = Subtract_VectorVector(CallFunc_GetLocationFromEntry_ResultLocation, CallFunc_GetLocationFromEntry_ResultLocation_2)
+  [2143] CallFunc_Normal_ReturnValue = Normal(CallFunc_Subtract_VectorVector_ReturnValue, 0.0001)
+  [2185] Temp_bool_Variable = CallFunc_EqualEqual_ByteByte_ReturnValue
+  [2204] Temp_name_Variable = 'SelfActor'
+  [2235] Temp_name_Variable_1 = 'AttackTarget'
+  [2266] Temp_name_Variable_2 = 'TempLocation'
+  [2297] Temp_name_Variable_3 = 'TempLocation'
+  [2328] Temp_name_Variable_4 = 'None'
+  [2359] Temp_name_Variable_5 = 'None'
+  [2390] Temp_name_Variable_6 = 'None'
+  [2421] Temp_byte_Variable = self.PortalInitialAiming
+  [2448] CallFunc_MakeLiteralName_ReturnValue_4 = MakeLiteralName(switch(Temp_byte_Variable){0: Temp_name_Variable, 1: Temp_name_Variable_1, 2: Temp_name_Variable_2, 3: Temp_name_Variable_3, 4: Temp_name_Variable_4, 5: Temp_name_Variable_5, 6: Temp_name_Variable_6, default: K2Node_Select_Default_1})
+  [2606] CallFunc_GetLocationFromEntry_ReturnValue_4 = CallFunc_GetBlackboard_ReturnValue.GetLocationFromEntry(CallFunc_MakeLiteralName_ReturnValue_4, CallFunc_GetLocationFromEntry_ResultLocation_4)
+  [2666] CallFunc_Subtract_VectorVector_ReturnValue_2 = Subtract_VectorVector(CallFunc_GetLocationFromEntry_ResultLocation_4, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [2712] CallFunc_Normal_ReturnValue_2 = Normal(CallFunc_Subtract_VectorVector_ReturnValue_2, 0.0001)
+  [2754] CallFunc_VLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: Temp_real_Variable, true: Temp_real_Variable_1, default: K2Node_Select_Default})
+  [2827] CallFunc_VLerp_ReturnValue = VLerp(CallFunc_Normal_ReturnValue_2, CallFunc_Normal_ReturnValue, CallFunc_VLerp_Alpha_ImplicitCast)
+  [2882] CallFunc_Multiply_VectorFloat_ReturnValue_2 = Multiply_VectorFloat(CallFunc_VLerp_ReturnValue, 1000.0)
+  [2928] CallFunc_Add_VectorVector_ReturnValue_2 = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue_2, CallFunc_K2_GetActorLocation_ReturnValue_2)
+  [2974] MulticastAimPortal(CallFunc_Add_VectorVector_ReturnValue_2)
+  [2997] pop
+  [2998] OnRep_IsShadowcatPeeking_BPCallable()
+  [3012] pop
+  [3013] self.ClosedPortalScale = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [3056] OnPortalClosed()
+  [3070] CallFunc_K2_GetActorLocation_ReturnValue_4 = K2_GetActorLocation()
+  [3098] CallFunc_PostEventAtLocation_ReturnValue_2 = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Umbral_Portal_Close, CallFunc_K2_GetActorLocation_ReturnValue_4, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [3192] goto @90
+  [3197] K2_DestroyActor()
+  [3211] pop
+  [3212] ReceiveDestroyed()
+  [3222] Default__archon_function_library_C.TryDeactivateComponent(self.PortalVFX, self)
+  [3268] Default__archon_function_library_C.TryDeactivateComponent(self.LoopingTelegraphVFX, self)
+  [3314] pop
+  [3315] goto @3013
+  [3320] goto @123
+  [3325] CallFunc_K2_GetActorLocation_ReturnValue_1 = K2_GetActorLocation()
+  [3353] BreakVector(K2Node_CustomEvent_TargetPos, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [3399] BreakVector(CallFunc_K2_GetActorLocation_ReturnValue_1, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [3445] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 0.0)
+  [3500] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [3555] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_MakeVector_ReturnValue_1, CallFunc_MakeVector_ReturnValue)
+  [3601] CallFunc_K2_SetActorRotation_ReturnValue = K2_SetActorRotation(CallFunc_FindLookAtRotation_ReturnValue, false)
+  [3631] pop
+  [3632] K2_ClearAndInvalidateTimerHandle(self, self.TelegraphEndTimer)
+  [3652] if !(K2Node_CustomEvent_TelegraphActive) goto @5313
+  [3666] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_CustomEvent_TelegraphedAction, 'InterruptablePounce')
+  [3708] if !(K2Node_SwitchName_CmpSuccess) goto @5130
+  [3722] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_CustomEvent_TelegraphedAction, 'Feint')
+  [3764] if !(K2Node_SwitchName_CmpSuccess) goto @5130
+  [3778] K2Node_SwitchName_CmpSuccess = NotEqual_NameName(K2Node_CustomEvent_TelegraphedAction, 'Taunt')
+  [3820] if !(K2Node_SwitchName_CmpSuccess) goto @5130
+  [3834] self.L_Telegraph = shadowcat_portal_telepgraph_temp
+  [3853] self.L_TelegraphEnd = shadowcat_portal_telegraph_end_temp
+  [3872] self.L_TelegraphShort = shadowcat_portal_telegraph_short
+  [3891] CallFunc_IsValid_ReturnValue_3 = IsValid(self.LoopingTelegraphVFX)
+  [3920] if !(CallFunc_IsValid_ReturnValue_3) goto @3980
+  [3934] Default__archon_function_library_C.TryDeactivateComponent(self.LoopingTelegraphVFX, self)
+  [3980] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(K2Node_CustomEvent_TelegraphTime, 1.0)
+  [4018] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @4606
+  [4032] self.L_TelegraphEndTime = K2Node_CustomEvent_TelegraphTime
+  [4059] CallFunc_K2_GetComponentToWorld_ReturnValue = self.TelegraphSocket.K2_GetComponentToWorld()
+  [4109] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [4155] CallFunc_SpawnEmitterAtLocation_ReturnValue_2 = SpawnEmitterAtLocation(self, self.L_TelegraphShort, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale, true, 0, true)
+  [4216] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_SpawnEmitterAtLocation_ReturnValue_2)
+  [4245] if !(CallFunc_IsValid_ReturnValue_6) goto @4392
+  [4259] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(self.L_TelegraphEndTime, 0.20000000298023224)
+  [4305] CallFunc_SetFloatParameter_Param_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [4334] CallFunc_SpawnEmitterAtLocation_ReturnValue_2.SetFloatParameter('Lifetime', CallFunc_SetFloatParameter_Param_ImplicitCast)
+  [4392] DoTwistTele(self.L_TelegraphEndTime)
+  [4415] CallFunc_K2_GetComponentToWorld_ReturnValue = self.TelegraphSocket.K2_GetComponentToWorld()
+  [4465] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [4511] CallFunc_PostEventAtLocation_ReturnValue_1 = Default__AkGameplayStatics.PostEventAtLocation(Play_Generic_Elemental_Umbral_Spawn_Medium_Shadowcat_Telegraph, CallFunc_BreakTransform_Location, EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), self)
+  [4605] pop
+  [4606] CallFunc_K2_GetComponentToWorld_ReturnValue = self.TelegraphSocket.K2_GetComponentToWorld()
+  [4656] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [4702] CallFunc_SpawnEmitterAtLocation_ReturnValue = SpawnEmitterAtLocation(self, self.L_Telegraph, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale, true, 0, true)
+  [4763] self.LoopingTelegraphVFX = CallFunc_SpawnEmitterAtLocation_ReturnValue
+  [4782] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(K2Node_CustomEvent_TelegraphTime, 1.0)
+  [4828] K2Node_CreateDelegate_OutputDelegate = bind(self.DoTelegraphEnd)
+  [4851] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Subtract_DoubleDouble_ReturnValue)
+  [4880] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1, false, 0.0, 0.0)
+  [4937] self.TelegraphEndTimer = CallFunc_K2_SetTimerDelegate_ReturnValue
+  [4964] CallFunc_SetRTPCValue_Value_ImplicitCast = cast<CST_DoubleToFloat>(K2Node_CustomEvent_TelegraphTime)
+  [4993] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast, 0, self, 'Behemoth_Shadowcat_Portal_Telegraph_Duration')
+  [5054] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Umbral_Portal_Telegraph_Long_Time_Sync, self, 0, Temp_delegate_Variable, false)
+  [5129] pop
+  [5130] self.L_Telegraph = shadowcat_portal_telepgraph_self_temp
+  [5149] self.L_TelegraphEnd = shadowcat_portal_telegraph_self_end
+  [5168] self.L_TelegraphShort = shadowcat_portal_telegraph_self_short
+  [5187] GetPortalAttackPosition(300.0, CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir)
+  [5228] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [5248] CallFunc_K2_TeleportTo_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_TeleportTo(CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir)
+  [5308] goto @3891
+  [5313] CallFunc_IsValid_ReturnValue_2 = IsValid(self.LoopingTelegraphVFX)
+  [5342] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [5352] Default__archon_function_library_C.TryDeactivateComponent(self.LoopingTelegraphVFX, self)
+  [5398] pop
+  [5399] self.L_TelegraphEndTime = 1.0
+  [5426] CallFunc_IsValid_ReturnValue_4 = IsValid(self.LoopingTelegraphVFX)
+  [5455] if !(CallFunc_IsValid_ReturnValue_4) goto @5515
+  [5469] Default__archon_function_library_C.TryDeactivateComponent(self.LoopingTelegraphVFX, self)
+  [5515] CallFunc_K2_GetComponentToWorld_ReturnValue_1 = self.TelegraphSocket.K2_GetComponentToWorld()
+  [5565] BreakTransform(CallFunc_K2_GetComponentToWorld_ReturnValue_1, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [5611] CallFunc_SpawnEmitterAtLocation_ReturnValue_1 = SpawnEmitterAtLocation(self, self.L_TelegraphEnd, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1, true, 0, true)
+  [5672] CallFunc_IsValid_ReturnValue_5 = IsValid(CallFunc_SpawnEmitterAtLocation_ReturnValue_1)
+  [5701] if !(CallFunc_IsValid_ReturnValue_5) goto @5802
+  [5715] CallFunc_SetFloatParameter_Param_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.L_TelegraphEndTime)
+  [5744] CallFunc_SpawnEmitterAtLocation_ReturnValue_1.SetFloatParameter('Lifetime', CallFunc_SetFloatParameter_Param_ImplicitCast_1)
+  [5802] DoTwistTele(self.L_TelegraphEndTime)
+  [5825] CallFunc_SetRTPCValue_Value_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.L_TelegraphEndTime)
+  [5854] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast_1, 0, self, 'Behemoth_Shadowcat_Portal_Telegraph_Duration')
+  [5915] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Umbral_Portal_Telegraph_Long_Time_Sync, self, 0, Temp_delegate_Variable_1, false)
+  [5990] pop
+  [5991] CallFunc_EqualEqual_ByteByte_ReturnValue_2 = EqualEqual_ByteByte(self.Timeline_0__Direction_98B84A8C4790B0A871270FAB69AE2EDB, 1)
+  [6022] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_2) pop
+  [6032] if !(self.DeactivateVFXOnClose) pop
+  [6042] Default__archon_function_library_C.TryDeactivateComponent(self.PortalVFX, self)
+  [6088] pop
+  [6089] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(1.0, K2Node_CustomEvent_Time)
+  [6135] CallFunc_SetPlayRate_NewRate_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [6164] self.TwistTelegraph.SetPlayRate(CallFunc_SetPlayRate_NewRate_ImplicitCast)
+  [6205] self.TwistTelegraph.PlayFromStart()
+  [6237] pop
+  [6238] self.TwistTelegraph.SetPlayRate(1.0)
+  [6275] pop
+  [6276] self.PortalVFX.SetFloatParameter('dissolve', self.Timeline_0_Scale_98B84A8C4790B0A871270FAB69AE2EDB)
+  [6334] pop
+  [6335] pop
+  [6336] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(self.Timeline_0__Direction_98B84A8C4790B0A871270FAB69AE2EDB, 1)
+  [6367] if !(CallFunc_EqualEqual_ByteByte_ReturnValue_1) pop
+  [6377] goto @3197
+  [6382] K2_ClearAndInvalidateTimerHandle(self, self.ActiveDurationTimer)
+  [6402] self.ActiveDuration = K2Node_CustomEvent_NewActiveDuration
+  [6429] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(self.ActiveDuration, 0.0)
+  [6467] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) pop
+  [6477] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.ClosePortal)
+  [6500] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2 = cast<CST_DoubleToFloat>(self.ActiveDuration)
+  [6529] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2, false, 0.0, 0.0)
+  [6586] self.ActiveDurationTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_2
+  [6613] pop
+  [6614] goto @6238
+  [6619] goto @6336
+  [6624] return nothing
+  [6626] end
+
+=== GetAttachPointTransform
+  [0] CallFunc_K2_GetComponentToWorld_ReturnValue = self.Arrow.K2_GetComponentToWorld()
+  [50] AttachPointTransform = CallFunc_K2_GetComponentToWorld_ReturnValue
+  [77] return nothing
+  [79] end
+
+=== GetPortalAttackPosition
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.PortalTarget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @1191
+  [43] CallFunc_K2_GetComponentLocation_ReturnValue = self.TelegraphSocket.K2_GetComponentLocation()
+  [93] CallFunc_GetTransform_ReturnValue = GetTransform()
+  [121] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [167] CallFunc_GetForwardVector_ReturnValue_1 = GetForwardVector(CallFunc_BreakTransform_Rotation)
+  [204] CallFunc_K2_GetActorLocation_ReturnValue = self.PortalTarget.K2_GetActorLocation()
+  [254] Default__archon_function_library_C.ClampPointByAngle(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetForwardVector_ReturnValue_1, -70.0, 70.0, self, CallFunc_ClampPointByAngle_ClampedPoint)
+  [345] CallFunc_K2_GetComponentLocation_ReturnValue = self.TelegraphSocket.K2_GetComponentLocation()
+  [395] BreakVector(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [441] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_BreakVector_X, CallFunc_BreakVector_Y, 0.0)
+  [496] BreakVector(CallFunc_ClampPointByAngle_ClampedPoint, CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, CallFunc_BreakVector_Z_1)
+  [542] CallFunc_MakeVector_ReturnValue_1 = MakeVector(CallFunc_BreakVector_X_1, CallFunc_BreakVector_Y_1, 0.0)
+  [597] CallFunc_FindLookAtRotation_ReturnValue = FindLookAtRotation(CallFunc_MakeVector_ReturnValue, CallFunc_MakeVector_ReturnValue_1)
+  [643] L_Rot = CallFunc_FindLookAtRotation_ReturnValue
+  [670] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(DistanceBehindPortalToSpawn, -1.0)
+  [716] CallFunc_K2_GetComponentLocation_ReturnValue = self.TelegraphSocket.K2_GetComponentLocation()
+  [766] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(L_Rot)
+  [803] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [849] CallFunc_GetTransform_ReturnValue = GetTransform()
+  [877] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetComponentLocation_ReturnValue)
+  [923] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [969] CallFunc_Add_VectorVector_ReturnValue_1 = Add_VectorVector(CallFunc_Add_VectorVector_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [1031] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue_1, L_Rot, CallFunc_BreakTransform_Scale)
+  [1086] BreakTransform(CallFunc_MakeTransform_ReturnValue, CallFunc_BreakTransform_Location_1, CallFunc_BreakTransform_Rotation_1, CallFunc_BreakTransform_Scale_1)
+  [1132] SpawnPos = CallFunc_BreakTransform_Location_1
+  [1159] AimDir = CallFunc_BreakTransform_Rotation_1
+  [1186] goto @1297
+  [1191] CallFunc_GetTransform_ReturnValue = GetTransform()
+  [1219] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [1265] L_Rot = CallFunc_BreakTransform_Rotation
+  [1292] goto @670
+  [1297] return nothing
+  [1299] end
+
+=== MultiClosePortal
+  [0] ExecuteUbergraph_shadowcat_portal_bp(3315)
+  [15] return nothing
+  [17] end
+
+=== MultiSetActiveDuration
+  [0] frame.K2Node_CustomEvent_NewActiveDuration = NewActiveDuration
+  [18] ExecuteUbergraph_shadowcat_portal_bp(6382)
+  [33] return nothing
+  [35] end
+
+=== MulticastAimPortal
+  [0] frame.K2Node_CustomEvent_TargetPos = TargetPos
+  [18] ExecuteUbergraph_shadowcat_portal_bp(3325)
+  [33] return nothing
+  [35] end
+
+=== MulticastSetTelegraph
+  [0] frame.K2Node_CustomEvent_TelegraphedAction = TelegraphedAction
+  [18] frame.K2Node_CustomEvent_TelegraphActive = TelegraphActive
+  [36] frame.K2Node_CustomEvent_TelegraphTime = TelegraphTime
+  [54] ExecuteUbergraph_shadowcat_portal_bp(3632)
+  [69] return nothing
+  [71] end
+
+=== OnPortalClosed
+  [0] ExecuteUbergraph_shadowcat_portal_bp(6335)
+  [15] return nothing
+  [17] end
+
+=== OnRep_IsShadowcatPeeking
+  [0] OnRep_IsShadowcatPeeking_BPCallable()
+  [14] return nothing
+  [16] end
+
+=== OnRep_IsShadowcatPeeking_BPCallable
+  [0] if !(self.IsShadowcatPeeking) goto @56
+  [14] self.PeekVFX.Activate(false)
+  [51] goto @92
+  [56] self.PeekVFX.Deactivate()
+  [92] return nothing
+  [94] end
+
+=== OpenPortal
+  [0] ExecuteUbergraph_shadowcat_portal_bp(3320)
+  [15] return nothing
+  [17] end
+
+=== ProjectileAttack
+  [0] GetPortalAttackPosition(100.0, CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir)
+  [41] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [112] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, shadowcat_head_proj_C, CallFunc_MakeTransform_ReturnValue, 1, self.Instigator)
+  [162] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'OwningPawn', self.Instigator)
+  [203] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [231] Default__KismetSystemLibrary.SetStructurePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageGUID', CallFunc_NewGuid_ReturnValue)
+  [294] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', self.Instigator)
+  [335] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_GetPortalAttackPosition_SpawnPos, CallFunc_GetPortalAttackPosition_AimDir, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [406] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [444] return nothing
+  [446] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_shadowcat_portal_bp(156)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_shadowcat_portal_bp(3212)
+  [15] return nothing
+  [17] end
+
+=== SetUpPortal
+  [0] K2Node_DynamicCast_AsShadowcat_Archetype_Bp = cast<shadowcat_archetype_bp_C>(self.Instigator)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsShadowcat_Archetype_Bp)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @120
+  [79] self.CloneProjectileToSpawn = K2Node_DynamicCast_AsShadowcat_Archetype_Bp.self.Clone Projectile to Spawn
+  [120] return nothing
+  [122] end
+
+=== Timeline_0__DeactivateVFX(IfEnabled)Time__EventFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(5991)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__FinishedFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(6619)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__UpdateFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(6276)
+  [15] return nothing
+  [17] end
+
+=== TwistTelegraph__FinishedFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(89)
+  [15] return nothing
+  [17] end
+
+=== TwistTelegraph__FinishedTele__EventFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(6614)
+  [15] return nothing
+  [17] end
+
+=== TwistTelegraph__UpdateFunc
+  [0] ExecuteUbergraph_shadowcat_portal_bp(30)
+  [15] return nothing
+  [17] end
+
+=== UserConstructionScript
+  [0] UserConstructionScript()
+  [10] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 45.0)
+  [56] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [85] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, CallFunc_MakeRotator_Pitch_ImplicitCast, -90.0)
+  [132] self.RandomPortalRot = CallFunc_MakeRotator_ReturnValue
+  [159] self.PortalVFX.K2_SetRelativeRotation(self.RandomPortalRot, false, CallFunc_K2_SetRelativeRotation_SweepHitResult, false)
+  [211] return nothing
+  [213] end

@@ -1,0 +1,121 @@
+# ce_beaver_weapon_enraged_buff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyHeal
+  [0] ExecuteUbergraph_ce_beaver_weapon_enraged_buff(627)
+  [15] return nothing
+  [17] end
+
+=== ApplyIcon
+  [0] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [20] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [49] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.MakeOutgoingSpec(ce_beaver_weapon_ge_C, 0.0, GameplayEffectContextHandle{})
+  [131] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', self.MaxDuration)
+  [190] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [210] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [239] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue, CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [307] self.HealOverTimeHandle = CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue
+  [334] return nothing
+  [336] end
+
+=== EnrageVFX
+  [0] frame.K2Node_CustomEvent_TargetActor = TargetActor
+  [18] ExecuteUbergraph_ce_beaver_weapon_enraged_buff(2123)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_ce_beaver_weapon_enraged_buff
+  [0] goto computed(EntryPoint)
+  [10] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [30] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue)
+  [66] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [95] if !(K2Node_DynamicCast_bSuccess) goto @2174
+  [109] K2Node_DynamicCast_AsPlayer_Interface = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character)
+  [145] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface)
+  [174] if !(K2Node_DynamicCast_bSuccess_1) goto @253
+  [188] K2Node_DynamicCast_AsPlayer_Interface.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState)
+  [234] if !(CallFunc_GetBleedOutState_BleedOutState) goto @269
+  [248] goto @2174
+  [253] CallFunc_GetBleedOutState_BleedOutState = false
+  [264] goto @234
+  [269] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.ApplyHeal)
+  [292] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeBetweenHeals)
+  [321] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [378] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(self.TimeBetweenHeals, 0.0)
+  [416] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @2174
+  [430] ApplyHeal()
+  [444] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [464] EnrageVFX(CallFunc_GetBuffOwner_ReturnValue_2)
+  [487] goto @2174
+  [492] K2Node_CreateDelegate_OutputDelegate = bind(self.RemoveVFX)
+  [515] K2Node_CreateDelegate_OutputDelegate += None
+  [534] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_vfx_behemoth_enter_rage_aoe, K2Node_CustomEvent_TargetActor, 0, Temp_delegate_Variable, false)
+  [617] goto @2174
+  [622] goto @10
+  [627] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [647] K2Node_DynamicCast_AsArchon_Character_1 = cast<ArchonCharacter>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [683] K2Node_DynamicCast_bSuccess_2 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character_1)
+  [712] if !(K2Node_DynamicCast_bSuccess_2) goto @2174
+  [726] K2Node_DynamicCast_AsPlayer_Interface_1 = cast<player_interface_C>(K2Node_DynamicCast_AsArchon_Character_1)
+  [762] K2Node_DynamicCast_bSuccess_3 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_1)
+  [791] if !(K2Node_DynamicCast_bSuccess_3) goto @1204
+  [805] K2Node_DynamicCast_AsPlayer_Interface_1.GetBleedOutState(CallFunc_GetBleedOutState_BleedOutState_1)
+  [851] CallFunc_GetHealth_ReturnValue = K2Node_DynamicCast_AsArchon_Character_1.GetHealth()
+  [901] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetHealth_ReturnValue)
+  [930] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [968] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_GetBleedOutState_BleedOutState_1, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [1006] if !(CallFunc_BooleanOR_ReturnValue) goto @1025
+  [1020] goto @2174
+  [1025] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1045] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.HealthRestoredPerSecond, self.TimeBetweenHeals)
+  [1091] Default__archon_function_library_C.HealTarget(CallFunc_GetBuffOwner_ReturnValue_1, CallFunc_GetBuffOwner_ReturnValue_1, self, CallFunc_Multiply_DoubleDouble_ReturnValue, self)
+  [1156] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1176] HealVFX(CallFunc_GetBuffOwner_ReturnValue_1)
+  [1199] goto @2174
+  [1204] CallFunc_GetBleedOutState_BleedOutState_1 = false
+  [1215] goto @851
+  [1220] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1241] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1260
+  [1255] goto @2174
+  [1260] K2Node_DynamicCast_AsPlayer_Interface_2 = cast<player_interface_C>(K2Node_CustomEvent_TargetActor_1)
+  [1296] K2Node_DynamicCast_bSuccess_4 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_2)
+  [1325] if !(K2Node_DynamicCast_bSuccess_4) goto @1580
+  [1339] K2Node_DynamicCast_AsPlayer_Interface_2.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp)
+  [1385] CallFunc_SpawnEmitterAttached_ReturnValue = SpawnEmitterAttached(buff_heal_generic_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [1517] CallFunc_SpawnEmitterAttached_ReturnValue.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_TargetActor_1)
+  [1575] goto @2174
+  [1580] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp = null
+  [1591] goto @1385
+  [1596] CallFunc_IsDedicatedServer_ReturnValue_1 = IsDedicatedServer(self)
+  [1617] if !(CallFunc_IsDedicatedServer_ReturnValue_1) goto @1636
+  [1631] goto @2174
+  [1636] K2Node_DynamicCast_AsPlayer_Interface_3 = cast<player_interface_C>(K2Node_CustomEvent_TargetActor)
+  [1672] K2Node_DynamicCast_bSuccess_5 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsPlayer_Interface_3)
+  [1701] if !(K2Node_DynamicCast_bSuccess_5) goto @2107
+  [1715] K2Node_DynamicCast_AsPlayer_Interface_3.GetSkeletalMeshComponent(CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1)
+  [1761] CallFunc_SpawnEmitterAttached_ReturnValue_2 = SpawnEmitterAttached(aoe_rage_enter_aoe_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1, 'Root', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 0.5, 'Y': 0.5, 'Z': 0.5}), 0, true, 0, true)
+  [1893] CallFunc_SpawnEmitterAttached_ReturnValue_1 = SpawnEmitterAttached(behemoth_rage_beaver_p, CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1, 'None', EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, false, 0, true)
+  [2025] self.RageVFX = CallFunc_SpawnEmitterAttached_ReturnValue_1
+  [2044] CallFunc_SpawnEmitterAttached_ReturnValue_1.SetActorParameter('VertSurfaceActor', K2Node_CustomEvent_TargetActor)
+  [2102] goto @492
+  [2107] CallFunc_GetSkeletalMeshComponent_SkeletalMeshComp_1 = null
+  [2118] goto @1761
+  [2123] goto @1596
+  [2128] Default__archon_function_library_C.TryDestroyComponent(self.RageVFX, self)
+  [2174] return nothing
+  [2176] end
+
+=== HealVFX
+  [0] frame.K2Node_CustomEvent_TargetActor_1 = TargetActor
+  [18] ExecuteUbergraph_ce_beaver_weapon_enraged_buff(1220)
+  [33] return nothing
+  [35] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_ce_beaver_weapon_enraged_buff(622)
+  [15] return nothing
+  [17] end
+
+=== RemoveVFX
+  [0] ExecuteUbergraph_ce_beaver_weapon_enraged_buff(2128)
+  [15] return nothing
+  [17] end

@@ -1,0 +1,98 @@
+{
+ "name": "mspear_beam_animstateset",
+ "package": "Archon/Content/blueprints/Weapons/AnimStates/mspear_beam_animstateset",
+ "type": "AnimStateSet",
+ "refs": [
+  "ComboAnimState_18",
+  "h_mr_ms_melee_super_beam_fwd_01_mot",
+  "mspear_base_animstateset"
+ ],
+ "exports": {
+  "ammo_count_ec_C_0": {
+   "type": "ammo_count_ec_C",
+   "props": {
+    "Operator": "EArchonCompareOperator::LessThanOrEquals",
+    "RValueChooser": "cond_ammo_compare_enum::CustomValue"
+   }
+  },
+  "animstate_elapsed_time_ec_C_0": {
+   "type": "animstate_elapsed_time_ec_C",
+   "props": {
+    "RValueAttributeName": "SpearFlamethrowerHoldDuration"
+   }
+  },
+  "mspear_beam_animstateset": {
+   "type": "AnimStateSet",
+   "props": {
+    "ParentSet": "AnimStateSet mspear_base_animstateset",
+    "AnimStates": [
+     "@ComboAnimState_0",
+     "@ComboAnimState_1"
+    ]
+   }
+  },
+  "ArchonGroupCondition_0": {
+   "type": "ArchonGroupCondition",
+   "props": {
+    "ChildConditions": [
+     "@animstate_elapsed_time_ec_C_0",
+     "@ammo_count_ec_C_0"
+    ]
+   }
+  },
+  "ComboAnimState_0": {
+   "type": "ComboAnimState",
+   "props": {
+    "StateName": "Q_projectile_hold",
+    "AnimMontage": "AnimMontage h_mr_ms_melee_super_beam_fwd_01_mot",
+    "EntryCondition": "@ammo_count_ec_C_0",
+    "HoldReleaseTransitions": [
+     {
+      "TransitionEvent": "None",
+      "DestinationState": "Q_projectile_release",
+      "NextMontageSection": "Recovery",
+      "Tags": []
+     }
+    ],
+    "Transitions": [
+     {
+      "bEnabled": true,
+      "DestState": "/Game/Blueprints/Weapons/AnimStates/mspear_base_animstateset.mspear_base_animstateset",
+      "DestStatePtr": "ComboAnimState ComboAnimState_18",
+      "TransitionEvent": "input_special_1",
+      "NextMontageSection": "Recovery",
+      "CheckGlobalTransitionCondition": true,
+      "CheckDestStateEntryCondition": false,
+      "Condition": "@ArchonGroupCondition_0",
+      "Context": "EArchonAttackActionContext::All",
+      "Tags": [],
+      "bCombatPlayrateAttributeEnabled": true,
+      "PlayRate": 1.0,
+      "FlyingMove": false,
+      "ComboInputKey": {
+       "PrimaryKey": "EArchonAttackActionKey::None",
+       "SecondaryKey": "EArchonAttackActionKeyModifier::None",
+       "InputType": "EArchonCombatInputType::InputType_Pressed"
+      },
+      "BufferMethod": "EComboBufferMethod::Mixed",
+      "BufferPriority": "EComboBufferPriority::Exclusive",
+      "PressAndHoldTime": 0.0,
+      "PressAndHoldTimeModifierAttribute": "None",
+      "bHoldFromStartOfBufferWindow": true,
+      "bPreviousInputAllowed": true,
+      "bAllowWhileStaggered": false,
+      "bAllowWhileFrozen": false,
+      "bTriggerReleasedInputIfButtonUpOnStart": false
+     }
+    ]
+   }
+  },
+  "ComboAnimState_1": {
+   "type": "ComboAnimState",
+   "props": {
+    "StateName": "Q_projectile_release",
+    "AnimMontage": "AnimMontage h_mr_ms_melee_super_beam_fwd_01_mot"
+   }
+  }
+ }
+}

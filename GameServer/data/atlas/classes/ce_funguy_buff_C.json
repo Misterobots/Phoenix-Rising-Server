@@ -1,0 +1,706 @@
+{
+ "name": "ce_funguy_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Current HP",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "BonusDamageMagnitude",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "GE Damage Reduction",
+   "type": "StructProperty<ActiveGameplayEffectHandle>",
+   "bp_type": "StructProperty<ActiveGameplayEffectHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DOTTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageReceived",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debuff Total Dealt Damage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debuff Max Duration",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debuff Remaining Damage",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AsCharacter",
+   "type": "ObjectProperty<ArchonCharacter>",
+   "bp_type": "ObjectProperty<ArchonCharacter>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Lifesteal Percent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "MaxHP",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DamageToAdd",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifestealTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ApplyDotDamage",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Client_HealVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetClient",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "client",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CustomModifyDamageEventData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "HasHitResult",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "HitResult",
+     "type": "StructProperty<HitResult>"
+    },
+    {
+     "name": "ModifiedDamageEventData",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageEventData",
+     "type": "StructProperty<DamageEventData>"
+    },
+    {
+     "name": "ShouldOverrideDamageTags",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "OverriddenDamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "CallFunc_Array_Length_TargetArray_ImplicitCast",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_Array_Get_TargetArray_ImplicitCast",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 58,
+   "reads": [
+    "DamageToAdd"
+   ],
+   "sets": [
+    "DamageToAdd"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "ArchonBuff.GetBuffOwner",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "BlueprintTypeConversions.ConvertArrayType",
+    "GetCellEffectMagnitude",
+    "IsCharacterInvulnerable",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.IsServer",
+    "ModifyDamageEventdata"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Deal DoT",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DamageDelayed",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DoLifesteal",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "End DoT",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EventOnHitReceived",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Source",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EventOnHitReceivedWhileInvulerable",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Source",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    },
+    {
+     "name": "InvulnerabilityTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_funguy_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_CustomEvent_Params_1",
+     "type": "StructProperty<ArchonHitEventParams>"
+    },
+    {
+     "name": "K2Node_CustomEvent_Params",
+     "type": "StructProperty<ArchonHitEventParams>"
+    },
+    {
+     "name": "K2Node_CustomEvent_InvulnerabilityTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 117,
+   "reads": [
+    "AsCharacter",
+    "DOTTimer",
+    "DamageReceived",
+    "DamageToAdd",
+    "Debuff Max Duration",
+    "Debuff Remaining Damage",
+    "Debuff Total Dealt Damage",
+    "Lifesteal Percent",
+    "LifestealTimer",
+    "OnPostMitigationDealtAnyDamage",
+    "ReceiveHitDelegate",
+    "ReceiveHitWhileInvulnerableDelegate"
+   ],
+   "sets": [
+    "AsCharacter",
+    "DOTTimer",
+    "DamageReceived",
+    "DamageToAdd",
+    "Debuff Remaining Damage",
+    "Debuff Total Dealt Damage",
+    "LifestealTimer"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "Actor.GetInstigator",
+    "Actor.GetInstigatorController",
+    "Actor.ReceiveTick",
+    "ApplyDotDamage",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonCharacter.GetIsStaggering",
+    "ArchonGameplayStatics.ApplyArchonTrueDamage",
+    "BlueprintGameplayTagLibrary.HasTag",
+    "Client_HealVFX",
+    "Deal DoT",
+    "End DoT",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetSkeletalMeshComponent",
+    "HealTarget",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.SelectFloat",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "SetActorParameter",
+    "base_buff_C.OnAdded",
+    "base_buff_C.OnRemoved"
+   ],
+   "authority": [
+    "IsServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "ParticleSystem buff_heal_generic_p"
+   ]
+  },
+  {
+   "name": "Get Magnitude",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Player Character",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "NewParam",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [
+    "BonusDamageMagnitude"
+   ],
+   "sets": [
+    "BonusDamageMagnitude"
+   ],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.FCeil",
+    "KismetMathLibrary.Multiply_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRemoved",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ResetVars",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_funguy_buff_C.ExecuteUbergraph_ce_funguy_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Content/Funguy/ce_funguy_buff",
+ "pseudo_file": "pseudo/ce_funguy_buff_C.txt",
+ "game_data": {}
+}

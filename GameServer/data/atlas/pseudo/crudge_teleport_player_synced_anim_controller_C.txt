@@ -1,0 +1,108 @@
+# crudge_teleport_player_synced_anim_controller_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Authority_SelectMontage
+  [0] push @515
+  [5] push @323
+  [10] CallFunc_GetPartnerMontageControllerTask_ReturnValue = GetPartnerMontageControllerTask()
+  [30] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetPartnerMontageControllerTask_ReturnValue)
+  [59] if !(CallFunc_IsValid_ReturnValue) pop
+  [69] CallFunc_GetPartnerMontageControllerTask_ReturnValue = GetPartnerMontageControllerTask()
+  [89] CallFunc_GetSelectedMontage_ReturnValue = CallFunc_GetPartnerMontageControllerTask_ReturnValue.GetSelectedMontage()
+  [139] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetSelectedMontage_ReturnValue.Montage)
+  [177] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [187] CallFunc_GetPartnerMontageControllerTask_ReturnValue = GetPartnerMontageControllerTask()
+  [207] CallFunc_GetSelectedMontage_ReturnValue = CallFunc_GetPartnerMontageControllerTask_ReturnValue.GetSelectedMontage()
+  [257] K2Node_VariableSet_SelectedMontage_StartTime_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetSelectedMontage_ReturnValue.StartTime)
+  [295] SelectedMontage_StartTime = K2Node_VariableSet_SelectedMontage_StartTime_ImplicitCast
+  [322] pop
+  [323] K2Node_MakeStruct_PhxAnimMontageSelection.Montage = b_ap_crudge_00_atk_sync_player_fwd_00_Montage
+  [351] K2Node_MakeStruct_PhxAnimMontageSelection.PlayRate = 1.0
+  [383] K2Node_MakeStruct_StartTime_ImplicitCast = cast<CST_DoubleToFloat>(SelectedMontage_StartTime)
+  [412] K2Node_MakeStruct_PhxAnimMontageSelection.StartTime = K2Node_MakeStruct_StartTime_ImplicitCast
+  [448] K2Node_MakeStruct_PhxAnimMontageSelection.StartSection = 'None'
+  [488] ReturnValue = K2Node_MakeStruct_PhxAnimMontageSelection
+  [515] return ReturnValue
+  [525] end
+
+=== ExecuteUbergraph_crudge_teleport_player_synced_anim_controller
+  [0] goto computed(EntryPoint)
+  [10] ReceiveOnFinished()
+  [20] Internal_OnFinished()
+  [34] goto @97
+  [39] ReceiveOnStarted()
+  [49] Internal_OnStarted()
+  [63] goto @97
+  [68] ReceiveOnTick(K2Node_Event_DeltaTime)
+  [87] goto @97
+  [92] goto @10
+  [97] return nothing
+  [99] end
+
+=== Internal_OnFinished
+  [0] push @932
+  [5] push @646
+  [10] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [30] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [40] CallFunc_GetOwningActor_ReturnValue_2 = GetOwningActor()
+  [60] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwningActor_ReturnValue_2)
+  [89] if !(CallFunc_IsValid_ReturnValue) pop
+  [99] CallFunc_GetOwningActor_ReturnValue_2 = GetOwningActor()
+  [119] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue_2.GetComponentByClass(NetworkedMontageComponent)
+  [170] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetComponentByClass_ReturnValue)
+  [199] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [209] CallFunc_GetOwningActor_ReturnValue_1 = GetOwningActor()
+  [229] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(CallFunc_GetOwningActor_ReturnValue_1, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [348] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [377] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, 0.0)
+  [415] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [453] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BooleanAND_ReturnValue)
+  [482] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [492] CallFunc_GetOwningActor_ReturnValue_2 = GetOwningActor()
+  [512] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwningActor_ReturnValue_2.GetComponentByClass(NetworkedMontageComponent)
+  [563] CallFunc_PlayMontage_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.PlayMontage(h_mr_ua_bleedout_getup_fwd_01_mot, 1.0, 'None', 1.0)
+  [645] pop
+  [646] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [666] CallFunc_HasAuthority_ReturnValue_1 = HasAuthority()
+  [686] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsOwningClient_ReturnValue, CallFunc_HasAuthority_ReturnValue_1)
+  [724] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [734] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [754] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_GetOwningActor_ReturnValue)
+  [790] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [819] if !(K2Node_DynamicCast_bSuccess) pop
+  [829] K2Node_DynamicCast_AsBP_Player_Character.FlushNetDormancy()
+  [861] K2Node_DynamicCast_AsBP_Player_Character.self.Input Enabled = true
+  [894] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsBP_Player_Character, 35, 'Input Enabled')
+  [931] pop
+  [932] return nothing
+  [934] end
+
+=== Internal_OnStarted
+  [0] CallFunc_IsOwningClient_ReturnValue = IsOwningClient()
+  [20] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [40] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsOwningClient_ReturnValue, CallFunc_HasAuthority_ReturnValue)
+  [78] if !(CallFunc_BooleanOR_ReturnValue) goto @293
+  [92] CallFunc_GetOwningActor_ReturnValue = GetOwningActor()
+  [112] K2Node_DynamicCast_AsBP_Player_Character = cast<BP_PlayerCharacter_C>(CallFunc_GetOwningActor_ReturnValue)
+  [148] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBP_Player_Character)
+  [177] if !(K2Node_DynamicCast_bSuccess) goto @293
+  [191] K2Node_DynamicCast_AsBP_Player_Character.FlushNetDormancy()
+  [223] K2Node_DynamicCast_AsBP_Player_Character.self.Input Enabled = false
+  [256] MarkPropertyDirtyFromRepIndex(K2Node_DynamicCast_AsBP_Player_Character, 35, 'Input Enabled')
+  [293] return nothing
+  [295] end
+
+=== ReceiveOnFinished
+  [0] ExecuteUbergraph_crudge_teleport_player_synced_anim_controller(92)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnStarted
+  [0] ExecuteUbergraph_crudge_teleport_player_synced_anim_controller(39)
+  [15] return nothing
+  [17] end
+
+=== ReceiveOnTick
+  [0] frame.K2Node_Event_DeltaTime = DeltaTime
+  [18] ExecuteUbergraph_crudge_teleport_player_synced_anim_controller(68)
+  [33] return nothing
+  [35] end

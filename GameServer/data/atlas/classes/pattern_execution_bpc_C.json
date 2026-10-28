@@ -1,0 +1,768 @@
+{
+ "name": "pattern_execution_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 312,
+ "sdk_header": "pattern_execution_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "CurrentPattern",
+   "type": "TArray<Fpattern_row>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "CurrentPatternStage",
+   "type": "int32",
+   "offset": "0xB8",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "IsRunningPattern",
+   "type": "bool",
+   "offset": "0xBC",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "CurrentPatternState",
+   "type": "Epattern_state",
+   "offset": "0xBD",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ByteProperty<pattern_state>"
+  },
+  {
+   "name": "CurrentTimer",
+   "type": "FTimerHandle",
+   "offset": "0xC0",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<TimerHandle>"
+  },
+  {
+   "name": "OnPatternFinished",
+   "type": "TMulticastInlineDelegate<void(bool Succeeded)>",
+   "offset": "0xC8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "OnActionRequested",
+   "type": "TMulticastInlineDelegate<void(FName ActionName, TArray<int32>& SourceIndexes, Epattern_targetting_type TargettingType, Fpattern_row& PatternRow, const FGuid& PatternStageGUID)>",
+   "offset": "0xD8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "OnStartTelegraphRequested",
+   "type": "TMulticastInlineDelegate<void(const Fpattern_row& PatternRowToTelegraph)>",
+   "offset": "0xE8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "OnStopTelegraphRequested",
+   "type": "TMulticastInlineDelegate<void(TArray<int32>& SourceIndexes)>",
+   "offset": "0xF8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "ActiveTelegraphs",
+   "type": "TArray<int32>",
+   "offset": "0x108",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "L_Sources",
+   "type": "TArray<int32>",
+   "offset": "0x118",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "CurrentPatternGUID",
+   "type": "FGuid",
+   "offset": "0x128",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Guid>"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "ChangeState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewState",
+     "type": "Epattern_state"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteAction",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PatternRow",
+     "type": "Fpattern_row"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteSinglePatternStage",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Stage",
+     "type": "Fpattern_row"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 10,
+   "reads": [
+    "ActiveTelegraphs"
+   ],
+   "sets": [
+    "CurrentPattern",
+    "CurrentPatternStage",
+    "CurrentPatternState",
+    "IsRunningPattern"
+   ],
+   "calls": [
+    "KismetArrayLibrary.Array_Clear",
+    "MoveToNextPatternStage",
+    "StopExecutingPattern"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_pattern_execution_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 39,
+   "reads": [
+    "CurrentPattern",
+    "CurrentPatternGUID",
+    "CurrentPatternStage",
+    "CurrentPatternState",
+    "OnActionRequested",
+    "OnStartTelegraphRequested",
+    "OnStopTelegraphRequested"
+   ],
+   "sets": [
+    "ActiveTelegraphs",
+    "CurrentPatternState",
+    "CurrentTimer"
+   ],
+   "calls": [
+    "ChangeState",
+    "ExecuteAction",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "MoveToNextPatternStage",
+    "None",
+    "StartTelegraph",
+    "StopTelegraph"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MoveToNextAction",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MoveToNextPatternStage",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 14,
+   "reads": [
+    "CurrentPattern",
+    "CurrentPatternStage",
+    "OnPatternFinished"
+   ],
+   "sets": [
+    "CurrentPatternGUID",
+    "CurrentPatternStage",
+    "IsRunningPattern"
+   ],
+   "calls": [
+    "ChangeState",
+    "KismetArrayLibrary.Array_Length",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "None"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnActionRequested__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ActionName",
+     "type": "FName"
+    },
+    {
+     "name": "SourceIndexes",
+     "type": "TArray<int32>"
+    },
+    {
+     "name": "TargettingType",
+     "type": "Epattern_targetting_type"
+    },
+    {
+     "name": "PatternRow",
+     "type": "Fpattern_row"
+    },
+    {
+     "name": "PatternStageGUID",
+     "type": "FGuid"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPatternFinished__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Succeeded",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnStartTelegraphRequested__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PatternRowToTelegraph",
+     "type": "Fpattern_row"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnStopTelegraphRequested__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SourceIndexes",
+     "type": "TArray<int32>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartNewPattern",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "CurrentPattern",
+     "type": "TArray<Fpattern_row>"
+    },
+    {
+     "name": "StartIndex",
+     "type": "int32"
+    },
+    {
+     "name": "SuccessfullyStartedPattern",
+     "type": "bool"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 29,
+   "reads": [
+    "ActiveTelegraphs"
+   ],
+   "sets": [
+    "CurrentPattern",
+    "CurrentPatternStage",
+    "CurrentPatternState",
+    "IsRunningPattern"
+   ],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ArchonGameplayStatics.IsShipping",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.GetDisplayName",
+    "KismetSystemLibrary.PrintString",
+    "KismetSystemLibrary.StackTrace",
+    "MoveToNextPatternStage",
+    "StopExecutingPattern"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StartTelegraph",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "PatternRowToTelegraph",
+     "type": "Fpattern_row"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopExecutingPattern",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 12,
+   "reads": [
+    "ActiveTelegraphs",
+    "CurrentTimer",
+    "IsRunningPattern",
+    "OnPatternFinished"
+   ],
+   "sets": [
+    "CurrentPatternState",
+    "IsRunningPattern"
+   ],
+   "calls": [
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "None",
+    "StopTelegraph"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopTelegraph",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SourceIndexes",
+     "type": "TArray<int32>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "StopTelegraphAndExecute",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "pattern_execution_bpc_C.ExecuteUbergraph_pattern_execution_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/components/pattern_execution_bpc",
+ "pseudo_file": "pseudo/pattern_execution_bpc_C.txt",
+ "game_data": {}
+}

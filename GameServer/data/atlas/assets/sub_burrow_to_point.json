@@ -1,0 +1,94 @@
+{
+ "name": "sub_burrow_to_point",
+ "package": "Archon/Content/Monsters/_shared/ai/sub_burrow_to_point",
+ "type": "BehaviorTree",
+ "refs": [
+  "EQS_NextPointAroundTargetPoint",
+  "bb_base",
+  "eqs_point_near_nextpatrolpoint"
+ ],
+ "exports": {
+  "sub_burrow_to_point": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_1",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@comment_btdeco_C_5",
+     "@comment_btdeco_C_7"
+    ]
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@set_rotation_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "NodeName": "Do the teleport and face - requires CurrentControlPoint, sets MoveDestination",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint",
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_point_near_nextpatrolpoint"
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "NodeName": "Find spot near pos",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "comment_btdeco_C_5": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Do the teleport and face - requires NextControlPoint, sets MoveDestination",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point"
+   }
+  },
+  "comment_btdeco_C_7": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Behemoth should probably be hidden at this point",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point"
+   }
+  },
+  "set_rotation_bttask_C_0": {
+   "type": "set_rotation_bttask_C",
+   "props": {
+    "LookAtTarget": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "teleport_bttask_C_0": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "DestinationKeyName": "NextPatrolPoint",
+    "TreeAsset": "BehaviorTree sub_burrow_to_point",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  }
+ }
+}

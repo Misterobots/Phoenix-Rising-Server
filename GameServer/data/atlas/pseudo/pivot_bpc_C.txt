@@ -1,0 +1,227 @@
+# pivot_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CalculateEstimatedAngle
+  [0] push @815
+  [5] push @191
+  [10] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PivotTargetType, 0)
+  [41] if !(K2Node_SwitchEnum_CmpSuccess) goto @223
+  [55] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PivotTargetType, 1)
+  [86] if !(K2Node_SwitchEnum_CmpSuccess) goto @251
+  [100] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PivotTargetType, 2)
+  [131] if !(K2Node_SwitchEnum_CmpSuccess) goto @388
+  [145] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(PivotTargetType, 3)
+  [176] if !(K2Node_SwitchEnum_CmpSuccess) goto @628
+  [190] pop
+  [191] EstimatedAngleToTarget = LocalEstimatedAngle
+  [218] goto @815
+  [223] LocalEstimatedAngle = FixedAngle
+  [250] pop
+  [251] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [271] Default__archon_function_library_C.GetTopdownAngleBetween(CallFunc_GetOwner_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), TargetLocation, self, CallFunc_GetTopdownAngleBetween_Angle_1)
+  [360] LocalEstimatedAngle = CallFunc_GetTopdownAngleBetween_Angle_1
+  [387] pop
+  [388] CallFunc_IsValid_ReturnValue = IsValid(TargetActor)
+  [417] if !(CallFunc_IsValid_ReturnValue) pop
+  [427] Default__archon_function_library_C.GetHorizPredictedMovement(TargetActor, 0.0, self, CallFunc_GetHorizPredictedMovement_FutureLocation)
+  [491] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [511] Default__archon_function_library_C.GetTopdownAngleBetween(CallFunc_GetOwner_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_GetHorizPredictedMovement_FutureLocation, self, CallFunc_GetTopdownAngleBetween_Angle_2)
+  [600] LocalEstimatedAngle = CallFunc_GetTopdownAngleBetween_Angle_2
+  [627] pop
+  [628] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [648] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [698] Default__archon_function_library_C.GetTopdownAngleBetween(TargetActor, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_K2_GetActorLocation_ReturnValue, self, CallFunc_GetTopdownAngleBetween_Angle)
+  [787] LocalEstimatedAngle = CallFunc_GetTopdownAngleBetween_Angle
+  [814] pop
+  [815] return nothing
+  [817] end
+
+=== ClearPivot
+  [0] self.PivotTargetType = 0
+  [20] self.CurrentPivotMontage = null
+  [31] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [51] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ai_warp_bpc_C)
+  [102] CallFunc_GetComponentByClass_ReturnValue.AuthClearTurnWarp()
+  [138] return nothing
+  [140] end
+
+=== DoPivot
+  [0] push @3042
+  [5] ClearPivot()
+  [19] push @456
+  [24] push @116
+  [29] CalculateEstimatedAngle(TargetType, Angle, TargetActor, Location, CallFunc_CalculateEstimatedAngle_EstimatedAngleToTarget)
+  [88] LocalEstimatedAngle = CallFunc_CalculateEstimatedAngle_EstimatedAngleToTarget
+  [115] pop
+  [116] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [136] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [186] CallFunc_GetActorForwardVector_ReturnValue = CallFunc_GetOwner_ReturnValue.GetActorForwardVector()
+  [236] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(LocalEstimatedAngle)
+  [265] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(CallFunc_GetActorForwardVector_ReturnValue, CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [336] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_RotateAngleAxis_ReturnValue, 2000.0)
+  [382] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue)
+  [428] L_PivotTarget = CallFunc_Add_VectorVector_ReturnValue
+  [455] pop
+  [456] GetMontageForAngle(LocalEstimatedAngle, CallFunc_GetMontageForAngle_Montage)
+  [488] self.CurrentPivotMontage = CallFunc_GetMontageForAngle_Montage
+  [507] push @1156
+  [512] if !(self.DrawDebugPivot) pop
+  [522] CallFunc_IsValid_ReturnValue = IsValid(self.CurrentPivotMontage)
+  [551] if !(CallFunc_IsValid_ReturnValue) goto @1127
+  [565] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self.CurrentPivotMontage)
+  [602] L_PivotMontageName = CallFunc_GetDisplayName_ReturnValue
+  [629] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Start Pivot: ', L_PivotMontageName)
+  [681] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' Angle: ')
+  [728] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(pivot_target_type, self.PivotTargetType)
+  [774] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(LocalEstimatedAngle)
+  [811] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue)
+  [857] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, 'From CurrentMontage:')
+  [916] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, L_CurrentMontageName)
+  [962] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'Type:')
+  [1006] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [1052] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_7, true, true, LinearColor{1.0, 0.211545, 0.0, 1.0}, 2.0, 'None')
+  [1126] pop
+  [1127] L_PivotMontageName = 'None'
+  [1151] goto @629
+  [1156] CallFunc_IsValid_ReturnValue_1 = IsValid(self.CurrentPivotMontage)
+  [1185] if !(CallFunc_IsValid_ReturnValue_1) goto @2874
+  [1199] CallFunc_Conv_DoubleToString_ReturnValue_1 = Conv_DoubleToString(LocalEstimatedAngle)
+  [1236] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Conv_DoubleToString_ReturnValue_1, ' deg')
+  [1279] CallFunc_Conv_StringToText_ReturnValue = Conv_StringToText(CallFunc_Concat_StrStr_ReturnValue_6)
+  [1316] K2Node_MakeStruct_FormatArgumentData.ArgumentName = 'suffix'
+  [1351] K2Node_MakeStruct_FormatArgumentData.ArgumentValueType = 4
+  [1380] K2Node_MakeStruct_FormatArgumentData.ArgumentValue = CallFunc_Conv_StringToText_ReturnValue
+  [1416] K2Node_MakeStruct_FormatArgumentData.ArgumentValueInt = 0
+  [1452] K2Node_MakeStruct_FormatArgumentData.ArgumentValueFloat = 0.0
+  [1484] K2Node_MakeStruct_FormatArgumentData.ArgumentValueDouble = 0.0
+  [1520] K2Node_MakeStruct_FormatArgumentData.ArgumentValueGender = 0
+  [1549] CallFunc_Conv_StringToText_ReturnValue_1 = Conv_StringToText('pivot start:')
+  [1591] K2Node_MakeStruct_FormatArgumentData_1.ArgumentName = 'prefix'
+  [1626] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueType = 4
+  [1655] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValue = CallFunc_Conv_StringToText_ReturnValue_1
+  [1691] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueInt = 0
+  [1727] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueFloat = 0.0
+  [1759] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueDouble = 0.0
+  [1795] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueGender = 0
+  [1824] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self.CurrentPivotMontage)
+  [1861] CallFunc_Conv_StringToText_ReturnValue_2 = Conv_StringToText(CallFunc_GetDisplayName_ReturnValue_1)
+  [1898] K2Node_MakeStruct_FormatArgumentData_2.ArgumentName = 'montage'
+  [1934] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueType = 4
+  [1963] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValue = CallFunc_Conv_StringToText_ReturnValue_2
+  [1999] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueInt = 0
+  [2035] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueFloat = 0.0
+  [2067] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueDouble = 0.0
+  [2103] K2Node_MakeStruct_FormatArgumentData_2.ArgumentValueGender = 0
+  [2132] array{K2Node_MakeStruct_FormatArgumentData_1, K2Node_MakeStruct_FormatArgumentData_2, K2Node_MakeStruct_FormatArgumentData}
+  [2170] CallFunc_Format_ReturnValue = Format(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': '{prefix} {montage} {suffix} '}}), K2Node_MakeArray_Array)
+  [2239] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_Format_ReturnValue)
+  [2276] ArchonLogText(self, CallFunc_Conv_TextToString_ReturnValue, 'Pivot')
+  [2309] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('PivotTarget')
+  [2350] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2370] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(CallFunc_GetOwner_ReturnValue_2)
+  [2399] CallFunc_GetBlackboard_ReturnValue.SetValueAsVector(CallFunc_MakeLiteralName_ReturnValue, L_PivotTarget)
+  [2449] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('PivotTarget')
+  [2490] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2510] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(ai_warp_bpc_C)
+  [2561] CallFunc_GetComponentByClass_ReturnValue.AuthSetCurrentTurnWarp(1, CallFunc_MakeLiteralName_ReturnValue)
+  [2608] DrawDebugSphere(self, L_PivotTarget, 100.0, 12, LinearColor{1.0, 1.0, 1.0, 1.0}, 3.0, 2.0)
+  [2682] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2702] CallFunc_GetComponentByClass_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.GetComponentByClass(NetworkedMontageComponent)
+  [2753] CallFunc_PlayMontage_ReturnValue = CallFunc_GetComponentByClass_ReturnValue_1.PlayMontage(self.CurrentPivotMontage, 1.0, 'None', 1.0)
+  [2835] PivotAnimStarted()
+  [2849] Result = 1
+  [2869] goto @3042
+  [2874] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(LocalEstimatedAngle)
+  [2903] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [2950] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [2970] CallFunc_GetOwner_ReturnValue_1.K2_AddActorWorldRotation(CallFunc_MakeRotator_ReturnValue, false, CallFunc_K2_AddActorWorldRotation_SweepHitResult, false)
+  [3022] Result = 2
+  [3042] return nothing
+  [3044] end
+
+=== ExecuteUbergraph_pivot_bpc
+  [0] goto computed(EntryPoint)
+  [10] OnPivotEnded__DelegateSignature(self.CurrentPivotMontage)
+  [38] ClearPivot()
+  [52] goto @463
+  [57] K2Node_CreateDelegate_OutputDelegate = bind(self.OnMontageBlendingOut_Event)
+  [80] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [127] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetOwnerMesh_SkeletalMeshComponent.GetAnimInstance()
+  [169] K2Node_CreateDelegate_OutputDelegate += None
+  [210] OnPivotStarted__DelegateSignature()
+  [229] goto @463
+  [234] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(K2Node_CustomEvent_Montage, self.CurrentPivotMontage)
+  [272] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @463
+  [286] PivotAnimEnded()
+  [300] goto @463
+  [305] K2Node_CreateDelegate_OutputDelegate = bind(self.OnMontageBlendingOut_Event)
+  [328] Default__archon_function_library_C.GetOwnerMesh(self, self, CallFunc_GetOwnerMesh_SkeletalMeshComponent)
+  [375] CallFunc_GetAnimInstance_ReturnValue = CallFunc_GetOwnerMesh_SkeletalMeshComponent.GetAnimInstance()
+  [417] K2Node_CreateDelegate_OutputDelegate -= None
+  [458] goto @10
+  [463] return nothing
+  [465] end
+
+=== GetMontageForAngle
+  [0] push @1010
+  [5] Temp_bool_True_if_break_was_hit_Variable = false
+  [16] Temp_int_Loop_Counter_Variable = 0
+  [39] Temp_int_Array_Index_Variable = 0
+  [62] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [91] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.PivotAnimations)
+  [150] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [188] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [226] if !(CallFunc_BooleanAND_ReturnValue) goto @912
+  [240] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [267] push @936
+  [272] CallFunc_NormalizeAxis_Angle_ImplicitCast = cast<CST_DoubleToFloat>(Angle)
+  [301] CallFunc_NormalizeAxis_ReturnValue = NormalizeAxis(CallFunc_NormalizeAxis_Angle_ImplicitCast)
+  [338] CallFunc_Abs_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_NormalizeAxis_ReturnValue)
+  [367] CallFunc_Abs_ReturnValue = Abs(CallFunc_Abs_A_ImplicitCast)
+  [404] Default__KismetArrayLibrary.Array_Get(self.PivotAnimations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [463] CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.Angle)
+  [501] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_GreaterEqual_DoubleDouble_A_ImplicitCast, CallFunc_Abs_ReturnValue)
+  [539] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [549] CallFunc_NormalizeAxis_Angle_ImplicitCast = cast<CST_DoubleToFloat>(Angle)
+  [578] CallFunc_NormalizeAxis_ReturnValue = NormalizeAxis(CallFunc_NormalizeAxis_Angle_ImplicitCast)
+  [615] CallFunc_Less_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_NormalizeAxis_ReturnValue)
+  [644] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Less_DoubleDouble_A_ImplicitCast, 0.0)
+  [682] Default__KismetArrayLibrary.Array_Get(self.PivotAnimations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [741] CallFunc_SelectObject_ReturnValue = SelectObject(CallFunc_Array_Get_Item.Left_Montage, CallFunc_Array_Get_Item.Right_Montage, CallFunc_Less_DoubleDouble_ReturnValue)
+  [806] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(CallFunc_SelectObject_ReturnValue)
+  [842] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [871] if !(K2Node_DynamicCast_bSuccess) pop
+  [881] L_ChosenPivotMontage = K2Node_DynamicCast_AsAnim_Montage
+  [900] Temp_bool_True_if_break_was_hit_Variable = true
+  [911] pop
+  [912] Montage = L_ChosenPivotMontage
+  [931] goto @1010
+  [936] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [978] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1005] goto @62
+  [1010] return nothing
+  [1012] end
+
+=== OnMontageBlendingOut_Event
+  [0] frame.K2Node_CustomEvent_Montage = Montage
+  [18] frame.K2Node_CustomEvent_bInterrupted = bInterrupted
+  [36] ExecuteUbergraph_pivot_bpc(234)
+  [51] return nothing
+  [53] end
+
+=== OnPivotEnded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnPivotStarted__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== PivotAnimEnded
+  [0] ExecuteUbergraph_pivot_bpc(305)
+  [15] return nothing
+  [17] end
+
+=== PivotAnimStarted
+  [0] ExecuteUbergraph_pivot_bpc(57)
+  [15] return nothing
+  [17] end

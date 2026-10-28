@@ -1,0 +1,14 @@
+shadowcat_portal_enter  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "This node should be wrapped by a "Hide Behemoth" service - to catch any edge cases"]
+  Sequence
+    1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_portal_entry_setup", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+    2) store_current_location_bttask
+    [if set_blackboard_while_active_btdeco "Set CreatingPortal"  (BlackboardResultKeyName=CreatingPortal, ValueType=Bool, ValueToSetOnActivate={"ConstantBool": true}, bShowPropertyDetails=false)]
+    3) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+    4) Sequence
+      1) store_current_location_bttask  (ResultLocationKey=PounceLocation, RelativeOffset={"X": 2000.0, "Y": 0.0, "Z": 0.0})
+      2) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=AttackTarget, OptionalMontage=AnimMontage b_leRawr_loco_pounceing_reposition_mot, TeleportDelay=0.5, BlendOutTime=0, HideBehemothOnTeleport=true, RootMotionScale=2)
+      3) store_current_location_bttask
+      4) try_set_behemoth_state_bttask  (State=CustomState)

@@ -1,0 +1,207 @@
+{
+ "name": "salt_edgeofareana_teleport_bt_",
+ "package": "Archon/Content/Monsters/sq/salt/ai/salt_edgeofareana_teleport_bt_",
+ "type": "BehaviorTree",
+ "refs": [
+  "b_sq_slt_00_loco_fastteleportenter_fwd_00_mot",
+  "bb_base",
+  "eqs_point_near_patrol_pt",
+  "eqs_salt_combat_teleport_edge"
+ ],
+ "exports": {
+  "salt_edgeofareana_teleport_bt_": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Sequence_2",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@comment_btdeco_C_1"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "BTComposite_Sequence_1": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Selector_0",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@teleport_bttask_C_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@hide_behemoth_bttask_C_0",
+     "@staggerproof_behemoth_bttask_C_0"
+    ],
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "BTComposite_Sequence_2": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@perform_action_montage_bttask_C_3",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_1",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@behemoth_generic_action_bttask_C_1",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_"
+   }
+  },
+  "BTTask_RunEQSQuery_0": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_salt_combat_teleport_edge",
+     "QueryConfig": [
+      {
+       "ParamName": "None",
+       "ParamType": "EAIParamType::Float",
+       "Value": 0.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_RunEQSQuery_1": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_point_near_patrol_pt",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 500.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1750.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 0.5,
+    "RandomDeviation": 0.3,
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "comment_btdeco_C_1": {
+   "type": "comment_btdeco_C",
+   "props": {
+    "NodeName": "Teleports the behmoth to the edge of the arena",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_"
+   }
+  },
+  "behemoth_generic_action_bttask_C_1": {
+   "type": "generic_action_bttask_C",
+   "props": {
+    "ActionType": "behemoth_generic_action_type::Unburrow",
+    "RequireThatActionExists": true,
+    "NodeName": "Unburrow",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "hide_behemoth_bttask_C_0": {
+   "type": "hide_behemoth_bttask_C",
+   "props": {
+    "Interval": 0.01,
+    "RandomDeviation": 0.0,
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "perform_action_montage_bttask_C_3": {
+   "type": "perform_action_montage_bttask_C",
+   "props": {
+    "Montage": "AnimMontage b_sq_slt_00_loco_fastteleportenter_fwd_00_mot",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_2"
+   }
+  },
+  "staggerproof_behemoth_bttask_C_0": {
+   "type": "staggerproof_behemoth_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  },
+  "teleport_bttask_C_0": {
+   "type": "teleport_bttask_C",
+   "props": {
+    "FacingTargetKeyName": "KnownTargetsAvgPos",
+    "BlendOutTime": 0.0,
+    "NodeName": "Teleport",
+    "TreeAsset": "BehaviorTree salt_edgeofareana_teleport_bt_",
+    "ParentNode": "@BTComposite_Sequence_1"
+   }
+  }
+ }
+}

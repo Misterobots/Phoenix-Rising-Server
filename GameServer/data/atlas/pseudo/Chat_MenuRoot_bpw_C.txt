@@ -1,0 +1,673 @@
+# Chat_MenuRoot_bpw_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddChatClientMessage
+  [0] push @588
+  [5] CallFunc_Should_Show_Message_ReturnValue = Should Show Message(InMessage)
+  [38] if !(CallFunc_Should_Show_Message_ReturnValue) pop
+  [48] push @237
+  [53] CallFunc_IsPagebreakMessage_ReturnValue = IsPagebreakMessage(InMessage)
+  [86] if !(CallFunc_IsPagebreakMessage_ReturnValue) goto @336
+  [100] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [124] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, w_chat_pagebreak_C, CallFunc_GetOwningPlayer_ReturnValue)
+  [185] CallFunc_AddChild_ReturnValue = self.ScrollBox.AddChild(CallFunc_Create_ReturnValue)
+  [236] pop
+  [237] Scroll to End Next Frame()
+  [251] CallFunc_IsValid_ReturnValue = IsValid(self.Chat Window)
+  [280] if !(CallFunc_IsValid_ReturnValue) pop
+  [290] self.Chat Window.Add Chat Log Message(InMessage)
+  [335] pop
+  [336] CallFunc_GetOwningPlayer_ReturnValue_1 = GetOwningPlayer()
+  [360] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(self, w_ChatMessage_bpw_C, CallFunc_GetOwningPlayer_ReturnValue_1)
+  [421] CallFunc_AddChild_ReturnValue_1 = self.ScrollBox.AddChild(CallFunc_Create_ReturnValue_1)
+  [472] CallFunc_Create_ReturnValue_1.Setup Message(InMessage, self, true)
+  [519] CallFunc_Create_ReturnValue_1.Show Message(30.0)
+  [564] Set Whisper Reply Player Name(InMessage)
+  [587] pop
+  [588] return nothing
+  [590] end
+
+=== Can Focus Chat
+  [0] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(self.bHasInputFocus)
+  [29] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bChatSystemReady, CallFunc_Not_PreBool_ReturnValue)
+  [67] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, self.IsInputEnabled)
+  [105] ReturnValue = CallFunc_BooleanAND_ReturnValue_1
+  [124] return ReturnValue
+  [134] end
+
+=== Close Chat Window
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(4932)
+  [15] return nothing
+  [17] end
+
+=== Construct
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(4927)
+  [15] return nothing
+  [17] end
+
+=== Destruct
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(1226)
+  [15] return nothing
+  [17] end
+
+=== Escape Chat Window
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(3828)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_Chat_MenuRoot_bpw
+  [0] push @5252
+  [5] goto computed(EntryPoint)
+  [15] self.Active Chat Channel = 4
+  [35] pop
+  [36] if !(self.bChatSystemReady) pop
+  [46] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [67] self.bIsInCity = CallFunc_IsInCity_ReturnValue
+  [86] CallFunc_GetOwningLocalPlayer_ReturnValue = GetOwningLocalPlayer()
+  [110] K2Node_DynamicCast_AsArchon_Local_Player = cast<ArchonLocalPlayer>(CallFunc_GetOwningLocalPlayer_ReturnValue)
+  [146] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Local_Player)
+  [175] if !(K2Node_DynamicCast_bSuccess) pop
+  [185] CallFunc_GetChatClient_ReturnValue_3 = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [227] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.AddChatClientMessage)
+  [250] K2Node_CreateDelegate_OutputDelegate_3 += None
+  [291] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.OnBroadcastMessagesUpdated)
+  [314] CallFunc_GetChatClient_ReturnValue_3 = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [356] K2Node_CreateDelegate_OutputDelegate_1 += None
+  [397] CallFunc_GetChatClient_ReturnValue_3 = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [439] CallFunc_GetBroadcastMessages_ReturnValue = CallFunc_GetChatClient_ReturnValue_3.GetBroadcastMessages()
+  [489] OnBroadcastMessagesUpdated(CallFunc_GetBroadcastMessages_ReturnValue)
+  [512] K2Node_CreateDelegate_OutputDelegate_4 = bind(self.FixupMainChatRoom)
+  [535] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_4, 1.0, true, 0.0, 0.0)
+  [588] pop
+  [589] if !(self.bHasInputFocus) goto @604
+  [603] pop
+  [604] self.bHasInputFocus = true
+  [615] SetVisibility(1)
+  [631] CallFunc_IsValid_ReturnValue_5 = IsValid(self.Chat Window)
+  [660] if !(CallFunc_IsValid_ReturnValue_5) pop
+  [670] self.Chat Window.SetVisibility(0)
+  [708] Default__UserWidgetFunctions_C.Get Screen Layer(self, CallFunc_Get_Screen_Layer_ZOrder)
+  [754] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(CallFunc_Get_Screen_Layer_ZOrder, 150)
+  [796] self.Chat Window.AddToViewport(CallFunc_Add_IntInt_ReturnValue_2)
+  [841] self.Chat Window.Update Menu Icon(false)
+  [878] pop
+  [879] if !(self.bHasInputFocus) pop
+  [889] self.bHasInputFocus = false
+  [900] ShowAllMessages(3.5)
+  [923] ShowChatSystem()
+  [937] self.Chat Window.self.BGWindowOpacity = 0.0
+  [986] CallFunc_IsValid_ReturnValue_2 = IsValid(self.Chat Window)
+  [1015] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [1025] self.Chat Window.RemoveFromParent()
+  [1061] self.Chat Window.SetVisibility(1)
+  [1099] self.Chat Window.Update Menu Icon(true)
+  [1136] pop
+  [1137] if !(self.bChatSystemReady) pop
+  [1147] goto @879
+  [1152] if !(self.bShouldScrollToNewest) pop
+  [1162] if !(self.bWaitForLayoutPrepass) goto @1188
+  [1176] self.bWaitForLayoutPrepass = false
+  [1187] pop
+  [1188] if !(self.bWaitForLayoutFinalPass) goto @1214
+  [1202] self.bWaitForLayoutFinalPass = false
+  [1213] pop
+  [1214] self.bShouldScrollToNewest = false
+  [1225] pop
+  [1226] Exit Chat Rooms()
+  [1240] CallFunc_GetArchonGameUserSettings_ReturnValue_1 = GetArchonGameUserSettings()
+  [1260] CallFunc_IsValid_ReturnValue_6 = IsValid(CallFunc_GetArchonGameUserSettings_ReturnValue_1)
+  [1289] if !(CallFunc_IsValid_ReturnValue_6) pop
+  [1299] K2Node_CreateDelegate_OutputDelegate_7 = bind(self.ShowChatSystem)
+  [1322] CallFunc_GetArchonGameUserSettings_ReturnValue_1 = GetArchonGameUserSettings()
+  [1342] K2Node_CreateDelegate_OutputDelegate_7 -= None
+  [1383] pop
+  [1384] CallFunc_GetChatClient_ReturnValue = GetChatClient(self)
+  [1405] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetChatClient_ReturnValue)
+  [1434] if !(CallFunc_IsValid_ReturnValue) pop
+  [1444] CallFunc_GetChatClient_ReturnValue_2 = GetChatClient(self)
+  [1465] CallFunc_GetChatClient_ReturnValue_2.ExitRoom(self.Main Channel)
+  [1510] pop
+  [1511] CallFunc_GetChatClient_ReturnValue_1 = GetChatClient(self)
+  [1532] CallFunc_GetLastMessages_ReturnValue = CallFunc_GetChatClient_ReturnValue_1.GetLastMessages()
+  [1582] Temp_int_Loop_Counter_Variable_1 = 0
+  [1605] Temp_int_Array_Index_Variable = 0
+  [1628] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetLastMessages_ReturnValue)
+  [1687] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue)
+  [1725] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [1735] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [1762] push @1850
+  [1767] Default__KismetArrayLibrary.Array_Get(CallFunc_GetLastMessages_ReturnValue, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1826] AddChatClientMessage(CallFunc_Array_Get_Item)
+  [1849] pop
+  [1850] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1892] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1919] goto @1628
+  [1924] CallFunc_GetChatClient_ReturnValue_1 = GetChatClient(self)
+  [1945] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetChatClient_ReturnValue_1)
+  [1974] if !(CallFunc_IsValid_ReturnValue_1) goto @1993
+  [1988] goto @1511
+  [1993] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [2022] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [2072] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [2114] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'ChatClient is not valid!')
+  [2177] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [2251] StackTrace()
+  [2261] pop
+  [2262] Join Chat Rooms()
+  [2276] pop
+  [2277] self.BroadcastsBox.ClearChildren()
+  [2313] Temp_int_Loop_Counter_Variable = 0
+  [2336] Temp_int_Array_Index_Variable_1 = 0
+  [2359] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(K2Node_CustomEvent_Messages)
+  [2418] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [2456] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [2466] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [2493] push @2712
+  [2498] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, w_chat_broadcast_C, null)
+  [2551] Default__KismetArrayLibrary.Array_Get(K2Node_CustomEvent_Messages, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2610] SetTextPropertyByName(CallFunc_Create_ReturnValue, 'Message', CallFunc_Array_Get_Item_1.Message)
+  [2660] CallFunc_AddChildToVerticalBox_ReturnValue = self.BroadcastsBox.AddChildToVerticalBox(CallFunc_Create_ReturnValue)
+  [2711] pop
+  [2712] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [2754] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [2781] goto @2359
+  [2786] Is Chat System Ready(CallFunc_Is_Chat_System_Ready_Ready)
+  [2809] self.bChatSystemReady = CallFunc_Is_Chat_System_Ready_Ready
+  [2828] if !(self.bChatSystemReady) pop
+  [2838] On Chat SystemReady()
+  [2852] goto @2262
+  [2857] if !(self.bChatSystemReady) pop
+  [2867] if !(self.bHasInputFocus) goto @2927
+  [2881] self.Chat Window.Set Whisper Chat Mode(K2Node_CustomEvent_Player_Name)
+  [2926] pop
+  [2927] Focus Chat Window(true)
+  [2942] goto @2881
+  [2947] RefreshHintText()
+  [2961] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.OnKeyMappingUpdate)
+  [2984] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [3008] K2Node_CreateDelegate_OutputDelegate_2 += None
+  [3071] pop
+  [3072] if !(self.bChatSystemReady) goto @2786
+  [3086] goto @1152
+  [3091] RefreshHintText()
+  [3105] pop
+  [3106] self.ChatNotReady_Image.SetVisibility(1)
+  [3144] self.ChatNotReady_TextBlock.SetVisibility(1)
+  [3182] goto @1924
+  [3187] if !(self.bChatSystemReady) pop
+  [3197] CallFunc_GetOwningLocalPlayer_ReturnValue_1 = GetOwningLocalPlayer()
+  [3221] K2Node_DynamicCast_AsArchon_Local_Player_1 = cast<ArchonLocalPlayer>(CallFunc_GetOwningLocalPlayer_ReturnValue_1)
+  [3257] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Local_Player_1)
+  [3286] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [3296] CallFunc_GetChatClient_ReturnValue_4 = K2Node_DynamicCast_AsArchon_Local_Player_1.GetChatClient()
+  [3338] CallFunc_GetMainChatChannel_ReturnValue = CallFunc_GetChatClient_ReturnValue_4.GetMainChatChannel(self.bIsInCity)
+  [3397] CallFunc_HasJoinedRoom_ReturnValue = CallFunc_GetChatClient_ReturnValue_4.HasJoinedRoom(CallFunc_GetMainChatChannel_ReturnValue)
+  [3452] if !(CallFunc_HasJoinedRoom_ReturnValue) goto @3467
+  [3466] pop
+  [3467] CallFunc_GetChatClient_ReturnValue_4 = K2Node_DynamicCast_AsArchon_Local_Player_1.GetChatClient()
+  [3509] CallFunc_GetChatClient_ReturnValue_4.ExitRoom(self.Main Channel)
+  [3554] CallFunc_GetChatClient_ReturnValue_4 = K2Node_DynamicCast_AsArchon_Local_Player_1.GetChatClient()
+  [3596] CallFunc_GetMainChatChannel_ReturnValue = CallFunc_GetChatClient_ReturnValue_4.GetMainChatChannel(self.bIsInCity)
+  [3655] self.Main Channel = CallFunc_GetMainChatChannel_ReturnValue
+  [3682] CallFunc_GetChatClient_ReturnValue_4 = K2Node_DynamicCast_AsArchon_Local_Player_1.GetChatClient()
+  [3724] CallFunc_GetChatClient_ReturnValue_4.JoinPublicRoom(self.Main Channel)
+  [3769] pop
+  [3770] goto @3072
+  [3775] CallFunc_BooleanAND_ReturnValue = BooleanAND(self.bChatSystemReady, self.IsInputEnabled)
+  [3813] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [3823] goto @589
+  [3828] goto @1137
+  [3833] self.UsingGamepad = K2Node_CustomEvent_Using_Gamepad
+  [3852] RefreshHintText()
+  [3866] pop
+  [3867] K2Node_CreateDelegate_OutputDelegate_5 = bind(self.InputSwap)
+  [3890] CallFunc_GetPlayerController_ReturnValue = GetPlayerController(self, 0)
+  [3916] Default__UserWidgetFunctions_C.Setup Input Swap(CallFunc_GetPlayerController_ReturnValue, K2Node_CreateDelegate_OutputDelegate_5, self, CallFunc_Setup_Input_Swap_Using_Gamepad)
+  [3980] InputSwap(CallFunc_Setup_Input_Swap_Using_Gamepad)
+  [4003] CallFunc_IsPlatformXboxOne_ReturnValue = IsPlatformXboxOne()
+  [4023] CallFunc_IsPlatformPS4_ReturnValue = IsPlatformPS4()
+  [4043] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsPlatformPS4_ReturnValue, CallFunc_IsPlatformXboxOne_ReturnValue)
+  [4081] self.IsConsoles = CallFunc_BooleanOR_ReturnValue
+  [4100] pop
+  [4101] push @4642
+  [4106] push @4458
+  [4111] push @2947
+  [4116] push @3867
+  [4121] CallFunc_GetOwningPlayer_ReturnValue_1 = GetOwningPlayer()
+  [4145] CallFunc_Create_ReturnValue_1 = Default__WidgetBlueprintLibrary.Create(self, w_chat_bpw_C, CallFunc_GetOwningPlayer_ReturnValue_1)
+  [4206] SetObjectPropertyByName(CallFunc_Create_ReturnValue_1, 'Chat System', self)
+  [4239] self.Chat Window = CallFunc_Create_ReturnValue_1
+  [4258] K2Node_CreateDelegate_OutputDelegate_6 = bind(self.Escape Chat Window)
+  [4281] K2Node_CreateDelegate_OutputDelegate_6 += None
+  [4322] if !(self.MenuInputOverride) goto @4800
+  [4336] CallFunc_IsValid_ReturnValue_3 = IsValid(self.Chat Window)
+  [4365] if !(CallFunc_IsValid_ReturnValue_3) pop
+  [4375] self.Chat Window.self.BGWindowOpacity = 0.800000011920929
+  [4424] self.Chat Window.self.MenuMode = true
+  [4457] pop
+  [4458] K2Node_CreateDelegate_OutputDelegate = bind(self.OnChatModeChanged)
+  [4481] CallFunc_GetChatClient_ReturnValue_5 = GetChatClient(self)
+  [4502] K2Node_CreateDelegate_OutputDelegate += None
+  [4543] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [4563] K2Node_CreateDelegate_OutputDelegate_7 = bind(self.ShowChatSystem)
+  [4586] K2Node_CreateDelegate_OutputDelegate_7 += None
+  [4627] ShowChatSystem()
+  [4641] pop
+  [4642] CallFunc_IsPlatformPS4_ReturnValue_1 = IsPlatformPS4()
+  [4662] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(self, test_safezones_bpff_C, true)
+  [4693] CallFunc_BooleanOR_ReturnValue_1 = BooleanOR(CallFunc_IsPlatformPS4_ReturnValue_1, CallFunc_IsFeatureEnabled_ReturnValue)
+  [4731] self.ChatSafeZone.SetSidesToPad(CallFunc_BooleanOR_ReturnValue_1, CallFunc_BooleanOR_ReturnValue_1, CallFunc_BooleanOR_ReturnValue_1, CallFunc_BooleanOR_ReturnValue_1)
+  [4799] pop
+  [4800] CallFunc_IsValid_ReturnValue_4 = IsValid(self.Chat Window)
+  [4829] if !(CallFunc_IsValid_ReturnValue_4) pop
+  [4839] self.Chat Window.self.BGWindowOpacity = 0.25
+  [4888] self.Chat Window.self.MenuMode = false
+  [4921] pop
+  [4922] goto @36
+  [4927] goto @4101
+  [4932] CallFunc_IsValid_ReturnValue_7 = IsValid(self.Chat Window)
+  [4961] if !(CallFunc_IsValid_ReturnValue_7) pop
+  [4971] self.Chat Window.Close Chat Window()
+  [5007] pop
+  [5008] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_ChatMode, 0)
+  [5039] if !(K2Node_SwitchEnum_CmpSuccess) goto @5231
+  [5053] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_ChatMode, 1)
+  [5084] if !(K2Node_SwitchEnum_CmpSuccess) goto @5210
+  [5098] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_ChatMode, 2)
+  [5129] if !(K2Node_SwitchEnum_CmpSuccess) goto @5189
+  [5143] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_CustomEvent_ChatMode, 3)
+  [5174] if !(K2Node_SwitchEnum_CmpSuccess) goto @15
+  [5188] pop
+  [5189] self.Active Chat Channel = 2
+  [5209] pop
+  [5210] self.Active Chat Channel = 1
+  [5230] pop
+  [5231] self.Active Chat Channel = 0
+  [5251] pop
+  [5252] return nothing
+  [5254] end
+
+=== Exit Chat Rooms
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(1384)
+  [15] return nothing
+  [17] end
+
+=== Fixup Chat Rooms
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(3187)
+  [15] return nothing
+  [17] end
+
+=== FixupMainChatRoom
+  [0] if !(self.bChatSystemReady) goto @776
+  [14] CallFunc_GetOwningLocalPlayer_ReturnValue = GetOwningLocalPlayer()
+  [38] K2Node_DynamicCast_AsArchon_Local_Player = cast<ArchonLocalPlayer>(CallFunc_GetOwningLocalPlayer_ReturnValue)
+  [74] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Local_Player)
+  [103] if !(K2Node_DynamicCast_bSuccess) goto @776
+  [117] CallFunc_GetChatClient_ReturnValue = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [159] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetChatClient_ReturnValue)
+  [188] if !(CallFunc_IsValid_ReturnValue) goto @776
+  [202] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [223] CallFunc_GetChatClient_ReturnValue = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [265] CallFunc_GetMainChatChannel_ReturnValue = CallFunc_GetChatClient_ReturnValue.GetMainChatChannel(CallFunc_IsInCity_ReturnValue)
+  [324] CurrentRoom = CallFunc_GetMainChatChannel_ReturnValue
+  [351] CallFunc_EqualEqual_StrStr_ReturnValue = EqualEqual_StrStr(CurrentRoom, '')
+  [382] if !(CallFunc_EqualEqual_StrStr_ReturnValue) goto @459
+  [396] CallFunc_IsPlayInEditor_ReturnValue = IsPlayInEditor(self)
+  [417] if !(CallFunc_IsPlayInEditor_ReturnValue) goto @776
+  [431] CurrentRoom = 'CityCITY'
+  [459] CallFunc_GetChatClient_ReturnValue = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [501] CallFunc_HasJoinedRoom_ReturnValue = CallFunc_GetChatClient_ReturnValue.HasJoinedRoom(CurrentRoom)
+  [556] if !(CallFunc_HasJoinedRoom_ReturnValue) goto @575
+  [570] goto @776
+  [575] CallFunc_GetChatClient_ReturnValue = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [617] CallFunc_GetChatClient_ReturnValue.ExitRoom(self.Main Channel)
+  [662] self.Main Channel = CurrentRoom
+  [689] CallFunc_GetChatClient_ReturnValue = K2Node_DynamicCast_AsArchon_Local_Player.GetChatClient()
+  [731] CallFunc_GetChatClient_ReturnValue.JoinPublicRoom(self.Main Channel)
+  [776] return nothing
+  [778] end
+
+=== Focus Chat Window
+  [0] frame.K2Node_CustomEvent_GameplayMode = GameplayMode
+  [18] ExecuteUbergraph_Chat_MenuRoot_bpw(3775)
+  [33] return nothing
+  [35] end
+
+=== Focus to Whisper Mode
+  [0] frame.K2Node_CustomEvent_Player_Name = Player Name
+  [18] ExecuteUbergraph_Chat_MenuRoot_bpw(2857)
+  [33] return nothing
+  [35] end
+
+=== HideChatSystem
+  [0] Escape Chat Window()
+  [14] SetVisibility(1)
+  [30] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(DisableChatInput)
+  [59] self.IsInputEnabled = CallFunc_Not_PreBool_ReturnValue
+  [78] return nothing
+  [80] end
+
+=== InputSwap
+  [0] frame.K2Node_CustomEvent_Using_Gamepad = Using Gamepad
+  [18] ExecuteUbergraph_Chat_MenuRoot_bpw(3833)
+  [33] return nothing
+  [35] end
+
+=== Is Chat System Ready
+  [0] CallFunc_GetOwningPlayerPawn_ReturnValue = GetOwningPlayerPawn()
+  [20] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwningPlayerPawn_ReturnValue)
+  [49] if !(CallFunc_IsValid_ReturnValue) goto @479
+  [63] CallFunc_GetOwningLocalPlayer_ReturnValue = GetOwningLocalPlayer()
+  [87] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetOwningLocalPlayer_ReturnValue)
+  [116] if !(CallFunc_IsValid_ReturnValue_1) goto @479
+  [130] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [154] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetOwningPlayer_ReturnValue)
+  [183] if !(CallFunc_IsValid_ReturnValue_2) goto @479
+  [197] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [218] if !(CallFunc_IsInCity_ReturnValue) goto @495
+  [232] CallFunc_GetOwningPlayer_ReturnValue_1 = GetOwningPlayer()
+  [256] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwningPlayer_ReturnValue_1)
+  [292] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [321] if !(K2Node_DynamicCast_bSuccess) goto @511
+  [335] CallFunc_IsValid_ReturnValue_3 = IsValid(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [364] if !(CallFunc_IsValid_ReturnValue_3) goto @829
+  [378] CallFunc_GetParty_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetParty()
+  [420] CallFunc_IsValid_ReturnValue_4 = IsValid(CallFunc_GetParty_ReturnValue)
+  [449] if !(CallFunc_IsValid_ReturnValue_4) goto @813
+  [463] Ready = true
+  [474] goto @1114
+  [479] Ready = false
+  [490] goto @1114
+  [495] Ready = true
+  [506] goto @1114
+  [511] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [540] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue_1)
+  [590] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ') =')
+  [632] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'Could not cast Player Controller to ArchonPlayerController')
+  [729] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [803] StackTrace()
+  [813] Ready = false
+  [824] goto @1114
+  [829] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [858] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [908] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [950] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'ArchonPlayerController is not valid!')
+  [1025] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [1099] StackTrace()
+  [1109] goto @813
+  [1114] return nothing
+  [1116] end
+
+=== Is Valid Channel
+  [0] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(Room, 'invalid')
+  [38] if !(CallFunc_EqualEqual_StriStri_ReturnValue) goto @68
+  [52] ReturnValue = false
+  [63] goto @180
+  [68] CallFunc_Len_ReturnValue = Len(Room)
+  [105] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Len_ReturnValue, 0)
+  [139] if !(CallFunc_Greater_IntInt_ReturnValue) goto @169
+  [153] ReturnValue = true
+  [164] goto @180
+  [169] ReturnValue = false
+  [180] return ReturnValue
+  [190] end
+
+=== IsEmojiMessage
+  [0] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [91] CallFunc_IsValidSoftObjectReference_ReturnValue = IsValidSoftObjectReference(CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [120] ReturnValue = CallFunc_IsValidSoftObjectReference_ReturnValue
+  [139] return ReturnValue
+  [149] end
+
+=== IsPagebreakMessage
+  [0] CallFunc_MakeLiteralText_ReturnValue = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': '---'}}))
+  [35] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [126] CallFunc_EqualEqual_IgnoreCase_TextText_ReturnValue = EqualEqual_IgnoreCase_TextText(CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_MakeLiteralText_ReturnValue)
+  [164] CallFunc_Len_ReturnValue = Len(CallFunc_BreakBPChatClientMessage_OutSender.Name)
+  [210] CallFunc_IsValidNetId_ReturnValue = IsValidNetId(CallFunc_BreakBPChatClientMessage_OutSender.Id)
+  [248] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(CallFunc_Len_ReturnValue, 0)
+  [282] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsValidNetId_ReturnValue)
+  [311] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_LessEqual_IntInt_ReturnValue)
+  [349] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_EqualEqual_IgnoreCase_TextText_ReturnValue)
+  [387] ReturnValue = CallFunc_BooleanAND_ReturnValue_1
+  [406] return ReturnValue
+  [416] end
+
+=== Join Chat Rooms
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(4922)
+  [15] return nothing
+  [17] end
+
+=== On Chat SystemReady
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(3106)
+  [15] return nothing
+  [17] end
+
+=== OnBroadcastMessagesUpdated
+  [0] frame.K2Node_CustomEvent_Messages = Messages
+  [18] ExecuteUbergraph_Chat_MenuRoot_bpw(2277)
+  [33] return nothing
+  [35] end
+
+=== OnChatModeChanged
+  [0] frame.K2Node_CustomEvent_ChatMode = ChatMode
+  [18] ExecuteUbergraph_Chat_MenuRoot_bpw(5008)
+  [33] return nothing
+  [35] end
+
+=== OnKeyMappingUpdate
+  [0] ExecuteUbergraph_Chat_MenuRoot_bpw(3091)
+  [15] return nothing
+  [17] end
+
+=== OnPaint
+  [0] OnPaint(Context)
+  [19] if !(self.bShouldScrollToNewest) goto @70
+  [33] self.ScrollBox.ScrollToEnd()
+  [65] goto @70
+  [70] return nothing
+  [72] end
+
+=== RefreshHintText
+  [0] CallFunc_BooleanOR_ReturnValue = BooleanOR(self.IsConsoles, self.UsingGamepad)
+  [38] if !(CallFunc_BooleanOR_ReturnValue) goto @486
+  [52] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [76] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('Chat Window (Console)')
+  [117] array{}
+  [128] CallFunc_GetOwningPlayer_ReturnValue.self.PlayerInput.FindActionMappingByName(CallFunc_MakeLiteralName_ReturnValue, CallFunc_FindActionMappingByName_ActionMapping)
+  [200] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_FindActionMappingByName_ActionMapping)
+  [259] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [293] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1630
+  [307] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [328] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [364] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [393] if !(K2Node_DynamicCast_bSuccess) goto @1630
+  [407] if !(K2Node_DynamicCast_AsArchon_Game_Instance.self.bIsRemoteController) goto @1487
+  [443] self.w_archoninputkey_bpw.SetVisibility(1)
+  [481] goto @1630
+  [486] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [510] CallFunc_MakeLiteralName_ReturnValue_1 = MakeLiteralName('Chat Window')
+  [551] array{}
+  [562] CallFunc_GetOwningPlayer_ReturnValue.self.PlayerInput.FindActionMappingByName(CallFunc_MakeLiteralName_ReturnValue_1, CallFunc_FindActionMappingByName_ActionMapping_1)
+  [634] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_FindActionMappingByName_ActionMapping_1)
+  [693] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_Array_Length_ReturnValue_1, 0)
+  [727] if !(CallFunc_Greater_IntInt_ReturnValue_1) goto @1630
+  [741] K2Node_MakeStruct_FormatArgumentData.ArgumentName = 'EnterText'
+  [779] K2Node_MakeStruct_FormatArgumentData.ArgumentValueType = 4
+  [808] K2Node_MakeStruct_FormatArgumentData.ArgumentValue = self.EnterToChatText
+  [844] K2Node_MakeStruct_FormatArgumentData.ArgumentValueInt = 0
+  [880] K2Node_MakeStruct_FormatArgumentData.ArgumentValueFloat = 0.0
+  [912] K2Node_MakeStruct_FormatArgumentData.ArgumentValueDouble = 0.0
+  [948] K2Node_MakeStruct_FormatArgumentData.ArgumentValueGender = 0
+  [977] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(EX_ArrayGetByRef(ArrayVariable=CallFunc_FindActionMappingByName_ActionMapping_1,ArrayIndex=0).Key)
+  [1029] K2Node_MakeStruct_FormatArgumentData_1.ArgumentName = 'Hotkey'
+  [1064] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueType = 4
+  [1093] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValue = CallFunc_GetDisplayName_ReturnValue
+  [1129] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueInt = 0
+  [1165] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueFloat = 0.0
+  [1197] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueDouble = 0.0
+  [1233] K2Node_MakeStruct_FormatArgumentData_1.ArgumentValueGender = 0
+  [1262] array{K2Node_MakeStruct_FormatArgumentData_1, K2Node_MakeStruct_FormatArgumentData}
+  [1291] CallFunc_Format_ReturnValue = Format(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': '[{Hotkey}] {EnterText}'}}), K2Node_MakeArray_Array)
+  [1354] self.UnfocusedMessageLabel.SetText(CallFunc_Format_ReturnValue)
+  [1399] self.w_archoninputkey_bpw.UpdateKey(K2Node_MakeStruct_Key)
+  [1444] self.w_archoninputkey_bpw.SetVisibility(1)
+  [1482] goto @1630
+  [1487] self.UnfocusedMessageLabel.SetText(self.HoldToChatText)
+  [1532] self.w_archoninputkey_bpw.UpdateKey(EX_ArrayGetByRef(ArrayVariable=CallFunc_FindActionMappingByName_ActionMapping,ArrayIndex=0).Key)
+  [1592] self.w_archoninputkey_bpw.SetVisibility(4)
+  [1630] return nothing
+  [1632] end
+
+=== Scroll to End Next Frame
+  [0] self.bShouldScrollToNewest = true
+  [11] self.bWaitForLayoutPrepass = true
+  [22] self.bWaitForLayoutFinalPass = true
+  [33] return nothing
+  [35] end
+
+=== Set Whisper Reply Player Name
+  [0] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [91] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_BreakBPChatClientMessage_bIsFromSelf)
+  [120] CallFunc_TextIsEmpty_ReturnValue = TextIsEmpty(CallFunc_BreakBPChatClientMessage_OutRoom)
+  [149] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(CallFunc_BreakBPChatClientMessage_OutSender.Name, 'Global')
+  [195] CallFunc_Not_PreBool_ReturnValue_1 = Not_PreBool(CallFunc_EqualEqual_StriStri_ReturnValue)
+  [224] CallFunc_Len_ReturnValue = Len(CallFunc_BreakBPChatClientMessage_OutSender.Name)
+  [270] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Len_ReturnValue, 0)
+  [304] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue_1, CallFunc_Greater_IntInt_ReturnValue)
+  [342] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_BooleanAND_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [380] CallFunc_BooleanAND_ReturnValue_2 = BooleanAND(CallFunc_BooleanAND_ReturnValue_1, CallFunc_TextIsEmpty_ReturnValue)
+  [418] if !(CallFunc_BooleanAND_ReturnValue_2) goto @798
+  [432] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [523] self.Whisper Recepient Name = CallFunc_BreakBPChatClientMessage_OutSender.Name
+  [559] CallFunc_GetChatClient_ReturnValue = GetChatClient(self)
+  [580] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetChatClient_ReturnValue)
+  [609] if !(CallFunc_IsValid_ReturnValue) goto @803
+  [623] CallFunc_GetChatClient_ReturnValue = GetChatClient(self)
+  [644] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [735] CallFunc_GetChatClient_ReturnValue.self.WhisperReceipientName = CallFunc_BreakBPChatClientMessage_OutSender.Name
+  [793] goto @1076
+  [798] goto @1076
+  [803] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [832] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [882] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [924] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'ChatClient is not valid!')
+  [987] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [1061] StackTrace()
+  [1071] goto @793
+  [1076] return nothing
+  [1078] end
+
+=== Should Show Message
+  [0] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [24] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwningPlayer_ReturnValue)
+  [60] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [89] if !(K2Node_DynamicCast_bSuccess) goto @526
+  [103] CallFunc_IsValid_ReturnValue = IsValid(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [132] if !(CallFunc_IsValid_ReturnValue) goto @1095
+  [146] CallFunc_GetParty_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetParty()
+  [188] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetParty_ReturnValue)
+  [217] if !(CallFunc_IsValid_ReturnValue_1) goto @828
+  [231] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender_1, CallFunc_BreakBPChatClientMessage_OutRecipient_1, CallFunc_BreakBPChatClientMessage_OutContextUser_1, CallFunc_BreakBPChatClientMessage_OutMessage_1, CallFunc_BreakBPChatClientMessage_OutRoom_1, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal_1, CallFunc_BreakBPChatClientMessage_bIsFromSelf_1, CallFunc_BreakBPChatClientMessage_OutEmoji_1)
+  [322] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_BreakBPChatClientMessage_OutMessage_1)
+  [359] CallFunc_MakeLiteralString_ReturnValue = MakeLiteralString('Welcome! You created new Multi User Chat Room.')
+  [435] CallFunc_EqualEqual_StriStri_ReturnValue = EqualEqual_StriStri(CallFunc_Conv_TextToString_ReturnValue, CallFunc_MakeLiteralString_ReturnValue)
+  [473] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_EqualEqual_StriStri_ReturnValue)
+  [502] ReturnValue = CallFunc_Not_PreBool_ReturnValue
+  [521] goto @1380
+  [526] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [555] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue)
+  [605] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ') =')
+  [647] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Could not cast Player Controller to ArchonPlayerController')
+  [744] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [818] StackTrace()
+  [828] BreakBPChatClientMessage(InMessage, CallFunc_BreakBPChatClientMessage_OutSender, CallFunc_BreakBPChatClientMessage_OutRecipient, CallFunc_BreakBPChatClientMessage_OutContextUser, CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_BreakBPChatClientMessage_OutRoom, CallFunc_BreakBPChatClientMessage_OutMessageTimeLocal, CallFunc_BreakBPChatClientMessage_bIsFromSelf, CallFunc_BreakBPChatClientMessage_OutEmoji)
+  [919] CallFunc_MakeLiteralText_ReturnValue = MakeLiteralText(EX_TextConst(Value={'SourceString': {'Token': 'EX_StringConst', 'Value': 'Welcome! You created new Multi User Chat Room.'}, 'KeyString': {'Token': 'EX_StringConst', 'Value': '44BFC2E1470F84EAC531A6A2E96E985A'}, 'Namespace': {'Token': 'EX_StringConst', 'Value': ''}}))
+  [1033] CallFunc_NotEqual_IgnoreCase_TextText_ReturnValue = NotEqual_IgnoreCase_TextText(CallFunc_BreakBPChatClientMessage_OutMessage, CallFunc_MakeLiteralText_ReturnValue)
+  [1071] ReturnValue = CallFunc_NotEqual_IgnoreCase_TextText_ReturnValue
+  [1090] goto @1380
+  [1095] CallFunc_GetDisplayName_ReturnValue_1 = GetDisplayName(self)
+  [1124] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr('LOG ERROR (', CallFunc_GetDisplayName_ReturnValue_1)
+  [1174] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_3, ') =')
+  [1216] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, 'ArchonPlayerController is not valid!')
+  [1291] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_5, true, true, LinearColor{1.0, 0.028, 0.0, 1.0}, 2.0, 'None')
+  [1365] StackTrace()
+  [1375] goto @828
+  [1380] return ReturnValue
+  [1390] end
+
+=== ShowAllMessages
+  [0] push @634
+  [5] CallFunc_IsValid_ReturnValue = IsValid(self.ScrollBox)
+  [34] if !(CallFunc_IsValid_ReturnValue) pop
+  [44] Temp_int_Variable = 0
+  [67] CallFunc_GetChildrenCount_ReturnValue = self.ScrollBox.GetChildrenCount()
+  [117] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetChildrenCount_ReturnValue, 1)
+  [159] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue)
+  [197] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [207] push @388
+  [212] CallFunc_GetChildAt_ReturnValue = self.ScrollBox.GetChildAt(Temp_int_Variable)
+  [263] K2Node_DynamicCast_AsW_Clickable_Chat_Message_Bpw = cast<w_clickable_chat_message_bpw_C>(CallFunc_GetChildAt_ReturnValue)
+  [299] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsW_Clickable_Chat_Message_Bpw)
+  [328] if !(K2Node_DynamicCast_bSuccess_1) goto @462
+  [342] K2Node_DynamicCast_AsW_Clickable_Chat_Message_Bpw.ShowClickableMessage(Duration)
+  [387] pop
+  [388] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [430] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [457] goto @67
+  [462] CallFunc_GetChildAt_ReturnValue = self.ScrollBox.GetChildAt(Temp_int_Variable)
+  [513] K2Node_DynamicCast_AsW_Chat_Message_Bpw = cast<w_ChatMessage_bpw_C>(CallFunc_GetChildAt_ReturnValue)
+  [549] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsW_Chat_Message_Bpw)
+  [578] if !(K2Node_DynamicCast_bSuccess) pop
+  [588] K2Node_DynamicCast_AsW_Chat_Message_Bpw.Show Message(Duration)
+  [633] pop
+  [634] return nothing
+  [636] end
+
+=== ShowChatSystem
+  [0] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [20] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetArchonGameUserSettings_ReturnValue)
+  [49] if !(CallFunc_IsValid_ReturnValue) goto @139
+  [63] CallFunc_GetArchonGameUserSettings_ReturnValue = GetArchonGameUserSettings()
+  [83] if !(CallFunc_GetArchonGameUserSettings_ReturnValue.self.bHideChat) goto @139
+  [119] HideChatSystem(true)
+  [134] goto @166
+  [139] SetVisibility(3)
+  [155] self.IsInputEnabled = true
+  [166] return nothing
+  [168] end
+
+=== Tick
+  [0] frame.K2Node_Event_MyGeometry = MyGeometry
+  [18] frame.K2Node_Event_InDeltaTime = InDeltaTime
+  [36] ExecuteUbergraph_Chat_MenuRoot_bpw(3770)
+  [51] return nothing
+  [53] end
+
+=== UpdateChatCallouts
+  [0] CallFunc_Is_Using_Gamepad_ReturnValue = Default__UserWidgetFunctions_C.Is Using Gamepad(self)
+  [47] if !(CallFunc_Is_Using_Gamepad_ReturnValue) goto @787
+  [61] if !(ShowCallout) goto @216
+  [75] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [96] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [132] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [161] if !(K2Node_DynamicCast_bSuccess) goto @787
+  [175] if !(K2Node_DynamicCast_AsArchon_Game_Instance.self.bIsRemoteController) goto @297
+  [211] goto @787
+  [216] self.w_archoninputkey_bpw.SetVisibility(1)
+  [254] self.UnfocusedMessageLabel.SetVisibility(1)
+  [292] goto @787
+  [297] CallFunc_GetOwningPlayer_ReturnValue = GetOwningPlayer()
+  [321] CallFunc_MakeLiteralName_ReturnValue = MakeLiteralName('Chat Window (Console)')
+  [362] array{}
+  [373] CallFunc_GetOwningPlayer_ReturnValue.self.PlayerInput.FindActionMappingByName(CallFunc_MakeLiteralName_ReturnValue, CallFunc_FindActionMappingByName_ActionMapping)
+  [445] ActionMappings = CallFunc_FindActionMappingByName_ActionMapping
+  [472] ChatButtonText = self.HoldToChatText
+  [499] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(ActionMappings)
+  [558] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [592] if !(CallFunc_Greater_IntInt_ReturnValue) goto @787
+  [606] self.UnfocusedMessageLabel.SetText(ChatButtonText)
+  [651] self.w_archoninputkey_bpw.UpdateKey(EX_ArrayGetByRef(ArrayVariable=ActionMappings,ArrayIndex=0).Key)
+  [711] self.w_archoninputkey_bpw.SetVisibility(4)
+  [749] self.UnfocusedMessageLabel.SetVisibility(4)
+  [787] return nothing
+  [789] end

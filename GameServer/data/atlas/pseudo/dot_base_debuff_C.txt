@@ -1,0 +1,270 @@
+# dot_base_debuff_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthDoDamage
+  [0] ExecuteUbergraph_dot_base_debuff(1191)
+  [15] return nothing
+  [17] end
+
+=== AuthRestartDuration
+  [0] CallFunc_HasAuthority_ReturnValue = HasAuthority()
+  [20] if !(CallFunc_HasAuthority_ReturnValue) goto @129
+  [34] FlushNetDormancy()
+  [44] K2Node_VariableSet_TimeRemaining_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [73] self.TimeRemaining = K2Node_VariableSet_TimeRemaining_ImplicitCast
+  [100] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [129] return nothing
+  [131] end
+
+=== ExecuteUbergraph_dot_base_debuff
+  [0] goto computed(EntryPoint)
+  [10] FlushNetDormancy()
+  [20] CallFunc_Subtract_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [49] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(self.TimeRemaining, CallFunc_Subtract_DoubleDouble_B_ImplicitCast)
+  [95] self.TimeRemaining = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [122] MarkPropertyDirtyFromRepIndex(self, 17, 'TimeRemaining')
+  [151] CallFunc_UpdateExpireTime_NewDuration_ImplicitCast = cast<CST_DoubleToFloat>(self.TimeRemaining)
+  [180] UpdateExpireTime(CallFunc_UpdateExpireTime_NewDuration_ImplicitCast, true)
+  [200] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(self.TimeRemaining, 0.0)
+  [238] if !(CallFunc_Greater_DoubleDouble_ReturnValue_1) goto @3218
+  [252] UpdateEffectTime(self.TimeRemaining)
+  [275] CallFunc_IsValid_ReturnValue = IsValid(self.VFX_0)
+  [304] if !(CallFunc_IsValid_ReturnValue) goto @3218
+  [318] CallFunc_IsValid_ReturnValue_1 = IsValid(self.VFX_0)
+  [347] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [376] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [414] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_IsValid_ReturnValue_1, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [452] if !(CallFunc_BooleanAND_ReturnValue) goto @3218
+  [466] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.MaxDuration)
+  [495] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(self.TimeRemaining, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [541] CallFunc_VLerp_Alpha_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Divide_DoubleDouble_ReturnValue)
+  [570] CallFunc_VLerp_ReturnValue = VLerp(self.MinVFXSize, self.MaxVFXSize, CallFunc_VLerp_Alpha_ImplicitCast)
+  [625] self.VFX_0.SetWorldScale3D(CallFunc_VLerp_ReturnValue)
+  [666] goto @3218
+  [671] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [692] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @711
+  [706] goto @3218
+  [711] SetActorTickEnabled(false)
+  [722] goto @3218
+  [727] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [746] goto @10
+  [751] ReceiveDestroyed()
+  [761] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [781] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [810] CallFunc_RemoveActiveEffectsWithGrantedTags_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.RemoveActiveEffectsWithGrantedTags(self.InheritableArchonBuffTags.Added)
+  [878] Stop Persistent Audio()
+  [892] StopPersistentVFX()
+  [906] goto @3218
+  [911] OnAdded()
+  [921] array{GameplayTag{'Stagger.None'}, GameplayTag{'DamageType.DoDamageToInvulnerableDodge'}, GameplayTag{'DamageType.Dot'}}
+  [1013] Default__KismetArrayLibrary.Array_Append(self.ExtraDamageTags, K2Node_MakeArray_Array)
+  [1063] K2Node_CreateDelegate_OutputDelegate = bind(self.AuthDoDamage)
+  [1086] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.DotTimer)
+  [1115] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, true, 0.0, 0.0)
+  [1172] AuthRestartDuration()
+  [1186] goto @3218
+  [1191] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [1212] if !(CallFunc_IsServer_ReturnValue) goto @3218
+  [1226] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [1246] CallFunc_GetInstigator_ReturnValue = GetInstigator()
+  [1266] CallFunc_GetInstigatorController_ReturnValue = GetInstigatorController()
+  [1286] CallFunc_FTrunc_ReturnValue = FTrunc(self.PhysicalDamageAmount)
+  [1323] CallFunc_FTrunc_ReturnValue_1 = FTrunc(self.BaseDamageAmount)
+  [1360] CallFunc_FTrunc_ReturnValue_2 = FTrunc(self.FlameDamageAmount)
+  [1397] CallFunc_FTrunc_ReturnValue_3 = FTrunc(self.FrostDamageAmount)
+  [1434] CallFunc_FTrunc_ReturnValue_4 = FTrunc(self.ShockDamageAmount)
+  [1471] CallFunc_FTrunc_ReturnValue_5 = FTrunc(self.UmbralDamageAmount)
+  [1508] CallFunc_FTrunc_ReturnValue_6 = FTrunc(self.RadiantDamageAmount)
+  [1545] CallFunc_FTrunc_ReturnValue_7 = FTrunc(self.RawElementalDamageAmount)
+  [1582] array{GameplayTag{'None'}}
+  [1620] CallFunc_FTrunc_ReturnValue_8 = FTrunc(self.TerraDamageAmount)
+  [1657] K2Node_MakeStruct_DamageTableData.BaseDamage = CallFunc_FTrunc_ReturnValue_1
+  [1693] K2Node_MakeStruct_DamageTableData.PhysicalTypeOverride = self.Damage Type Override
+  [1729] K2Node_MakeStruct_DamageTableData.ExplicitPartBreak = 0
+  [1761] K2Node_MakeStruct_DamageTableData.ExplicitStagger = 0
+  [1793] K2Node_MakeStruct_DamageTableData.ExplicitExpose = 0
+  [1825] K2Node_MakeStruct_DamageTableData.DamageTrue = 0
+  [1857] K2Node_MakeStruct_DamageTableData.PhysicalDamage = CallFunc_FTrunc_ReturnValue
+  [1893] K2Node_MakeStruct_DamageTableData.FlameDamage = CallFunc_FTrunc_ReturnValue_2
+  [1929] K2Node_MakeStruct_DamageTableData.FrostDamage = CallFunc_FTrunc_ReturnValue_3
+  [1965] K2Node_MakeStruct_DamageTableData.ShockDamage = CallFunc_FTrunc_ReturnValue_4
+  [2001] K2Node_MakeStruct_DamageTableData.RadiantDamage = CallFunc_FTrunc_ReturnValue_6
+  [2037] K2Node_MakeStruct_DamageTableData.UmbralDamage = CallFunc_FTrunc_ReturnValue_5
+  [2073] K2Node_MakeStruct_DamageTableData.TerraDamage = CallFunc_FTrunc_ReturnValue_8
+  [2109] K2Node_MakeStruct_DamageTableData.RawElementalDamage = CallFunc_FTrunc_ReturnValue_7
+  [2145] K2Node_MakeStruct_DamageTableData.ElementalHealthDamageMod = 1.0
+  [2177] K2Node_MakeStruct_DamageTableData.Meter = 0
+  [2209] K2Node_MakeStruct_DamageTableData.DamageTypeClass = null
+  [2229] K2Node_MakeStruct_DamageTableData.Effect = null
+  [2249] K2Node_MakeStruct_DamageTableData.AssetTags = K2Node_MakeArray_Array_1
+  [2285] K2Node_MakeStruct_ArchonExtendedDamageInfo.AttackID = Guid{0, 0, 0, 0}
+  [2346] K2Node_MakeStruct_ArchonExtendedDamageInfo.Tags = self.ExtraDamageTags
+  [2382] CallFunc_GetDotHitInfo_ReturnValue = GetDotHitInfo()
+  [2414] BreakHitResult(CallFunc_GetDotHitInfo_ReturnValue, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [2595] K2Node_MakeStruct_ArchonCombatHitParams.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [2650] K2Node_MakeStruct_ArchonCombatHitParams.SourceActor = CallFunc_GetInstigator_ReturnValue
+  [2678] K2Node_MakeStruct_ArchonCombatHitParams.HitDirection = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [2730] K2Node_MakeStruct_ArchonCombatHitParams.HitInfo = CallFunc_GetDotHitInfo_ReturnValue
+  [2766] K2Node_MakeStruct_ArchonCombatHitParams.DamageRow = K2Node_MakeStruct_DamageTableData
+  [2802] K2Node_MakeStruct_ArchonCombatHitParams.DamageScale = 1.0
+  [2834] K2Node_MakeStruct_ArchonCombatHitParams.bApplyBuffsOnHit = false
+  [2854] TryHitActor(CallFunc_GetBuffOwner_ReturnValue_1, CallFunc_GetInstigator_ReturnValue, K2Node_MakeStruct_ArchonCombatHitParams, CallFunc_GetInstigatorController_ReturnValue, CallFunc_GetInstigator_ReturnValue, null, K2Node_MakeStruct_ArchonExtendedDamageInfo, CallFunc_BreakHitResult_HitComponent)
+  [2928] goto @3218
+  [2933] MulticastOnAdded()
+  [2943] StartPersistentVFX()
+  [2957] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [2977] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetBuffOwner_ReturnValue_2.GetComponentByClass(floating_combat_text_bpc_C)
+  [3028] self.OwnerCombatTextComponent = CallFunc_GetComponentByClass_ReturnValue
+  [3047] goto @671
+  [3052] CallFunc_GetBuffOwner_ReturnValue_3 = GetBuffOwner()
+  [3072] self.OwnerCombatTextComponent.AddMultitypeDamageText(CallFunc_GetBuffOwner_ReturnValue_3, null, 0.0, K2Node_CustomEvent_DamageAmount, 0.0, 0.0, 0.0, false, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), false, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)})
+  [3218] return nothing
+  [3220] end
+
+=== GetDotHitInfo
+  [0] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [20] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetBuffOwner_ReturnValue.K2_GetActorLocation()
+  [70] CallFunc_MakeHitResult_ReturnValue = MakeHitResult(true, false, 0.0, 0.0, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}), null, CallFunc_GetBuffOwner_ReturnValue, null, 'None', 'None', 0, 0, 0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}))
+  [280] ReturnValue = CallFunc_MakeHitResult_ReturnValue
+  [307] return ReturnValue
+  [317] end
+
+=== MulticastOnAdded
+  [0] ExecuteUbergraph_dot_base_debuff(2933)
+  [15] return nothing
+  [17] end
+
+=== OnAdded
+  [0] ExecuteUbergraph_dot_base_debuff(911)
+  [15] return nothing
+  [17] end
+
+=== ReceiveDestroyed
+  [0] ExecuteUbergraph_dot_base_debuff(751)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_dot_base_debuff(727)
+  [33] return nothing
+  [35] end
+
+=== StartPersistentAudio
+  [0] K2Node_DynamicCast_AsAk_Audio_Event = cast<AkAudioEvent>(self.AKStartEvent)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @138
+  [79] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [99] TryPostAudioEventOnLocalController(CallFunc_GetBuffOwner_ReturnValue, K2Node_DynamicCast_AsAk_Audio_Event, 1, Temp_delegate_Variable)
+  [138] return nothing
+  [140] end
+
+=== StartPersistentVFX
+  [0] push @1039
+  [5] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [25] K2Node_DynamicCast_AsGame_Entity_Interface = cast<game_entity_interface_C>(CallFunc_GetBuffOwner_ReturnValue_1)
+  [61] K2Node_DynamicCast_bSuccess_1 = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsGame_Entity_Interface)
+  [90] if !(K2Node_DynamicCast_bSuccess_1) goto @903
+  [104] K2Node_DynamicCast_AsGame_Entity_Interface.GetMesh(CallFunc_GetMesh_SkeletalMesh)
+  [150] CallFunc_IsValid_ReturnValue_1 = IsValid(self.SpawnedVFX)
+  [179] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [189] CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue = SpawnEmitterAttached_WeaponSeparation(self.SpawnedVFX, CallFunc_GetMesh_SkeletalMesh, self.VFXAttachPoint_0, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}), 0, true, 0, true)
+  [317] self.VFX_0 = CallFunc_SpawnEmitterAttached_WeaponSeparation_ReturnValue
+  [336] CallFunc_IsValid_ReturnValue = IsValid(self.VFX_0)
+  [365] if !(CallFunc_IsValid_ReturnValue) pop
+  [375] CallFunc_GetBuffOwner_ReturnValue_2 = GetBuffOwner()
+  [395] self.VFX_0.SetActorParameter('VertSurfaceActor', CallFunc_GetBuffOwner_ReturnValue_2)
+  [453] if !(self.ApplyBlazeMaterial) pop
+  [463] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [483] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [519] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [548] if !(K2Node_DynamicCast_bSuccess) goto @919
+  [562] K2Node_DynamicCast_AsBehemoth_Interface.GetDynamicMaterialCollection(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [608] Temp_int_Loop_Counter_Variable = 0
+  [631] Temp_int_Array_Index_Variable = 0
+  [654] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [713] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [751] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [761] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [788] push @965
+  [793] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [852] CallFunc_Array_Get_Item.SetScalarParameterValue('BehemothDebuffBlaze', 1.0)
+  [902] pop
+  [903] CallFunc_GetMesh_SkeletalMesh = null
+  [914] goto @150
+  [919] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [960] goto @608
+  [965] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1007] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1034] goto @654
+  [1039] return nothing
+  [1041] end
+
+=== Stop Persistent Audio
+  [0] K2Node_DynamicCast_AsAk_Audio_Event = cast<AkAudioEvent>(self.AKStopEvent)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAk_Audio_Event)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @138
+  [79] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [99] TryPostAudioEventOnLocalController(CallFunc_GetBuffOwner_ReturnValue, K2Node_DynamicCast_AsAk_Audio_Event, 1, Temp_delegate_Variable)
+  [138] return nothing
+  [140] end
+
+=== StopPersistentVFX
+  [0] push @650
+  [5] CallFunc_IsValid_ReturnValue = IsValid(self.VFX_0)
+  [34] if !(CallFunc_IsValid_ReturnValue) pop
+  [44] self.VFX_0.Deactivate()
+  [80] if !(self.ApplyBlazeMaterial) pop
+  [90] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [110] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetBuffOwner_ReturnValue)
+  [146] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [175] if !(K2Node_DynamicCast_bSuccess) goto @530
+  [189] K2Node_DynamicCast_AsBehemoth_Interface.GetDynamicMaterialCollection(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [235] Temp_int_Loop_Counter_Variable = 0
+  [258] Temp_int_Array_Index_Variable = 0
+  [281] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [340] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [378] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [388] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [415] push @576
+  [420] Default__KismetArrayLibrary.Array_Get(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [479] CallFunc_Array_Get_Item.SetScalarParameterValue('BehemothDebuffBlaze', 0.0)
+  [529] pop
+  [530] Default__KismetArrayLibrary.Array_Clear(CallFunc_GetDynamicMaterialCollection_DynamicMaterialCollection)
+  [571] goto @235
+  [576] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [618] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [645] goto @281
+  [650] return nothing
+  [652] end
+
+=== TriggerCombatText
+  [0] frame.K2Node_CustomEvent_DamageAmount = DamageAmount
+  [18] ExecuteUbergraph_dot_base_debuff(3052)
+  [33] return nothing
+  [35] end
+
+=== UpdateEffectTime
+  [0] CallFunc_IsGameplayEffectActive_ReturnValue = IsGameplayEffectActive(self.ActiveGameplayEffect)
+  [29] if !(CallFunc_IsGameplayEffectActive_ReturnValue) goto @301
+  [43] CallFunc_GetBuffOwner_ReturnValue = GetBuffOwner()
+  [63] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue)
+  [92] K2Node_DynamicCast_AsArchon_Ability_System_Component = cast<ArchonAbilitySystemComponent>(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [128] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Ability_System_Component)
+  [157] if !(K2Node_DynamicCast_bSuccess) goto @698
+  [171] CallFunc_FMax_ReturnValue = FMax(Duration, 0.0)
+  [217] CallFunc_SetActiveGameplayEffectTimeRemaining_NewTimeRemaining_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_FMax_ReturnValue)
+  [246] K2Node_DynamicCast_AsArchon_Ability_System_Component.SetActiveGameplayEffectTimeRemaining(self.ActiveGameplayEffect, CallFunc_SetActiveGameplayEffectTimeRemaining_NewTimeRemaining_ImplicitCast)
+  [296] goto @698
+  [301] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.AppliedGameplayEffect)
+  [330] if !(CallFunc_IsValidClass_ReturnValue) goto @698
+  [344] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [364] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [393] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.MakeOutgoingSpec(self.AppliedGameplayEffect, 0.0, GameplayEffectContextHandle{})
+  [475] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [504] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [563] CallFunc_GetBuffOwner_ReturnValue_1 = GetBuffOwner()
+  [583] CallFunc_GetAbilitySystemComponent_ReturnValue_1 = GetAbilitySystemComponent(CallFunc_GetBuffOwner_ReturnValue_1)
+  [612] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue_1.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [671] self.ActiveGameplayEffect = CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue
+  [698] return nothing
+  [700] end

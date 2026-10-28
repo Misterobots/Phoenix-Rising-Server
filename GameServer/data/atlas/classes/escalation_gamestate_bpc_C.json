@@ -1,0 +1,351 @@
+{
+ "name": "escalation_gamestate_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "EscalationGameStateComponent",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 1160,
+ "sdk_header": "escalation_gamestate_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0x420",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "GameStateEventDispatcher",
+   "type": "Ugamestate_eventdispatcher_bpc_C*",
+   "offset": "0x428",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<gamestate_eventdispatcher_bpc_C>"
+  },
+  {
+   "name": "LastRoundChallengeLevel",
+   "type": "int32",
+   "offset": "0x430",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "HACK_PerPlayerSeasonalPowerStacks",
+   "type": "TMap<APlayerController*, int32>",
+   "offset": "0x438",
+   "size": 80,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MapProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "DebugPrintState",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_gamestate_bpc_C.ExecuteUbergraph_escalation_gamestate_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_escalation_gamestate_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 51,
+   "reads": [
+    "AuthOnPostStateChanged",
+    "CurrentState",
+    "CurrentStateTimer"
+   ],
+   "sets": [
+    "GameStateEventDispatcher"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "ActorComponent.ReceiveBeginPlay",
+    "ArchonGameplayStatics.GetArchonLocalPlayer",
+    "ArchonLocalPlayer.GetChatClient",
+    "HandleDangerSystem",
+    "HandleEndOfRoundChatMessage",
+    "InsertStatusMessage",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_GetTimerRemainingTimeHandle",
+    "KismetSystemLibrary.MakeLiteralText",
+    "KismetSystemLibrary.PrintString",
+    "KismetTextLibrary.Conv_DoubleToText",
+    "KismetTextLibrary.Conv_TextToString"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass gamestate_eventdispatcher_bpc_C"
+   ]
+  },
+  {
+   "name": "HandleDangerSystem",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "State",
+     "type": "EEscalationGameModeState"
+    },
+    {
+     "name": "Transition",
+     "type": "EStateTransitionType"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 26,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetGameMode",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "SetDangerSystemPaused",
+    "setDanger"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HandleEndOfRoundChatMessage",
+   "flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "State",
+     "type": "EEscalationGameModeState"
+    },
+    {
+     "name": "TransitionType",
+     "type": "EStateTransitionType"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 29,
+   "reads": [
+    "bShouldEndGame"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.HasAuthority",
+    "ActorComponent.GetOwner",
+    "EscalationGameStateComponent.GetCurrentRound",
+    "EscalationGameStateComponent.IsRoundValid",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool",
+    "MultiFinalRoundChatMessage"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MultiFinalRoundChatMessage",
+   "flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "MessageType",
+     "type": "Eescalation_chat_message_type"
+    }
+   ],
+   "rpc": "multicast",
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_gamestate_bpc_C.ExecuteUbergraph_escalation_gamestate_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnStateChangedServer",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "NewState",
+     "type": "EEscalationGameModeState"
+    },
+    {
+     "name": "StateTransitionType",
+     "type": "EStateTransitionType"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_gamestate_bpc_C.ExecuteUbergraph_escalation_gamestate_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "escalation_gamestate_bpc_C.ExecuteUbergraph_escalation_gamestate_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable escalation_progression",
+  "DataTable hunt_modifiers"
+ ],
+ "package": "/Game/gamemodes/escalation/base_blueprints/escalation_gamestate_bpc",
+ "pseudo_file": "pseudo/escalation_gamestate_bpc_C.txt",
+ "game_data": {}
+}

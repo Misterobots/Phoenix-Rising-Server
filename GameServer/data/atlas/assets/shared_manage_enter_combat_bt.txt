@@ -1,0 +1,20 @@
+shared_manage_enter_combat_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  [root if current_target_is_valid_btdeco  (ValidityType=Accessible)]
+  [root if enter_combat_check_btdeco "In EnterCombatRange, or ForceEnterCombat"  (Origin=bb.SelfActor, Target=bb.AttackTarget, PredictTargetHorizFuturePosTime=1, MaxDistance={"BlackboardKeyName": "EnterCombatRange"}, ObservedKeyNames=["SelfActor", "AttackTarget"], bShowPropertyDetails=false, FlowAbortMode=LowerPriority)]
+  Sequence
+    1) bttask_set_boolean  (Key=bb.TempBool)
+    [if ForceSuccess]
+    [if Blackboard  (HasEnteredCombatSinceLastDisengage is Is Not Set)]
+    2) Selector
+      1) bttask_set_boolean  (Key=bb.TempBool, Value=true)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_enter_combat_internal_bt)
+    [if ForceSuccess]
+    4) generic_action_bttask  (ActionType=PreEnterCombat)
+    5) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25, MinAngleToTriggerPivot=35)
+    [if ForceSuccess]
+    6) Sequence
+      [if Blackboard  (TempBool is Is Set)]
+      1) generic_action_bttask  (ActionType=EnterCombat)

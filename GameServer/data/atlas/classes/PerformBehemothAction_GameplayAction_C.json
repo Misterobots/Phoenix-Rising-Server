@@ -1,0 +1,366 @@
+{
+ "name": "PerformBehemothAction_GameplayAction_C",
+ "kind": "blueprint",
+ "parents": [
+  "PhxBaseInstancedMontageGameplayAction",
+  "PhxMontageGameplayAction",
+  "PhxBaseGameplayAction",
+  "PhxBaseBlueprintGameplayTask",
+  "PhxBaseGameplayTask",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActionClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActionBlackboardKeyName",
+   "type": "NameProperty",
+   "bp_type": "NameProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "SelectedBehemothAction",
+   "type": "ObjectProperty<BP_BehemothAction_C>",
+   "bp_type": "ObjectProperty<BP_BehemothAction_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "bTriggerCooldownOnSuccess",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "Authority_ReceivePreActivation",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 16,
+   "reads": [
+    "SelectedBehemothAction"
+   ],
+   "sets": [
+    "SelectedBehemothAction"
+   ],
+   "calls": [
+    "Authority_SelectBehemothAction",
+    "KismetSystemLibrary.IsValid",
+    "PhxBaseBlueprintGameplayTask.Authority_ReceivePreActivation",
+    "PreAttackLogic"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Authority_SelectBehemothAction",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "BehemothAction",
+     "type": "ObjectProperty<BP_BehemothAction_C>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 55,
+   "reads": [
+    "ActionArray",
+    "ActionBlackboardKeyName",
+    "ActionClass",
+    "ActionSet"
+   ],
+   "sets": [],
+   "calls": [
+    "AIBlueprintHelperLibrary.GetBlackboard",
+    "BlackboardComponent.GetValueAsObject",
+    "GameplayStatics.GetObjectClass",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.ClassIsChildOf",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.IsValidClass",
+    "PhxBaseGameplayTask.GetOwningActor"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Authority_SelectMontage",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ReturnValue",
+     "type": "StructProperty<PhxAnimMontageSelection>"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "Const"
+   ],
+   "rpc": null,
+   "statements": 11,
+   "reads": [
+    "SelectedBehemothAction"
+   ],
+   "sets": [],
+   "calls": [
+    "ChooseMontageToPlay",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_PerformBehemothAction_GameplayAction",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction"
+   ],
+   "rpc": null,
+   "statements": 12,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Internal_OnFinished",
+    "Internal_OnStarted",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnFinished",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnStarted",
+    "PhxBaseBlueprintGameplayTask.ReceiveOnTick"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 26,
+   "reads": [
+    "SelectedBehemothAction",
+    "StaminaRegen_Timer",
+    "bTriggerCooldownOnSuccess"
+   ],
+   "sets": [
+    "Curving"
+   ],
+   "calls": [
+    "AIBlueprintHelperLibrary.GetBlackboard",
+    "Actor.FlushNetDormancy",
+    "BlackboardComponent.SetValueAsFloat",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_UnPauseTimerHandle",
+    "KismetSystemLibrary.MakeLiteralName",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_Curving",
+    "PhxBaseGameplayTask.GetOwningActor",
+    "PhxBaseGameplayTask.HasAuthority",
+    "PostAttackLogic"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "Internal_OnStarted",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Private",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 14,
+   "reads": [
+    "SelectedBehemothAction",
+    "StamDrainAmount",
+    "StaminaRegen_Timer"
+   ],
+   "sets": [
+    "Curving"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "DecreaseStamina",
+    "KismetSystemLibrary.K2_PauseTimerHandle",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_Curving",
+    "PhxBaseGameplayTask.GetOwningActor",
+    "PhxBaseGameplayTask.HasAuthority"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnFinished",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "PerformBehemothAction_GameplayAction_C.ExecuteUbergraph_PerformBehemothAction_GameplayAction"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnStarted",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "PerformBehemothAction_GameplayAction_C.ExecuteUbergraph_PerformBehemothAction_GameplayAction"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveOnTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaTime",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "PerformBehemothAction_GameplayAction_C.ExecuteUbergraph_PerformBehemothAction_GameplayAction"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/Character/Monsters/BehemothBaseBPs/PerformBehemothAction_GameplayAction",
+ "pseudo_file": "pseudo/PerformBehemothAction_GameplayAction_C.txt",
+ "game_data": {}
+}

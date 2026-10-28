@@ -1,0 +1,153 @@
+# c_nest_archetype_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CallWaspsToDefend
+  [0] push @463
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Wasps)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @389
+  [190] Default__KismetArrayLibrary.Array_Get(self.Wasps, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] Wasp = CallFunc_Array_Get_Item
+  [268] CallFunc_IsValid_ReturnValue = IsValid(Wasp)
+  [297] if !(CallFunc_IsValid_ReturnValue) pop
+  [307] Wasp.DefendNest()
+  [343] Wasp.SetTarget(Damage Source)
+  [388] pop
+  [389] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [431] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [458] goto @51
+  [463] return nothing
+  [465] end
+
+=== CanSpawnWasp
+  [0] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Wasps)
+  [59] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(self.MinWaspLimit, self.MaxWaspLimit)
+  [105] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_Array_Length_ReturnValue, CallFunc_RandomIntegerInRange_ReturnValue)
+  [143] CanSpawnWasp = CallFunc_Less_IntInt_ReturnValue
+  [162] return nothing
+  [164] end
+
+=== CheckForNearbyPlayers
+  [0] return nothing
+  [2] end
+
+=== ExecuteUbergraph_c_nest_archetype_bp
+  [0] goto computed(EntryPoint)
+  [10] FrenzyWasps()
+  [24] goto @62
+  [29] On Take Damage(K2Node_Event_DamageSource)
+  [52] goto @62
+  [57] goto @10
+  [62] return nothing
+  [64] end
+
+=== FrenzyWasps
+  [0] push @418
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Wasps)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [158] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [185] push @344
+  [190] Default__KismetArrayLibrary.Array_Get(self.Wasps, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [249] Wasp = CallFunc_Array_Get_Item
+  [268] CallFunc_IsValid_ReturnValue = IsValid(Wasp)
+  [297] if !(CallFunc_IsValid_ReturnValue) pop
+  [307] Wasp.Frenzy()
+  [343] pop
+  [344] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [386] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [413] goto @51
+  [418] return nothing
+  [420] end
+
+=== GetWaspSpawnTransform
+  [0] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(0.0, 360.0)
+  [46] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_RandomFloatInRange_ReturnValue)
+  [75] CallFunc_MakeRotator_ReturnValue = MakeRotator(0.0, 0.0, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [122] CallFunc_GetTransform_ReturnValue = self.GetTransform()
+  [164] BreakTransform(CallFunc_GetTransform_ReturnValue, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [210] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_BreakTransform_Location, EX_VectorConst(Value={'X': 0.0, 'Y': 50.0, 'Z': 0.0}))
+  [272] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_Add_VectorVector_ReturnValue, CallFunc_MakeRotator_ReturnValue, CallFunc_BreakTransform_Scale)
+  [327] WaspTransform = CallFunc_MakeTransform_ReturnValue
+  [354] return nothing
+  [356] end
+
+=== On Take Damage
+  [0] push @214
+  [5] push @190
+  [10] push @66
+  [15] FlushNetDormancy()
+  [25] self.HasBeenAttacked = true
+  [36] MarkPropertyDirtyFromRepIndex(self, 26, 'HasBeenAttacked')
+  [65] pop
+  [66] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self)
+  [87] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetBlackboard_ReturnValue)
+  [116] if !(CallFunc_IsValid_ReturnValue) pop
+  [126] CallFunc_GetBlackboard_ReturnValue = GetBlackboard(self)
+  [147] CallFunc_GetBlackboard_ReturnValue.SetValueAsBool(self.PlayHelpMontage, true)
+  [189] pop
+  [190] CallWaspsToDefend(Damage Source)
+  [213] pop
+  [214] return nothing
+  [216] end
+
+=== OnAboutToDieBP
+  [0] frame.K2Node_Event_PreventDeath = PreventDeath
+  [18] ExecuteUbergraph_c_nest_archetype_bp(57)
+  [33] return nothing
+  [35] end
+
+=== OnDamageReceivedBP
+  [0] frame.K2Node_Event_DamageReceived = DamageReceived
+  [18] frame.K2Node_Event_DamageSource = DamageSource
+  [36] frame.K2Node_Event_DamageInfo = DamageInfo
+  [54] ExecuteUbergraph_c_nest_archetype_bp(29)
+  [69] return nothing
+  [71] end
+
+=== OnWaspDeath
+  [0] CallFunc_Array_RemoveItem_ReturnValue = Default__KismetArrayLibrary.Array_RemoveItem(self.Wasps, Wasp)
+  [60] return nothing
+  [62] end
+
+=== Setup Wasp
+  [0] push @315
+  [5] NestTerritoryRadius = 'NestTerritoryRadius'
+  [36] push @269
+  [41] push @223
+  [46] push @154
+  [51] NewWasp.FlushNetDormancy()
+  [83] NewWasp.self.Nest = self
+  [116] MarkPropertyDirtyFromRepIndex(NewWasp, 27, 'Nest')
+  [153] pop
+  [154] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.Wasps, NewWasp)
+  [222] pop
+  [223] NewWasp.SetNestPatrolDistance(self.WaspWanderRadius)
+  [268] pop
+  [269] NewWasp.SetDefenseDistance(self.Nest Defense Distance)
+  [314] pop
+  [315] return nothing
+  [317] end
+
+=== SpawnWasp
+  [0] GetWaspSpawnTransform(CallFunc_GetWaspSpawnTransform_WaspTransform)
+  [23] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, c_wasp_archetype_bp_C, CallFunc_GetWaspSpawnTransform_WaspTransform, 1, null)
+  [65] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_GetWaspSpawnTransform_WaspTransform)
+  [103] Setup Wasp(CallFunc_FinishSpawningActor_ReturnValue)
+  [126] return nothing
+  [128] end
+
+=== TrySpawnWasp
+  [0] CanSpawnWasp(CallFunc_CanSpawnWasp_CanSpawnWasp)
+  [23] if !(CallFunc_CanSpawnWasp_CanSpawnWasp) goto @67
+  [37] SpawnWasp()
+  [51] Success = true
+  [62] goto @78
+  [67] Success = false
+  [78] return nothing
+  [80] end

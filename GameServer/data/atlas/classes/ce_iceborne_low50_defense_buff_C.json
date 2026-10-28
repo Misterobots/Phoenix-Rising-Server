@@ -1,0 +1,293 @@
+{
+ "name": "ce_iceborne_low50_defense_buff_C",
+ "kind": "blueprint",
+ "parents": [
+  "ce_lowhp_apply_buff_C",
+  "cell_buff_base_bp_C",
+  "base_buff_C",
+  "ArchonBuff",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LifestealPercents",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Rank",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "ConvertEffectToRank",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 18,
+   "reads": [],
+   "sets": [
+    "Rank"
+   ],
+   "calls": [
+    "GetCellEffectMagnitude",
+    "KismetMathLibrary.EqualEqual_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_ce_iceborne_low50_defense_buff",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 71,
+   "reads": [
+    "LifestealPercents",
+    "OnPostMitigationDealtAnyDamage",
+    "Rank",
+    "geEffectHandle"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.GetComponentByClass",
+    "ActorIsAlive",
+    "AddVFX",
+    "ArchonAbilitySystemBlueprintLibrary.IsGameplayEffectActive",
+    "ArchonBuff.GetBuffOwner",
+    "CanProcOnDamageEffects",
+    "ConvertEffectToRank",
+    "GameplayStatics.SpawnEmitterAttached",
+    "GetCappedHealing",
+    "GetSkeletalMeshComponent",
+    "HealTarget",
+    "HealVFX",
+    "KismetArrayLibrary.Array_Get",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.FFloor",
+    "KismetMathLibrary.FMin",
+    "KismetMathLibrary.Greater_DoubleDouble",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "SetActorParameter",
+    "ce_lowhp_apply_buff_C.MeshEmitVFX_Multi",
+    "ce_lowhp_apply_buff_C.OnAdded"
+   ],
+   "authority": [
+    "IsDedicatedServer"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass player_eventdispatcher_bpc_C",
+    "BlueprintGeneratedClass vfx_bpc_C",
+    "ParticleSystem buff_heal_generic_p"
+   ]
+  },
+  {
+   "name": "GetCappedHealing",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "MaxHealing",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "rpc": null,
+   "statements": 19,
+   "reads": [
+    "HealthThreshold"
+   ],
+   "sets": [],
+   "calls": [
+    "AbilitySystemBlueprintLibrary.GetAbilitySystemComponent",
+    "AbilitySystemBlueprintLibrary.GetFloatAttributeFromAbilitySystemComponent",
+    "Actor.GetOwner",
+    "ArchonBuff.GetBuffOwner",
+    "ArchonCharacter.GetHealth",
+    "ArchonCharacter.GetMaxHealth",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Subtract_DoubleDouble"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "HealVFX",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetReliable",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_iceborne_low50_defense_buff_C.ExecuteUbergraph_ce_iceborne_low50_defense_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "MeshEmitVFX_Multi",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_iceborne_low50_defense_buff_C.ExecuteUbergraph_ce_iceborne_low50_defense_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnAdded",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintAuthorityOnly",
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_iceborne_low50_defense_buff_C.ExecuteUbergraph_ce_iceborne_low50_defense_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnPostMit",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PostMitDamageSummary",
+     "type": "StructProperty<PostMitigationDamageSummary>"
+    },
+    {
+     "name": "DamageTags",
+     "type": "StructProperty<GameplayTagContainer>"
+    },
+    {
+     "name": "DamagedActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "Context",
+     "type": "StructProperty<GameplayEffectContextHandle>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 7,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ce_iceborne_low50_defense_buff_C.ExecuteUbergraph_ce_iceborne_low50_defense_buff"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/cells/Content/Iceborne/ce_iceborne_low50_defense_buff",
+ "pseudo_file": "pseudo/ce_iceborne_low50_defense_buff_C.txt",
+ "game_data": {}
+}

@@ -1,0 +1,14 @@
+shadowcat_portal_exit  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Requires PounceLocation"]
+  [root if behemoth_in_state_btdeco  (State=CustomState)]
+  Sequence
+    {service debug_arrow_btservice  (ArrowEndKey=FrontPoint)}
+    1) Sequence
+      {service hide_behemoth_bttask}
+      1) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=CurrentPatrolPoint, BlendOutTime=0)
+      2) spawn_gameplay_bttask "Spawn Exit Portal"  (GameplayData={"ManualTargetting": [{"X": 300.0, "Y": 0.0, "Z": 0.0}], "GameplayType": "eqs_gameplay_type::Actor", "ActorInfo": {"ActorClass": "BlueprintGeneratedClass shadowcat_portal_useownerfacing_bp_C", "EQSGameplayData": {"NumToSpawnPerTick": 1}, "AlignWithGround": false}}, WaitForRequestToFinish=false, bShowPropertyDetails=false)
+      3) Wait  (WaitTime=0.5)
+    2) try_set_behemoth_state_bttask  (State=CustomState, StateChangeType=End)
+    3) BehemothAction  (Montage=AnimMontage b_aq_lerawr_00_loco_jumplandturntoidle_fwd_00_mot)

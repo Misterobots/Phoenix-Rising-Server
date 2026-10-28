@@ -1,0 +1,581 @@
+# escalation_little_buddy_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateEmpowerVFX
+  [0] self.empower_vfx_01.Activate(false)
+  [37] CallFunc_IsActive_ReturnValue_2 = self.idle_vfx_02.IsActive()
+  [79] if !(CallFunc_IsActive_ReturnValue_2) goto @316
+  [93] self.empower_vfx_02.Activate(false)
+  [130] CallFunc_IsActive_ReturnValue_1 = self.idle_vfx_03.IsActive()
+  [172] if !(CallFunc_IsActive_ReturnValue_1) goto @316
+  [186] self.empower_vfx_03.Activate(false)
+  [223] CallFunc_IsActive_ReturnValue = self.idle_vfx_04.IsActive()
+  [265] if !(CallFunc_IsActive_ReturnValue) goto @316
+  [279] self.empower_vfx_04.Activate(false)
+  [316] return nothing
+  [318] end
+
+=== AddBonusDamage
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(4588)
+  [15] return nothing
+  [17] end
+
+=== AddBuddy
+  [0] frame.K2Node_CustomEvent_Stack = Stack
+  [18] ExecuteUbergraph_escalation_little_buddy_bp(4072)
+  [33] return nothing
+  [35] end
+
+=== CheckAndRemoveBonuses
+  [0] push @696
+  [5] array{}
+  [16] Default__BlueprintMapLibrary.Map_Keys(self.BonusAndTime, CallFunc_Map_Keys_Keys)
+  [66] Temp_int_Loop_Counter_Variable = 0
+  [89] Temp_int_Array_Index_Variable = 0
+  [112] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [171] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [209] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [219] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [246] push @622
+  [251] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [280] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [339] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.BonusAndTime, CallFunc_Array_Get_Item, CallFunc_Map_Find_Value)
+  [408] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Map_Find_Value, self.EmpowermentDuration)
+  [454] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetTimeSeconds_ReturnValue)
+  [492] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [502] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [561] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.BonusAndTime, CallFunc_Array_Get_Item)
+  [621] pop
+  [622] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [664] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [691] goto @112
+  [696] return nothing
+  [698] end
+
+=== DamageTarget
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.Target)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @969
+  [43] CallFunc_K2_GetComponentToWorld_ReturnValue = self.Target.K2_GetComponentToWorld()
+  [93] L_TargetTransform = CallFunc_K2_GetComponentToWorld_ReturnValue
+  [120] CallFunc_K2_GetComponentLocation_ReturnValue = self.AllBuddies.K2_GetComponentLocation()
+  [170] array{7, 5, 8}
+  [187] BreakTransform(L_TargetTransform, CallFunc_BreakTransform_Location, CallFunc_BreakTransform_Rotation, CallFunc_BreakTransform_Scale)
+  [233] CallFunc_LineTraceSingleForObjects_ReturnValue = LineTraceSingleForObjects(self, CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_BreakTransform_Location, K2Node_MakeArray_Array, false, Temp_object_Variable, 0, CallFunc_LineTraceSingleForObjects_OutHit, true, LinearColor{1.0, 0.0, 0.0, 1.0}, LinearColor{0.0, 1.0, 0.0, 1.0}, 5.0)
+  [376] if !(CallFunc_LineTraceSingleForObjects_ReturnValue) goto @892
+  [390] BreakHitResult(CallFunc_LineTraceSingleForObjects_OutHit, CallFunc_BreakHitResult_bBlockingHit, CallFunc_BreakHitResult_bInitialOverlap, CallFunc_BreakHitResult_Time, CallFunc_BreakHitResult_Distance, CallFunc_BreakHitResult_Location, CallFunc_BreakHitResult_ImpactPoint, CallFunc_BreakHitResult_Normal, CallFunc_BreakHitResult_ImpactNormal, CallFunc_BreakHitResult_PhysMat, CallFunc_BreakHitResult_HitActor, CallFunc_BreakHitResult_HitComponent, CallFunc_BreakHitResult_HitBoneName, CallFunc_BreakHitResult_BoneName, CallFunc_BreakHitResult_HitItem, CallFunc_BreakHitResult_ElementIndex, CallFunc_BreakHitResult_FaceIndex, CallFunc_BreakHitResult_TraceStart, CallFunc_BreakHitResult_TraceEnd)
+  [571] CallFunc_K2_SetActorLocation_ReturnValue = self.AoEBP.K2_SetActorLocation(CallFunc_BreakHitResult_ImpactPoint, false, CallFunc_K2_SetActorLocation_SweepHitResult, false)
+  [633] self.AoEBP.DealDamage()
+  [669] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [689] CallFunc_GetLocalArchonCharacter_ReturnValue = GetLocalArchonCharacter(self)
+  [710] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_GetLocalArchonCharacter_ReturnValue, CallFunc_GetOwner_ReturnValue)
+  [748] if !(CallFunc_EqualEqual_ObjectObject_ReturnValue) goto @969
+  [762] CallFunc_GetOwner_ReturnValue_1 = self.Target.GetOwner()
+  [804] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_vfx_quill_impact_impact_crystal_buddy_impact, CallFunc_GetOwner_ReturnValue_1, 0, Temp_delegate_Variable, false)
+  [887] goto @969
+  [892] PrintString(self, 'Miss Trace', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [969] return nothing
+  [971] end
+
+=== DeactivateEmpowerVFX
+  [0] self.empower_vfx_01.Deactivate()
+  [36] self.empower_vfx_02.Deactivate()
+  [72] self.empower_vfx_03.Deactivate()
+  [108] self.empower_vfx_04.Deactivate()
+  [144] return nothing
+  [146] end
+
+=== DebugDrawSplines
+  [0] push @358
+  [5] Temp_int_Variable = 0
+  [28] CallFunc_GetNumberOfSplinePoints_ReturnValue = Target.GetNumberOfSplinePoints()
+  [78] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(CallFunc_GetNumberOfSplinePoints_ReturnValue, 1)
+  [120] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, CallFunc_Subtract_IntInt_ReturnValue)
+  [158] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [168] push @284
+  [173] CallFunc_GetLocationAtSplinePoint_ReturnValue = Target.GetLocationAtSplinePoint(Temp_int_Variable, 1)
+  [234] DrawDebugSphere(self, CallFunc_GetLocationAtSplinePoint_ReturnValue, 40.0, 12, LineColor, 0.1, 1.0)
+  [283] pop
+  [284] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [326] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [353] goto @28
+  [358] return nothing
+  [360] end
+
+=== DelayedDamage
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5559)
+  [15] return nothing
+  [17] end
+
+=== EmpowerAudio_Multi
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5475)
+  [15] return nothing
+  [17] end
+
+=== ExecuteUbergraph_escalation_little_buddy_bp
+  [0] push @5574
+  [5] goto computed(EntryPoint)
+  [15] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(Temp_int_Array_Index_Variable, 0)
+  [49] if !(K2Node_SwitchInteger_CmpSuccess) goto @208
+  [63] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(Temp_int_Array_Index_Variable, 1)
+  [97] if !(K2Node_SwitchInteger_CmpSuccess) goto @729
+  [111] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(Temp_int_Array_Index_Variable, 2)
+  [145] if !(K2Node_SwitchInteger_CmpSuccess) goto @780
+  [159] K2Node_SwitchInteger_CmpSuccess = NotEqual_IntInt(Temp_int_Array_Index_Variable, 3)
+  [193] if !(K2Node_SwitchInteger_CmpSuccess) goto @831
+  [207] pop
+  [208] MuzzleFlashAndAudio_MUlti(self.muzzle_one, self.idle_vfx_01)
+  [240] StartCooldownOne()
+  [254] K2Node_CreateDelegate_OutputDelegate_1 = bind(self.DelayedDamage)
+  [277] Temp_real_Variable_2 = 0.5
+  [304] Temp_real_Variable_3 = 0.75
+  [331] Temp_bool_Variable_1 = self.Empowered
+  [350] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2 = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable_1){false: Temp_real_Variable_3, true: Temp_real_Variable_2, default: K2Node_Select_Default_2})
+  [423] CallFunc_K2_SetTimerDelegate_ReturnValue_3 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_1, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_2, false, 0.0, 0.0)
+  [480] self.ShotReady = false
+  [491] Temp_real_Variable = 0.6000000238418579
+  [518] Temp_real_Variable_1 = 0.8500000238418579
+  [545] K2Node_CreateDelegate_OutputDelegate_2 = bind(self.ResetShot)
+  [568] Temp_bool_Variable = self.Empowered
+  [587] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1 = cast<CST_DoubleToFloat>(switch(Temp_bool_Variable){false: Temp_real_Variable_1, true: Temp_real_Variable, default: K2Node_Select_Default_1})
+  [660] CallFunc_K2_SetTimerDelegate_ReturnValue_2 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_2, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast_1, false, 0.0, 0.0)
+  [717] Temp_bool_True_if_break_was_hit_Variable = true
+  [728] pop
+  [729] MuzzleFlashAndAudio_MUlti(self.muzzle_two, self.idle_vfx_02)
+  [761] StartCooldownTwo()
+  [775] goto @254
+  [780] MuzzleFlashAndAudio_MUlti(self.muzzle_three, self.idle_vfx_03)
+  [812] StartCooldownThree()
+  [826] goto @254
+  [831] MuzzleFlashAndAudio_MUlti(self.muzzle_four, self.idle_vfx_04)
+  [863] StartCooldownFour()
+  [877] goto @254
+  [882] Temp_int_Array_Index_Variable = 0
+  [905] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Temp_bool_True_if_break_was_hit_Variable)
+  [934] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.GunReadiness)
+  [993] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [1031] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [1069] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1079] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [1106] push @1245
+  [1111] Default__KismetArrayLibrary.Array_Get(self.GunReadiness, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1170] if !(CallFunc_Array_Get_Item) pop
+  [1180] Default__KismetArrayLibrary.Array_Set(self.GunReadiness, Temp_int_Array_Index_Variable, Temp_bool_Variable_3, false)
+  [1240] goto @15
+  [1245] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1287] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1314] goto @905
+  [1319] Temp_bool_True_if_break_was_hit_Variable = false
+  [1330] Temp_int_Loop_Counter_Variable = 0
+  [1353] goto @882
+  [1358] pop
+  [1359] Temp_bool_Variable_5 = true
+  [1370] Default__KismetArrayLibrary.Array_Set(self.GunReadiness, 2, Temp_bool_Variable_5, false)
+  [1426] pop
+  [1427] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [1448] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @1463
+  [1462] pop
+  [1463] CallFunc_RandomIntegerInRange_ReturnValue = RandomIntegerInRange(0, 4)
+  [1501] K2Node_SwitchInteger_CmpSuccess_2 = NotEqual_IntInt(CallFunc_RandomIntegerInRange_ReturnValue, 0)
+  [1535] if !(K2Node_SwitchInteger_CmpSuccess_2) goto @2229
+  [1549] K2Node_SwitchInteger_CmpSuccess_2 = NotEqual_IntInt(CallFunc_RandomIntegerInRange_ReturnValue, 1)
+  [1583] if !(K2Node_SwitchInteger_CmpSuccess_2) goto @2205
+  [1597] K2Node_SwitchInteger_CmpSuccess_2 = NotEqual_IntInt(CallFunc_RandomIntegerInRange_ReturnValue, 2)
+  [1631] if !(K2Node_SwitchInteger_CmpSuccess_2) goto @2181
+  [1645] K2Node_SwitchInteger_CmpSuccess_2 = NotEqual_IntInt(CallFunc_RandomIntegerInRange_ReturnValue, 3)
+  [1679] if !(K2Node_SwitchInteger_CmpSuccess_2) goto @1742
+  [1693] K2Node_SwitchInteger_CmpSuccess_2 = NotEqual_IntInt(CallFunc_RandomIntegerInRange_ReturnValue, 4)
+  [1727] if !(K2Node_SwitchInteger_CmpSuccess_2) goto @2253
+  [1741] pop
+  [1742] self.SplineToUse = self.Spline3
+  [1761] Temp_bool_Variable_2 = self.Empowered
+  [1780] Temp_real_Variable_4 = 0.5
+  [1807] Temp_real_Variable_5 = 0.75
+  [1834] CallFunc_K2_GetComponentLocation_ReturnValue = K2Node_CustomEvent_OwnerBuddy.K2_GetComponentLocation()
+  [1884] array{self.SplineToUse}
+  [1904] array{self.SplineTarget}
+  [1924] self.spline_fx_spawner_bpc1.InitializeSplineFX(self, CallFunc_K2_GetComponentLocation_ReturnValue, 0.0, 0.0, vfx_little_buddy_projectile_p, null, null, vfx_little_buddy_impact_p, null, K2Node_MakeArray_Array, switch(Temp_bool_Variable_2){false: Temp_real_Variable_5, true: Temp_real_Variable_4, default: K2Node_Select_Default}, switch(Temp_bool_Variable_2){false: Temp_real_Variable_5, true: Temp_real_Variable_4, default: K2Node_Select_Default}, K2Node_MakeArray_Array_1, 0.0, 0.0, false, 1200.0, 1.0, 1.0, false)
+  [2180] pop
+  [2181] self.SplineToUse = self.Spline2
+  [2200] goto @1761
+  [2205] self.SplineToUse = self.Spline1
+  [2224] goto @1761
+  [2229] self.SplineToUse = self.Spline
+  [2248] goto @1761
+  [2253] self.SplineToUse = self.Spline4
+  [2272] goto @1761
+  [2277] CallFunc_MoveAndRotate_DeltaTime_ImplicitCast = cast<CST_FloatToDouble>(K2Node_Event_DeltaSeconds)
+  [2306] MoveAndRotate(CallFunc_MoveAndRotate_DeltaTime_ImplicitCast)
+  [2329] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [2349] Default__archon_function_library_C.ActorIsAlive(CallFunc_GetOwner_ReturnValue_2, self, CallFunc_ActorIsAlive_IsAlive)
+  [2404] if !(CallFunc_ActorIsAlive_IsAlive) pop
+  [2414] CallFunc_IsValid_ReturnValue_1 = IsValid(self.Target)
+  [2443] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [2453] if !(self.ShotReady) pop
+  [2463] goto @1319
+  [2468] ReceiveBeginPlay()
+  [2478] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2498] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_GetOwner_ReturnValue)
+  [2534] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [2563] if !(K2Node_DynamicCast_bSuccess) pop
+  [2573] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2676] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2696] CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue = BeginDeferredActorSpawnFromClass(self, escalation_little_buddy_aoe_bp_C, CallFunc_MakeTransform_ReturnValue, 1, CallFunc_GetOwner_ReturnValue)
+  [2746] SetDoublePropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'CollisionRadius', 150.0)
+  [2787] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2807] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'DamageSource', CallFunc_GetOwner_ReturnValue)
+  [2848] SetObjectPropertyByName(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, 'Instigator', K2Node_DynamicCast_AsPawn)
+  [2889] CallFunc_MakeTransform_ReturnValue = MakeTransform(EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), EX_RotationConst(Value={'Pitch': 0.0, 'Yaw': 0.0, 'Roll': 0.0}), EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [2992] CallFunc_FinishSpawningActor_ReturnValue = FinishSpawningActor(CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue, CallFunc_MakeTransform_ReturnValue)
+  [3030] self.AoEBP = CallFunc_FinishSpawningActor_ReturnValue
+  [3049] K2Node_CreateDelegate_OutputDelegate_3 = bind(self.SearchForTargets)
+  [3072] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate_3, 0.25, true, 0.0, 0.0)
+  [3125] SpawnBuddy(self.idle_vfx_01, self.spawn_vfx_01)
+  [3157] StartCooldownOne()
+  [3171] pop
+  [3172] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [3192] Default__archon_function_library_C.ActorIsAlive(CallFunc_GetOwner_ReturnValue_3, self, CallFunc_ActorIsAlive_IsAlive_1)
+  [3247] if !(CallFunc_ActorIsAlive_IsAlive_1) pop
+  [3257] LookForTargets(CallFunc_LookForTargets_Found, CallFunc_LookForTargets_ComponentsAndOwners)
+  [3289] if !(CallFunc_LookForTargets_Found) goto @3410
+  [3303] SortByDistance(CallFunc_LookForTargets_ComponentsAndOwners, CallFunc_SortByDistance_ClosestComponent)
+  [3335] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_SortByDistance_ClosestComponent)
+  [3364] if !(CallFunc_IsValid_ReturnValue) goto @3398
+  [3378] self.Target = CallFunc_SortByDistance_ClosestComponent
+  [3397] pop
+  [3398] self.Target = null
+  [3409] pop
+  [3410] self.Target = null
+  [3421] pop
+  [3422] self.Timeline_0.PlayFromStart()
+  [3454] pop
+  [3455] self.Timeline_1.PlayFromStart()
+  [3487] pop
+  [3488] self.Timeline_2.PlayFromStart()
+  [3520] pop
+  [3521] self.Timeline_3.PlayFromStart()
+  [3553] pop
+  [3554] pop
+  [3555] Temp_bool_Variable_6 = true
+  [3566] Default__KismetArrayLibrary.Array_Set(self.GunReadiness, 1, Temp_bool_Variable_6, false)
+  [3622] pop
+  [3623] DamageTarget()
+  [3637] pop
+  [3638] Temp_bool_Variable_4 = true
+  [3649] Default__KismetArrayLibrary.Array_Set(self.GunReadiness, 3, Temp_bool_Variable_4, false)
+  [3705] pop
+  [3706] self.ShotReady = true
+  [3717] pop
+  [3718] CallFunc_IsValid_ReturnValue_2 = IsValid(self.Target)
+  [3747] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [3757] K2Node_CustomEvent_Muzzle.Activate(false)
+  [3794] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [3814] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_vfx_energy_projectile_fire, CallFunc_GetOwner_ReturnValue_1, 0, Temp_delegate_Variable, false)
+  [3897] CallFunc_K2_GetComponentLocation_ReturnValue_1 = self.Target.K2_GetComponentLocation()
+  [3947] self.SplineTarget.K2_SetWorldLocation(CallFunc_K2_GetComponentLocation_ReturnValue_1, false, CallFunc_K2_SetWorldLocation_SweepHitResult, true)
+  [3999] goto @1427
+  [4004] Temp_bool_Variable_7 = true
+  [4015] Default__KismetArrayLibrary.Array_Set(self.GunReadiness, 0, Temp_bool_Variable_7, false)
+  [4071] pop
+  [4072] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 0)
+  [4106] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4360
+  [4120] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 1)
+  [4154] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4360
+  [4168] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 2)
+  [4202] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4541
+  [4216] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 3)
+  [4250] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4494
+  [4264] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 4)
+  [4298] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4447
+  [4312] K2Node_SwitchInteger_CmpSuccess_1 = NotEqual_IntInt(K2Node_CustomEvent_Stack, 5)
+  [4346] if !(K2Node_SwitchInteger_CmpSuccess_1) goto @4360
+  [4360] PrintString(self, 'Invalid Buddy Index', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [4446] pop
+  [4447] SpawnBuddy(self.idle_vfx_04, self.spawn_vfx_04)
+  [4479] StartCooldownFour()
+  [4493] pop
+  [4494] SpawnBuddy(self.idle_vfx_03, self.spawn_vfx_03)
+  [4526] StartCooldownThree()
+  [4540] pop
+  [4541] SpawnBuddy(self.idle_vfx_02, self.spawn_vfx_02)
+  [4573] StartCooldownTwo()
+  [4587] pop
+  [4588] self.Empowered = true
+  [4599] EmpowerAudio_Multi()
+  [4613] self.Timeline_0.SetPlayRate(2.0)
+  [4650] self.Timeline_1.SetPlayRate(2.0)
+  [4687] self.Timeline_2.SetPlayRate(2.0)
+  [4724] self.Timeline_3.SetPlayRate(2.0)
+  [4761] ActivateEmpowerVFX()
+  [4775] K2_ClearAndInvalidateTimerHandle(self, self.UnempowerTimer)
+  [4795] K2Node_CreateDelegate_OutputDelegate = bind(self.RemoveEmpowerment)
+  [4818] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(self.EmpowermentDuration)
+  [4847] CallFunc_K2_SetTimerDelegate_ReturnValue_1 = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [4904] self.UnempowerTimer = CallFunc_K2_SetTimerDelegate_ReturnValue_1
+  [4931] pop
+  [4932] self.Empowered = false
+  [4943] self.Timeline_0.SetPlayRate(1.0)
+  [4980] self.Timeline_1.SetPlayRate(1.0)
+  [5017] self.Timeline_2.SetPlayRate(1.0)
+  [5054] self.Timeline_3.SetPlayRate(1.0)
+  [5091] DeactivateEmpowerVFX()
+  [5105] pop
+  [5106] K2Node_CustomEvent_BuddyVFX.Activate(false)
+  [5143] K2Node_CustomEvent_SpawnVFX.Activate(false)
+  [5180] SpawnAudio_Multi()
+  [5194] self.SpawnPresentation.PlayFromStart()
+  [5226] pop
+  [5227] CallFunc_MakeVector_ReturnValue = MakeVector(1.0, 1.0, 1.0)
+  [5282] CallFunc_Multiply_VectorFloat_B_ImplicitCast = cast<CST_FloatToDouble>(self.SpawnPresentation_Scale_62C22EA64DB4BC7DF56002A5ED31F846)
+  [5311] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_MakeVector_ReturnValue, CallFunc_Multiply_VectorFloat_B_ImplicitCast)
+  [5357] K2Node_CustomEvent_BuddyVFX.SetWorldScale3D(CallFunc_Multiply_VectorFloat_ReturnValue)
+  [5398] pop
+  [5399] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Elemental_Radiant_Light_Appear_Medium, self, 0, Temp_delegate_Variable_1, false)
+  [5474] pop
+  [5475] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Gameplay_Buff_RawElemental_Player_OS_Short, self, 0, Temp_delegate_Variable_2, false)
+  [5550] pop
+  [5551] pop
+  [5552] goto @5227
+  [5557] pop
+  [5558] pop
+  [5559] goto @3623
+  [5564] goto @3638
+  [5569] goto @4004
+  [5574] return nothing
+  [5576] end
+
+=== FindDistance
+  [0] CallFunc_K2_GetComponentLocation_ReturnValue = Target.K2_GetComponentLocation()
+  [50] CallFunc_K2_GetActorLocation_ReturnValue = self.K2_GetActorLocation()
+  [92] Default__archon_function_library_C.GetDistanceSqr(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, self, CallFunc_GetDistanceSqr_DistanceSqr)
+  [156] CallFunc_Sqrt_ReturnValue = Sqrt(CallFunc_GetDistanceSqr_DistanceSqr)
+  [193] ReturnValue = CallFunc_Sqrt_ReturnValue
+  [220] return ReturnValue
+  [230] end
+
+=== GetTotalBonuses
+  [0] push @632
+  [5] Bonus = 1.0
+  [32] array{}
+  [43] Default__BlueprintMapLibrary.Map_Keys(self.BonusAndTime, CallFunc_Map_Keys_Keys)
+  [93] Temp_int_Loop_Counter_Variable = 0
+  [116] Temp_int_Array_Index_Variable = 0
+  [139] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [198] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [236] if !(CallFunc_Less_IntInt_ReturnValue) goto @415
+  [250] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [277] push @558
+  [282] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [341] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(Bonus, CallFunc_Array_Get_Item)
+  [387] Bonus = CallFunc_Add_DoubleDouble_ReturnValue
+  [414] pop
+  [415] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(Bonus)
+  [452] PrintString(self, CallFunc_Conv_DoubleToString_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [526] DamageBonus = Bonus
+  [553] goto @632
+  [558] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [600] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [627] goto @139
+  [632] return nothing
+  [634] end
+
+=== LookForTargets
+  [0] push @810
+  [5] CallFunc_K2_GetComponentLocation_ReturnValue = self.AllBuddies.K2_GetComponentLocation()
+  [55] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.Radius, 2.0)
+  [101] array{7, 8}
+  [116] array{self}
+  [128] CallFunc_CapsuleOverlapComponents_Radius_ImplicitCast = cast<CST_DoubleToFloat>(self.Radius)
+  [157] CallFunc_CapsuleOverlapComponents_HalfHeight_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [186] array{}
+  [197] CallFunc_CapsuleOverlapComponents_ReturnValue = CapsuleOverlapComponents(self, CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_CapsuleOverlapComponents_Radius_ImplicitCast, CallFunc_CapsuleOverlapComponents_HalfHeight_ImplicitCast, K2Node_MakeArray_Array, null, K2Node_MakeArray_Array_1, CallFunc_CapsuleOverlapComponents_OutComponents)
+  [273] if !(CallFunc_CapsuleOverlapComponents_ReturnValue) goto @637
+  [287] Temp_int_Loop_Counter_Variable = 0
+  [310] Temp_int_Array_Index_Variable = 0
+  [333] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_CapsuleOverlapComponents_OutComponents)
+  [392] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [430] if !(CallFunc_Less_IntInt_ReturnValue) goto @693
+  [444] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [471] push @736
+  [476] Default__KismetArrayLibrary.Array_Get(CallFunc_CapsuleOverlapComponents_OutComponents, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [535] CallFunc_GetOwner_ReturnValue = CallFunc_Array_Get_Item.GetOwner()
+  [577] Default__BlueprintMapLibrary.Map_Add(MetaOwners, CallFunc_Array_Get_Item, CallFunc_GetOwner_ReturnValue)
+  [636] pop
+  [637] Found = false
+  [648] ComponentsAndOwners = EX_MapConst(KeyProperty={'Owner': {'ObjectName': "Function'escalation_little_buddy_bp_C:LookForTargets'", 'ObjectPath': '/Game/_shared/blueprints/buffs/escalation/little_buddy/escalation_little_buddy_bp.19'}, 'Property': {'Type': 'MapProperty', 'Name': 'ComponentsAndOwners', 'Flags': 'RF_Public', 'ElementSize': 80, 'PropertyFlags': 'Parm | OutParm | ContainsInstancedReference', 'KeyProp': {'Type': 'ObjectProperty', 'Name': 'ComponentsAndOwners', 'Flags': 'RF_Public', 'ElementSize': 8, 'PropertyFlags': 'InstancedReference', 'PropertyClass': {'ObjectName': "Class'PrimitiveComponent'", 'ObjectPath': '/Script/Engine'}}, 'ValueProp': {'Type': 'ObjectProperty', 'Name': 'ComponentsAndOwners_Value', 'Flags': 'RF_Public', 'ElementSize': 8, 'PropertyClass': {'ObjectName': "Class'Actor'", 'ObjectPath': '/Script/Engine'}}}},ValueProperty={'Path': ['ComponentsAndOwners_Value', 'ComponentsAndOwners'], 'ResolvedOwner': {'ObjectName': "Function'escalation_little_buddy_bp_C:LookForTargets'", 'ObjectPath': '/Game/_shared/blueprints/buffs/escalation/little_buddy/escalation_little_buddy_bp.19'}},Values=)
+  [688] goto @810
+  [693] Found = true
+  [704] ComponentsAndOwners = MetaOwners
+  [731] goto @810
+  [736] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [778] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [805] goto @333
+  [810] return nothing
+  [812] end
+
+=== MoveAndRotate
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_K2_GetActorRotation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorRotation()
+  [70] CallFunc_K2_GetComponentRotation_ReturnValue = self.AllBuddies.K2_GetComponentRotation()
+  [120] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [166] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [186] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [215] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, 90.0)
+  [261] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue_1.K2_GetActorLocation()
+  [311] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [340] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [395] CallFunc_RInterpTo_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(DeltaTime)
+  [424] CallFunc_RInterpTo_ReturnValue = RInterpTo(CallFunc_K2_GetComponentRotation_ReturnValue, CallFunc_MakeRotator_ReturnValue, CallFunc_RInterpTo_DeltaTime_ImplicitCast, 4.0)
+  [484] CallFunc_K2_GetComponentLocation_ReturnValue = self.AllBuddies.K2_GetComponentLocation()
+  [534] BreakRotator(CallFunc_RInterpTo_ReturnValue, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [580] CallFunc_VInterpTo_DeltaTime_ImplicitCast = cast<CST_DoubleToFloat>(DeltaTime)
+  [609] CallFunc_VInterpTo_ReturnValue = VInterpTo(CallFunc_K2_GetComponentLocation_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_VInterpTo_DeltaTime_ImplicitCast, 4.0)
+  [669] CallFunc_MakeRotator_ReturnValue_1 = MakeRotator(CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [724] CallFunc_MakeTransform_ReturnValue = MakeTransform(CallFunc_VInterpTo_ReturnValue, CallFunc_MakeRotator_ReturnValue_1, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 1.0}))
+  [795] self.AllBuddies.K2_SetWorldTransform(CallFunc_MakeTransform_ReturnValue, false, CallFunc_K2_SetWorldTransform_SweepHitResult, true)
+  [847] return nothing
+  [849] end
+
+=== MuzzleFlashAndAudio_MUlti
+  [0] frame.K2Node_CustomEvent_Muzzle = Muzzle
+  [18] frame.K2Node_CustomEvent_OwnerBuddy = OwnerBuddy
+  [36] ExecuteUbergraph_escalation_little_buddy_bp(3718)
+  [51] return nothing
+  [53] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(2468)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_escalation_little_buddy_bp(2277)
+  [33] return nothing
+  [35] end
+
+=== RemoveEmpowerment
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(4932)
+  [15] return nothing
+  [17] end
+
+=== ResetShot
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3706)
+  [15] return nothing
+  [17] end
+
+=== SearchForTargets
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3172)
+  [15] return nothing
+  [17] end
+
+=== SortByDistance
+  [0] push @745
+  [5] ClosestPrimitiveComponent = null
+  [16] ClosestComponentDistance = 10000000000.0
+  [43] array{}
+  [54] Default__BlueprintMapLibrary.Map_Keys(TargetMap, CallFunc_Map_Keys_Keys)
+  [104] Temp_int_Loop_Counter_Variable = 0
+  [127] Temp_int_Array_Index_Variable = 0
+  [150] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Keys_Keys)
+  [209] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [247] if !(CallFunc_Less_IntInt_ReturnValue) goto @647
+  [261] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [288] push @671
+  [293] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [352] CallFunc_FindDistance_ReturnValue = FindDistance(CallFunc_Array_Get_Item)
+  [393] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(CallFunc_FindDistance_ReturnValue, ClosestComponentDistance)
+  [431] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [441] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [500] ClosestPrimitiveComponent = CallFunc_Array_Get_Item
+  [519] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Keys_Keys, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [578] CallFunc_FindDistance_ReturnValue = FindDistance(CallFunc_Array_Get_Item)
+  [619] ClosestComponentDistance = CallFunc_FindDistance_ReturnValue
+  [646] pop
+  [647] ClosestComponent = ClosestPrimitiveComponent
+  [666] goto @745
+  [671] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [713] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [740] goto @150
+  [745] return nothing
+  [747] end
+
+=== SpawnAudio_Multi
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5399)
+  [15] return nothing
+  [17] end
+
+=== SpawnBuddy
+  [0] frame.K2Node_CustomEvent_BuddyVFX = BuddyVFX
+  [18] frame.K2Node_CustomEvent_SpawnVFX = SpawnVFX
+  [36] ExecuteUbergraph_escalation_little_buddy_bp(5106)
+  [51] return nothing
+  [53] end
+
+=== SpawnPresentation__FinishedFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5557)
+  [15] return nothing
+  [17] end
+
+=== SpawnPresentation__UpdateFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5552)
+  [15] return nothing
+  [17] end
+
+=== StartCooldownFour
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3521)
+  [15] return nothing
+  [17] end
+
+=== StartCooldownOne
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3422)
+  [15] return nothing
+  [17] end
+
+=== StartCooldownThree
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3488)
+  [15] return nothing
+  [17] end
+
+=== StartCooldownTwo
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3455)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__FinishedFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5569)
+  [15] return nothing
+  [17] end
+
+=== Timeline_0__UpdateFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5551)
+  [15] return nothing
+  [17] end
+
+=== Timeline_1__FinishedFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3555)
+  [15] return nothing
+  [17] end
+
+=== Timeline_1__UpdateFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(3554)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__FinishedFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(1359)
+  [15] return nothing
+  [17] end
+
+=== Timeline_2__UpdateFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(1358)
+  [15] return nothing
+  [17] end
+
+=== Timeline_3__FinishedFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5564)
+  [15] return nothing
+  [17] end
+
+=== Timeline_3__UpdateFunc
+  [0] ExecuteUbergraph_escalation_little_buddy_bp(5558)
+  [15] return nothing
+  [17] end

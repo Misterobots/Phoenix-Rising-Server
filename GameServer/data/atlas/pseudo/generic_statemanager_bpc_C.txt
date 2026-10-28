@@ -1,0 +1,184 @@
+# generic_statemanager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthOnStateChanged__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== AuthTryChangeState
+  [0] push @1041
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [67] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [77] if !(IsRecursiveCall (Ignore This)) goto @486
+  [91] Temp_byte_Variable = 0
+  [111] Temp_byte_Variable_1 = 1
+  [131] Temp_bool_Variable = Value
+  [150] CanChangeState(State, switch(Temp_bool_Variable){false: Temp_byte_Variable_1, true: Temp_byte_Variable, default: K2Node_Select_Default}, CallFunc_CanChangeState_CanChangeState, CallFunc_CanChangeState_IndexOfRuleIfAny)
+  [244] if !(CallFunc_CanChangeState_CanChangeState) goto @532
+  [258] push @548
+  [263] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(State)
+  [300] Default__KismetArrayLibrary.Array_Set(self.States, CallFunc_Conv_ByteToInt_ReturnValue, Value, false)
+  [360] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(Value)
+  [389] AuthOnStateChanged__DelegateSignature(State, CallFunc_Not_PreBool_ReturnValue, Value)
+  [435] Default__BlueprintSetLibrary.Set_Add(self.StatesChangedDuringCurrentSetState, State)
+  [485] pop
+  [486] Default__BlueprintSetLibrary.Set_Clear(self.StatesChangedDuringCurrentSetState)
+  [527] goto @91
+  [532] Succeeded = false
+  [543] goto @1041
+  [548] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_CanChangeState_IndexOfRuleIfAny, 0)
+  [582] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [592] Temp_int_Loop_Counter_Variable = 0
+  [615] Temp_int_Array_Index_Variable = 0
+  [638] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(EX_ArrayGetByRef(ArrayVariable=self.Rules,ArrayIndex=CallFunc_CanChangeState_IndexOfRuleIfAny).AutomaticStateChanges)
+  [716] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [754] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [764] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [791] push @967
+  [796] Default__KismetArrayLibrary.Array_Get(EX_ArrayGetByRef(ArrayVariable=self.Rules,ArrayIndex=CallFunc_CanChangeState_IndexOfRuleIfAny).AutomaticStateChanges, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [874] StateEventToBool(CallFunc_Array_Get_Item.Event, CallFunc_StateEventToBool_StateActive)
+  [915] AuthTryChangeState(CallFunc_Array_Get_Item.StateToChange, CallFunc_StateEventToBool_StateActive, true, CallFunc_AuthTryChangeState_Succeeded)
+  [966] pop
+  [967] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1009] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1036] goto @638
+  [1041] return nothing
+  [1043] end
+
+=== CanChangeState
+  [0] push @1338
+  [5] push @197
+  [10] StateEventToBool(Change, CallFunc_StateEventToBool_StateActive)
+  [42] IsInState(State, CallFunc_IsInState_IsInState)
+  [74] CallFunc_NotEqual_BoolBool_ReturnValue = NotEqual_BoolBool(CallFunc_StateEventToBool_StateActive, CallFunc_IsInState_IsInState)
+  [112] if !(CallFunc_NotEqual_BoolBool_ReturnValue) pop
+  [122] CallFunc_Set_Contains_ReturnValue = Default__BlueprintSetLibrary.Set_Contains(self.StatesChangedDuringCurrentSetState, State)
+  [182] if !(CallFunc_Set_Contains_ReturnValue) goto @236
+  [196] pop
+  [197] CanChangeState = true
+  [208] IndexOfRuleIfAny = -1
+  [231] goto @1338
+  [236] Temp_int_Loop_Counter_Variable = 0
+  [259] Temp_int_Array_Index_Variable_1 = 0
+  [282] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Rules)
+  [341] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [379] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [389] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable
+  [416] push @1152
+  [421] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [480] CallFunc_EqualEqual_ByteByte_ReturnValue = EqualEqual_ByteByte(CallFunc_Array_Get_Item.Event, Change)
+  [527] CallFunc_EqualEqual_ByteByte_ReturnValue_1 = EqualEqual_ByteByte(CallFunc_Array_Get_Item.State, State)
+  [574] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_EqualEqual_ByteByte_ReturnValue_1, CallFunc_EqualEqual_ByteByte_ReturnValue)
+  [612] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [622] Temp_int_Loop_Counter_Variable_1 = 0
+  [645] Temp_int_Array_Index_Variable = 0
+  [668] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [727] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(CallFunc_Array_Get_Item.Requirements)
+  [795] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_1)
+  [833] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1109
+  [847] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [874] push @1226
+  [879] Default__KismetArrayLibrary.Array_Get(self.Rules, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item)
+  [938] Default__KismetArrayLibrary.Array_Get(CallFunc_Array_Get_Item.Requirements, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_1)
+  [1006] IsInState(CallFunc_Array_Get_Item_1.StateToCheck, CallFunc_IsInState_IsInState_1)
+  [1047] CallFunc_EqualEqual_BoolBool_ReturnValue = EqualEqual_BoolBool(CallFunc_Array_Get_Item_1.StateRequired, CallFunc_IsInState_IsInState_1)
+  [1094] if !(CallFunc_EqualEqual_BoolBool_ReturnValue) goto @1300
+  [1108] pop
+  [1109] CanChangeState = true
+  [1120] IndexOfRuleIfAny = Temp_int_Array_Index_Variable_1
+  [1147] goto @1338
+  [1152] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1194] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1221] goto @282
+  [1226] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [1268] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [1295] goto @668
+  [1300] CanChangeState = false
+  [1311] IndexOfRuleIfAny = Temp_int_Array_Index_Variable_1
+  [1338] return nothing
+  [1340] end
+
+=== DebugActiveStates
+  [0] push @942
+  [5] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [25] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(CallFunc_GetOwner_ReturnValue)
+  [62] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_GetDisplayName_ReturnValue, ' (')
+  [103] L_DebugString = CallFunc_Concat_StrStr_ReturnValue_1
+  [130] Temp_int_Loop_Counter_Variable = 0
+  [153] Temp_int_Array_Index_Variable = 0
+  [176] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.States)
+  [235] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [273] if !(CallFunc_Less_IntInt_ReturnValue) goto @753
+  [287] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [314] push @868
+  [319] Default__KismetArrayLibrary.Array_Get(self.States, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [378] if !(CallFunc_Array_Get_Item) pop
+  [388] Temp_string_Variable = ', '
+  [410] Temp_string_Variable_1 = ''
+  [430] CallFunc_Conv_IntToByte_ReturnValue = Conv_IntToByte(Temp_int_Array_Index_Variable)
+  [467] CallFunc_GetValidValue_ReturnValue = GetValidValue(generic_state, CallFunc_Conv_IntToByte_ReturnValue)
+  [513] CallFunc_GetEnumeratorUserFriendlyName_ReturnValue = GetEnumeratorUserFriendlyName(generic_state, CallFunc_GetValidValue_ReturnValue)
+  [559] Temp_bool_Variable = bDidAnEntry
+  [578] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(switch(Temp_bool_Variable){false: Temp_string_Variable_1, true: Temp_string_Variable, default: K2Node_Select_Default}, L_DebugString)
+  [668] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_2, CallFunc_GetEnumeratorUserFriendlyName_ReturnValue)
+  [714] L_DebugString = CallFunc_Concat_StrStr_ReturnValue_3
+  [741] bDidAnEntry = true
+  [752] pop
+  [753] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr(L_DebugString, ')')
+  [793] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, false, LinearColor{1.0, 0.651462, 0.028789, 1.0}, 0.01, 'None')
+  [867] pop
+  [868] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [910] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [937] goto @176
+  [942] return nothing
+  [944] end
+
+=== ExecuteUbergraph_generic_statemanager_bpc
+  [0] goto computed(EntryPoint)
+  [10] DebugActiveStates()
+  [24] goto @143
+  [29] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [49] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [91] if !(CallFunc_HasAuthority_ReturnValue) goto @143
+  [105] InitalizeStates()
+  [119] goto @143
+  [124] if !(self.DebugShowStates) goto @143
+  [138] goto @10
+  [143] return nothing
+  [145] end
+
+=== InitalizeStates
+  [0] Default__KismetArrayLibrary.Array_Clear(self.States)
+  [41] CallFunc_MakeLiteralInt_ReturnValue = MakeLiteralInt(3)
+  [74] Default__KismetArrayLibrary.Array_Resize(self.States, CallFunc_MakeLiteralInt_ReturnValue)
+  [124] return nothing
+  [126] end
+
+=== IsInState
+  [0] CallFunc_Conv_ByteToInt_ReturnValue = Conv_ByteToInt(State)
+  [37] IsInState = EX_ArrayGetByRef(ArrayVariable=self.States,ArrayIndex=CallFunc_Conv_ByteToInt_ReturnValue)
+  [66] return nothing
+  [68] end
+
+=== OnRep_StatesStatus
+  [0] return nothing
+  [2] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_generic_statemanager_bpc(29)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_generic_statemanager_bpc(124)
+  [33] return nothing
+  [35] end
+
+=== StateEventToBool
+  [0] Temp_byte_Variable = StateEvent
+  [27] Temp_bool_Variable = false
+  [38] Temp_bool_Variable_1 = true
+  [49] StateActive = switch(Temp_byte_Variable){0: Temp_bool_Variable_1, 1: Temp_bool_Variable, default: K2Node_Select_Default}
+  [114] return nothing
+  [116] end

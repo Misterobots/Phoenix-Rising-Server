@@ -1,0 +1,74 @@
+# peristent_spawn_notify_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== FindActorPoolForSpawnedActors
+  [0] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SpawnParams.SpawnType, 0)
+  [40] if !(K2Node_SwitchEnum_CmpSuccess) goto @113
+  [54] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(self.SpawnParams.SpawnType, 1)
+  [94] if !(K2Node_SwitchEnum_CmpSuccess) goto @193
+  [108] goto @268
+  [113] CallFunc_FindActorPoolForType_ReturnValue_1 = FindActorPoolForType(Owning Actor, self.SpawnParams.ActorSpawnData.ActorClass)
+  [169] Actor Pool = CallFunc_FindActorPoolForType_ReturnValue_1
+  [188] goto @268
+  [193] CallFunc_FindActorPoolForType_ReturnValue = FindActorPoolForType(Owning Actor, self.SpawnParams.ProjectileSpawnData.BaseProjectileClass)
+  [249] Actor Pool = CallFunc_FindActorPoolForType_ReturnValue
+  [268] return nothing
+  [270] end
+
+=== Received_NotifyBegin
+  [0] push @1011
+  [5] push @959
+  [10] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [52] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwner_ReturnValue)
+  [81] if !(CallFunc_IsValid_ReturnValue) pop
+  [91] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [133] K2Node_DynamicCast_AsBehemoth_Interface = cast<behemoth_interface_C>(CallFunc_GetOwner_ReturnValue)
+  [169] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBehemoth_Interface)
+  [198] if !(K2Node_DynamicCast_bSuccess) goto @975
+  [212] K2Node_DynamicCast_AsBehemoth_Interface.BehemothStateMeetsRequirements(self.BehemothRequirements, CallFunc_BehemothStateMeetsRequirements_PassesRequirements, CallFunc_BehemothStateMeetsRequirements_Result)
+  [276] if !(CallFunc_BehemothStateMeetsRequirements_PassesRequirements) pop
+  [286] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [328] CallFunc_DoesImplementInterface_ReturnValue = DoesImplementInterface(CallFunc_GetOwner_ReturnValue, behemoth_interface_C)
+  [366] if !(CallFunc_DoesImplementInterface_ReturnValue) pop
+  [376] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [418] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [460] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [470] CallFunc_GetOwner_ReturnValue_1 = MeshComp.GetOwner()
+  [512] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.K2_GetComponentsByClass(persistent_spawner_bpc_C)
+  [571] SpawnerComponents = CallFunc_K2_GetComponentsByClass_ReturnValue
+  [598] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(SpawnerComponents)
+  [657] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [691] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [701] Default__KismetArrayLibrary.Array_Get(SpawnerComponents, 0, CallFunc_Array_Get_Item)
+  [756] SpawnerRef = CallFunc_Array_Get_Item
+  [775] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [817] FindActorPoolForSpawnedActors(CallFunc_GetOwner_ReturnValue, CallFunc_FindActorPoolForSpawnedActors_Actor_Pool)
+  [849] self.SpawnParams.INTERNAL_TotalTime = TotalDuration
+  [885] self.SpawnParams.INTERNAL_ActorPool = CallFunc_FindActorPoolForSpawnedActors_Actor_Pool
+  [913] SpawnerRef.AuthAddPersistentSpawnRequest(self.SpawnParams)
+  [958] pop
+  [959] ReturnValue = false
+  [970] goto @1011
+  [975] CallFunc_BehemothStateMeetsRequirements_PassesRequirements = false
+  [986] CallFunc_BehemothStateMeetsRequirements_Result = 0
+  [1006] goto @276
+  [1011] return ReturnValue
+  [1021] end
+
+=== Received_NotifyEnd
+  [0] push @456
+  [5] push @445
+  [10] CallFunc_GetOwner_ReturnValue = MeshComp.GetOwner()
+  [52] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [94] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [104] CallFunc_GetOwner_ReturnValue_1 = MeshComp.GetOwner()
+  [146] CallFunc_K2_GetComponentsByClass_ReturnValue = CallFunc_GetOwner_ReturnValue_1.K2_GetComponentsByClass(persistent_spawner_bpc_C)
+  [205] SpawnerComponents = CallFunc_K2_GetComponentsByClass_ReturnValue
+  [232] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(SpawnerComponents)
+  [291] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [325] if !(CallFunc_Greater_IntInt_ReturnValue) pop
+  [335] Default__KismetArrayLibrary.Array_Get(SpawnerComponents, 0, CallFunc_Array_Get_Item)
+  [390] CallFunc_Array_Get_Item.AuthRemovePersistentSpawnRequest(self.SpawnParams.UniqueKey)
+  [444] pop
+  [445] ReturnValue = false
+  [456] return ReturnValue
+  [466] end

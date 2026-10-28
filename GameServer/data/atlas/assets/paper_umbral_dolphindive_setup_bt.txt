@@ -1,0 +1,17 @@
+paper_umbral_dolphindive_setup_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Sequence
+    {service hide_behemoth_bttask  (ShowOnDeactivate=false, Interval=0.001, RandomDeviation=0)}
+    1) apply_abilities_bttask  (EqsQuery=EnvQuery eqs_find_all_players, AbilitiesToGrant=["BlueprintGeneratedClass camera_lock_block_paper_umbral_ab_C"])
+    [if ForceSuccess]
+    2) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_predict_target", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.TargetActor)
+    [if btdeco_lock_target  (LockToTargetName=TargetActor)]
+    3) Sequence
+      1) Sequence
+        {service staggerproof_behemoth_bttask}
+        1) Wait  (WaitTime=2.5, RandomDeviation=0.5)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_nearby_teleport_point_infront", "QueryConfig": [{"ParamName": "MinDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}, {"ParamName": "MaxDistance", "ParamType": "EAIParamType::Float", "Value": 1500.0, "BBKey": "bb.None"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.MoveDestination)
+        3) teleport_bttask  (FacingTargetKeyName=AttackTarget, HideBehemothOnTeleport=true)
+        4) spawn_gameplay_bttask  (GameplayData={"ManualTargetting": [{"X": 10.0, "Y": 0.0, "Z": 0.0}], "GameplayType": "eqs_gameplay_type::Actor", "ActorInfo": {"ActorClass": "BlueprintGeneratedClass paper_umbral_ground_entry_portal_C", "EQSGameplayData": {"NumToSpawnPerTick": 1}, "AlignWithGround": false}}, WaitForRequestToFinish=false, bShowPropertyDetails=false)

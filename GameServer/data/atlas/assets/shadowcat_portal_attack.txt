@@ -1,0 +1,43 @@
+shadowcat_portal_attack  blackboard=BlackboardData shadowcat_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if set_state_btdeco  (State=CustomState, ModifyStateOnActivate=false)]
+  Selector
+    {service reset_action_cooldown_on_finish_btservice  (ActionClass=BlueprintGeneratedClass shadowcat_portal_pounce_atk_C)}
+    {service hide_behemoth_bttask  (HideOnStart=false)}
+    1) Sequence
+      1) Sequence
+        [if ForceSuccess]
+        1) reset_action_cooldown_bttask "Reset Portal Pounce ATK"  (ActionClass=BlueprintGeneratedClass shadowcat_portal_pounce_atk_C, bShowPropertyDetails=false)
+        2) Selector
+          [if btdeco_percentchance  (BlackboardPercentChanceKey=ChanceOfDoingUninterruptablePortalPounce)]
+          1) set_blackboard_key_bttask "DoingHarderAttack = true"  (ResultKey=bb.DoingHarderAttack, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+          [if btdeco_percentchance  (PercentChance=0.5)]
+          [if check_nemesis_decorator]
+          2) set_blackboard_key_bttask "DoingHarderAttack = true"  (ResultKey=bb.DoingHarderAttack, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+          3) set_blackboard_key_bttask "DoingHarderAttack = false"  (ResultKey=bb.DoingHarderAttack, DataType=Bool, bShowPropertyDetails=false)
+        3) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_enter)
+        4) store_current_location_bttask
+        [if current_target_is_valid_btdeco  (ValidityType=Accessible)]
+        5) Selector
+          1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_shadowcat_portal_pounce_setup", "QueryConfig": [{"ParamName": "OnCircle.CircleRadius", "ParamType": "EAIParamType::Float", "Value": 1250.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+          2) set_blackboard_key_bttask "PounceLocation = TempLocation"  (ResultKey=bb.PounceLocation, DataType=Vector, SourceData={"BlackboardKeyName": "TempLocation"}, bShowPropertyDetails=false)
+        6) Wait  (WaitTime=0.5)
+        7) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=AttackTarget, BlendOutTime=0)
+        8) Selector
+          [if Blackboard  (DoingHarderAttack is Is Set)]
+          1) set_blackboard_key_bttask "Set NextTelegraphTime"  (ResultKey=bb.NextTelegraphTime, DataType=Float, SourceData={"ConstantFloat": 1.0}, bShowPropertyDetails=false)
+          2) set_blackboard_key_bttask "Set NextTelegraphTime"  (ResultKey=bb.NextTelegraphTime, DataType=Float, SourceData={"ConstantFloat": 0.5}, bShowPropertyDetails=false)
+        9) call_specific_behemoth_function_bttask "Spawn Pounce Portal"  (SpecificFunction=SpawnPouncePortal, bShowPropertyDetails=false)
+        10) Selector
+          [if Blackboard  (DoingHarderAttack is Is Set)]
+          1) Wait  (WaitTime=1)
+          2) Wait  (WaitTime=0.5)
+        11) teleport_bttask  (DestinationKeyName=PounceLocation, FacingTargetKeyName=AttackTarget, BlendOutTime=0)
+      2) Selector
+        [if Blackboard  (DoingHarderAttack is Is Set)]
+        1) BehemothAction  (Montage=AnimMontage shadowcat_uninterruptable_portal_pounce)
+        2) BehemothAction  (Montage=AnimMontage b_aq_shadowcat_pounce_from_portal_standalone)
+    2) Sequence
+      1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_point_near_patrol_pt", "QueryConfig": [{"ParamName": "Donut.InnerRadius", "ParamType": "EAIParamType::Float", "Value": 500.0, "BBKey": "bb.None"}, {"ParamName": "Donut.OuterRadius", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.None"}]}, BlackboardKey=bb.PounceLocation)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree shadowcat_portal_exit)

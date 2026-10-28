@@ -1,0 +1,55 @@
+lerawr_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  Selector "RealRoot"
+    {service UpdateDirections}
+    {service distance_from_target_service  (Distance_key=bb.DistanceFromAttackTarget, Target_key=bb.AttackTarget, Interval=0.2, RandomDeviation=0)}
+    {service calc_knowntargetavgpos_btservice  (Interval=2)}
+    {service try_pick_new_target_bts  (OnSearchStart=true, OnTick=false, Interval=2)}
+    {service evaluate_action_btservice  (AttackTargetKey=bb.AttackTarget, TopScoreKey=bb.TopScore, ChosenActionKey=bb.ChosenAttack)}
+    1) RunBehavior  (BehaviorAsset=BehaviorTree shared_death_bt)
+    2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_enter_arena_fly_bt)
+    3) RunBehavior  (BehaviorAsset=BehaviorTree shared_handle_stagger_bt)
+    4) RunBehavior  (BehaviorAsset=BehaviorTree sub_puppetmode_bt)
+    5) RunBehavior  (BehaviorAsset=BehaviorTree aq_flee_fly_bt)
+    6) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_deaggro_bt)
+    7) Selector "StateChange"
+      [if Blackboard  (ReadyToExitRageState is Is Set)]
+      1) bttask_exit_rage_state  (Montage=AnimMontage b_leRawr_state_rage_exit_mot)
+      [if Blackboard  (ReadyForRageState is Is Set)]
+      2) bttask_enter_rage_state  (Montage=AnimMontage b_leRawr_state_rage_enter_mot)
+    8) Selector
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_generic_ai_coordination_bt)
+      2) RunBehavior  (BehaviorAsset=BehaviorTree lerawr_enter_combat_pounce_bt)
+      3) RunBehavior  (BehaviorAsset=BehaviorTree shared_manage_target_lost_bt)
+    [if Cooldown  (CooldownTime=1)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if not BTDeco_CheckChosenAction  (bInverseCondition=true)]
+    9) PerformActionClass  (ActionBlackboardKeyName=ChosenAttack)
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if Cooldown  (CooldownTime=15)]
+    10) Selector
+      [if btdeco_lock_target]
+      1) Sequence
+        1) RunEQSQuery "Run EQS Query: Pounce Location"  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs", "QueryConfig": [{"ParamName": "MinDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 1750.0, "BBKey": "bb.MinPounceDistanceAroundMe"}, {"ParamName": "MaxDistanceAroundMe", "ParamType": "EAIParamType::Float", "Value": 2250.0, "BBKey": "bb.MaxPounceDistanceAroundMe"}, {"ParamName": "MinDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1000.0, "BBKey": "bb.MinPounceDistanceAroundEnemy"}, {"ParamName": "MaxDistanceAroundEnemy", "ParamType": "EAIParamType::Float", "Value": 1400.0, "BBKey": "bb.MaxPounceDistanceAroundEnemy"}], "EQSQueryBlackboardKey": "bb.TargetActor"}, BlackboardKey=bb.PounceLocation)
+        2) set_blackboard_key_bttask "Set ShouldFaceAttackTarget Key"  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true}, bShowPropertyDetails=false)
+        3) RunBehavior "Run Behavior: JumpTo"  (BehaviorAsset=BehaviorTree lerawr_jumpto_bt)
+        4) Selector "Pounce"
+          {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+          1) BehemothAction "PounceFwdLeft"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_fastblend)
+    [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=1000, MaxDistance=10000)]
+    [if Blackboard  (TopScore Is Equal To 0.000000)]
+    [if behemoth_in_state_btdeco  (State=Combat)]
+    [if current_target_is_valid_btdeco  (FlowAbortMode=Self)]
+    11) RunBehavior "Run Behavior: Run and Pounce"  (BehaviorAsset=BehaviorTree lerawr_runandpounce_bt)
+    [if BTDeco_CheckChosenAction  (FlowAbortMode=Self)]
+    [if Cooldown  (CooldownTime=2)]
+    [if behemoth_in_state_btdeco  (State=Combat, FlowAbortMode=Self)]
+    [if current_target_is_valid_btdeco]
+    12) Sequence
+      [if ForceSuccess]
+      1) pivot_towards_target_bttask  (PivotTarget=bb.AttackTarget, BlendOutTime=0.25)
+      2) MoveToAndFace  (FacingAngleBlackboardKey=bb.TargetActor, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+    13) Selector
+      {service try_pick_new_target_bts  (Interval=2)}
+      1) RunBehavior  (BehaviorAsset=BehaviorTree shared_patrol_bt)

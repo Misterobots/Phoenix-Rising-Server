@@ -1,0 +1,1689 @@
+{
+ "name": "electroquill_archetype_bp_C",
+ "kind": "blueprint",
+ "parents": [
+  "quillbeast_archetype_bp_C",
+  "sq_genus_bp_C",
+  "Bp_Behemoth_C",
+  "ArchonBehemoth",
+  "ArchonCreatureBase",
+  "ArchonAbilityCharacter",
+  "ArchonCharacterBase",
+  "PhxCharacterBase",
+  "Character",
+  "Pawn",
+  "Actor",
+  "Object"
+ ],
+ "size": null,
+ "sdk_header": null,
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LastShockRod",
+   "type": "ObjectProperty<shock_rod_actor_C>",
+   "bp_type": "ObjectProperty<shock_rod_actor_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AbsorbingQuillsTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ReadyToSetupQuillsTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ReadyToAbsorbQuillsTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AetherChargePercent",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_AetherChargePercent",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 73
+  },
+  {
+   "name": "UnchargedQuillLength",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveTowerActor",
+   "type": "ObjectProperty<electroquill_tower_projectile_C>",
+   "bp_type": "ObjectProperty<electroquill_tower_projectile_C>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance"
+   ],
+   "net": true,
+   "repnotify": false,
+   "rep_index": 74
+  },
+  {
+   "name": "ChargeTowerTotalIterations",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ChargeTowerCurrentIterations",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "LightningStrikeToTowerTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ChargeTowerFrequency",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ChargeTowerStartPos",
+   "type": "StructProperty<Vector>",
+   "bp_type": "StructProperty<Vector>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ChargeTowerGUID",
+   "type": "StructProperty<Guid>",
+   "bp_type": "StructProperty<Guid>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DestroyableQuills",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "DestroyedQuills",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_Random",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "CurrentTelsaQuillFrequency",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillRange",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ACProjCount",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ACProjTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillShootTimer",
+   "type": "StructProperty<TimerHandle>",
+   "bp_type": "StructProperty<TimerHandle>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaACCooldown",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaRageFrequency",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "InitialTeslaQuillFrequency",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillClass",
+   "type": "ClassProperty<Class>",
+   "bp_type": "ClassProperty<Class>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TelsaQuillsAllowedInAC",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillsAllowed",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "ActiveTeslaQuills",
+   "type": "ArrayProperty",
+   "bp_type": "ArrayProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnTemplate",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_ActiveTeslaQuills",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "rep_index": 75
+  },
+  {
+   "name": "DestroyingQuillNextStun",
+   "type": "BoolProperty",
+   "bp_type": "BoolProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "TeslaQuillsAddedToPlayerCountForTotal",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "L_TeslaProjectilesGUID",
+   "type": "StructProperty<Guid>",
+   "bp_type": "StructProperty<Guid>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "QuillsToSpawnAbovePlayerCount",
+   "type": "IntProperty",
+   "bp_type": "IntProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "AetherToRageLastFrame",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "QuillEmissiveMultiplyerLastFrame",
+   "type": "DoubleProperty",
+   "bp_type": "DoubleProperty",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "NemesisRequirements",
+   "type": "StructProperty<behemoth_requirement_struct>",
+   "bp_type": "StructProperty<behemoth_requirement_struct>",
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false
+  }
+ ],
+ "components": [
+  {
+   "name": "DefaultSceneRoot",
+   "class": "SceneComponent",
+   "source": "SCS"
+  }
+ ],
+ "functions": [
+  {
+   "name": "AuthActivateTeslas",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthCancelChargeTower",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthClearTeslaState",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthDestroyNextQuillSection",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthLightningStrikeToTower",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthOnBreakStageChanged_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "PartChanged",
+     "type": "ObjectProperty<monsterpart_bpc_C>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthResetTeslaShootTimer",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Time",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSetReadyToAbsorbQuills",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthShootTelegraphProjectile",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthSpawnTowerAtMoveDest",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthTryPullTesla",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "BehemothStateChanged",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "StateThatChanged",
+     "type": "ByteProperty<behemoth_states_enum>"
+    },
+    {
+     "name": "WhatHappened",
+     "type": "ByteProperty<behemoth_state_event>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "CallBehemothSpecificFunction",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "FunctionName",
+     "type": "NameProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientStartAetherVFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "FromAnimation?",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClientStopAetherVFX",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "FromAnimation?",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "DeactivationDelay",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DestroyTowers",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EQSActorSpawned",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Actor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "GUID",
+     "type": "StructProperty<Guid>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 5,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "EQSProjectileSpawned",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Projectile",
+     "type": "ObjectProperty<projectile_base_bp_C>"
+    },
+    {
+     "name": "ProjectileTarget",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "GUID",
+     "type": "StructProperty<Guid>"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 6,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_electroquill_archetype_bp",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "IntProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_2",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "K2Node_MakeArray_Array_3",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_1",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_2",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_3",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_4",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetPlayerCharacters_PlayerCharacters",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_5",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetQuillParts_QuillParts",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetSpawnedActorsOfClass_Actors_6",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "CallFunc_GetQuillParts_QuillParts_1",
+     "type": "ArrayProperty"
+    }
+   ],
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "rpc": null,
+   "statements": 675,
+   "reads": [
+    "ACProjCount",
+    "ACProjTimer",
+    "ActiveTeslaQuills",
+    "ActiveTowerActor",
+    "AetherChargePercent",
+    "Alive",
+    "ChargeTowerCurrentIterations",
+    "ChargeTowerFrequency",
+    "ChargeTowerGUID",
+    "ChargeTowerStartPos",
+    "ChargeTowerTotalIterations",
+    "CurrentTelsaQuillFrequency",
+    "DestroyableQuills",
+    "DestroyedQuills",
+    "DestroyingQuillNextStun",
+    "FenceQuillSpawned",
+    "InitialTeslaQuillFrequency",
+    "L_Random",
+    "L_TeslaProjectilesGUID",
+    "LastShockRod",
+    "LightningStrikeToTowerTimer",
+    "NemesisRequirements",
+    "OnDestroyed",
+    "OnTowerActivated",
+    "QuillProjectileClass",
+    "Quills",
+    "QuillsUpperBackLeft",
+    "QuillsUpperBackRight",
+    "QuillsUpperFrontLeft",
+    "QuillsUpperFrontRight",
+    "ReadyToAbsorbQuillsTimer",
+    "TelsaQuillsAllowedInAC",
+    "TeslaACCooldown",
+    "TeslaProjectileTarget",
+    "TeslaQuillClass",
+    "TeslaQuillRange",
+    "TeslaQuillShootTimer",
+    "TeslaQuillSpawned",
+    "TeslaQuillsAddedToPlayerCountForTotal",
+    "TeslaQuillsAllowed",
+    "TeslaRageFrequency",
+    "UnchargedQuillLength",
+    "eqs_gameplay_bpc",
+    "gameobject_manager_bpc"
+   ],
+   "sets": [
+    "ACProjCount",
+    "ACProjTimer",
+    "ActiveTowerActor",
+    "AetherChargePercent",
+    "ChargeTowerCurrentIterations",
+    "ChargeTowerGUID",
+    "ChargeTowerStartPos",
+    "CurrentTelsaQuillFrequency",
+    "DestroyableQuills",
+    "DestroyingQuillNextStun",
+    "FullQuillBlendValue",
+    "HomingTarget",
+    "L_Random",
+    "L_TeslaProjectilesGUID",
+    "LastShockRod",
+    "LightningStrikeToTowerTimer",
+    "Quillparts",
+    "ReadyToAbsorbQuillsTimer",
+    "TelsaQuillsAllowedInAC",
+    "TeslaProjectileTarget",
+    "TeslaQuillShootTimer",
+    "TeslaQuillsAllowed"
+   ],
+   "calls": [
+    "AIBlueprintHelperLibrary.GetBlackboard",
+    "Actor.FlushNetDormancy",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "AuthActivateTeslas",
+    "AuthCancelChargeTower",
+    "AuthConnectToX",
+    "AuthDestroyNextQuillSection",
+    "AuthExpire",
+    "AuthLightningStrikeToTower",
+    "AuthResetTeslaShootTimer",
+    "AuthSetBreakStage",
+    "AuthSetNewCooldown",
+    "AuthSetRageMode",
+    "AuthSpawnLobbedProjectiles",
+    "AuthStartMultiball",
+    "BehemothStateMeetsRequirements",
+    "BlackboardComponent.GetValueAsVector",
+    "BlackboardComponent.SetValueAsBool",
+    "BlackboardComponent.SetValueAsObject",
+    "BlueprintGameplayTagLibrary.MakeGameplayTagQuery",
+    "Bp_Behemoth_C.ClientStartAetherVFX",
+    "Bp_Behemoth_C.ClientStopAetherVFX",
+    "Bp_Behemoth_C.ReceiveTick",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "FindAction",
+    "FindNearest",
+    "FindQuillSpawnPos",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "GameplayStatics.GetGameMode",
+    "GameplayStatics.GetObjectClass",
+    "GetCenterOfQuills",
+    "GetCurrentBreakStage",
+    "GetExpectedPlayerCount",
+    "GetGroundPosAndNormal",
+    "GetPlayerCharacters",
+    "GetQuillParts",
+    "GetRandom2DUnitVector",
+    "GetSpawnedActorsOfClass",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Contains",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Conv_VectorToTransform",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.FindLookAtRotation",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.LessEqual_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.Multiply_DoubleDouble",
+    "KismetMathLibrary.Multiply_VectorFloat",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetMathLibrary.RandomFloatInRange",
+    "KismetMathLibrary.RandomInteger",
+    "KismetMathLibrary.RandomUnitVector",
+    "KismetMathLibrary.Subtract_DoubleDouble",
+    "KismetMathLibrary.Subtract_IntInt",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.VSize",
+    "KismetSystemLibrary.Delay",
+    "KismetSystemLibrary.DoesImplementInterface",
+    "KismetSystemLibrary.IsDedicatedServer",
+    "KismetSystemLibrary.IsServer",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.K2_ClearAndInvalidateTimerHandle",
+    "KismetSystemLibrary.K2_IsTimerActiveHandle",
+    "KismetSystemLibrary.K2_SetTimerDelegate",
+    "KismetSystemLibrary.MakeLiteralName",
+    "KismetSystemLibrary.SetBoolPropertyByName",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "KismetSystemLibrary.SetStructurePropertyByName",
+    "MulticastQuillSectionBreak",
+    "MulticastShootTelegraph",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "OnRep_AetherChargePercent",
+    "RegrowQuill",
+    "SetLifeSpan",
+    "SpawnedActor_Cleanup",
+    "UpdateActiveQuillTowerMaterials",
+    "UpdateAllowedAmount",
+    "VisuallyUpdateAetherChargePercent",
+    "quillbeast_archetype_bp_C.AuthOnBreakStageChanged_Event_0",
+    "quillbeast_archetype_bp_C.BehemothStateChanged",
+    "quillbeast_archetype_bp_C.CallBehemothSpecificFunction",
+    "quillbeast_archetype_bp_C.EQSProjectileSpawned",
+    "quillbeast_archetype_bp_C.ReceiveBeginPlay"
+   ],
+   "authority": [
+    "HasAuthority",
+    "IsDedicatedServer",
+    "IsServer"
+   ],
+   "tables": [
+    "DataTable electroquill_action_set"
+   ],
+   "assets": [
+    "BlueprintGeneratedClass aoe_electroquill_shock_charge_C",
+    "BlueprintGeneratedClass backfire_quill_shatter_actor_C",
+    "BlueprintGeneratedClass behemoth_interface_C",
+    "BlueprintGeneratedClass electroquill_aethercharge_projectile_C",
+    "BlueprintGeneratedClass electroquill_new_fast_tesla_proj_C",
+    "BlueprintGeneratedClass electroquill_new_tesla_proj_C",
+    "BlueprintGeneratedClass electroquill_setup_tesla_quills_atk_C",
+    "BlueprintGeneratedClass electroquill_tesla_projectile_C",
+    "BlueprintGeneratedClass electroquill_tower_projectile_C",
+    "EnvQuery eqs_random_point_around_big"
+   ]
+  },
+  {
+   "name": "FindNearest",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "CompareLoc",
+     "type": "StructProperty<Vector>"
+    },
+    {
+     "name": "Actors",
+     "type": "ArrayProperty"
+    },
+    {
+     "name": "MaxDistance",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "ClosestActor",
+     "type": "ObjectProperty<Actor>"
+    },
+    {
+     "name": "DistSqr",
+     "type": "DoubleProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 34,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "Actor.K2_GetActorLocation",
+    "GetDistanceSqr",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MultiplyMultiply_FloatFloat",
+    "KismetSystemLibrary.IsValid"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ModifyEQSGameplayData",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "EQSSpawnQuery",
+     "type": "StructProperty<eqs_spawn_query>"
+    },
+    {
+     "name": "NewEQSSpawnQuery",
+     "type": "StructProperty<eqs_spawn_query>"
+    },
+    {
+     "name": "ModifiedData",
+     "type": "BoolProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 32,
+   "reads": [
+    "QuillsToSpawnAbovePlayerCount"
+   ],
+   "sets": [],
+   "calls": [
+    "GameplayStatics.GetGameMode",
+    "GetExpectedPlayerCount",
+    "GetNumActiveBackQuillSections",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Conv_IntToFloat",
+    "KismetMathLibrary.Divide_DoubleDouble",
+    "KismetMathLibrary.EqualEqual_ClassClass",
+    "KismetMathLibrary.FCeil",
+    "KismetMathLibrary.Multiply_IntFloat"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass electroquill_tesla_projectile_C"
+   ]
+  },
+  {
+   "name": "MulticastQuillSectionBreak",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "QuillPart",
+     "type": "ObjectProperty<quillpart_bpc_C>"
+    }
+   ],
+   "bp_flags": [
+    "Net",
+    "NetMulticast",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": "multicast",
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnDestroyed_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DestroyedActor",
+     "type": "ObjectProperty<Actor>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_ActiveTeslaQuills",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 9,
+   "reads": [
+    "DynamicMaterialCollection"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "MaterialInstanceDynamic.K2_GetScalarParameterValue",
+    "UpdateActiveQuillMaterials"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_ActiveTowerActor",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_AetherChargePercent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "VisuallyUpdateAetherChargePercent"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnTowerActivated_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "Tower",
+     "type": "ObjectProperty<electroquill_tower_projectile_C>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "QuillCycleFire",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Event",
+    "Protected",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "DeltaSeconds",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ShockRodSpawned_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "ShockRod",
+     "type": "ObjectProperty<shock_rod_actor_C>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "TeslaQuillSpawned_Event_0",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "TeslaQuill",
+     "type": "ObjectProperty<electroquill_tesla_projectile_C>"
+    }
+   ],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateActiveQuillMaterials",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AetherToRage",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "QuillEmissiveMultiplier",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "ForceUpdate",
+     "type": "BoolProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast_1",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast_2",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast_3",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 75,
+   "reads": [
+    "ActiveTeslaQuills",
+    "AetherToRageLastFrame",
+    "QuillDestructibleComponents",
+    "QuillEmissiveMultiplyerLastFrame",
+    "QuillStaticMeshComponents"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_DoubleDouble",
+    "MeshComponent.SetScalarParameterValueOnMaterials"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateActiveQuillTowerMaterials",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 24,
+   "reads": [
+    "DynamicMaterialCollection"
+   ],
+   "sets": [
+    "AetherToRageLastFrame",
+    "QuillEmissiveMultiplyerLastFrame"
+   ],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "MaterialInstanceDynamic.K2_GetScalarParameterValue",
+    "UpdateActiveQuillMaterials",
+    "UpdateTowerActorMaterials"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "UpdateTowerActorMaterials",
+   "native": false,
+   "rva": null,
+   "params": [
+    {
+     "name": "AetherToRage",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "QuillEmmisiveMultiplier",
+     "type": "DoubleProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast",
+     "type": "FloatProperty"
+    },
+    {
+     "name": "CallFunc_SetScalarParameterValueOnMaterials_ParameterValue_ImplicitCast_1",
+     "type": "FloatProperty"
+    }
+   ],
+   "bp_flags": [
+    "Public",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 32,
+   "reads": [
+    "ActiveTowerActor",
+    "AetherToRageLastFrame",
+    "QuillEmissiveMultiplyerLastFrame",
+    "QuillStaticMeshComponents"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_DoubleDouble",
+    "KismetSystemLibrary.IsValid",
+    "MeshComponent.SetScalarParameterValueOnMaterials"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "VisuallyUpdateAetherChargePercent",
+   "native": false,
+   "rva": null,
+   "params": [],
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "rpc": null,
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "electroquill_archetype_bp_C.ExecuteUbergraph_electroquill_archetype_bp"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "DataTable behemoth_metadata_table",
+  "DataTable electroquill_action_set",
+  "DataTable electroquill_damage_table"
+ ],
+ "package": "/Game/Monsters/sq/electroquill/electroquill_archetype_bp",
+ "pseudo_file": "pseudo/electroquill_archetype_bp_C.txt",
+ "game_data": {}
+}

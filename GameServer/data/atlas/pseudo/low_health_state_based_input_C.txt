@@ -1,0 +1,58 @@
+# low_health_state_based_input_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== CheckHealth
+  [0] frame.K2Node_CustomEvent_CurrentHealth = CurrentHealth
+  [18] ExecuteUbergraph_low_health_state_based_input(292)
+  [33] return nothing
+  [35] end
+
+=== ExecuteUbergraph_low_health_state_based_input
+  [0] goto computed(EntryPoint)
+  [10] DeactivateState()
+  [20] goto @453
+  [25] K2Node_CreateDelegate_OutputDelegate = bind(self.OnHealthChanged)
+  [48] K2Node_CreateDelegate_OutputDelegate += None
+  [67] CallFunc_SubscribeToAttribute_ReturnValue = SubscribeToAttribute(GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_SubscribeToAttribute_OutCurrentAttributeValue)
+  [169] CallFunc_CheckHealth_CurrentHealth_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_SubscribeToAttribute_OutCurrentAttributeValue)
+  [198] CheckHealth(CallFunc_CheckHealth_CurrentHealth_ImplicitCast)
+  [221] goto @453
+  [226] CallFunc_CheckHealth_CurrentHealth_ImplicitCast_1 = cast<CST_FloatToDouble>(K2Node_CustomEvent_AttributeChangeData.NewValue)
+  [264] CheckHealth(CallFunc_CheckHealth_CurrentHealth_ImplicitCast_1)
+  [287] goto @453
+  [292] GetCurrentHealthPercent(K2Node_CustomEvent_CurrentHealth, CallFunc_GetCurrentHealthPercent_HealthPercent)
+  [324] CallFunc_LessEqual_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(self.Magnitude)
+  [353] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_GetCurrentHealthPercent_HealthPercent, CallFunc_LessEqual_DoubleDouble_B_ImplicitCast)
+  [391] if !(CallFunc_LessEqual_DoubleDouble_ReturnValue) goto @424
+  [405] if !(self.bIsActive) goto @443
+  [419] goto @453
+  [424] if !(self.bIsActive) goto @453
+  [438] goto @10
+  [443] ActivateState()
+  [453] return nothing
+  [455] end
+
+=== GetCurrentHealthPercent
+  [0] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(self.ActorToModify, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [115] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [144] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [182] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [220] if !(CallFunc_BooleanAND_ReturnValue) goto @456
+  [234] CallFunc_GetFloatAttribute_ReturnValue = GetFloatAttribute(self.ActorToModify, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:MaxHealth'), null}, CallFunc_GetFloatAttribute_bSuccessfullyFoundAttribute)
+  [349] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttribute_ReturnValue)
+  [378] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CurrentHealth, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [424] HealthPercent = CallFunc_Divide_DoubleDouble_ReturnValue
+  [451] goto @483
+  [456] HealthPercent = 0.0
+  [483] return nothing
+  [485] end
+
+=== Initialize
+  [0] ExecuteUbergraph_low_health_state_based_input(25)
+  [15] return nothing
+  [17] end
+
+=== OnHealthChanged
+  [0] frame.K2Node_CustomEvent_AttributeChangeData = AttributeChangeData
+  [18] ExecuteUbergraph_low_health_state_based_input(226)
+  [33] return nothing
+  [35] end

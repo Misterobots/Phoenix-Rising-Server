@@ -1,0 +1,52 @@
+# gameplay_targetting_data_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== GetActors
+  [0] ActorData = self.ActorList
+  [27] return nothing
+  [29] end
+
+=== GetLocations
+  [0] Locations = self.PositionList
+  [27] return nothing
+  [29] end
+
+=== SetupActorData
+  [0] push @510
+  [5] self.ActorList = Actors
+  [32] Default__KismetArrayLibrary.Array_Clear(self.PositionList)
+  [73] Temp_int_Loop_Counter_Variable = 0
+  [96] Temp_int_Array_Index_Variable = 0
+  [119] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ActorList)
+  [178] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [216] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [226] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [253] push @436
+  [258] Default__KismetArrayLibrary.Array_Get(self.ActorList, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [317] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_Array_Get_Item.K2_GetActorLocation()
+  [367] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.PositionList, CallFunc_K2_GetActorLocation_ReturnValue)
+  [435] pop
+  [436] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [478] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [505] goto @119
+  [510] return nothing
+  [512] end
+
+=== SetupFromEQSInstance
+  [0] array{}
+  [11] CallFunc_GetQueryResultsAsActors_ReturnValue = EQSQueryInstance.GetQueryResultsAsActors(CallFunc_GetQueryResultsAsActors_ResultActors)
+  [62] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetQueryResultsAsActors_ResultActors)
+  [121] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [155] if !(CallFunc_Greater_IntInt_ReturnValue) goto @197
+  [169] SetupActorData(CallFunc_GetQueryResultsAsActors_ResultActors)
+  [192] goto @282
+  [197] array{}
+  [208] CallFunc_GetQueryResultsAsLocations_ReturnValue = EQSQueryInstance.GetQueryResultsAsLocations(CallFunc_GetQueryResultsAsLocations_ResultLocations)
+  [259] SetupPositionData(CallFunc_GetQueryResultsAsLocations_ResultLocations)
+  [282] return nothing
+  [284] end
+
+=== SetupPositionData
+  [0] Default__KismetArrayLibrary.Array_Clear(self.ActorList)
+  [41] self.PositionList = Positions
+  [68] return nothing
+  [70] end

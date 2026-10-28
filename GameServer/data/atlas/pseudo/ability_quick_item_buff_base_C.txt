@@ -1,0 +1,41 @@
+# ability_quick_item_buff_base_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyEffectBuff
+  [0] CallFunc_K2_CommitAbility_ReturnValue = K2_CommitAbility()
+  [24] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [52] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetActorInfo_ReturnValue.OwnerActor.GetComponentByClass(ArchonBuffableComponent)
+  [112] ArchonBuffableComponent = CallFunc_GetComponentByClass_ReturnValue
+  [131] CallFunc_GetActorInfo_ReturnValue = GetActorInfo()
+  [159] CallFunc_TryAddBuff_ReturnValue = ArchonBuffableComponent.TryAddBuff(self.ArchonBuffClassReference, CallFunc_TryAddBuff_BuffAdded, Temp_struct_Variable, CallFunc_GetActorInfo_ReturnValue.OwnerActor, false)
+  [251] if !(CallFunc_TryAddBuff_BuffAdded) goto @569
+  [265] self.ActiveBuff = CallFunc_TryAddBuff_ReturnValue
+  [284] MarkPropertyDirtyFromRepIndex(self, 0, 'ActiveBuff')
+  [313] self.ActiveBuff.FlushNetDormancy()
+  [345] GetAdjustedConsumableDuration(CallFunc_GetAdjustedConsumableDuration_AdjustedDuration)
+  [368] K2Node_VariableSet_MaxDuration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_GetAdjustedConsumableDuration_AdjustedDuration)
+  [397] self.ActiveBuff.self.MaxDuration = K2Node_VariableSet_MaxDuration_ImplicitCast
+  [446] MarkPropertyDirtyFromRepIndex(self.ActiveBuff, 10, 'MaxDuration')
+  [483] self.ActiveBuff.StartBuff()
+  [519] OnArchonBuffAdded__DelegateSignature(self.ArchonBuffClassReference)
+  [569] return nothing
+  [571] end
+
+=== CustomCanActivateAbility
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.ActiveBuff)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @59
+  [43] CanUse = false
+  [54] goto @70
+  [59] CanUse = true
+  [70] return nothing
+  [72] end
+
+=== ExecuteUbergraph_ability_quick_item_buff_base
+  [0] goto computed(EntryPoint)
+  [10] ApplyEffectBuff()
+  [24] return nothing
+  [26] end
+
+=== OnActivateAbilityImpl
+  [0] ExecuteUbergraph_ability_quick_item_buff_base(10)
+  [15] return nothing
+  [17] end

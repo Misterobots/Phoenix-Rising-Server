@@ -1,0 +1,622 @@
+{
+ "name": "persistent_spawner_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 224,
+ "sdk_header": "persistent_spawner_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "FPointerToUberGraphFrame",
+   "offset": "0xA0",
+   "size": 8,
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<PointerToUberGraphFrame>"
+  },
+  {
+   "name": "PersistentSpawnRequests",
+   "type": "TArray<Fpersistent_spawn_params>",
+   "offset": "0xA8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "ContainsInstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "OnSpawnedActor",
+   "type": "TMulticastInlineDelegate<void(AActor* SpawnedActor)>",
+   "offset": "0xB8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "OnSpawnedProjectile",
+   "type": "TMulticastInlineDelegate<void(Aprojectile_base_bp_C* SpawnedProjectile)>",
+   "offset": "0xC8",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "BlueprintAssignable",
+    "BlueprintCallable"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "MulticastInlineDelegateProperty"
+  },
+  {
+   "name": "SpawnedActorManager",
+   "type": "Uspawnedactor_manager_bpc_C*",
+   "offset": "0xD8",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance",
+    "InstancedReference"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<spawnedactor_manager_bpc_C>"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AuthAddPersistentSpawnRequest",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Request",
+     "type": "Fpersistent_spawn_params"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "persistent_spawner_bpc_C.ExecuteUbergraph_persistent_spawner_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AuthRemovePersistentSpawnRequest",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "UniqueKey",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "persistent_spawner_bpc_C.ExecuteUbergraph_persistent_spawner_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "DoSpawn",
+   "flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "RequestIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 226,
+   "reads": [
+    "OnSpawnedActor",
+    "OnSpawnedProjectile",
+    "PersistentSpawnRequests"
+   ],
+   "sets": [],
+   "calls": [
+    "Actor.GetTransform",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "Actor.K2_GetComponentsByClass",
+    "Actor.SetActorScale3D",
+    "ActorComponent.GetOwner",
+    "AuthInitializeSpawnedActor",
+    "GetGroundPosAndNormal",
+    "GetMesh",
+    "GetSocketLocation",
+    "GetSocketTransform",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Set",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Add_VectorVector",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.BreakRotator",
+    "KismetMathLibrary.BreakTransform",
+    "KismetMathLibrary.Conv_VectorToRotator",
+    "KismetMathLibrary.GreaterGreater_VectorRotator",
+    "KismetMathLibrary.Greater_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MakeRotator",
+    "KismetMathLibrary.MakeTransform",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.NotEqual_NameName",
+    "KismetSystemLibrary.DoesImplementInterface",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.PrintString",
+    "ModifyProjectileTargetPosition",
+    "NavigationSystemV1.K2_ProjectPointToNavigation",
+    "None",
+    "OverridePersistentSpawnPosition",
+    "SpawnActor",
+    "SpawnProjectile"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass bpi_persistent_spawn_owner_C",
+    "BlueprintGeneratedClass game_entity_interface_C"
+   ]
+  },
+  {
+   "name": "ExecuteUbergraph_persistent_spawner_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 91,
+   "reads": [
+    "PersistentSpawnRequests"
+   ],
+   "sets": [
+    "SpawnedActorManager"
+   ],
+   "calls": [
+    "Actor.GetComponentByClass",
+    "Actor.HasAuthority",
+    "Actor.K2_GetActorLocation",
+    "ActorComponent.GetOwner",
+    "ActorComponent.ReceiveBeginPlay",
+    "DoSpawn",
+    "GetIndexOfUniqueKey",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetArrayLibrary.Array_Remove",
+    "KismetGuidLibrary.NewGuid",
+    "KismetMathLibrary.Add_DoubleDouble",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanOR",
+    "KismetMathLibrary.EqualEqual_ByteByte",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.GreaterEqual_DoubleDouble",
+    "KismetMathLibrary.GreaterEqual_IntInt",
+    "KismetMathLibrary.LessEqual_DoubleDouble",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.MultiplyMultiply_FloatFloat",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetMathLibrary.Subtract_VectorVector",
+    "KismetMathLibrary.VSizeSquared",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_NameToString",
+    "KismetSystemLibrary.GetGameTimeInSeconds",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.PrintString"
+   ],
+   "authority": [
+    "HasAuthority"
+   ],
+   "tables": [],
+   "assets": [
+    "BlueprintGeneratedClass spawnedactor_manager_bpc_C"
+   ]
+  },
+  {
+   "name": "GetIndexOfUniqueKey",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Search_Key",
+     "type": "FName"
+    },
+    {
+     "name": "FoundIndex",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [
+    "PersistentSpawnRequests"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.EqualEqual_NameName",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.Not_PreBool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSpawnedActor__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SpawnedActor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnSpawnedProjectile__DelegateSignature",
+   "flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "SpawnedProjectile",
+     "type": "Aprojectile_base_bp_C*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "Delegate",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 2,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "persistent_spawner_bpc_C.ExecuteUbergraph_persistent_spawner_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveTick",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaSeconds_ReceiveTick",
+     "type": "float"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "persistent_spawner_bpc_C.ExecuteUbergraph_persistent_spawner_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnActor",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor_Pool",
+     "type": "UPhxActorPool*"
+    },
+    {
+     "name": "Class_0",
+     "type": "UClass*"
+    },
+    {
+     "name": "Spawn_Transform",
+     "type": "FTransform"
+    },
+    {
+     "name": "Owner",
+     "type": "AActor*"
+    },
+    {
+     "name": "Instigator",
+     "type": "APawn*"
+    },
+    {
+     "name": "Spawned_Actor",
+     "type": "AActor*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 25,
+   "reads": [
+    "SpawnedActorManager"
+   ],
+   "sets": [
+    "Instigator"
+   ],
+   "calls": [
+    "Actor.FlushNetDormancy",
+    "AuthRegisterSpawnedActor",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "NetPushModelHelpers.MarkPropertyDirtyFromRepIndex",
+    "PhxActorPool.FinishSpawningActorFromPool",
+    "PhxActorPool.SpawnActorDeferredFromPool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "SpawnProjectile",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Actor_Pool",
+     "type": "UPhxActorPool*"
+    },
+    {
+     "name": "Projectile_Class",
+     "type": "UClass*"
+    },
+    {
+     "name": "Spawn_Transform",
+     "type": "FTransform"
+    },
+    {
+     "name": "Owning_Pawn",
+     "type": "APawn*"
+    },
+    {
+     "name": "Damage_Key",
+     "type": "FName"
+    },
+    {
+     "name": "Shared_Damage_GUID",
+     "type": "bool"
+    },
+    {
+     "name": "Damage_GUID",
+     "type": "FGuid"
+    },
+    {
+     "name": "Instigator",
+     "type": "APawn*"
+    },
+    {
+     "name": "Projectile",
+     "type": "Aprojectile_base_bp_C*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 35,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "FeatureFlagBlueprintLibrary.IsFeatureEnabledWorldContext",
+    "GameplayStatics.BeginDeferredActorSpawnFromClass",
+    "GameplayStatics.FinishSpawningActor",
+    "InitializePoolable",
+    "KismetMathLibrary.BooleanAND",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.SetBoolPropertyByName",
+    "KismetSystemLibrary.SetNamePropertyByName",
+    "KismetSystemLibrary.SetObjectPropertyByName",
+    "KismetSystemLibrary.SetStructurePropertyByName",
+    "PhxActorPool.FindActorPoolForType",
+    "PhxActorPool.FinishSpawningActorFromPool",
+    "PhxActorPool.SpawnActorDeferredFromPool"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [],
+ "package": "/Game/_shared/blueprints/persistent_spawner_bpc",
+ "pseudo_file": "pseudo/persistent_spawner_bpc_C.txt",
+ "game_data": {}
+}

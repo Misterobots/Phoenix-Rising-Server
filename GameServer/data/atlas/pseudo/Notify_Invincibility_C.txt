@@ -1,0 +1,125 @@
+# Notify_Invincibility_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplyGameplayEffectDuringWindow
+  [0] CallFunc_IsValid_ReturnValue = IsValid(Owner)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @445
+  [43] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Owner)
+  [72] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [101] if !(CallFunc_IsValid_ReturnValue_1) goto @445
+  [115] CallFunc_IsValidClass_ReturnValue = IsValidClass(self.GameplayEffectDuringWindow)
+  [144] if !(CallFunc_IsValidClass_ReturnValue) goto @445
+  [158] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Owner)
+  [187] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(self.GameplayEffectDuringWindow, 0.0, GameplayEffectContextHandle{})
+  [269] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [298] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [357] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Owner)
+  [386] CallFunc_BP_ApplyGameplayEffectSpecToSelf_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToSelf(CallFunc_AssignSetByCallerMagnitude_ReturnValue)
+  [445] return nothing
+  [447] end
+
+=== Calculate Invincibility Duration
+  [0] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Actor)
+  [29] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [58] if !(CallFunc_IsValid_ReturnValue) goto @399
+  [72] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(Actor)
+  [101] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:EvadeInvulnerabilityMultiplier'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [237] CallFunc_SelectFloat_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [266] CallFunc_SelectFloat_ReturnValue = SelectFloat(CallFunc_SelectFloat_A_ImplicitCast, 1.0, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [321] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_SelectFloat_ReturnValue, Base Duration)
+  [367] Duration = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [394] goto @426
+  [399] Duration = Base Duration
+  [426] return nothing
+  [428] end
+
+=== Received_NotifyBegin
+  [0] CallFunc_IsFeatureEnabled_ReturnValue = IsFeatureEnabled(MeshComp, ClientAuthoritativeDamageFeature, true)
+  [39] if !(CallFunc_IsFeatureEnabled_ReturnValue) goto @156
+  [53] CallFunc_Received_NotifyBegin_ClientAuthoritative_Total_Duration_ImplicitCast = cast<CST_FloatToDouble>(TotalDuration)
+  [82] Received_NotifyBegin_ClientAuthoritative(MeshComp, Animation, CallFunc_Received_NotifyBegin_ClientAuthoritative_Total_Duration_ImplicitCast, CallFunc_Received_NotifyBegin_ClientAuthoritative_Return_Value)
+  [132] ReturnValue = CallFunc_Received_NotifyBegin_ClientAuthoritative_Return_Value
+  [151] goto @254
+  [156] CallFunc_Received_NotifyBegin_ServerAuthoritative_Total_Duration_ImplicitCast = cast<CST_FloatToDouble>(TotalDuration)
+  [185] Received_NotifyBegin_ServerAuthoritative(MeshComp, Animation, CallFunc_Received_NotifyBegin_ServerAuthoritative_Total_Duration_ImplicitCast, CallFunc_Received_NotifyBegin_ServerAuthoritative_Return_Value)
+  [235] ReturnValue = CallFunc_Received_NotifyBegin_ServerAuthoritative_Return_Value
+  [254] return ReturnValue
+  [264] end
+
+=== Received_NotifyBegin_ClientAuthoritative
+  [0] push @709
+  [5] push @698
+  [10] push @623
+  [15] CallFunc_GetOwner_ReturnValue = Mesh Comp.GetOwner()
+  [57] Temp_class_Variable = invulnerable_dodge_buff_C
+  [76] CallFunc_GetComponentByClass_ReturnValue = CallFunc_GetOwner_ReturnValue.GetComponentByClass(ArchonBuffableComponent)
+  [127] Calculate Invincibility Duration(CallFunc_GetOwner_ReturnValue, Total Duration, CallFunc_Calculate_Invincibility_Duration_Duration)
+  [168] Temp_class_Variable_1 = invulnerable_buff_C
+  [187] Temp_bool_Variable = self.IsDodgeInvulnerability
+  [206] CallFunc_TryAddBuffWithDurationNonReplicated_Duration_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Calculate_Invincibility_Duration_Duration)
+  [235] CallFunc_TryAddBuffWithDurationNonReplicated_ReturnValue = CallFunc_GetComponentByClass_ReturnValue.TryAddBuffWithDurationNonReplicated(switch(Temp_bool_Variable){false: Temp_class_Variable_1, true: Temp_class_Variable, default: K2Node_Select_Default}, CallFunc_TryAddBuffWithDurationNonReplicated_Duration_ImplicitCast, CallFunc_TryAddBuffWithDurationNonReplicated_BuffAdded, Temp_struct_Variable, null, true)
+  [363] InvulnerabilityBuff = CallFunc_TryAddBuffWithDurationNonReplicated_ReturnValue
+  [382] CallFunc_IsValid_ReturnValue = IsValid(InvulnerabilityBuff)
+  [411] if !(CallFunc_IsValid_ReturnValue) pop
+  [421] if !(self.CancelOnMontageEnd) pop
+  [431] K2Node_DynamicCast_AsAnim_Montage = cast<AnimMontage>(Animation)
+  [467] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsAnim_Montage)
+  [496] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [506] K2Node_DynamicCast_AsArchon_Base_Montage_Duration_Buff = cast<ArchonBaseMontageDurationBuff>(InvulnerabilityBuff)
+  [542] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Base_Montage_Duration_Buff)
+  [571] if !(K2Node_DynamicCast_bSuccess) pop
+  [581] K2Node_DynamicCast_AsArchon_Base_Montage_Duration_Buff.AttachToMontage(K2Node_DynamicCast_AsAnim_Montage)
+  [622] pop
+  [623] CallFunc_GetOwner_ReturnValue = Mesh Comp.GetOwner()
+  [665] ApplyGameplayEffectDuringWindow(CallFunc_GetOwner_ReturnValue, Total Duration)
+  [697] pop
+  [698] Return Value = false
+  [709] return nothing
+  [711] end
+
+=== Received_NotifyBegin_ServerAuthoritative
+  [0] push @1131
+  [5] push @668
+  [10] push @593
+  [15] CallFunc_GetOwner_ReturnValue = Mesh Comp.GetOwner()
+  [57] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwner_ReturnValue)
+  [93] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [122] if !(K2Node_DynamicCast_bSuccess) pop
+  [132] if !(self.IsDodgeInvulnerability) goto @684
+  [146] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'None'}
+  [200] K2Node_MakeStruct_GameplayEventData.Instigator = null
+  [220] K2Node_MakeStruct_GameplayEventData.Target = null
+  [240] K2Node_MakeStruct_GameplayEventData.OptionalObject = null
+  [260] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [280] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [321] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [376] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [431] K2Node_MakeStruct_EventMagnitude_ImplicitCast = cast<CST_DoubleToFloat>(Total Duration)
+  [460] K2Node_MakeStruct_GameplayEventData.EventMagnitude = K2Node_MakeStruct_EventMagnitude_ImplicitCast
+  [496] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [537] SendGameplayEventToActor(K2Node_DynamicCast_AsArchon_Character, GameplayTag{'Abilities.StartInvulnerabilityDodge'}, K2Node_MakeStruct_GameplayEventData)
+  [592] pop
+  [593] CallFunc_GetOwner_ReturnValue = Mesh Comp.GetOwner()
+  [635] ApplyGameplayEffectDuringWindow(CallFunc_GetOwner_ReturnValue, Total Duration)
+  [667] pop
+  [668] Return Value = false
+  [679] goto @1131
+  [684] K2Node_MakeStruct_GameplayEventData.EventTag = GameplayTag{'None'}
+  [738] K2Node_MakeStruct_GameplayEventData.Instigator = null
+  [758] K2Node_MakeStruct_GameplayEventData.Target = null
+  [778] K2Node_MakeStruct_GameplayEventData.OptionalObject = null
+  [798] K2Node_MakeStruct_GameplayEventData.OptionalObject2 = null
+  [818] K2Node_MakeStruct_GameplayEventData.ContextHandle = GameplayEffectContextHandle{}
+  [859] K2Node_MakeStruct_GameplayEventData.InstigatorTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [914] K2Node_MakeStruct_GameplayEventData.TargetTags = GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}
+  [969] K2Node_MakeStruct_EventMagnitude_ImplicitCast = cast<CST_DoubleToFloat>(Total Duration)
+  [998] K2Node_MakeStruct_GameplayEventData.EventMagnitude = K2Node_MakeStruct_EventMagnitude_ImplicitCast
+  [1034] K2Node_MakeStruct_GameplayEventData.TargetData = GameplayAbilityTargetDataHandle{}
+  [1075] SendGameplayEventToActor(K2Node_DynamicCast_AsArchon_Character, GameplayTag{'Abilities.StartInvulnerability'}, K2Node_MakeStruct_GameplayEventData)
+  [1130] pop
+  [1131] return nothing
+  [1133] end
+
+=== Received_NotifyEnd
+  [0] ReturnValue = false
+  [11] return ReturnValue
+  [21] end

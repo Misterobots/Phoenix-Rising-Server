@@ -1,0 +1,64 @@
+# dialog_manager_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ActivateDialogWidget
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.LHuntDialogueWidget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @48
+  [43] goto @341
+  [48] Default__archon_function_library_C.GetLocalController(self, CallFunc_GetLocalController_ArchonPlayerController)
+  [94] CallFunc_Create_ReturnValue = Default__WidgetBlueprintLibrary.Create(self, lantern_radio_prototype_bpw_C, CallFunc_GetLocalController_ArchonPlayerController)
+  [155] self.LHuntDialogueWidget = CallFunc_Create_ReturnValue
+  [174] self.LHuntDialogueWidget.UpdateLanternRadioText(EX_TextConst(Value={'SourceString': ''}))
+  [212] self.LHuntDialogueWidget.UpdatePlayerInstructionText(EX_TextConst(Value={'SourceString': ''}))
+  [250] Default__UserWidgetFunctions_C.Get Popup Layer(self, CallFunc_Get_Popup_Layer_ZOrder)
+  [296] self.LHuntDialogueWidget.AddToViewport(CallFunc_Get_Popup_Layer_ZOrder)
+  [341] return nothing
+  [343] end
+
+=== AreSubtitlesEnabled
+  [0] CallFunc_GetGameInstance_ReturnValue = GetGameInstance(self)
+  [21] K2Node_DynamicCast_AsArchon_Game_Instance = cast<ArchonGameInstance>(CallFunc_GetGameInstance_ReturnValue)
+  [57] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Game_Instance)
+  [86] if !(K2Node_DynamicCast_bSuccess) goto @161
+  [100] CallFunc_AreSubtitlesEnabled_ReturnValue = K2Node_DynamicCast_AsArchon_Game_Instance.AreSubtitlesEnabled()
+  [142] ReturnValue = CallFunc_AreSubtitlesEnabled_ReturnValue
+  [161] return ReturnValue
+  [171] end
+
+=== DeactiveDialogWidget
+  [0] CallFunc_IsValid_ReturnValue = IsValid(self.LHuntDialogueWidget)
+  [29] if !(CallFunc_IsValid_ReturnValue) goto @90
+  [43] self.LHuntDialogueWidget.RemoveFromParent()
+  [79] self.LHuntDialogueWidget = null
+  [90] return nothing
+  [92] end
+
+=== ExecuteUbergraph_dialog_manager_bpc
+  [0] goto computed(EntryPoint)
+  [10] ActivateDialogWidget()
+  [24] self.LHuntDialogueWidget.UpdatePlayerInstructionText(K2Node_Event_Dialog_1.Subtitle)
+  [78] goto @340
+  [83] DeactiveDialogWidget()
+  [97] goto @340
+  [102] CallFunc_AreSubtitlesEnabled_ReturnValue = AreSubtitlesEnabled()
+  [126] CallFunc_TextIsEmpty_ReturnValue = TextIsEmpty(K2Node_Event_Dialog_1.Subtitle)
+  [164] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_TextIsEmpty_ReturnValue)
+  [193] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_AreSubtitlesEnabled_ReturnValue, CallFunc_Not_PreBool_ReturnValue)
+  [231] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Not_PreBool_ReturnValue, K2Node_Event_Dialog_1.bAlwaysShowSubtitle)
+  [278] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_BooleanAND_ReturnValue, CallFunc_BooleanAND_ReturnValue_1)
+  [316] if !(CallFunc_BooleanOR_ReturnValue) goto @340
+  [330] goto @10
+  [335] goto @83
+  [340] return nothing
+  [342] end
+
+=== OnDialogEnded
+  [0] frame.K2Node_Event_Dialog = Dialog
+  [18] ExecuteUbergraph_dialog_manager_bpc(335)
+  [33] return nothing
+  [35] end
+
+=== OnDialogStarted
+  [0] frame.K2Node_Event_Dialog_1 = Dialog
+  [18] ExecuteUbergraph_dialog_manager_bpc(102)
+  [33] return nothing
+  [35] end

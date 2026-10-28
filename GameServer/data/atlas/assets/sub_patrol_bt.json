@@ -1,0 +1,175 @@
+{
+ "name": "sub_patrol_bt",
+ "package": "Archon/Content/Monsters/_shared/ai/sub_patrol_bt",
+ "type": "BehaviorTree",
+ "refs": [
+  "EQS_NextPointAroundTargetPoint",
+  "bb_base",
+  "eqs_passive_patrol_pt"
+ ],
+ "exports": {
+  "sub_patrol_bt": {
+   "type": "BehaviorTree",
+   "props": {
+    "RootNode": "@BTComposite_Selector_0",
+    "BlackboardAsset": "BlackboardData bb_base",
+    "RootDecorators": [
+     "@set_behemoth_loco_mode_btdeco_C_0"
+    ]
+   }
+  },
+  "BTComposite_Selector_0": {
+   "type": "BTComposite_Selector",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": "@BTComposite_Sequence_27",
+      "ChildTask": null,
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_Wait_0",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree sub_patrol_bt"
+   }
+  },
+  "BTComposite_Sequence_26": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_MoveTo_6",
+      "Decorators": [],
+      "DecoratorOps": []
+     }
+    ],
+    "Services": [
+     "@BTService_LookAlongPath_C_7"
+    ],
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_27"
+   }
+  },
+  "BTComposite_Sequence_27": {
+   "type": "BTComposite_Sequence",
+   "props": {
+    "Children": [
+     {
+      "ChildComposite": null,
+      "ChildTask": "@BTTask_RunEQSQuery_10",
+      "Decorators": [],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": null,
+      "ChildTask": "@get_player_target_bttask_C_0",
+      "Decorators": [
+       "@BTDecorator_ForceSuccess_17"
+      ],
+      "DecoratorOps": []
+     },
+     {
+      "ChildComposite": "@BTComposite_Sequence_26",
+      "ChildTask": null,
+      "Decorators": [
+       "@BTDecorator_TimeLimit_0"
+      ],
+      "DecoratorOps": []
+     }
+    ],
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "BTDecorator_ForceSuccess_17": {
+   "type": "BTDecorator_ForceSuccess",
+   "props": {
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_27"
+   }
+  },
+  "BTDecorator_TimeLimit_0": {
+   "type": "BTDecorator_TimeLimit",
+   "props": {
+    "TimeLimit": 10.0,
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_27"
+   }
+  },
+  "BTService_LookAlongPath_C_7": {
+   "type": "BTService_LookAlongPath_C",
+   "props": {
+    "HelperKey": "bb.TargetActor",
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_26"
+   }
+  },
+  "BTTask_MoveTo_6": {
+   "type": "BTTask_MoveTo",
+   "props": {
+    "bAllowPartialPath": false,
+    "bReachTestIncludesGoalRadius": false,
+    "bStopOnOverlapNeedsUpdate": false,
+    "BlackboardKey": "bb.MoveDestination",
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_26"
+   }
+  },
+  "BTTask_RunEQSQuery_10": {
+   "type": "BTTask_RunEQSQuery",
+   "props": {
+    "QueryTemplate": "EnvQuery EQS_NextPointAroundTargetPoint",
+    "EQSQueryBlackboardKey": {},
+    "EQSRequest": {
+     "QueryTemplate": "EnvQuery eqs_passive_patrol_pt",
+     "QueryConfig": [
+      {
+       "ParamName": "Donut.InnerRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 500.0,
+       "BBKey": "bb.None"
+      },
+      {
+       "ParamName": "Donut.OuterRadius",
+       "ParamType": "EAIParamType::Float",
+       "Value": 1750.0,
+       "BBKey": "bb.None"
+      }
+     ]
+    },
+    "BlackboardKey": "bb.MoveDestination",
+    "NodeName": "Find Patrol point",
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_27"
+   }
+  },
+  "BTTask_Wait_0": {
+   "type": "BTTask_Wait",
+   "props": {
+    "WaitTime": 1.0,
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Selector_0"
+   }
+  },
+  "get_player_target_bttask_C_0": {
+   "type": "get_player_target_bttask_C",
+   "props": {
+    "TreeAsset": "BehaviorTree sub_patrol_bt",
+    "ParentNode": "@BTComposite_Sequence_27"
+   }
+  },
+  "set_behemoth_loco_mode_btdeco_C_0": {
+   "type": "set_behemoth_loco_mode_btdeco_C",
+   "props": {
+    "LocoType": "behemoth_loco_type::Walk",
+    "TreeAsset": "BehaviorTree sub_patrol_bt"
+   }
+  }
+ }
+}

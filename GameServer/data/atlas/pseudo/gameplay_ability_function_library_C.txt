@@ -1,0 +1,135 @@
+# gameplay_ability_function_library_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== ApplySpec
+  [0] CallFunc_ApplyGameplayEffect_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffect(Target, GameplayEffectClass, EX_NoInterface())
+  [69] SpecHandle = CallFunc_ApplyGameplayEffect_ReturnValue
+  [96] return nothing
+  [98] end
+
+=== ApplySpecWithDuration
+  [0] CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [29] CallFunc_ApplyGameplayEffectWithDuration_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDuration(Target, GameplayEffectClass, CallFunc_ApplyGameplayEffectWithDuration_Duration_ImplicitCast, EX_NoInterface())
+  [107] SpecHandle = CallFunc_ApplyGameplayEffectWithDuration_ReturnValue
+  [134] return nothing
+  [136] end
+
+=== ApplySpecWithDurationAndMagnitude
+  [0] CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_Duration_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [29] CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(Magnitude)
+  [58] CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffectWithDurationAndMagnitude(Target, GameplayEffectClass, CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_Duration_ImplicitCast, CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_Magnitude_ImplicitCast, EX_NoInterface())
+  [145] SpecHandle = CallFunc_ApplyGameplayEffectWithDurationAndMagnitude_ReturnValue
+  [172] return nothing
+  [174] end
+
+=== ApplySpecWithDurationAndMagnitudeAllPlayers
+  [0] push @980
+  [5] GetPlayerChars(__WorldContext, CallFunc_GetPlayerChars_PlayerCharacters)
+  [37] Players = CallFunc_GetPlayerChars_PlayerCharacters
+  [64] Temp_int_Loop_Counter_Variable = 0
+  [87] Temp_int_Array_Index_Variable = 0
+  [110] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(Players)
+  [169] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [207] if !(CallFunc_Less_IntInt_ReturnValue) goto @874
+  [221] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [248] push @906
+  [253] Default__KismetArrayLibrary.Array_Get(Players, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [312] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_Array_Get_Item)
+  [341] CallFunc_MakeOutgoingSpec_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.MakeOutgoingSpec(GameplayEffectClass, 0.0, GameplayEffectContextHandle{})
+  [423] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(Duration)
+  [452] CallFunc_AssignSetByCallerMagnitude_ReturnValue = AssignSetByCallerMagnitude(CallFunc_MakeOutgoingSpec_ReturnValue, 'Duration', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast)
+  [511] CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1 = cast<CST_DoubleToFloat>(Magnitude)
+  [540] CallFunc_AssignSetByCallerMagnitude_ReturnValue_1 = AssignSetByCallerMagnitude(CallFunc_AssignSetByCallerMagnitude_ReturnValue, 'Magnitude', CallFunc_AssignSetByCallerMagnitude_Magnitude_ImplicitCast_1)
+  [599] Default__KismetArrayLibrary.Array_Get(Players, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [658] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_Array_Get_Item)
+  [687] CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue = CallFunc_GetAbilitySystemComponent_ReturnValue.BP_ApplyGameplayEffectSpecToTarget(CallFunc_AssignSetByCallerMagnitude_ReturnValue_1, CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [755] Default__KismetArrayLibrary.Array_Get(Players, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [814] Default__BlueprintMapLibrary.Map_Add(GESpecs, CallFunc_Array_Get_Item, CallFunc_BP_ApplyGameplayEffectSpecToTarget_ReturnValue)
+  [873] pop
+  [874] PlayersAndSpecs = GESpecs
+  [901] goto @980
+  [906] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [948] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [975] goto @110
+  [980] return nothing
+  [982] end
+
+=== ApplySpecWithMagnitude
+  [0] CallFunc_ApplyGameplayEffectWithMagnitude_Magnitude_ImplicitCast = cast<CST_DoubleToFloat>(Magnitude)
+  [29] CallFunc_ApplyGameplayEffectWithMagnitude_ReturnValue = Default__GameplayModifierFunctionLibrary.ApplyGameplayEffectWithMagnitude(Target, GameplayEffectClass, CallFunc_ApplyGameplayEffectWithMagnitude_Magnitude_ImplicitCast, EX_NoInterface())
+  [107] SpecHandle = CallFunc_ApplyGameplayEffectWithMagnitude_ReturnValue
+  [134] return nothing
+  [136] end
+
+=== GetCharacterOwner
+  [0] CallFunc_GetOwningActorFromActorInfo_ReturnValue = Ability.GetOwningActorFromActorInfo()
+  [42] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(CallFunc_GetOwningActorFromActorInfo_ReturnValue)
+  [78] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [107] if !(K2Node_DynamicCast_bSuccess) goto @156
+  [121] Succeeded = true
+  [132] Character Owner = K2Node_DynamicCast_AsArchon_Character
+  [151] goto @178
+  [156] Succeeded = false
+  [167] Character Owner = null
+  [178] return nothing
+  [180] end
+
+=== GetCurrentWeaponPowerData
+  [0] K2Node_DynamicCast_AsBPI_Weapon_Owner = cast<BPI_weapon_owner_C>(WeaponOwner)
+  [36] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Weapon_Owner)
+  [65] if !(K2Node_DynamicCast_bSuccess) goto @376
+  [79] K2Node_DynamicCast_AsBPI_Weapon_Owner.GetOwnedWeapon(CallFunc_GetOwnedWeapon_Weapon)
+  [125] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_GetOwnedWeapon_Weapon)
+  [154] if !(CallFunc_IsValid_ReturnValue) goto @392
+  [168] CallFunc_GetItemId_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.GetItemId()
+  [218] CallFunc_Conv_StringToName_ReturnValue = Conv_StringToName(CallFunc_GetItemId_ReturnValue)
+  [255] CallFunc_LookupPowerTableRow_ReturnValue = CallFunc_GetOwnedWeapon_Weapon.LookupPowerTableRow(CallFunc_Conv_StringToName_ReturnValue, CallFunc_LookupPowerTableRow_OutPowerTableData)
+  [319] if !(CallFunc_LookupPowerTableRow_ReturnValue) goto @392
+  [333] Row = CallFunc_LookupPowerTableRow_OutPowerTableData
+  [360] Success = true
+  [371] goto @1050
+  [376] CallFunc_GetOwnedWeapon_Weapon = null
+  [387] goto @125
+  [392] Row = WeaponPowerTableData{1.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['GlobalPowerPerLevelBonuses', 'GlobalPowerPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 3, 8, EX_ArrayConst(InnerProperty={'Path': ['GlobalPowerPerLevelOverrides', 'GlobalPowerPerLevelOverrides'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['ElementalPowerPerLevelOverrides', 'ElementalPowerPerLevelOverrides'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 1.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['ElementalPowerPerLevelBonuses', 'ElementalPowerPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['FlamePowerPerLevelBonuses', 'FlamePowerPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['FrostPerLevelBonuses', 'FrostPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['ShockPerLevelBonuses', 'ShockPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['RadiantPerLevelBonuses', 'RadiantPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['UmbralPerLevelBonuses', 'UmbralPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['TerraPerLevelBonuses', 'TerraPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, EX_ArrayConst(InnerProperty={'Path': ['RawElementalPowerPerLevelBonuses', 'RawElementalPowerPerLevelBonuses'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 1.0, 1.0, 1.0, EX_ArrayConst(InnerProperty={'Path': ['Tags', 'Tags'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefAbilities', 'RefAbilities'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefSpecialAbilities1', 'RefSpecialAbilities1'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefSpecialAbilities2', 'RefSpecialAbilities2'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefSpecialAbilities3', 'RefSpecialAbilities3'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefSpecialAbilities4', 'RefSpecialAbilities4'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['RefSpecialAbilities5', 'RefSpecialAbilities5'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), EX_ArrayConst(InnerProperty={'Path': ['CustomAttributes', 'CustomAttributes'], 'ResolvedOwner': {'ObjectName': "Class'WeaponPowerTableData'", 'ObjectPath': '/Script/Archon'}},Values=), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0, 1.0, 0.2, 1.25, 0.75, 150.0, 0.0, 3, 1.0, 1.0, 4, 1.0, 1.0, 3, 1.0, 1.0, 2.0, 0.5, 8.0, 25.0, 50.0, 75.0, 95.0, -0.2, 0.2, 0.0, 5.0, 7.0, 2.0, 200, 0.75, 1000.0, 1500.0, 0.75, 1.0}
+  [1039] Success = false
+  [1050] return nothing
+  [1052] end
+
+=== GetPlayerChars
+  [0] push @1214
+  [5] array{}
+  [16] array{}
+  [27] GetPlayerStatesAndCharacters(__WorldContext, true, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [65] Temp_int_Loop_Counter_Variable = 0
+  [88] Temp_int_Array_Index_Variable = 0
+  [111] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [170] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [208] if !(CallFunc_Less_IntInt_ReturnValue) goto @1108
+  [222] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [249] push @1140
+  [254] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [313] CallFunc_IsValid_ReturnValue = IsValid(CallFunc_Array_Get_Item)
+  [342] if !(CallFunc_IsValid_ReturnValue) pop
+  [352] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [411] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_Array_Get_Item)
+  [440] CallFunc_IsValid_ReturnValue_1 = IsValid(CallFunc_GetAbilitySystemComponent_ReturnValue)
+  [469] if !(CallFunc_IsValid_ReturnValue_1) pop
+  [479] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [538] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_Array_Get_Item)
+  [567] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [686] if !(CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute) pop
+  [696] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [755] CallFunc_GetAbilitySystemComponent_ReturnValue = GetAbilitySystemComponent(CallFunc_Array_Get_Item)
+  [784] CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue = GetFloatAttributeFromAbilitySystemComponent(CallFunc_GetAbilitySystemComponent_ReturnValue, GameplayAttribute{'', EX_FieldPathConst(Value='/Script/Archon.ArchonHealthAttributeSet:CurrentHealth'), null}, CallFunc_GetFloatAttributeFromAbilitySystemComponent_bSuccessfullyFoundAttribute)
+  [903] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatAttributeFromAbilitySystemComponent_ReturnValue)
+  [932] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [970] if !(CallFunc_Greater_DoubleDouble_ReturnValue) pop
+  [980] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1039] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(ArchonCharsArray, CallFunc_Array_Get_Item)
+  [1107] pop
+  [1108] PlayerCharacters = ArchonCharsArray
+  [1135] goto @1214
+  [1140] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [1182] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [1209] goto @111
+  [1214] return nothing
+  [1216] end

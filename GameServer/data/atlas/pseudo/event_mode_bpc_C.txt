@@ -1,0 +1,91 @@
+# event_mode_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AuthGameStateChanged
+  [0] frame.K2Node_Event_NewState = NewState
+  [18] frame.K2Node_Event_StateTransitionType = StateTransitionType
+  [36] ExecuteUbergraph_event_mode_bpc(736)
+  [51] return nothing
+  [53] end
+
+=== DetermineActivityLocation
+  [0] if !(self.bHasSetActivityTransform) goto @19
+  [14] goto @519
+  [19] array{}
+  [30] GetAllActorsOfClass(self, bp_aether_vent_base_C, CallFunc_GetAllActorsOfClass_OutActors)
+  [59] L_Vents = CallFunc_GetAllActorsOfClass_OutActors
+  [86] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(L_Vents)
+  [145] CallFunc_RandomInteger_ReturnValue = RandomInteger(CallFunc_Array_Length_ReturnValue)
+  [182] L_RandomVent = CallFunc_RandomInteger_ReturnValue
+  [209] CallFunc_Array_IsValidIndex_ReturnValue = Default__KismetArrayLibrary.Array_IsValidIndex(L_Vents, L_RandomVent)
+  [269] if !(CallFunc_Array_IsValidIndex_ReturnValue) goto @435
+  [283] self.bHasSetActivityTransform = true
+  [294] Default__KismetArrayLibrary.Array_Get(L_Vents, L_RandomVent, CallFunc_Array_Get_Item)
+  [353] CallFunc_GetTransform_ReturnValue = CallFunc_Array_Get_Item.GetTransform()
+  [403] ActivityTransform = CallFunc_GetTransform_ReturnValue
+  [430] goto @519
+  [435] PrintString(self, 'BAD INDEX SOMEHOW', true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [519] return nothing
+  [521] end
+
+=== ExecuteUbergraph_event_mode_bpc
+  [0] push @1112
+  [5] goto computed(EntryPoint)
+  [15] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [42] push @441
+  [47] Default__KismetArrayLibrary.Array_Get(CallFunc_GetPlayerStatesAndCharacters_PlayerStates, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [106] CallFunc_GetOwner_ReturnValue = CallFunc_Array_Get_Item.GetOwner()
+  [148] K2Node_DynamicCast_AsArchon_Player_Controller = cast<ArchonPlayerController>(CallFunc_GetOwner_ReturnValue)
+  [184] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Player_Controller)
+  [213] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [223] CallFunc_GetPlayerEventModeComponent_ReturnValue = K2Node_DynamicCast_AsArchon_Player_Controller.GetPlayerEventModeComponent()
+  [265] CallFunc_GetTotalScore_ReturnValue = self.EventGameStateComponent.GetTotalScore()
+  [315] CallFunc_FTrunc_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetTotalScore_ReturnValue)
+  [344] CallFunc_FTrunc_ReturnValue = FTrunc(CallFunc_FTrunc_A_ImplicitCast)
+  [381] CallFunc_GetPlayerEventModeComponent_ReturnValue.GrantEventCurrency(CallFunc_FTrunc_ReturnValue, self.EventModeSpecification.EventCurrencyItemId)
+  [440] pop
+  [441] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [483] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [510] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetPlayerStatesAndCharacters_PlayerStates)
+  [569] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [607] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [617] goto @15
+  [622] Temp_int_Array_Index_Variable = 0
+  [645] goto @510
+  [650] Temp_int_Loop_Counter_Variable = 0
+  [673] goto @622
+  [678] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [707] self.SessionStartTime = CallFunc_GetGameTimeInSeconds_ReturnValue_1
+  [734] pop
+  [735] pop
+  [736] K2Node_SwitchEnum_CmpSuccess = NotEqual_ByteByte(K2Node_Event_StateTransitionType, 0)
+  [767] if !(K2Node_SwitchEnum_CmpSuccess) goto @782
+  [781] pop
+  [782] K2Node_SwitchEnum_CmpSuccess_1 = NotEqual_ByteByte(K2Node_Event_NewState, 12)
+  [813] if !(K2Node_SwitchEnum_CmpSuccess_1) goto @828
+  [827] pop
+  [828] push @890
+  [833] array{}
+  [844] array{}
+  [855] GetPlayerStatesAndCharacters(self, false, CallFunc_GetPlayerStatesAndCharacters_PlayerStates, CallFunc_GetPlayerStatesAndCharacters_PlayerCharacters)
+  [885] goto @650
+  [890] CallFunc_GetGameMode_ReturnValue = GetGameMode(self)
+  [911] K2Node_DynamicCast_AsBPI_Combat_Game_Mode = cast<BPI_CombatGameMode_C>(CallFunc_GetGameMode_ReturnValue)
+  [947] K2Node_DynamicCast_bSuccess = cast<CST_InterfaceToBool>(K2Node_DynamicCast_AsBPI_Combat_Game_Mode)
+  [976] if !(K2Node_DynamicCast_bSuccess) pop
+  [986] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [1015] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, self.SessionStartTime)
+  [1061] K2Node_DynamicCast_AsBPI_Combat_Game_Mode.StartEndOfMatchCeremony(true, CallFunc_Subtract_DoubleDouble_ReturnValue, null, 1)
+  [1111] pop
+  [1112] return nothing
+  [1114] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_event_mode_bpc(678)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_event_mode_bpc(735)
+  [33] return nothing
+  [35] end

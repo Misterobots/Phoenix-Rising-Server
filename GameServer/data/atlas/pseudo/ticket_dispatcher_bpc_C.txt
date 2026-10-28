@@ -1,0 +1,808 @@
+# ticket_dispatcher_bpc_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== AddTickets
+  [0] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(TicketAmount, 0)
+  [34] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [93] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Index, CallFunc_Array_Length_ReturnValue)
+  [131] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Index, 0)
+  [165] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [203] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_BooleanAND_ReturnValue)
+  [241] if !(CallFunc_BooleanAND_ReturnValue_1) goto @568
+  [255] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).CurrentTickets, EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).MaxTickets)
+  [331] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @568
+  [345] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).CurrentTickets, TicketAmount)
+  [410] CallFunc_Min_ReturnValue = Min(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).MaxTickets, CallFunc_Add_IntInt_ReturnValue)
+  [475] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).CurrentTickets = CallFunc_Min_ReturnValue
+  [521] OnTicketAdded__DelegateSignature(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).TicketCategoryName)
+  [568] return nothing
+  [570] end
+
+=== AssignLocation
+  [0] push @1334
+  [5] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value_1)
+  [74] if !(CallFunc_Map_Find_ReturnValue_1) goto @214
+  [88] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value_1)
+  [157] CallFunc_NotEqual_IntInt_ReturnValue = NotEqual_IntInt(CallFunc_Map_Find_Value_1.ReservedLocationSlot, Index)
+  [204] if !(CallFunc_NotEqual_IntInt_ReturnValue) pop
+  [214] CallFunc_IsValid_ReturnValue = IsValid(EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentOccupying)
+  [262] if !(CallFunc_IsValid_ReturnValue) goto @299
+  [276] ClearLocationIndex(Index)
+  [299] push @751
+  [304] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [373] if !(CallFunc_Map_Find_ReturnValue) pop
+  [383] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [442] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value_1)
+  [511] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_Map_Find_Value_1.ReservedLocationSlot, CallFunc_Array_Length_ReturnValue)
+  [558] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Map_Find_Value_1.ReservedLocationSlot, 0)
+  [601] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [639] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [649] CallFunc_Map_Find_ReturnValue_1 = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value_1)
+  [718] ClearLocationIndex(CallFunc_Map_Find_Value_1.ReservedLocationSlot)
+  [750] pop
+  [751] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.LocationRequestMinFrequency, 0.25)
+  [797] CallFunc_Multiply_IntFloat_ReturnValue = Multiply_IntFloat(-1, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [839] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(CallFunc_Multiply_IntFloat_ReturnValue, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [885] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [914] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, CallFunc_RandomFloatInRange_ReturnValue)
+  [960] K2Node_MakeStruct_ticket_requester_info.ReservedLocationSlot = Index
+  [996] K2Node_MakeStruct_LastLocationGrantedTimestamp_7_3CE98BA144BC3A509DB9178B8C3ED995_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [1025] K2Node_MakeStruct_ticket_requester_info.LastLocationGrantedTimestamp = K2Node_MakeStruct_LastLocationGrantedTimestamp_7_3CE98BA144BC3A509DB9178B8C3ED995_ImplicitCast
+  [1061] Default__BlueprintMapLibrary.Map_Add(self.TicketRequesterMap, Agent, K2Node_MakeStruct_ticket_requester_info)
+  [1120] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentOccupying = Agent
+  [1158] K2Node_SetFieldsInStruct_AgentPreferredDistance_10_8850982145D8366769F1CD88B6AB32A1_ImplicitCast = cast<CST_DoubleToFloat>(PreferredDistance)
+  [1187] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentPreferredDistance = K2Node_SetFieldsInStruct_AgentPreferredDistance_10_8850982145D8366769F1CD88B6AB32A1_ImplicitCast
+  [1233] K2Node_CreateDelegate_OutputDelegate = bind(self.OnLocationRequestorDestroyed)
+  [1256] K2Node_CreateDelegate_OutputDelegate += None
+  [1297] ConsumeTicket('Approach', CallFunc_ConsumeTicket_SuccessfullyConsumedTicket)
+  [1333] pop
+  [1334] return nothing
+  [1336] end
+
+=== AuthAddTicketModifier
+  [0] CallFunc_NewGuid_ReturnValue = NewGuid()
+  [28] L_GUID = CallFunc_NewGuid_ReturnValue
+  [55] Default__BlueprintMapLibrary.Map_Add(self.TicketModifiers, L_GUID, NewModifier)
+  [114] GUID = L_GUID
+  [141] return nothing
+  [143] end
+
+=== AuthRemoveTicketModifier
+  [0] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [20] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [62] if !(CallFunc_HasAuthority_ReturnValue) goto @136
+  [76] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.TicketModifiers, GUID)
+  [136] return nothing
+  [138] end
+
+=== BroadcastDebug
+  [0] frame.K2Node_CustomEvent_Locations = Locations
+  [18] frame.K2Node_CustomEvent_TicketData = TicketData
+  [36] ExecuteUbergraph_ticket_dispatcher_bpc(5976)
+  [51] return nothing
+  [53] end
+
+=== CalculateBestApproachLocation
+  [0] push @936
+  [5] L_BestDistSqr = 1000000000.0
+  [32] L_BestIndex = -1
+  [55] L_Dist = 0.0
+  [82] push @830
+  [87] K2Node_DynamicCast_AsPawn = cast<Pawn>(RequestingAgent)
+  [123] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [152] if !(K2Node_DynamicCast_bSuccess) pop
+  [162] GetFreeLocations(true, RequestingAgent, CallFunc_GetFreeLocations_FreeIndexes)
+  [195] L_Indexes = CallFunc_GetFreeLocations_FreeIndexes
+  [222] Temp_int_Loop_Counter_Variable = 0
+  [245] Temp_int_Array_Index_Variable = 0
+  [268] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(L_Indexes)
+  [327] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [365] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [375] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [402] push @862
+  [407] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [449] Default__KismetArrayLibrary.Array_Get(L_Indexes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [508] GetWorldLocationOfIndex(CallFunc_Array_Get_Item, PreferredDistance, CallFunc_GetController_ReturnValue, CallFunc_GetWorldLocationOfIndex_FoundWorldLocation, CallFunc_GetWorldLocationOfIndex_WorldLocation)
+  [567] if !(CallFunc_GetWorldLocationOfIndex_FoundWorldLocation) pop
+  [577] Default__archon_function_library_C.GetDistanceSqr(CallFunc_GetWorldLocationOfIndex_WorldLocation, PreferredLocation, self, CallFunc_GetDistanceSqr_DistanceSqr)
+  [641] L_Dist = CallFunc_GetDistanceSqr_DistanceSqr
+  [668] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(L_Dist, L_BestDistSqr)
+  [706] if !(CallFunc_Less_DoubleDouble_ReturnValue) pop
+  [716] Default__KismetArrayLibrary.Array_Get(L_Indexes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [775] L_BestIndex = CallFunc_Array_Get_Item
+  [802] L_BestDistSqr = L_Dist
+  [829] pop
+  [830] BestIndex = L_BestIndex
+  [857] goto @936
+  [862] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [904] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [931] goto @268
+  [936] return nothing
+  [938] end
+
+=== CheckTicketRegen
+  [0] ExecuteUbergraph_ticket_dispatcher_bpc(5936)
+  [15] return nothing
+  [17] end
+
+=== ClearAgentRequests
+  [0] push @1244
+  [5] push @517
+  [10] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [79] if !(CallFunc_Map_Find_ReturnValue) pop
+  [89] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [148] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [217] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(CallFunc_Map_Find_Value.ReservedLocationSlot, CallFunc_Array_Length_ReturnValue_1)
+  [264] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_Map_Find_Value.ReservedLocationSlot, 0)
+  [307] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue_1)
+  [345] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [355] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [424] ClearLocationIndex(CallFunc_Map_Find_Value.ReservedLocationSlot)
+  [456] CallFunc_Map_Remove_ReturnValue = Default__BlueprintMapLibrary.Map_Remove(self.TicketRequesterMap, Agent)
+  [516] pop
+  [517] Temp_int_Loop_Counter_Variable = 0
+  [540] Temp_int_Array_Index_Variable = 0
+  [563] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [622] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [660] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [670] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [697] push @823
+  [702] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [761] CallFunc_NotEqual_ObjectObject_ReturnValue = NotEqual_ObjectObject(CallFunc_Array_Get_Item.AgentOccupying, Agent)
+  [808] if !(CallFunc_NotEqual_ObjectObject_ReturnValue) goto @897
+  [822] pop
+  [823] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [865] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [892] goto @563
+  [897] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [926] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [976] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [1018] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'Clearing Agent request - still have one kicking around in location!')
+  [1124] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [1198] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1218] if !(CallFunc_IsShipping_ReturnValue) goto @1233
+  [1232] pop
+  [1233] StackTrace()
+  [1243] pop
+  [1244] return nothing
+  [1246] end
+
+=== ClearLocationIndex
+  [0] push @333
+  [5] push @260
+  [10] CallFunc_IsValid_ReturnValue = IsValid(EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentOccupying)
+  [58] if !(CallFunc_IsValid_ReturnValue) pop
+  [68] K2Node_CreateDelegate_OutputDelegate = bind(self.OnLocationRequestorDestroyed)
+  [91] K2Node_CreateDelegate_OutputDelegate -= None
+  [151] GetIndexOfTicketCategory('Approach', CallFunc_GetIndexOfTicketCategory_Index)
+  [187] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfTicketCategory_Index, 0)
+  [221] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [231] AddTickets(CallFunc_GetIndexOfTicketCategory_Index, 1)
+  [259] pop
+  [260] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentOccupying = null
+  [290] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index).AgentPreferredDistance = 0.0
+  [332] pop
+  [333] return nothing
+  [335] end
+
+=== ConsumeTicket
+  [0] push @485
+  [5] push @474
+  [10] GetIndexOfTicketCategory(TicketCategory, CallFunc_GetIndexOfTicketCategory_Index)
+  [42] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfTicketCategory_Index, 0)
+  [76] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [135] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetIndexOfTicketCategory_Index, CallFunc_Array_Length_ReturnValue)
+  [173] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [211] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [221] IsTicketAvailable(TicketCategory, GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=)}, CallFunc_IsTicketAvailable_TicketAvailable)
+  [281] if !(CallFunc_IsTicketAvailable_TicketAvailable) pop
+  [291] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).CurrentTickets, 1)
+  [352] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).CurrentTickets = CallFunc_Subtract_IntInt_ReturnValue
+  [398] ResetTicketRegenCooldown(CallFunc_GetIndexOfTicketCategory_Index)
+  [421] OnTicketConsumed__DelegateSignature(TicketCategory, CallFunc_GetIndexOfTicketCategory_Index)
+  [458] SuccessfullyConsumedTicket = true
+  [469] goto @485
+  [474] SuccessfullyConsumedTicket = false
+  [485] return nothing
+  [487] end
+
+=== ExecuteUbergraph_ticket_dispatcher_bpc
+  [0] push @5981
+  [5] goto computed(EntryPoint)
+  [15] push @44
+  [20] ResetTicketRegenCooldown(Temp_int_Array_Index_Variable_2)
+  [43] pop
+  [44] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [86] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [113] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [172] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [210] if !(CallFunc_Less_IntInt_ReturnValue) goto @256
+  [224] Temp_int_Array_Index_Variable_2 = Temp_int_Loop_Counter_Variable
+  [251] goto @15
+  [256] GetIndexOfTicketCategory('Approach', CallFunc_GetIndexOfTicketCategory_Index)
+  [292] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfTicketCategory_Index, 0)
+  [326] if !(CallFunc_GreaterEqual_IntInt_ReturnValue) pop
+  [336] CallFunc_Array_Length_ReturnValue_4 = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [395] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).TicketRegenFrequency = 0.0
+  [437] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).MaxTickets = CallFunc_Array_Length_ReturnValue_4
+  [483] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).CurrentTickets = CallFunc_Array_Length_ReturnValue_4
+  [529] pop
+  [530] CallFunc_IsInCity_ReturnValue = IsInCity(self)
+  [551] if !(CallFunc_IsInCity_ReturnValue) goto @566
+  [565] pop
+  [566] CallFunc_GetOwner_ReturnValue_1 = GetOwner()
+  [586] CallFunc_HasAuthority_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_1.HasAuthority()
+  [628] if !(CallFunc_HasAuthority_ReturnValue_1) pop
+  [638] K2Node_CreateDelegate_OutputDelegate = bind(self.UpdateLocationValidity)
+  [661] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, 0.5, true, 0.0, 0.0)
+  [714] pop
+  [715] CallFunc_Add_IntInt_ReturnValue_1 = Add_IntInt(Temp_int_Loop_Counter_Variable_1, 1)
+  [757] Temp_int_Loop_Counter_Variable_1 = CallFunc_Add_IntInt_ReturnValue_1
+  [784] CallFunc_Array_Length_ReturnValue_3 = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [843] CallFunc_Less_IntInt_ReturnValue_4 = Less_IntInt(Temp_int_Loop_Counter_Variable_1, CallFunc_Array_Length_ReturnValue_3)
+  [881] if !(CallFunc_Less_IntInt_ReturnValue_4) pop
+  [891] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable_1
+  [918] push @715
+  [923] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [952] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1011] CallFunc_LessEqual_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.INTERNAL_NextTicketTimestamp)
+  [1049] CallFunc_LessEqual_DoubleDouble_ReturnValue = LessEqual_DoubleDouble(CallFunc_LessEqual_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [1087] CallFunc_Greater_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_2.INTERNAL_NextTicketTimestamp)
+  [1125] CallFunc_Greater_DoubleDouble_ReturnValue_1 = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast_1, 0.0)
+  [1163] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Greater_DoubleDouble_ReturnValue_1, CallFunc_LessEqual_DoubleDouble_ReturnValue)
+  [1201] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [1211] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1270] CallFunc_Less_IntInt_ReturnValue_2 = Less_IntInt(CallFunc_Array_Get_Item_2.CurrentTickets, CallFunc_Array_Get_Item_2.MaxTickets)
+  [1326] if !(CallFunc_Less_IntInt_ReturnValue_2) goto @2005
+  [1340] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1399] Default__global_function_library_C.PickWeightedIndex(CallFunc_Array_Get_Item_2.TicketRegenAmounts, self, CallFunc_PickWeightedIndex_ChosenIndex)
+  [1463] CallFunc_Less_IntInt_ReturnValue_3 = Less_IntInt(CallFunc_PickWeightedIndex_ChosenIndex, 0)
+  [1497] if !(CallFunc_Less_IntInt_ReturnValue_3) goto @2319
+  [1511] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1570] CallFunc_Add_IntInt_ReturnValue_3 = Add_IntInt(CallFunc_Array_Get_Item_2.CurrentTickets, 1)
+  [1621] self.L_NewCurrTickets = CallFunc_Add_IntInt_ReturnValue_3
+  [1648] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1707] CallFunc_Min_ReturnValue = Min(self.L_NewCurrTickets, CallFunc_Array_Get_Item_2.MaxTickets)
+  [1762] CallFunc_Array_Get_Item_2.CurrentTickets = CallFunc_Min_ReturnValue
+  [1798] K2Node_SetFieldsInStruct_StructOut = CallFunc_Array_Get_Item_2
+  [1825] Default__KismetArrayLibrary.Array_Set(self.TicketData, Temp_int_Array_Index_Variable, K2Node_SetFieldsInStruct_StructOut, false)
+  [1885] ResetTicketRegenCooldown(Temp_int_Array_Index_Variable)
+  [1908] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [1967] OnTicketAdded__DelegateSignature(CallFunc_Array_Get_Item_2.TicketCategoryName)
+  [2004] pop
+  [2005] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [2034] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [2084] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [2126] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'we have >= max tickets on refresh!')
+  [2199] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [2273] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [2293] if !(CallFunc_IsShipping_ReturnValue) goto @2308
+  [2307] pop
+  [2308] StackTrace()
+  [2318] pop
+  [2319] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item_2)
+  [2378] CallFunc_Add_IntInt_ReturnValue_4 = Add_IntInt(CallFunc_Array_Get_Item_2.CurrentTickets, EX_ArrayGetByRef(ArrayVariable=CallFunc_Array_Get_Item_2.TicketRegenAmounts,ArrayIndex=CallFunc_PickWeightedIndex_ChosenIndex).Amount)
+  [2461] self.L_NewCurrTickets = CallFunc_Add_IntInt_ReturnValue_4
+  [2488] goto @1648
+  [2493] Temp_int_Loop_Counter_Variable_1 = 0
+  [2516] Temp_int_Array_Index_Variable = 0
+  [2539] goto @784
+  [2544] Temp_int_Loop_Counter_Variable = 0
+  [2567] Temp_int_Array_Index_Variable_2 = 0
+  [2590] goto @113
+  [2595] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2615] CallFunc_HasAuthority_ReturnValue = CallFunc_GetOwner_ReturnValue.HasAuthority()
+  [2657] if !(CallFunc_HasAuthority_ReturnValue) pop
+  [2667] goto @2544
+  [2672] push @3620
+  [2677] Temp_string_Variable = ''
+  [2697] CallFunc_GetGameTimeInSeconds_ReturnValue_1 = GetGameTimeInSeconds(self)
+  [2726] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable_1, CallFunc_Array_Get_Item_1)
+  [2785] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.INTERNAL_NextTicketTimestamp)
+  [2823] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_GetGameTimeInSeconds_ReturnValue_1)
+  [2869] CallFunc_Conv_DoubleToText_ReturnValue = Conv_DoubleToText(CallFunc_Subtract_DoubleDouble_ReturnValue, 0, false, true, 1, 324, 2, 2)
+  [2930] CallFunc_Greater_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item_1.INTERNAL_NextTicketTimestamp)
+  [2968] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_Greater_DoubleDouble_A_ImplicitCast, 0.0)
+  [3006] CallFunc_Conv_TextToString_ReturnValue = Conv_TextToString(CallFunc_Conv_DoubleToText_ReturnValue)
+  [3043] CallFunc_Conv_IntToString_ReturnValue = Conv_IntToString(CallFunc_Array_Get_Item_1.CurrentTickets)
+  [3089] CallFunc_Concat_StrStr_ReturnValue_3 = Concat_StrStr(CallFunc_Conv_TextToString_ReturnValue, 's ')
+  [3130] CallFunc_Conv_IntToString_ReturnValue_1 = Conv_IntToString(CallFunc_Array_Get_Item_1.MaxTickets)
+  [3176] CallFunc_Conv_NameToString_ReturnValue = Conv_NameToString(CallFunc_Array_Get_Item_1.TicketCategoryName)
+  [3222] CallFunc_Concat_StrStr_ReturnValue_4 = Concat_StrStr(CallFunc_Conv_NameToString_ReturnValue, ': (')
+  [3264] CallFunc_Concat_StrStr_ReturnValue_5 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_4, CallFunc_Conv_IntToString_ReturnValue)
+  [3310] CallFunc_Concat_StrStr_ReturnValue_6 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_5, '/')
+  [3350] CallFunc_Concat_StrStr_ReturnValue_7 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_6, CallFunc_Conv_IntToString_ReturnValue_1)
+  [3396] CallFunc_Concat_StrStr_ReturnValue_8 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_7, ')')
+  [3436] Temp_bool_Variable = CallFunc_Greater_DoubleDouble_ReturnValue
+  [3455] CallFunc_Concat_StrStr_ReturnValue_9 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_8, switch(Temp_bool_Variable){false: Temp_string_Variable, true: CallFunc_Concat_StrStr_ReturnValue_3, default: K2Node_Select_Default})
+  [3545] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_9, true, false, LinearColor{1.0, 0.462319, 0.219306, 1.0}, 0.01, 'None')
+  [3619] pop
+  [3620] CallFunc_Add_IntInt_ReturnValue_2 = Add_IntInt(Temp_int_Loop_Counter_Variable_2, 1)
+  [3662] Temp_int_Loop_Counter_Variable_2 = CallFunc_Add_IntInt_ReturnValue_2
+  [3689] CallFunc_Array_Length_ReturnValue_2 = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [3748] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable_2, CallFunc_Array_Length_ReturnValue_2)
+  [3786] if !(CallFunc_Less_IntInt_ReturnValue_1) pop
+  [3796] Temp_int_Array_Index_Variable_1 = Temp_int_Loop_Counter_Variable_2
+  [3823] goto @2672
+  [3828] Temp_int_Loop_Counter_Variable_2 = 0
+  [3851] Temp_int_Array_Index_Variable_1 = 0
+  [3874] goto @3689
+  [3879] Temp_int_Array_Index_Variable_3 = 0
+  [3902] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [3961] CallFunc_Less_IntInt_ReturnValue_5 = Less_IntInt(Temp_int_Loop_Counter_Variable_3, CallFunc_Array_Length_ReturnValue)
+  [3999] if !(CallFunc_Less_IntInt_ReturnValue_5) pop
+  [4009] Temp_int_Array_Index_Variable_3 = Temp_int_Loop_Counter_Variable_3
+  [4036] push @5295
+  [4041] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [4100] if !(CallFunc_Array_Get_Item.IsObstructed) goto @4428
+  [4123] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [4182] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Array_Get_Item.WorldOffsetFromSelf, 500.0)
+  [4237] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [4257] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.K2_GetActorLocation()
+  [4307] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [4353] DrawDebugSphere(self, CallFunc_Add_VectorVector_ReturnValue, 100.0, 12, LinearColor{0.239583, 0.006862, 0.0, 1.0}, 0.05, 1.0)
+  [4427] pop
+  [4428] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [4487] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_Array_Get_Item.AgentOccupying)
+  [4532] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [4561] if !(K2Node_DynamicCast_bSuccess) goto @4990
+  [4575] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [4634] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [4676] CallFunc_GetWorldLocationOfIndex_PreferredDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.AgentPreferredDistance)
+  [4714] GetWorldLocationOfIndex(Temp_int_Array_Index_Variable_3, CallFunc_GetWorldLocationOfIndex_PreferredDistance_ImplicitCast, CallFunc_GetController_ReturnValue, CallFunc_GetWorldLocationOfIndex_FoundWorldLocation, CallFunc_GetWorldLocationOfIndex_WorldLocation)
+  [4773] if !(CallFunc_GetWorldLocationOfIndex_FoundWorldLocation) goto @5369
+  [4787] DrawDebugSphere(self, CallFunc_GetWorldLocationOfIndex_WorldLocation, 100.0, 12, LinearColor{0.0, 0.901042, 0.2606, 1.0}, 0.05, 3.0)
+  [4861] CallFunc_K2_GetActorLocation_ReturnValue = K2Node_DynamicCast_AsPawn.K2_GetActorLocation()
+  [4911] DrawDebugArrow(self, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_GetWorldLocationOfIndex_WorldLocation, 2500.0, LinearColor{0.0, 1.0, 0.364047, 1.0}, 0.05, 5.0)
+  [4989] pop
+  [4990] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [5049] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Array_Get_Item.WorldOffsetFromSelf, 500.0)
+  [5104] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [5124] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.K2_GetActorLocation()
+  [5174] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [5220] DrawDebugSphere(self, CallFunc_Add_VectorVector_ReturnValue, 100.0, 12, LinearColor{0.140625, 0.140625, 0.140625, 1.0}, 0.05, 1.0)
+  [5294] pop
+  [5295] CallFunc_Add_IntInt_ReturnValue_5 = Add_IntInt(Temp_int_Loop_Counter_Variable_3, 1)
+  [5337] Temp_int_Loop_Counter_Variable_3 = CallFunc_Add_IntInt_ReturnValue_5
+  [5364] goto @3902
+  [5369] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable_3, CallFunc_Array_Get_Item)
+  [5428] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Array_Get_Item.WorldOffsetFromSelf, 500.0)
+  [5483] CallFunc_GetOwner_ReturnValue_2 = GetOwner()
+  [5503] CallFunc_K2_GetActorLocation_ReturnValue_1 = CallFunc_GetOwner_ReturnValue_2.K2_GetActorLocation()
+  [5553] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue_1)
+  [5599] DrawDebugSphere(self, CallFunc_Add_VectorVector_ReturnValue, 100.0, 12, LinearColor{0.369792, 0.0, 0.010383, 1.0}, 0.05, 1.0)
+  [5673] pop
+  [5674] CallFunc_IsDedicatedServer_ReturnValue = IsDedicatedServer(self)
+  [5695] if !(CallFunc_IsDedicatedServer_ReturnValue) goto @5710
+  [5709] pop
+  [5710] self.Locations = K2Node_CustomEvent_Locations
+  [5737] self.TicketData = K2Node_CustomEvent_TicketData
+  [5764] push @3828
+  [5769] Temp_int_Loop_Counter_Variable_3 = 0
+  [5792] goto @3879
+  [5797] if !(self.ShowDebug) pop
+  [5807] CallFunc_GetOwner_ReturnValue_3 = GetOwner()
+  [5827] CallFunc_HasAuthority_ReturnValue_2 = CallFunc_GetOwner_ReturnValue_3.HasAuthority()
+  [5869] if !(CallFunc_HasAuthority_ReturnValue_2) pop
+  [5879] BroadcastDebug(self.Locations, self.TicketData)
+  [5911] pop
+  [5912] ClearAgentRequests(K2Node_CustomEvent_Agent)
+  [5935] pop
+  [5936] goto @2493
+  [5941] ReceiveBeginPlay()
+  [5951] push @530
+  [5956] push @2595
+  [5961] GenerateLocations()
+  [5975] pop
+  [5976] goto @5674
+  [5981] return nothing
+  [5983] end
+
+=== GenerateLocations
+  [0] push @778
+  [5] NewLocalVar_0 = 0
+  [28] Default__KismetArrayLibrary.Array_Clear(self.Locations)
+  [69] Temp_int_Variable = 1
+  [92] CallFunc_LessEqual_IntInt_ReturnValue = LessEqual_IntInt(Temp_int_Variable, self.NumLocations)
+  [130] if !(CallFunc_LessEqual_IntInt_ReturnValue) pop
+  [140] push @704
+  [145] CallFunc_Subtract_IntInt_ReturnValue = Subtract_IntInt(Temp_int_Variable, 1)
+  [187] CallFunc_Conv_IntToFloat_ReturnValue = Conv_IntToFloat(CallFunc_Subtract_IntInt_ReturnValue)
+  [224] CallFunc_Conv_IntToFloat_ReturnValue_1 = Conv_IntToFloat(self.NumLocations)
+  [261] CallFunc_Divide_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue)
+  [290] CallFunc_Divide_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Conv_IntToFloat_ReturnValue_1)
+  [319] CallFunc_Divide_DoubleDouble_ReturnValue = Divide_DoubleDouble(CallFunc_Divide_DoubleDouble_A_ImplicitCast, CallFunc_Divide_DoubleDouble_B_ImplicitCast)
+  [365] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Divide_DoubleDouble_ReturnValue, 360.0)
+  [411] CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [440] CallFunc_RotateAngleAxis_ReturnValue = RotateAngleAxis(EX_VectorConst(Value={'X': 1.0, 'Y': 0.0, 'Z': 0.0}), CallFunc_RotateAngleAxis_AngleDeg_ImplicitCast, EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 1.0}))
+  [527] K2Node_MakeStruct_approach_location.WorldOffsetFromSelf = CallFunc_RotateAngleAxis_ReturnValue
+  [563] K2Node_MakeStruct_approach_location.AgentOccupying = null
+  [583] K2Node_MakeStruct_approach_location.AgentPreferredDistance = 0.0
+  [615] K2Node_MakeStruct_approach_location.IsObstructed = false
+  [635] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(self.Locations, K2Node_MakeStruct_approach_location)
+  [703] pop
+  [704] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Variable, 1)
+  [746] Temp_int_Variable = CallFunc_Add_IntInt_ReturnValue
+  [773] goto @92
+  [778] return nothing
+  [780] end
+
+=== GetFreeLocations
+  [0] push @707
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @601
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @633
+  [194] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_Array_Get_Item.IsObstructed)
+  [291] if !(CallFunc_Not_PreBool_ReturnValue) pop
+  [301] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [360] CallFunc_EqualEqual_ObjectObject_ReturnValue = EqualEqual_ObjectObject(CallFunc_Array_Get_Item.AgentOccupying, RequestingAgent)
+  [407] CallFunc_BooleanAND_ReturnValue = BooleanAND(IncludeLocationsOccupiedBySelf, CallFunc_EqualEqual_ObjectObject_ReturnValue)
+  [445] CallFunc_EqualEqual_ObjectObject_ReturnValue_1 = EqualEqual_ObjectObject(CallFunc_Array_Get_Item.AgentOccupying, null)
+  [484] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_ObjectObject_ReturnValue_1, CallFunc_BooleanAND_ReturnValue)
+  [522] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [532] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_FreeIndexes, Temp_int_Array_Index_Variable)
+  [600] pop
+  [601] FreeIndexes = L_FreeIndexes
+  [628] goto @707
+  [633] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [675] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [702] goto @51
+  [707] return nothing
+  [709] end
+
+=== GetIndexOfTicketCategory
+  [0] push @444
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @342
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @370
+  [194] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(CallFunc_Array_Get_Item.TicketCategoryName, TicketCategory)
+  [300] if !(CallFunc_EqualEqual_NameName_ReturnValue) pop
+  [310] Index = Temp_int_Array_Index_Variable
+  [337] goto @444
+  [342] Index = -1
+  [365] goto @444
+  [370] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [412] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [439] goto @51
+  [444] return nothing
+  [446] end
+
+=== GetLocationByIndex
+  [0] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Index, 0)
+  [34] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [93] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Index, CallFunc_Array_Length_ReturnValue)
+  [131] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [169] if !(CallFunc_BooleanAND_ReturnValue) goto @236
+  [183] FoundLocation = true
+  [194] Loc = EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Index)
+  [231] goto @311
+  [236] FoundLocation = false
+  [247] Loc = approach_location{EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0}), null, 0.0, false}
+  [311] return nothing
+  [313] end
+
+=== GetLocationIndexOfRequestor
+  [0] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Requestor, CallFunc_Map_Find_Value)
+  [69] if !(CallFunc_Map_Find_ReturnValue) goto @193
+  [83] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Requestor, CallFunc_Map_Find_Value)
+  [152] Index = CallFunc_Map_Find_Value.ReservedLocationSlot
+  [188] goto @216
+  [193] Index = -1
+  [216] return nothing
+  [218] end
+
+=== GetNumTicketsInCategory
+  [0] push @295
+  [5] push @272
+  [10] GetIndexOfTicketCategory(Category, CallFunc_GetIndexOfTicketCategory_Index)
+  [42] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfTicketCategory_Index, 0)
+  [76] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [135] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetIndexOfTicketCategory_Index, CallFunc_Array_Length_ReturnValue)
+  [173] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [211] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [221] NumTickets = EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).CurrentTickets
+  [267] goto @295
+  [272] NumTickets = 0
+  [295] return nothing
+  [297] end
+
+=== GetRegenRateMultiplier
+  [0] push @696
+  [5] L_Mult = 1.0
+  [32] array{}
+  [43] Default__BlueprintMapLibrary.Map_Values(self.TicketModifiers, CallFunc_Map_Values_Values)
+  [93] Temp_int_Loop_Counter_Variable = 0
+  [116] Temp_int_Array_Index_Variable = 0
+  [139] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_Map_Values_Values)
+  [198] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [236] if !(CallFunc_Less_IntInt_ReturnValue) goto @590
+  [250] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [277] push @622
+  [282] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [341] TicketMatchesCriteria(TicketIndex, CallFunc_Array_Get_Item.ModifyCategoryName, CallFunc_Array_Get_Item.ModifyTicketsWithTag, CallFunc_TicketMatchesCriteria_Matches)
+  [409] if !(CallFunc_TicketMatchesCriteria_Matches) pop
+  [419] Default__KismetArrayLibrary.Array_Get(CallFunc_Map_Values_Values, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [478] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.AdditiveRegenTimeMultiplier)
+  [516] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, L_Mult)
+  [562] L_Mult = CallFunc_Add_DoubleDouble_ReturnValue
+  [589] pop
+  [590] Multiplier = L_Mult
+  [617] goto @696
+  [622] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [664] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [691] goto @139
+  [696] return nothing
+  [698] end
+
+=== GetTicketData
+  [0] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Index, 0)
+  [34] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [93] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Index, CallFunc_Array_Length_ReturnValue)
+  [131] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [169] if !(CallFunc_BooleanAND_ReturnValue) goto @236
+  [183] Found = true
+  [194] TicketData = EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index)
+  [231] goto @405
+  [236] Found = false
+  [247] TicketData = ticket_data{'None', GameplayTagContainer{EX_ArrayConst(InnerProperty={'Path': ['GameplayTags', 'GameplayTags'], 'ResolvedOwner': {'ObjectName': "Class'GameplayTagContainer'", 'ObjectPath': '/Script/GameplayTags'}},Values=GameplayTag{'AI.Tickets'})}, 1.0, EX_ArrayConst(InnerProperty={'Owner': {'ObjectName': "UserDefinedStruct'ticket_data'", 'ObjectPath': '/Game/_shared/blueprints/structs/ticket_data.0'}, 'Property': {'Type': 'ArrayProperty', 'Name': 'TicketRegenAmounts_27_F0EDA6704AE56E25BAE3B7B7B2E6B683', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 16, 'PropertyFlags': 'Edit | BlueprintVisible', 'Inner': {'Type': 'StructProperty', 'Name': 'TicketRegenAmounts_27_F0EDA6704AE56E25BAE3B7B7B2E6B683', 'Flags': 'RF_Public | RF_NeedPostLoad | RF_NeedPostLoadSubobjects | RF_WasLoaded | RF_LoadCompleted', 'ElementSize': 8, 'Struct': {'ObjectName': "UserDefinedStruct'weight_amount_pair'", 'ObjectPath': '/Game/_shared/blueprints/structs/weight_amount_pair.0'}}}},Values=weight_amount_pair{100, 1}), 3, 3, 0.0}
+  [405] return nothing
+  [407] end
+
+=== GetTicketsWithTags
+  [0] push @486
+  [5] Temp_int_Loop_Counter_Variable = 0
+  [28] Temp_int_Array_Index_Variable = 0
+  [51] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [110] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [148] if !(CallFunc_Less_IntInt_ReturnValue) goto @380
+  [162] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [189] push @412
+  [194] Default__KismetArrayLibrary.Array_Get(self.TicketData, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [253] CallFunc_HasAllTags_ReturnValue = HasAllTags(CallFunc_Array_Get_Item.TicketCategoryTags, RequiredTags, false)
+  [301] if !(CallFunc_HasAllTags_ReturnValue) pop
+  [311] CallFunc_Array_Add_ReturnValue = Default__KismetArrayLibrary.Array_Add(L_TicketIndexes, Temp_int_Array_Index_Variable)
+  [379] pop
+  [380] TicketIndexes = L_TicketIndexes
+  [407] goto @486
+  [412] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [454] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [481] goto @51
+  [486] return nothing
+  [488] end
+
+=== GetWorldLocationOfIndex
+  [0] GetLocationByIndex(Index, CallFunc_GetLocationByIndex_FoundLocation, CallFunc_GetLocationByIndex_Loc)
+  [41] if !(CallFunc_GetLocationByIndex_FoundLocation) goto @413
+  [55] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [75] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [125] ProjectPointToNavigationForActor(CallFunc_GetOwner_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue, CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_ProjectPointToNavigationForActor_Success, null, EX_VectorConst(Value={'X': 500.0, 'Y': 500.0, 'Z': 500.0}))
+  [197] if !(CallFunc_ProjectPointToNavigationForActor_Success) goto @472
+  [211] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetLocationByIndex_Loc.WorldOffsetFromSelf, PreferredDistance)
+  [266] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_ProjectPointToNavigationForActor_ProjectedPoint)
+  [312] CallFunc_NavigationRaycast_ReturnValue = NavigationRaycast(self, CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_Add_VectorVector_ReturnValue, CallFunc_NavigationRaycast_HitLocation, null, RequestingController)
+  [370] FoundWorldLocation = true
+  [381] WorldLocation = CallFunc_NavigationRaycast_HitLocation
+  [408] goto @526
+  [413] FoundWorldLocation = false
+  [424] WorldLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [467] goto @526
+  [472] FoundWorldLocation = false
+  [483] WorldLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [526] return nothing
+  [528] end
+
+=== IsTicketAvailable
+  [0] push @862
+  [5] GetIndexOfTicketCategory(TicketName, CallFunc_GetIndexOfTicketCategory_Index)
+  [37] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_GetIndexOfTicketCategory_Index, 0)
+  [71] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [130] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_GetIndexOfTicketCategory_Index, CallFunc_Array_Length_ReturnValue_1)
+  [168] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [206] if !(CallFunc_BooleanAND_ReturnValue) goto @297
+  [220] CallFunc_Greater_IntInt_ReturnValue_2 = Greater_IntInt(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=CallFunc_GetIndexOfTicketCategory_Index).CurrentTickets, 0)
+  [273] TicketAvailable = CallFunc_Greater_IntInt_ReturnValue_2
+  [292] goto @862
+  [297] CallFunc_GetNumGameplayTagsInContainer_ReturnValue = GetNumGameplayTagsInContainer(TagsToSearch)
+  [334] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_GetNumGameplayTagsInContainer_ReturnValue, 0)
+  [368] if !(CallFunc_Greater_IntInt_ReturnValue) goto @772
+  [382] GetTicketsWithTags(TagsToSearch, CallFunc_GetTicketsWithTags_TicketIndexes)
+  [414] Temp_int_Loop_Counter_Variable = 0
+  [437] Temp_int_Array_Index_Variable = 0
+  [460] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(CallFunc_GetTicketsWithTags_TicketIndexes)
+  [519] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue)
+  [557] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @772
+  [571] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [598] push @788
+  [603] Default__KismetArrayLibrary.Array_Get(CallFunc_GetTicketsWithTags_TicketIndexes, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [662] GetTicketData(CallFunc_Array_Get_Item, CallFunc_GetTicketData_Found, CallFunc_GetTicketData_TicketData)
+  [703] CallFunc_Greater_IntInt_ReturnValue_1 = Greater_IntInt(CallFunc_GetTicketData_TicketData.CurrentTickets, 0)
+  [746] if !(CallFunc_Greater_IntInt_ReturnValue_1) pop
+  [756] TicketAvailable = true
+  [767] goto @862
+  [772] TicketAvailable = false
+  [783] goto @862
+  [788] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [830] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [857] goto @460
+  [862] return nothing
+  [864] end
+
+=== IsValidLocation
+  [0] ProjectPointToNavigationForActor(Agent, Location, CallFunc_ProjectPointToNavigationForActor_ProjectedPoint, CallFunc_ProjectPointToNavigationForActor_Success, null, EX_VectorConst(Value={'X': 1.0, 'Y': 1.0, 'Z': 300.0}))
+  [72] IsValid = CallFunc_ProjectPointToNavigationForActor_Success
+  [91] return nothing
+  [93] end
+
+=== OnLocationRequestorDestroyed
+  [0] frame.K2Node_CustomEvent_Agent = Agent
+  [18] ExecuteUbergraph_ticket_dispatcher_bpc(5912)
+  [33] return nothing
+  [35] end
+
+=== OnTicketAdded__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== OnTicketConsumed__DelegateSignature
+  [0] return nothing
+  [2] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ticket_dispatcher_bpc(5941)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ticket_dispatcher_bpc(5797)
+  [33] return nothing
+  [35] end
+
+=== ReserveApproachLocation
+  [0] push @1017
+  [5] push @562
+  [10] CallFunc_IsValid_ReturnValue = IsValid(Agent)
+  [39] if !(CallFunc_IsValid_ReturnValue) pop
+  [49] L_NeedsRecalculate = true
+  [60] push @621
+  [65] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [134] if !(CallFunc_Map_Find_ReturnValue) pop
+  [144] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [173] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [242] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Map_Find_Value.LastLocationGrantedTimestamp)
+  [280] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, self.LocationRequestMinFrequency)
+  [326] CallFunc_GreaterEqual_DoubleDouble_ReturnValue = GreaterEqual_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue, CallFunc_GetGameTimeInSeconds_ReturnValue)
+  [364] if !(CallFunc_GreaterEqual_DoubleDouble_ReturnValue) pop
+  [374] CallFunc_Map_Find_ReturnValue = Default__BlueprintMapLibrary.Map_Find(self.TicketRequesterMap, Agent, CallFunc_Map_Find_Value)
+  [443] GetWorldLocationOfIndex(CallFunc_Map_Find_Value.ReservedLocationSlot, PreferredDistance, RequestingController, CallFunc_GetWorldLocationOfIndex_FoundWorldLocation_1, CallFunc_GetWorldLocationOfIndex_WorldLocation_1)
+  [511] SuccessfullyReservedLocation = CallFunc_GetWorldLocationOfIndex_FoundWorldLocation_1
+  [530] ReservedRelativeLocation = CallFunc_GetWorldLocationOfIndex_WorldLocation_1
+  [557] goto @1017
+  [562] SuccessfullyReservedLocation = false
+  [573] ReservedRelativeLocation = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [616] goto @1017
+  [621] if !(L_NeedsRecalculate) pop
+  [631] CalculateBestApproachLocation(Agent, AgentRadius, PreferredDistance, PreferredLocation, CallFunc_CalculateBestApproachLocation_BestIndex)
+  [690] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [749] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(CallFunc_CalculateBestApproachLocation_BestIndex, CallFunc_Array_Length_ReturnValue)
+  [787] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(CallFunc_CalculateBestApproachLocation_BestIndex, 0)
+  [821] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [859] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [869] GetWorldLocationOfIndex(CallFunc_CalculateBestApproachLocation_BestIndex, PreferredDistance, RequestingController, CallFunc_GetWorldLocationOfIndex_FoundWorldLocation, CallFunc_GetWorldLocationOfIndex_WorldLocation)
+  [928] if !(CallFunc_GetWorldLocationOfIndex_FoundWorldLocation) pop
+  [938] AssignLocation(Agent, CallFunc_CalculateBestApproachLocation_BestIndex, PreferredDistance)
+  [979] SuccessfullyReservedLocation = true
+  [990] ReservedRelativeLocation = CallFunc_GetWorldLocationOfIndex_WorldLocation
+  [1017] return nothing
+  [1019] end
+
+=== ResetTicketRegenCooldown
+  [0] L_ScaledTicketRegenSpeed = 0.0
+  [27] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Index, 0)
+  [61] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [120] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Index, CallFunc_Array_Length_ReturnValue)
+  [158] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [196] if !(CallFunc_BooleanAND_ReturnValue) goto @769
+  [210] CallFunc_Less_IntInt_ReturnValue_1 = Less_IntInt(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).CurrentTickets, EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).MaxTickets)
+  [286] if !(CallFunc_Less_IntInt_ReturnValue_1) goto @1090
+  [300] GetRegenRateMultiplier(Index, CallFunc_GetRegenRateMultiplier_Multiplier)
+  [332] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).TicketRegenFrequency)
+  [380] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, CallFunc_GetRegenRateMultiplier_Multiplier)
+  [426] L_ScaledTicketRegenSpeed = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [453] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(L_ScaledTicketRegenSpeed, 0.0)
+  [491] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @1090
+  [505] CallFunc_GetGameTimeInSeconds_ReturnValue = GetGameTimeInSeconds(self)
+  [534] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_GetGameTimeInSeconds_ReturnValue, L_ScaledTicketRegenSpeed)
+  [580] K2Node_SetFieldsInStruct_INTERNAL_NextTicketTimestamp_18_3BE886854ACA5F838F41F39FB5A2161E_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Add_DoubleDouble_ReturnValue)
+  [609] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).INTERNAL_NextTicketTimestamp = K2Node_SetFieldsInStruct_INTERNAL_NextTicketTimestamp_18_3BE886854ACA5F838F41F39FB5A2161E_ImplicitCast
+  [655] K2Node_CreateDelegate_OutputDelegate = bind(self.CheckTicketRegen)
+  [678] CallFunc_K2_SetTimerDelegate_Time_ImplicitCast = cast<CST_DoubleToFloat>(L_ScaledTicketRegenSpeed)
+  [707] CallFunc_K2_SetTimerDelegate_ReturnValue = K2_SetTimerDelegate(K2Node_CreateDelegate_OutputDelegate, CallFunc_K2_SetTimerDelegate_Time_ImplicitCast, false, 0.0, 0.0)
+  [764] goto @1132
+  [769] CallFunc_GetDisplayName_ReturnValue = GetDisplayName(self)
+  [798] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('BP Assert {', CallFunc_GetDisplayName_ReturnValue)
+  [848] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, '}: ')
+  [890] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, 'invalid index in resetTicketRegen')
+  [962] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{1.0, 0.247108, 0.0, 1.0}, 10.0, 'None')
+  [1036] CallFunc_IsShipping_ReturnValue = IsShipping()
+  [1056] if !(CallFunc_IsShipping_ReturnValue) goto @1075
+  [1070] goto @1132
+  [1075] StackTrace()
+  [1085] goto @1132
+  [1090] EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).INTERNAL_NextTicketTimestamp = -1.0
+  [1132] return nothing
+  [1134] end
+
+=== TicketMatchesCriteria
+  [0] push @486
+  [5] push @475
+  [10] CallFunc_GreaterEqual_IntInt_ReturnValue = GreaterEqual_IntInt(Index, 0)
+  [44] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.TicketData)
+  [103] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Index, CallFunc_Array_Length_ReturnValue)
+  [141] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_GreaterEqual_IntInt_ReturnValue, CallFunc_Less_IntInt_ReturnValue)
+  [179] if !(CallFunc_BooleanAND_ReturnValue) pop
+  [189] CallFunc_GetNumGameplayTagsInContainer_ReturnValue = GetNumGameplayTagsInContainer(SearchByRequiredTags)
+  [226] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_GetNumGameplayTagsInContainer_ReturnValue, 0)
+  [260] CallFunc_HasAllTags_ReturnValue = HasAllTags(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).TicketCategoryTags, SearchByRequiredTags, false)
+  [318] CallFunc_BooleanAND_ReturnValue_1 = BooleanAND(CallFunc_Greater_IntInt_ReturnValue, CallFunc_HasAllTags_ReturnValue)
+  [356] CallFunc_EqualEqual_NameName_ReturnValue = EqualEqual_NameName(EX_ArrayGetByRef(ArrayVariable=self.TicketData,ArrayIndex=Index).TicketCategoryName, SearchByName)
+  [413] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_EqualEqual_NameName_ReturnValue, CallFunc_BooleanAND_ReturnValue_1)
+  [451] Matches = CallFunc_BooleanOR_ReturnValue
+  [470] goto @486
+  [475] Matches = false
+  [486] return nothing
+  [488] end
+
+=== UpdateLocationValidity
+  [0] push @1248
+  [5] L_Pos = EX_VectorConst(Value={'X': 0.0, 'Y': 0.0, 'Z': 0.0})
+  [48] Temp_int_Loop_Counter_Variable = 0
+  [71] Temp_int_Array_Index_Variable = 0
+  [94] CallFunc_Array_Length_ReturnValue_1 = Default__KismetArrayLibrary.Array_Length(self.Locations)
+  [153] CallFunc_Less_IntInt_ReturnValue = Less_IntInt(Temp_int_Loop_Counter_Variable, CallFunc_Array_Length_ReturnValue_1)
+  [191] if !(CallFunc_Less_IntInt_ReturnValue) pop
+  [201] Temp_int_Array_Index_Variable = Temp_int_Loop_Counter_Variable
+  [228] push @850
+  [233] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [292] K2Node_DynamicCast_AsPawn = cast<Pawn>(CallFunc_Array_Get_Item.AgentOccupying)
+  [337] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsPawn)
+  [366] if !(K2Node_DynamicCast_bSuccess) goto @924
+  [380] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [439] CallFunc_GetController_ReturnValue = K2Node_DynamicCast_AsPawn.GetController()
+  [481] CallFunc_GetWorldLocationOfIndex_PreferredDistance_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_Array_Get_Item.AgentPreferredDistance)
+  [519] GetWorldLocationOfIndex(Temp_int_Array_Index_Variable, CallFunc_GetWorldLocationOfIndex_PreferredDistance_ImplicitCast, CallFunc_GetController_ReturnValue, CallFunc_GetWorldLocationOfIndex_FoundWorldLocation, CallFunc_GetWorldLocationOfIndex_WorldLocation)
+  [578] L_Pos = CallFunc_GetWorldLocationOfIndex_WorldLocation
+  [605] if !(CallFunc_GetWorldLocationOfIndex_FoundWorldLocation) goto @1186
+  [619] CallFunc_Array_Length_ReturnValue = Default__KismetArrayLibrary.Array_Length(self.ObjectTypesThatObstructApproachPoints)
+  [678] CallFunc_Greater_IntInt_ReturnValue = Greater_IntInt(CallFunc_Array_Length_ReturnValue, 0)
+  [712] if !(CallFunc_Greater_IntInt_ReturnValue) goto @1217
+  [726] array{}
+  [737] array{}
+  [748] CallFunc_SphereOverlapActors_ReturnValue = SphereOverlapActors(self, L_Pos, 400.0, self.ObjectTypesThatObstructApproachPoints, null, K2Node_MakeArray_Array, CallFunc_SphereOverlapActors_OutActors)
+  [811] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Temp_int_Array_Index_Variable).IsObstructed = CallFunc_SphereOverlapActors_ReturnValue
+  [849] pop
+  [850] CallFunc_Add_IntInt_ReturnValue = Add_IntInt(Temp_int_Loop_Counter_Variable, 1)
+  [892] Temp_int_Loop_Counter_Variable = CallFunc_Add_IntInt_ReturnValue
+  [919] goto @94
+  [924] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [944] CallFunc_K2_GetActorLocation_ReturnValue = CallFunc_GetOwner_ReturnValue.K2_GetActorLocation()
+  [994] Default__KismetArrayLibrary.Array_Get(self.Locations, Temp_int_Array_Index_Variable, CallFunc_Array_Get_Item)
+  [1053] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_Array_Get_Item.WorldOffsetFromSelf, 500.0)
+  [1108] CallFunc_Add_VectorVector_ReturnValue = Add_VectorVector(CallFunc_Multiply_VectorFloat_ReturnValue, CallFunc_K2_GetActorLocation_ReturnValue)
+  [1154] L_Pos = CallFunc_Add_VectorVector_ReturnValue
+  [1181] goto @619
+  [1186] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Temp_int_Array_Index_Variable).IsObstructed = true
+  [1216] pop
+  [1217] EX_ArrayGetByRef(ArrayVariable=self.Locations,ArrayIndex=Temp_int_Array_Index_Variable).IsObstructed = false
+  [1247] pop
+  [1248] return nothing
+  [1250] end

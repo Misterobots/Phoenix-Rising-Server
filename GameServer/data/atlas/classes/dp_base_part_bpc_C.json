@@ -1,0 +1,908 @@
+{
+ "name": "dp_base_part_bpc_C",
+ "kind": "blueprint",
+ "parents": [
+  "weapon_part_base_bpc_C",
+  "ArchonEquipmentPart",
+  "ActorComponent",
+  "Object"
+ ],
+ "size": 2944,
+ "sdk_header": "dp_base_part_bpc_classes.hpp",
+ "properties": [
+  {
+   "name": "UberGraphFrame",
+   "type": "StructProperty<PointerToUberGraphFrame>",
+   "bp_type": "StructProperty<PointerToUberGraphFrame>",
+   "flags": [
+    "Transient",
+    "DuplicateTransient"
+   ],
+   "net": false,
+   "repnotify": false
+  },
+  {
+   "name": "Debug",
+   "type": "bool",
+   "offset": "0xA20",
+   "size": 1,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "BoolProperty"
+  },
+  {
+   "name": "MAX_PARTS",
+   "type": "int32",
+   "offset": "0xA24",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "WeaponPartsCatalog",
+   "type": "UDataTable*",
+   "offset": "0xA28",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<DataTable>"
+  },
+  {
+   "name": "MeshesToLoad",
+   "type": "TArray<TSoftObjectPtr<USkeletalMesh>>",
+   "offset": "0xA30",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "WeaponParts",
+   "type": "TArray<EWeaponPartType>",
+   "offset": "0xA40",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "EquippedWeaponParts",
+   "type": "TArray<FEquippedWeaponPartData>",
+   "offset": "0xA50",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "Net",
+    "DisableEditOnInstance",
+    "RepNotify"
+   ],
+   "net": true,
+   "repnotify": true,
+   "onrep": "OnRep_EquippedWeaponParts",
+   "onrep_source": "blueprint RepNotifyFunc",
+   "bp_type": "ArrayProperty",
+   "rep_index": 3,
+   "schema_rep_index": 3
+  },
+  {
+   "name": "WeaponMeshes",
+   "type": "TArray<USkeletalMesh*>",
+   "offset": "0xA60",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  },
+  {
+   "name": "NumMeshes",
+   "type": "int32",
+   "offset": "0xA70",
+   "size": 4,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "IntProperty"
+  },
+  {
+   "name": "LHandSheatheAttach",
+   "type": "FTransform",
+   "offset": "0xA80",
+   "size": 96,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Transform>"
+  },
+  {
+   "name": "RHandSheatheAttach",
+   "type": "FTransform",
+   "offset": "0xAE0",
+   "size": 96,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Transform>"
+  },
+  {
+   "name": "Offset",
+   "type": "FVector",
+   "offset": "0xB40",
+   "size": 24,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "StructProperty<Vector>"
+  },
+  {
+   "name": "AbilityXIcon",
+   "type": "UTexture2D*",
+   "offset": "0xB58",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Texture2D>"
+  },
+  {
+   "name": "AbilityYIcon",
+   "type": "UTexture2D*",
+   "offset": "0xB60",
+   "size": 8,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "BlueprintReadOnly",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ObjectProperty<Texture2D>"
+  },
+  {
+   "name": "WeaponMeshes_Secondary",
+   "type": "TArray<USkeletalMesh*>",
+   "offset": "0xB68",
+   "size": 16,
+   "flags": [
+    "Edit",
+    "BlueprintVisible",
+    "DisableEditOnInstance"
+   ],
+   "net": false,
+   "repnotify": false,
+   "bp_type": "ArrayProperty"
+  }
+ ],
+ "components": [],
+ "functions": [
+  {
+   "name": "AttachPartsToHand",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ParentSkeletalMeshComponent",
+     "type": "USceneComponent*"
+    },
+    {
+     "name": "BoneToSet",
+     "type": "FName"
+    },
+    {
+     "name": "SetToThisBone",
+     "type": "FName"
+    },
+    {
+     "name": "PartMeshComponents",
+     "type": "TArray<UPoseableMeshComponent*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 22,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "ArchonGameplayStatics.GetSocketTransform_WeaponSeparation",
+    "GetSocketTransform",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.Less_IntInt",
+    "PoseableMeshComponent.SetBoneTransformByName"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "AttachPartsToHip",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ParentSkeletalMeshComponent",
+     "type": "USceneComponent*"
+    },
+    {
+     "name": "BoneName",
+     "type": "FName"
+    },
+    {
+     "name": "AttachTransform",
+     "type": "FTransform"
+    },
+    {
+     "name": "MeshPartComponents",
+     "type": "TArray<UPoseableMeshComponent*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 23,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "GetSocketTransform",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.ComposeTransforms",
+    "KismetMathLibrary.Less_IntInt",
+    "PoseableMeshComponent.SetBoneTransformByName"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ClearArrays",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ExecuteUbergraph_dp_base_part_bpc",
+   "flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EntryPoint",
+     "type": "int32"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Final",
+    "UbergraphFunction",
+    "HasDefaults"
+   ],
+   "statements": 237,
+   "reads": [
+    "ComponentSpaceTransforms",
+    "Debug",
+    "LHandSheatheAttach",
+    "MAX_PARTS",
+    "MeshesToLoad",
+    "NumMeshes",
+    "RHandSheatheAttach",
+    "WeaponMeshes",
+    "WeaponMeshes_Secondary",
+    "WeaponParts",
+    "WeaponPartsCatalog"
+   ],
+   "sets": [
+    "LHandSheatheAttach",
+    "NumMeshes",
+    "RHandSheatheAttach"
+   ],
+   "calls": [
+    "ActorComponent.GetOwner",
+    "ArchonLoadoutStringLibrary.Conv_ItemIdReplToString",
+    "AttachPartsToHand",
+    "AttachPartsToHip",
+    "ClearArrays",
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "KismetArrayLibrary.Array_Add",
+    "KismetArrayLibrary.Array_AddUnique",
+    "KismetArrayLibrary.Array_Clear",
+    "KismetArrayLibrary.Array_Get",
+    "KismetArrayLibrary.Array_Length",
+    "KismetMathLibrary.Add_IntInt",
+    "KismetMathLibrary.BooleanAND",
+    "KismetMathLibrary.ComposeTransforms",
+    "KismetMathLibrary.EqualEqual_IntInt",
+    "KismetMathLibrary.InvertTransform",
+    "KismetMathLibrary.Less_IntInt",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetNodeHelperLibrary.GetEnumeratorUserFriendlyName",
+    "KismetStringLibrary.Concat_StrStr",
+    "KismetStringLibrary.Conv_IntToString",
+    "KismetStringLibrary.Conv_StringToName",
+    "KismetSystemLibrary.Conv_SoftObjectReferenceToString",
+    "KismetSystemLibrary.IsValid",
+    "KismetSystemLibrary.IsValidSoftObjectReference",
+    "KismetSystemLibrary.LoadAsset",
+    "KismetSystemLibrary.MakeLiteralName",
+    "KismetSystemLibrary.PrintString",
+    "LoadAssets",
+    "LoadAssetsFromWeaponPartsCatalog",
+    "MeshLoadedCallback",
+    "SceneComponent.SetVisibility",
+    "Trajectory.ExtractBoneTrajectoryFromMontage",
+    "UtilityMethods.ArchonLogError",
+    "weapon_part_base_bpc_C.ReceiveBeginPlay"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": [
+    "AnimMontage h_mr_dp_loco_idle_unarmed_fwd_01_mot"
+   ]
+  },
+  {
+   "name": "ExternalUpdateMeshes",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DeltaTime",
+     "type": "double"
+    },
+    {
+     "name": "ParentSkeletalMeshComponent",
+     "type": "USkeletalMeshComponent*"
+    },
+    {
+     "name": "RootWeaponMesh",
+     "type": "USkeletalMeshComponent*"
+    },
+    {
+     "name": "InCombat",
+     "type": "bool"
+    },
+    {
+     "name": "PartMeshComponents",
+     "type": "TArray<UPoseableMeshComponent*>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 8,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetDefaultPrimaryDye",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DyeRowName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetDefaultSecondaryDye",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "DyeRowName",
+     "type": "FName"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "GetPresentationInfo",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "BodyType",
+     "type": "ECharacterBodyType"
+    },
+    {
+     "name": "ItemId",
+     "type": "FString"
+    },
+    {
+     "name": "SkeletalMesh",
+     "type": "TSoftObjectPtr<USkeletalMesh*>"
+    },
+    {
+     "name": "DisplayOffset",
+     "type": "FVector"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 33,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "DataTableFunctionLibrary.GetDataTableRowFromName",
+    "KismetMathLibrary.NotEqual_ByteByte",
+    "KismetStringLibrary.Conv_StringToName"
+   ],
+   "authority": [],
+   "tables": [
+    "PlayFabCatalogDataTable weapon_part_catalog"
+   ],
+   "assets": []
+  },
+  {
+   "name": "GetWeaponElement",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "ElementType",
+     "type": "EArchonElementType"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "HasDefaults",
+    "BlueprintCallable",
+    "BlueprintEvent",
+    "BlueprintPure"
+   ],
+   "statements": 20,
+   "reads": [
+    "ArchonWeapon",
+    "ElementalType",
+    "WeaponPartID"
+   ],
+   "sets": [],
+   "calls": [
+    "GetWeaponPartByType",
+    "KismetStringLibrary.Conv_StringToName",
+    "LookupPowerTableRow",
+    "ShouldUseRepeaterRefresh"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LoadAssets",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LoadAssetsFromWeaponPartsCatalog",
+   "flags": [
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EquippedWeaponParts_0",
+     "type": "TArray<FEquippedWeaponPartData>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LoadMeshAssets",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "EquippedWeaponParts_0",
+     "type": "TArray<FEquippedWeaponPartData>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "LoadMeshAssetsByStringArray",
+   "flags": [
+    "Public",
+    "HasOutParams",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Parts",
+     "type": "TArray<FString>"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Public",
+    "HasOutParms",
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_ADD5CA9C4BA61671FBFB349E8E208836",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "UObject*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnLoaded_CEC4BD2C417E4FAA1F0A72B3918E6340",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [
+    {
+     "name": "Loaded",
+     "type": "UObject*"
+    }
+   ],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 4,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "OnRep_EquippedWeaponParts",
+   "flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "BlueprintCallable",
+    "BlueprintEvent"
+   ],
+   "statements": 5,
+   "reads": [
+    "Debug",
+    "EquippedWeaponParts"
+   ],
+   "sets": [],
+   "calls": [
+    "KismetSystemLibrary.PrintString",
+    "LoadAssetsFromWeaponPartsCatalog"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  },
+  {
+   "name": "ReceiveBeginPlay",
+   "flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "ret": "void",
+   "params": [],
+   "rpc": null,
+   "native": false,
+   "rva": null,
+   "bp_flags": [
+    "Event",
+    "Public",
+    "BlueprintEvent"
+   ],
+   "statements": 3,
+   "reads": [],
+   "sets": [],
+   "calls": [
+    "dp_base_part_bpc_C.ExecuteUbergraph_dp_base_part_bpc"
+   ],
+   "authority": [],
+   "tables": [],
+   "assets": []
+  }
+ ],
+ "tables": [
+  "PlayFabCatalogDataTable weapon_part_catalog"
+ ],
+ "package": "/Game/Blueprints/Weapons/_shared/dp/dp_base_part_bpc",
+ "pseudo_file": "pseudo/dp_base_part_bpc_C.txt",
+ "game_data": {}
+}

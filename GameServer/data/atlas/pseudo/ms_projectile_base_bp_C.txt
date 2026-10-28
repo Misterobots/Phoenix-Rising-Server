@@ -1,0 +1,274 @@
+# ms_projectile_base_bp_C: Blueprint bytecode rendered by kismet_pseudo.py ([n] = byte offset, @n = jump target)
+
+=== Clamp360
+  [0] CallFunc_Less_DoubleDouble_ReturnValue = Less_DoubleDouble(Angle, 0.0)
+  [38] if !(CallFunc_Less_DoubleDouble_ReturnValue) goto @130
+  [52] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(Angle, 360.0)
+  [98] OutAngle = CallFunc_Add_DoubleDouble_ReturnValue
+  [125] goto @287
+  [130] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(Angle, 360.0)
+  [168] if !(CallFunc_Greater_DoubleDouble_ReturnValue) goto @260
+  [182] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(Angle, 360.0)
+  [228] OutAngle = CallFunc_Subtract_DoubleDouble_ReturnValue
+  [255] goto @287
+  [260] OutAngle = Angle
+  [287] return nothing
+  [289] end
+
+=== ExecuteUbergraph_ms_projectile_base_bp
+  [0] push @7464
+  [5] goto computed(EntryPoint)
+  [15] FlushNetDormancy()
+  [25] self.SpearWeaponPartComponent.GetCurrentAimAccuracy(CallFunc_GetCurrentAimAccuracy_Accuracy)
+  [70] self.CurrentShotAccuracy = CallFunc_GetCurrentAimAccuracy_Accuracy
+  [97] MarkPropertyDirtyFromRepIndex(self, 29, 'CurrentShotAccuracy')
+  [126] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [147] if !(CallFunc_IsServer_ReturnValue) goto @1614
+  [161] CallFunc_IsValid_ReturnValue_1 = IsValid(self.SpearWeapon.self.AmmoComponent)
+  [212] if !(CallFunc_IsValid_ReturnValue_1) goto @351
+  [226] FlushNetDormancy()
+  [236] self.SpearWeaponPartComponent.GetAmmoScale(CallFunc_GetAmmoScale_AmmoScale)
+  [281] self.AmmoScale = CallFunc_GetAmmoScale_AmmoScale
+  [308] MarkPropertyDirtyFromRepIndex(self, 38, 'AmmoScale')
+  [337] OnRep_AmmoScale()
+  [351] FlushNetDormancy()
+  [361] CallFunc_K2_GetActorRotation_ReturnValue = K2_GetActorRotation()
+  [389] self.StartingRotation = CallFunc_K2_GetActorRotation_ReturnValue
+  [416] MarkPropertyDirtyFromRepIndex(self, 31, 'StartingRotation')
+  [445] FlushNetDormancy()
+  [455] BreakRotator(self.StartingRotation, CallFunc_BreakRotator_Roll_2, CallFunc_BreakRotator_Pitch_2, CallFunc_BreakRotator_Yaw_2)
+  [501] CallFunc_MakeVector_X_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Roll_2)
+  [530] CallFunc_MakeVector_Y_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_2)
+  [559] CallFunc_MakeVector_Z_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_2)
+  [588] CallFunc_MakeVector_ReturnValue = MakeVector(CallFunc_MakeVector_X_ImplicitCast, CallFunc_MakeVector_Y_ImplicitCast, CallFunc_MakeVector_Z_ImplicitCast)
+  [643] self.ReplicatedRotationValues = CallFunc_MakeVector_ReturnValue
+  [670] MarkPropertyDirtyFromRepIndex(self, 37, 'ReplicatedRotationValues')
+  [699] OnRep_ReplicatedRotationValues()
+  [713] FlushNetDormancy()
+  [723] CallFunc_RandomFloatInRange_ReturnValue_1 = RandomFloatInRange(self.CurveFrequencyMin, self.CurveFrequencyMax)
+  [769] self.RandomPitchFrequency = CallFunc_RandomFloatInRange_ReturnValue_1
+  [796] MarkPropertyDirtyFromRepIndex(self, 34, 'RandomPitchFrequency')
+  [825] FlushNetDormancy()
+  [835] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(self.CurveFrequencyMin, self.CurveFrequencyMax)
+  [881] self.RandomYawFrequency = CallFunc_RandomFloatInRange_ReturnValue
+  [908] MarkPropertyDirtyFromRepIndex(self, 35, 'RandomYawFrequency')
+  [937] FlushNetDormancy()
+  [947] GetRandValue(true, self.MovementScaleMin, self.MovementScaleMax, CallFunc_GetRandValue_Value_1)
+  [989] self.RandomPitchScale = CallFunc_GetRandValue_Value_1
+  [1016] MarkPropertyDirtyFromRepIndex(self, 32, 'RandomPitchScale')
+  [1045] FlushNetDormancy()
+  [1055] GetRandValue(true, self.MovementScaleMin, self.MovementScaleMax, CallFunc_GetRandValue_Value)
+  [1097] self.RandomYawScale = CallFunc_GetRandValue_Value
+  [1124] MarkPropertyDirtyFromRepIndex(self, 33, 'RandomYawScale')
+  [1153] FlushNetDormancy()
+  [1163] CallFunc_RandomFloatInRange_ReturnValue_2 = RandomFloatInRange(0.0, 5.0)
+  [1209] self.RandomCurveOffset = CallFunc_RandomFloatInRange_ReturnValue_2
+  [1236] MarkPropertyDirtyFromRepIndex(self, 36, 'RandomCurveOffset')
+  [1265] if !(self.DebugSpear) pop
+  [1275] CallFunc_Conv_RotatorToString_ReturnValue = Conv_RotatorToString(self.StartingRotation)
+  [1312] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Spear projectile shot with starting rotation ', CallFunc_Conv_RotatorToString_ReturnValue)
+  [1396] CallFunc_Concat_StrStr_ReturnValue_1 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue, ' and accuracy rating ')
+  [1456] CallFunc_Conv_DoubleToString_ReturnValue = Conv_DoubleToString(self.CurrentShotAccuracy)
+  [1493] CallFunc_Concat_StrStr_ReturnValue_2 = Concat_StrStr(CallFunc_Concat_StrStr_ReturnValue_1, CallFunc_Conv_DoubleToString_ReturnValue)
+  [1539] PrintString(self, CallFunc_Concat_StrStr_ReturnValue_2, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [1613] pop
+  [1614] CallFunc_SetRTPCValue_Value_ImplicitCast = cast<CST_DoubleToFloat>(self.AmmoScale)
+  [1643] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast, 0, self.OwningPawn, 'Weapon_Spear_Ammo_Charge')
+  [1712] CallFunc_PostEvent_ReturnValue_2 = Default__AkGameplayStatics.PostEvent(Play_wep_spear_mortar_fire, self.OwningPawn, 0, Temp_delegate_Variable_3, false)
+  [1795] CallFunc_PostEvent_ReturnValue_1 = Default__AkGameplayStatics.PostEvent(Play_Wep_Elemental_Spear_Mortar_Fire, self.OwningPawn, 0, Temp_delegate_Variable_1, false)
+  [1878] CallFunc_PostEvent_ReturnValue = Default__AkGameplayStatics.PostEvent(Play_Generic_Explosion_Distant_D_Spear_Fire, self.OwningPawn, 0, Temp_delegate_Variable_2, false)
+  [1961] CallFunc_SetRTPCValue_Value_ImplicitCast_1 = cast<CST_DoubleToFloat>(self.CurrentShotAccuracy)
+  [1990] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast_1, 0, self, 'Weapon_Spear_Ammo_Accuracy')
+  [2051] CallFunc_SetRTPCValue_Value_ImplicitCast_2 = cast<CST_DoubleToFloat>(self.AmmoScale)
+  [2080] Default__AkGameplayStatics.SetRTPCValue(null, CallFunc_SetRTPCValue_Value_ImplicitCast_2, 0, self, 'Weapon_Spear_Ammo_Charge')
+  [2141] CallFunc_PostEvent_ReturnValue_3 = Default__AkGameplayStatics.PostEvent(Play_wep_spear_mortar_fire_accuracy, self, 0, Temp_delegate_Variable, true)
+  [2216] pop
+  [2217] FlushNetDormancy()
+  [2227] CallFunc_GetTimeSeconds_ReturnValue = GetTimeSeconds(self)
+  [2256] self.TimeFired = CallFunc_GetTimeSeconds_ReturnValue
+  [2283] MarkPropertyDirtyFromRepIndex(self, 30, 'TimeFired')
+  [2312] goto @15
+  [2317] ReceiveBeginPlay()
+  [2327] push @2503
+  [2332] CallFunc_GetOwner_ReturnValue = GetOwner()
+  [2352] Default__vfx_function_library_C.WeaponElementToVectorColor(CallFunc_GetOwner_ReturnValue, self.SpearWeapon, self, CallFunc_WeaponElementToVectorColor_VectorColor, CallFunc_WeaponElementToVectorColor_ElementType, CallFunc_WeaponElementToVectorColor_FoundRow)
+  [2434] if !(CallFunc_WeaponElementToVectorColor_FoundRow) pop
+  [2444] self.ms_muzzle_flash.SetVectorParameter('ParticleColor', CallFunc_WeaponElementToVectorColor_VectorColor)
+  [2502] pop
+  [2503] K2Node_DynamicCast_AsArchon_Character = cast<ArchonCharacter>(self.OwningPawn)
+  [2539] K2Node_DynamicCast_bSuccess = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsArchon_Character)
+  [2568] if !(K2Node_DynamicCast_bSuccess) pop
+  [2578] CallFunc_GetCurrentWeapon_ReturnValue = K2Node_DynamicCast_AsArchon_Character.GetCurrentWeapon()
+  [2620] K2Node_DynamicCast_AsBp_Mspear_Weapon = cast<bp_mspear_weapon_C>(CallFunc_GetCurrentWeapon_ReturnValue)
+  [2656] K2Node_DynamicCast_bSuccess_1 = cast<CST_ObjectToBool>(K2Node_DynamicCast_AsBp_Mspear_Weapon)
+  [2685] if !(K2Node_DynamicCast_bSuccess_1) pop
+  [2695] self.SpearWeapon = K2Node_DynamicCast_AsBp_Mspear_Weapon
+  [2714] CallFunc_GetComponentByClass_ReturnValue = self.SpearWeapon.GetComponentByClass(mspear_special_projectile_bpc_C)
+  [2765] self.SpearWeaponPartComponent = CallFunc_GetComponentByClass_ReturnValue
+  [2784] push @2217
+  [2789] CallFunc_IsServer_ReturnValue_2 = IsServer(self)
+  [2810] if !(CallFunc_IsServer_ReturnValue_2) pop
+  [2820] CallFunc_GetComponentByClass_ReturnValue_1 = self.SpearWeapon.GetComponentByClass(ammo_bpc_C)
+  [2871] CallFunc_IsValid_ReturnValue_2 = IsValid(CallFunc_GetComponentByClass_ReturnValue_1)
+  [2900] if !(CallFunc_IsValid_ReturnValue_2) pop
+  [2910] CallFunc_GetComponentByClass_ReturnValue_1 = self.SpearWeapon.GetComponentByClass(ammo_bpc_C)
+  [2961] CallFunc_GetComponentByClass_ReturnValue_1.AdjustAmmo(-1)
+  [2998] pop
+  [2999] ReceiveTick(K2Node_Event_DeltaSeconds)
+  [3018] CallFunc_IsServer_ReturnValue_1 = IsServer(self)
+  [3039] CallFunc_BooleanOR_ReturnValue = BooleanOR(CallFunc_IsServer_ReturnValue_1, self.StartingRotationReplicated)
+  [3077] if !(CallFunc_BooleanOR_ReturnValue) pop
+  [3087] CallFunc_IsValid_ReturnValue = IsValid(self.ErraticMovementCurve)
+  [3116] if !(CallFunc_IsValid_ReturnValue) pop
+  [3126] CallFunc_GetTimeSeconds_ReturnValue_1 = GetTimeSeconds(self)
+  [3155] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue_1, self.TimeFired)
+  [3201] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [3247] CallFunc_K2_GetActorRotation_ReturnValue_1 = K2_GetActorRotation()
+  [3275] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue_1, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [3321] BreakRotator(self.StartingRotation, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [3367] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [3413] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyYawOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_2)
+  [3481] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [3510] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3556] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [3602] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [3631] CallFunc_Subtract_DoubleDouble_ReturnValue_4 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [3677] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.SpearWeapon.self.MinInaccuracyPitchOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [3745] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyPitchOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [3813] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [3842] CallFunc_Subtract_DoubleDouble_ReturnValue_5 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [3888] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [3917] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [3963] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.RandomCurveOffset)
+  [4009] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue_2, self.RandomYawFrequency)
+  [4055] CallFunc_Multiply_DoubleDouble_ReturnValue_4 = Multiply_DoubleDouble(self.RandomPitchFrequency, CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [4101] CallFunc_Percent_FloatFloat_ReturnValue = Percent_FloatFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_3, 1.0)
+  [4147] CallFunc_Percent_FloatFloat_ReturnValue_1 = Percent_FloatFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_4, 1.0)
+  [4193] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Percent_FloatFloat_ReturnValue)
+  [4222] CallFunc_GetFloatValue_ReturnValue = self.ErraticMovementCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [4281] CallFunc_GetFloatValue_InTime_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Percent_FloatFloat_ReturnValue_1)
+  [4310] CallFunc_GetFloatValue_ReturnValue_1 = self.ErraticMovementCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast_1)
+  [4369] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [4398] CallFunc_Multiply_DoubleDouble_ReturnValue_5 = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyYawOffset, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [4466] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue_1)
+  [4495] CallFunc_Multiply_DoubleDouble_ReturnValue_6 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.SpearWeapon.self.MaxInaccuracyPitchOffset)
+  [4563] CallFunc_Multiply_DoubleDouble_ReturnValue_7 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_5, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [4609] CallFunc_Multiply_DoubleDouble_ReturnValue_8 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_6, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [4655] CallFunc_Multiply_DoubleDouble_ReturnValue_9 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_7, self.RandomYawScale)
+  [4701] CallFunc_Multiply_DoubleDouble_ReturnValue_10 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_8, self.RandomPitchScale)
+  [4747] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [4776] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue_9)
+  [4822] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [4851] CallFunc_Add_DoubleDouble_ReturnValue_4 = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_10, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [4897] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Add_DoubleDouble_ReturnValue_3, CallFunc_Subtract_DoubleDouble_ReturnValue_4, CallFunc_Add_DoubleDouble_ReturnValue)
+  [4952] CallFunc_FClamp_ReturnValue_1 = FClamp(CallFunc_Add_DoubleDouble_ReturnValue_4, CallFunc_Subtract_DoubleDouble_ReturnValue_5, CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [5007] Clamp360(CallFunc_FClamp_ReturnValue, CallFunc_Clamp360_OutAngle)
+  [5039] Clamp360(CallFunc_FClamp_ReturnValue_1, CallFunc_Clamp360_OutAngle_1)
+  [5071] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Clamp360_OutAngle_1)
+  [5100] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Clamp360_OutAngle)
+  [5129] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [5184] CallFunc_K2_SetActorRotation_ReturnValue = K2_SetActorRotation(CallFunc_MakeRotator_ReturnValue, false)
+  [5214] CallFunc_GetTimeSeconds_ReturnValue_1 = GetTimeSeconds(self)
+  [5243] CallFunc_Subtract_DoubleDouble_ReturnValue = Subtract_DoubleDouble(CallFunc_GetTimeSeconds_ReturnValue_1, self.TimeFired)
+  [5289] CallFunc_VSize_ReturnValue = VSize(self.ProjectileMovement.self.Velocity)
+  [5348] CallFunc_Subtract_DoubleDouble_ReturnValue_1 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [5394] CallFunc_K2_GetActorRotation_ReturnValue_1 = K2_GetActorRotation()
+  [5422] BreakRotator(CallFunc_K2_GetActorRotation_ReturnValue_1, CallFunc_BreakRotator_Roll, CallFunc_BreakRotator_Pitch, CallFunc_BreakRotator_Yaw)
+  [5468] BreakRotator(self.StartingRotation, CallFunc_BreakRotator_Roll_1, CallFunc_BreakRotator_Pitch_1, CallFunc_BreakRotator_Yaw_1)
+  [5514] CallFunc_Subtract_DoubleDouble_ReturnValue_2 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [5560] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyYawOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_2)
+  [5628] CallFunc_Add_DoubleDouble_A_ImplicitCast_2 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [5657] CallFunc_Add_DoubleDouble_ReturnValue = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_2, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [5703] CallFunc_Subtract_DoubleDouble_ReturnValue_3 = Subtract_DoubleDouble(1.0, self.CurrentShotAccuracy)
+  [5749] CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw_1)
+  [5778] CallFunc_Subtract_DoubleDouble_ReturnValue_4 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast_1, CallFunc_Multiply_DoubleDouble_ReturnValue)
+  [5824] CallFunc_Multiply_DoubleDouble_ReturnValue_1 = Multiply_DoubleDouble(self.SpearWeapon.self.MinInaccuracyPitchOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [5892] CallFunc_Multiply_DoubleDouble_ReturnValue_2 = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyPitchOffset, CallFunc_Subtract_DoubleDouble_ReturnValue_3)
+  [5960] CallFunc_Subtract_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [5989] CallFunc_Subtract_DoubleDouble_ReturnValue_5 = Subtract_DoubleDouble(CallFunc_Subtract_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue_1)
+  [6035] CallFunc_Add_DoubleDouble_A_ImplicitCast_1 = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch_1)
+  [6064] CallFunc_Add_DoubleDouble_ReturnValue_1 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast_1, CallFunc_Multiply_DoubleDouble_ReturnValue_2)
+  [6110] CallFunc_Add_DoubleDouble_ReturnValue_2 = Add_DoubleDouble(CallFunc_Subtract_DoubleDouble_ReturnValue, self.RandomCurveOffset)
+  [6156] CallFunc_Multiply_DoubleDouble_ReturnValue_3 = Multiply_DoubleDouble(CallFunc_Add_DoubleDouble_ReturnValue_2, self.RandomYawFrequency)
+  [6202] CallFunc_Multiply_DoubleDouble_ReturnValue_4 = Multiply_DoubleDouble(self.RandomPitchFrequency, CallFunc_Add_DoubleDouble_ReturnValue_2)
+  [6248] CallFunc_Percent_FloatFloat_ReturnValue = Percent_FloatFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_3, 1.0)
+  [6294] CallFunc_Percent_FloatFloat_ReturnValue_1 = Percent_FloatFloat(CallFunc_Multiply_DoubleDouble_ReturnValue_4, 1.0)
+  [6340] CallFunc_GetFloatValue_InTime_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Percent_FloatFloat_ReturnValue)
+  [6369] CallFunc_GetFloatValue_ReturnValue = self.ErraticMovementCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast)
+  [6428] CallFunc_GetFloatValue_InTime_ImplicitCast_1 = cast<CST_DoubleToFloat>(CallFunc_Percent_FloatFloat_ReturnValue_1)
+  [6457] CallFunc_GetFloatValue_ReturnValue_1 = self.ErraticMovementCurve.GetFloatValue(CallFunc_GetFloatValue_InTime_ImplicitCast_1)
+  [6516] CallFunc_Multiply_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue)
+  [6545] CallFunc_Multiply_DoubleDouble_ReturnValue_5 = Multiply_DoubleDouble(self.SpearWeapon.self.MaxInaccuracyYawOffset, CallFunc_Multiply_DoubleDouble_B_ImplicitCast)
+  [6613] CallFunc_Multiply_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_GetFloatValue_ReturnValue_1)
+  [6642] CallFunc_Multiply_DoubleDouble_ReturnValue_6 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_A_ImplicitCast, self.SpearWeapon.self.MaxInaccuracyPitchOffset)
+  [6710] CallFunc_Multiply_DoubleDouble_ReturnValue_7 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_5, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [6756] CallFunc_Multiply_DoubleDouble_ReturnValue_8 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_6, CallFunc_Subtract_DoubleDouble_ReturnValue_1)
+  [6802] CallFunc_Multiply_DoubleDouble_ReturnValue_9 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_7, self.RandomYawScale)
+  [6848] CallFunc_Multiply_DoubleDouble_ReturnValue_10 = Multiply_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_8, self.RandomPitchScale)
+  [6894] CallFunc_Add_DoubleDouble_A_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Yaw)
+  [6923] CallFunc_Add_DoubleDouble_ReturnValue_3 = Add_DoubleDouble(CallFunc_Add_DoubleDouble_A_ImplicitCast, CallFunc_Multiply_DoubleDouble_ReturnValue_9)
+  [6969] CallFunc_Add_DoubleDouble_B_ImplicitCast = cast<CST_FloatToDouble>(CallFunc_BreakRotator_Pitch)
+  [6998] CallFunc_Add_DoubleDouble_ReturnValue_4 = Add_DoubleDouble(CallFunc_Multiply_DoubleDouble_ReturnValue_10, CallFunc_Add_DoubleDouble_B_ImplicitCast)
+  [7044] CallFunc_FClamp_ReturnValue = FClamp(CallFunc_Add_DoubleDouble_ReturnValue_3, CallFunc_Subtract_DoubleDouble_ReturnValue_4, CallFunc_Add_DoubleDouble_ReturnValue)
+  [7099] CallFunc_FClamp_ReturnValue_1 = FClamp(CallFunc_Add_DoubleDouble_ReturnValue_4, CallFunc_Subtract_DoubleDouble_ReturnValue_5, CallFunc_Add_DoubleDouble_ReturnValue_1)
+  [7154] Clamp360(CallFunc_FClamp_ReturnValue, CallFunc_Clamp360_OutAngle)
+  [7186] Clamp360(CallFunc_FClamp_ReturnValue_1, CallFunc_Clamp360_OutAngle_1)
+  [7218] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Clamp360_OutAngle_1)
+  [7247] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_Clamp360_OutAngle)
+  [7276] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_BreakRotator_Roll, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [7331] CallFunc_GetForwardVector_ReturnValue = GetForwardVector(CallFunc_MakeRotator_ReturnValue)
+  [7368] CallFunc_Multiply_VectorFloat_ReturnValue = Multiply_VectorFloat(CallFunc_GetForwardVector_ReturnValue, CallFunc_VSize_ReturnValue)
+  [7414] self.ProjectileMovement.self.Velocity = CallFunc_Multiply_VectorFloat_ReturnValue
+  [7463] pop
+  [7464] return nothing
+  [7466] end
+
+=== GetRandValue
+  [0] if !(NegativeAndPositive) goto @259
+  [14] CallFunc_RandomFloat_ReturnValue = RandomFloat()
+  [42] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(Min, Max)
+  [88] CallFunc_Greater_DoubleDouble_ReturnValue = Greater_DoubleDouble(CallFunc_RandomFloat_ReturnValue, 0.5)
+  [126] CallFunc_SelectFloat_ReturnValue = SelectFloat(-1.0, 1.0, CallFunc_Greater_DoubleDouble_ReturnValue)
+  [181] CallFunc_Multiply_DoubleDouble_ReturnValue = Multiply_DoubleDouble(CallFunc_RandomFloatInRange_ReturnValue, CallFunc_SelectFloat_ReturnValue)
+  [227] Value = CallFunc_Multiply_DoubleDouble_ReturnValue
+  [254] goto @332
+  [259] CallFunc_RandomFloatInRange_ReturnValue = RandomFloatInRange(Min, Max)
+  [305] Value = CallFunc_RandomFloatInRange_ReturnValue
+  [332] return nothing
+  [334] end
+
+=== OnRep_AmmoScale
+  [0] self.CustomProjectileDamageScale = self.AmmoScale
+  [27] return nothing
+  [29] end
+
+=== OnRep_ReplicatedRotationValues
+  [0] FlushNetDormancy()
+  [10] BreakVector(self.ReplicatedRotationValues, CallFunc_BreakVector_X, CallFunc_BreakVector_Y, CallFunc_BreakVector_Z)
+  [56] CallFunc_MakeRotator_Roll_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector_X)
+  [85] CallFunc_MakeRotator_Pitch_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector_Y)
+  [114] CallFunc_MakeRotator_Yaw_ImplicitCast = cast<CST_DoubleToFloat>(CallFunc_BreakVector_Z)
+  [143] CallFunc_MakeRotator_ReturnValue = MakeRotator(CallFunc_MakeRotator_Roll_ImplicitCast, CallFunc_MakeRotator_Pitch_ImplicitCast, CallFunc_MakeRotator_Yaw_ImplicitCast)
+  [198] self.StartingRotation = CallFunc_MakeRotator_ReturnValue
+  [225] MarkPropertyDirtyFromRepIndex(self, 31, 'StartingRotation')
+  [254] self.StartingRotationReplicated = true
+  [265] CallFunc_IsServer_ReturnValue = IsServer(self)
+  [286] CallFunc_Not_PreBool_ReturnValue = Not_PreBool(CallFunc_IsServer_ReturnValue)
+  [315] CallFunc_BooleanAND_ReturnValue = BooleanAND(CallFunc_Not_PreBool_ReturnValue, self.DebugSpear)
+  [353] if !(CallFunc_BooleanAND_ReturnValue) goto @563
+  [367] CallFunc_Conv_RotatorToString_ReturnValue = Conv_RotatorToString(self.StartingRotation)
+  [404] CallFunc_Concat_StrStr_ReturnValue = Concat_StrStr('Spear projectile starting rotation replicated ', CallFunc_Conv_RotatorToString_ReturnValue)
+  [489] PrintString(self, CallFunc_Concat_StrStr_ReturnValue, true, true, LinearColor{0.0, 0.66, 1.0, 1.0}, 2.0, 'None')
+  [563] return nothing
+  [565] end
+
+=== ReceiveBeginPlay
+  [0] ExecuteUbergraph_ms_projectile_base_bp(2317)
+  [15] return nothing
+  [17] end
+
+=== ReceiveTick
+  [0] frame.K2Node_Event_DeltaSeconds = DeltaSeconds
+  [18] ExecuteUbergraph_ms_projectile_base_bp(2999)
+  [33] return nothing
+  [35] end

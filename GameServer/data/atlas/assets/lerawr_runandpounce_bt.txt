@@ -1,0 +1,35 @@
+lerawr_runandpounce_bt  blackboard=BlackboardData lerawr_bb
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if btdeco_lock_target]
+  Sequence
+    1) audio_exit_flee_state_bttask
+    2) Selector
+      [if DistanceCheck  (Origin=bb.SelfActor, Target=bb.AttackTarget, MinDistance=2000, MaxDistance=99999)]
+      1) Sequence
+        [if ForceSuccess]
+        1) Sequence
+          [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Lerawr", "RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+          1) BehemothAction  (Montage=AnimMontage b_aq_gen_00_atk_buttwiggle_fwd_00_mot, StopMontageOnAbort=false, bShowPropertyDetails=false)
+        2) SimpleParallel
+          1) wait_for_distance_bttask  (TargetKey=bb.AttackTarget, MinDistanceData={"ConstantFloat": 1500.0}, MaxDistanceData={"ConstantFloat": 99999.0}, TimeInFutureToPredictTargetPos=0.5, BlackboardKeyNameToCheck=CanTransitToNextAnim, RequiredBlackboardKeyType=Bool, BlackboardCompareData={"ConstantBool": true})
+          2) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.AttackTarget)
+      2) Sequence
+        1) pivot_towards_target_bttask  (PivotTarget=bb.PounceLocation, BlendOutTime=0.25, PivotSetToUse=TurnToJump)
+        2) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery find_pounce_location_eqs"}, BlackboardKey=bb.PounceLocation)
+        3) set_blackboard_key_bttask  (ResultKey=bb.ShouldFaceAttackTargetAtEnd, DataType=Bool, SourceData={"ConstantBool": true})
+        4) BehemothAction  (Montage=AnimMontage b_leRawr_loco_pounceing_reposition_mot)
+    3) Selector
+      {service rng_float_service  (RNG_Float_key=bb.RNG_Float)}
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothClassificationName": "Alpha"}, bShowPropertyDetails=false)]
+      [if btdeco_percentchance  (PercentChance=0.8)]
+      1) BehemothAction "pounce forward"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwd_01_mot, bShowPropertyDetails=false)
+      [if btdeco_percentchance  (PercentChance=0.5)]
+      2) BehemothAction "PounceFwdLeft"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdleft_fastblend)
+      3) BehemothAction "PounceFwdR"  (Montage=AnimMontage b_aq_lerawr_00_atk_pounce_fwdright_fastblend, TriggerCooldownOnSuccess=false)
+    [if ForceSuccess]
+    4) Sequence
+      [if passes_behemoth_requirements_btdeco  (BehemothRequirements={"RequireBehemothArchetypeName": "Shockmane", "RequireBehemothClassificationName": "Alpha", "ClassificationCondition": "require_or_exclude::Exclude"}, bShowPropertyDetails=false)]
+      [if btdeco_percentchance  (PercentChance=0.5)]
+      1) Sequence
+        1) BehemothAction "personality_01"  (Montage=AnimMontage b_aq_gen_00_pers_personality_00_mot)

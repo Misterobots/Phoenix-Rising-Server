@@ -1,0 +1,16 @@
+bugbear_moveto_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if comment_btdeco "Moves to the position, starting to fly if needed"]
+  [root if comment_btdeco "Requires MoveDestination"]
+  [root if comment_btdeco "Requires TempFloat (Distance to move to, 500 or 1000)"]
+  [root if archon_distance_check_btdeco "Distance To MoveDest > TempFloat"  (Origin=bb.SelfActor, Target=bb.MoveDestination, MinDistance={"BlackboardKeyName": "TempFloat"}, MaxDistance={"ConstantFloat": 99999.0}, bShowPropertyDetails=false)]
+  Sequence
+    1) RunBehavior  (BehaviorAsset=BehaviorTree bugbear_enter_fly_if_grounded)
+    2) Selector
+      [if Compare_btdeco "TempFloat < 750"  (LeftSideKey=bb.TempFloat, CompareOperator=<, CompareType=Float, RightSideData={"ConstantFloat": 750.0}, bShowPropertyDetails=false)]
+      1) Sequence
+        1) MoveTo  (AcceptableRadius=500, bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+      [if Compare_btdeco "TempFloat >= 750"  (LeftSideKey=bb.TempFloat, CompareOperator=>=, CompareType=Float, RightSideData={"ConstantFloat": 750.0}, bShowPropertyDetails=false)]
+      2) Sequence
+        1) MoveTo  (bReachTestIncludesGoalRadius=false, bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.TargetActor)

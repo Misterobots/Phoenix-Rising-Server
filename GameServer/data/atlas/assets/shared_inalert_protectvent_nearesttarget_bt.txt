@@ -1,0 +1,27 @@
+shared_inalert_protectvent_nearesttarget_bt  blackboard=BlackboardData bb_base
+  (children run in order; a Selector stops at the first that succeeds, a Sequence at the first that fails;
+   [if ...] lines are the decorators on the node below them)
+  [root if behemoth_in_state_btdeco  (State=Alerted)]
+  [root if behemoth_in_state_btdeco  (State=Combat, StateRequirement=ExcludedByState)]
+  Sequence
+    {service try_pick_new_target_bts  (Interval=2)}
+    1) Selector
+      [if not navtrace_btdeco  (TraceTargetBlackboardKey=CurrentPatrolPoint, bInverseCondition=true)]
+      [if TimeLimit]
+      [if Cooldown]
+      [if set_behemoth_loco_mode_btdeco  (LocoType=Walk)]
+      1) Sequence
+        1) MoveTo  (bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+      2) Sequence
+        1) RunEQSQuery  (EQSRequest={"QueryTemplate": "EnvQuery eqs_find_live_player_patrol_point"}, BlackboardKey=bb.MoveDestination)
+        2) Sequence
+          [if ForceSuccess]
+          [if Blackboard  (AttackTarget is Is Set)]
+          1) RotateToFaceBBEntry  (BlackboardKey=bb.AttackTarget)
+          2) MoveTo  (bStopOnOverlapNeedsUpdate=false, BlackboardKey=bb.MoveDestination)
+          [if ForceSuccess]
+          [if Blackboard  (AttackTarget is Is Set)]
+          3) RotateTowardsTarget  (Target=bb.AttackTarget)
+          4) Wait  (WaitTime=2, RandomDeviation=0.5)
+        [if btdeco_percentchance  (PercentChance=10)]
+        3) generic_action_bttask  (ActionType=Suspicious)
