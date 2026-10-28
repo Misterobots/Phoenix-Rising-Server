@@ -35,7 +35,10 @@ def _patch_classes(old_ns, mod):
         if not isinstance(new, type) or not isinstance(old, type) or old is new or new.__module__ != mod.__name__:
             continue
         for attr, val in vars(new).items():
-            if attr in ('__dict__', '__weakref__'):
+            # __slots__ fields are descriptors bound to the class that made them: copying the new class's onto the old one
+            # breaks every existing object (and copy.copy of it)
+            if attr in ('__dict__', '__weakref__', '__slots__') or type(val).__name__ in ('member_descriptor',
+                                                                                          'getset_descriptor'):
                 continue
             try:
                 setattr(old, attr, val)
