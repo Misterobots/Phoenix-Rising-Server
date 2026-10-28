@@ -115,7 +115,10 @@ class CityTests(unittest.TestCase):
         tx = self._run('ServerSetWeaponTalentPerkUnlockedById',
                        {'ItemId': 'W1', 'TalentId': SPECIAL, 'TalentPerkIndex': 4, 'NewUnlockValue': 1})  # 30 essence
         tx.assert_not_called()
-        self.assertEqual(self._sent('ClientSetWeaponTalentPerkEquipState') + self._sent('ClientSetWeaponTalentPerkUnlockState'), [])
+        # refused clicks are still answered, with the perk's real state (false here), so the client isn't left waiting
+        sent = self._sent('ClientSetWeaponTalentPerkEquipState') + self._sent('ClientSetWeaponTalentPerkUnlockState')
+        self.assertEqual(len(sent), 2)
+        self.assertFalse(talents.is_unlocked(self.s.talent_state, 'W1', SPECIAL, 4))
 
 
 if __name__ == '__main__':

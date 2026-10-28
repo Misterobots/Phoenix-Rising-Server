@@ -997,6 +997,12 @@ class GenSession(ReplaySession):
                     why = 'not enough: %s' % [(c, a, owned.get(c, 0)) for c, a in spends if owned.get(c, 0) < a]
         if why is not None:
             print('TALENT %s %s %s[%s]=%s refused: %s' % (func, item, talent, perk, value, why), flush=True)
+            # answer anyway with the perk's real state: an unanswered click leaves the client waiting on it, and that talent
+            # row stops redrawing until a restart
+            if state is not None and talent in cat.talents and 0 <= perk < len(perks) and self._item_catalog(item):
+                key = 'equipped' if equip else 'unlocked'
+                actual = perk in (((state.get(item) or {}).get(talent) or {}).get(key) or [])
+                self._main_queue.append(('talent', (ch, cls, equip, item, talent, perk, actual, state, [])))
             return
         new = talents.set_flag(state, item, talent, perk, 'equipped' if equip else 'unlocked', value)
         hdrs = _backend_headers(ids.get('auth_token'))
