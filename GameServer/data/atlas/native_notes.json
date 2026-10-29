@@ -252,6 +252,36 @@
    "details": "Thunk 0x22B55C0 calls vtable slot 0x9B0 (ArchonBehemoth vtable 0x684AC90, constructor 0x2637F80) = 0x2645100: FindComponentByClass(DamageComponent) on self, table = component +0xB0 (DamageTable), checks its RowStruct is DamageTableData, then FindRow (0x4D068E0). Returns false when the component, table or row is missing. Bp_Behemoth.DamageTableLookup falls back to DamageTable_Generic after it. No Blueprint writes DamageTable (BlueprintReadOnly) and no class in 2.1.1 overrides GetDamageInfo.",
    "source": "capstone disassembly of the 2.1.1 client (0x22B55C0, 0x2645100)",
    "date": "2026-10-27"
+  },
+  "ArchonGlobalTuning.GetWeaponPowerTable": {
+   "summary": "Picks the weapon power table by feature flag.",
+   "details": "Impl 0x2801480. WeaponProgressionReworkFeature on -> WeaponProgressionReworkPowerTable (weapon_progression_rework_power_table, cached at +0x298); else ProgressionReworkFeature on -> WeaponPowerTablePerLevels by level (cached map +0x2A8); else WeaponPowerTable.",
+   "source": "capstone disassembly of the 2.1.1 client; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  "ArchonWeapon.CachePowerTableData": {
+   "summary": "Caches the weapon's power table and its row named after ItemId; no fallback.",
+   "details": "Impl 0x2E3E7B0: PowerTable (+0x7F8) = GetArchonGlobalTuning().GetWeaponPowerTable(GetCurrentLevel()); row = FindRow<FWeaponPowerTableData>(FName(ItemId), context \"AArchonWeapon::CachePowerTableData\", no warning), pointer kept at +0x800 (null when missing).",
+   "source": "capstone disassembly of the 2.1.1 client; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  "ArchonWeapon.GetPowerTableData": {
+   "summary": "Copies the cached power row; false when the item has no row.",
+   "details": "Impl 0x2E49990: reads +0x800; no fallback to the class's WeaponPowerTableData.",
+   "source": "capstone disassembly of the 2.1.1 client; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  "ArchonWeapon.ActivateSpecialAbilities": {
+   "summary": "TryActivateAbility on every ability granted into the slot, on the owner pawn's ASC.",
+   "details": "Impl 0x2E3A5D0: Owner (+0x140) -> IAbilitySystemInterface -> GetAbilitySystemComponent; slot map +0x678 (EAbilitySlot -> TArray<FGameplayAbilitySpecHandle>) filled by the grant (0x2E3A780); returns true when every activation succeeded. No sword class or montage calls it in 2.1.1.",
+   "source": "capstone disassembly of the 2.1.1 client; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  "ArchonWeapon::GrantPowerTableAbilities @0x2E3A780": {
+   "summary": "Grants the weapon's abilities to the owner pawn's ASC (authority only); name assigned here, vtable slot 0xFB0.",
+   "details": "Owner pawn's ASC via IAbilitySystemInterface; FindRow(PowerTable, FName(ItemId), 'AArchonWeapon::LookupPowerTableRow'); no row -> logs 'Weapon: no entry in weapon tables for this weapon (%s)' and grants nothing. Copies PhysicalType/ElementalType to +0x660/+0x661. If the pawn's role is ROLE_Authority: grants the class Abilities (+0x5A0) and the row's RefAbilities (+0x130) at AbilityLevel (+0x4D0) through 0x2E3B0F0, and RefSpecialAbilities1-5 (+0x140..+0x180) as slots 0-4 through 0x2E3B300, keeping the handles in the slot map +0x678. Sits beside AArchonEquipment::HandleEquipForGameplay (slot 0xFA0); its caller was not traced.",
+   "source": "capstone disassembly of the 2.1.1 client; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
   }
  }
 }

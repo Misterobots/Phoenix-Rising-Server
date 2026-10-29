@@ -699,6 +699,40 @@
    ],
    "source": "main: GameServer/mpgs/talents.py; topics/repeaters_server.md",
    "date": "2026-10-28"
+  },
+  {
+   "id": "weapon-power-row-by-itemid",
+   "fact": "A weapon's power row is the row named after its ItemId (the catalog id, e.g. WP_EB_BEGINNER) in the table GetWeaponPowerTable picks (weapon_progression_rework_power_table while WeaponProgressionReworkFeature is on, which the talent rules need). There is no fallback to the class's WeaponPowerTableData: with no row GetPowerTableData returns false and no abilities are granted. WP_EB_SHOCK_01 has a row only in the rework table (Shock, no abilities).",
+   "classes": [
+    "ArchonWeapon",
+    "ArchonGlobalTuning",
+    "BP_BaseArchonWeapon_C"
+   ],
+   "source": "disassembly 0x2E3E7B0, 0x2E49990, 0x2801480; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "weapon-abilities-on-pawn-asc",
+   "fact": "The weapon grants its class Abilities, the power row's RefAbilities and RefSpecialAbilities1-5 (as slots 0-4) to the owner pawn's ASC, only with authority (0x2E3A780); ActivateSpecialAbilities(Slot) activates a slot's handles on the pawn's ASC. Matches the live crash when abilities were granted onto the weapon actor's ASC (2026-10-16).",
+   "classes": [
+    "ArchonWeapon",
+    "dp_weapon_ability_base_ab_C",
+    "eb_charge_ab_C"
+   ],
+   "source": "disassembly 0x2E3A780, 0x2E3A5D0; topics/weapon_power_and_abilities.md",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "sword-special-part-gameplay",
+   "fact": "The sword special (Overdrive; Feast on The Hunger) is not an ability: with a full meter the client enters the RB_activate move (ServerStartNextMove), whose notify at 0.2186 s calls the special part's ActivateWeaponPartGameplay; the authority branch applies special_active_ge (Infinite, Combat.SpecialActive) to the pawn's ASC, multicasts OnSpecialActivated and starts the meter decay (Decay Rate 5/s; The Hunger 4 with talent sp05) until MeterEmpty removes it. The Hunger's three part buffs all watch Combat.SpecialActive. The dash cooldown is eb_special_attack_dash_cooldown_ge with SetByCaller Duration = the part's Cooldown (parry 2 s; 0 and so none for the default and Crowbear parts).",
+   "classes": [
+    "eb_special_default_part_bpc_C",
+    "eb_special_crowbear_exotic_part_bpc_C",
+    "special_active_ge_C",
+    "eb_special_attack_dash_cooldown_ge_C"
+   ],
+   "source": "pseudo/eb_special_default_part_bpc_C.txt, eb_special_crowbear_exotic_part_bpc_C.txt; montage h_mr_eb_melee_RB_activate_fwd_01_mot; topics/sword_server.md",
+   "date": "2026-10-28"
   }
  ]
 }

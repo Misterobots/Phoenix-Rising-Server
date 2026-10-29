@@ -169,3 +169,5 @@ unconfirmed.
 | `topics/behemoth_scaling.md` | Threat levels, tuning presets, behemoth health/stagger/damage scaling, power overrides, star levels |
 | `topics/area_rules.md` | What is allowed in town vs on a hunt: quick items, cells, menus, bounty menus |
 | `topics/repeaters_server.md` | What the server does for the repeaters and why, with evidence and dates; the checklist of what every weapon type needs on the server |
+| `topics/weapon_power_and_abilities.md` | How a weapon finds its power row (by item id, which table) and where its abilities are granted (the pawn's ASC, slots) |
+| `topics/sword_server.md` | What the server does for swords: the special (Overdrive, Feast), meter decay, dash cooldown |

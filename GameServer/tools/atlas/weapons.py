@@ -481,6 +481,8 @@ def sheet(key, info, rows_index):
         out.append('Native enum: EWeaponType::WeaponType_%s' % TYPE_ENUM[key])
     if os.path.exists(os.path.join(paths.OUT, 'topics', '%s_server.md' % key)):
         out.append('What the server does for this type, and why: topics/%s_server.md' % key)
+    if key != 'armor':
+        out.append('How a weapon finds its power row and gets its abilities: topics/weapon_power_and_abilities.md')
     if key in CODES:
         for title, fn in (('Items (gameplay catalog: the weapon items players own, their actor class and part slots)',
                            item_lines),
