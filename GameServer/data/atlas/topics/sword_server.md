@@ -125,7 +125,7 @@ three switch on and off with **`Combat.SpecialActive`**:
 | Buff | While Feast is on |
 |---|---|
 | `eb_special_attack_speed_buff` | `eb_special_attack_speed_ge` (Infinite): `CombatPlayRateRateModifier` + `AttackSpeedIncrease` 0.2 |
-| `ce_crowbear_eb_exotic_drain_lifesteal` | life drain: 7 damage per second to the player (tags `DamageType.Self`, `DamageType.Dot`, `Stagger.None`); `ce_crowbear_eb_exotic_damage_ge` with SetByCaller `Magnitude` = `DamageBonus` 0.25; replicates `IsLifeDrainActive` |
+| `ce_crowbear_eb_exotic_drain_lifesteal` | life drain: true damage `FMin(CurrentHealth - 1, DamagePerSecond)` = **7 every 0.2 s** (a `Delay(0.2)` loop in `ReceiveTick`, so it never kills); with talent `weapon.talent.d24.sp02` it only drains while health is above 15% of max; replicates `IsLifeDrainActive`. Its `ApplyDamageBuff` (`ce_crowbear_eb_exotic_damage_ge`, `DamageBonus` 0.25) has no caller in 2.1.1, so **the damage bonus never applies** |
 | `crowbear_eb_exotic_lifesteal_buff` | heals 12% (`LifestealPercent`) of the damage the player deals after mitigation |
 
 The Feast part also adds an umbral area effect to attacks (`SpawnAoE`, on the server). It handles the behemoth's death
@@ -160,21 +160,23 @@ rework passives.
 
 ## What the server has to do
 
-- [ ] Keep the meter (done: `weapon_meter.py`).
-- [ ] Track the special per player. When `ServerStartCombo` (key 8) enters the special-activate move, at 0.2186 s:
+Ticked items are done on `main` (89f9e582, 2026-10-29).
+
+
+- [x] Keep the meter (`weapon_meter.py`).
+- [x] Track the special per player. When `ServerStartCombo` (key 8) enters the special-activate move, at 0.2186 s:
       - apply `special_active_ge` (`Combat.SpecialActive`) to the pawn's ASC and multicast `OnSpecialActivated`
       - give 1 pip (5 more for The Hunger with `sp04`)
       - start the drain: the weapon ASC's `Determination` falls by `rate × dt`, starting at `Decay Rate` (5; 4 with
         `sp05`) and growing by 0.2/s
       - start the pip fill: +0.05 every 0.2 s
-- [ ] When the meter reaches 0: remove `special_active_ge`, stop the fill, multicast `Multi_DisableSuperModeEffects`.
+- [x] When the meter reaches 0: remove `special_active_ge`, stop the fill, multicast `Multi_DisableSuperModeEffects`.
       The Hunger also empties the meter when combat ends.
-- [ ] Pips from hits: on each landed hit whose damage row's tags include `Combat.Sword.TierAdvancer`, +1
+- [x] Pips from hits: on each landed hit whose damage row's tags include `Combat.Sword.TierAdvancer`, +1
       (`TokenGranter`) or +2 (`TokenGranterTwo`), at most once per 0.25 s; at most 6 pips.
-- [ ] Pip spend: when a move from the table in section 3 plays, remove its pips at the notify time.
-- [ ] Send `CurrentSwordcharges` and `SwordchargeFillPercent` on the sword actor whenever they change.
-- [ ] Send the special part's buffs as buff actors on equip (The Hunger: attack speed, drain and damage bonus,
-      lifesteal). They react to `Combat.SpecialActive` on their own.
+- [x] Pip spend: when a move from the table in section 3 plays, remove its pips at the notify time.
+- [x] Send `CurrentSwordcharges` and `SwordchargeFillPercent` on the sword actor whenever they change.
+- [x] Send the special part's buffs as buff actors on equip (The Hunger: attack speed, drain, lifesteal). They react to `Combat.SpecialActive` on their own.
 - [ ] Dash cooldown effect when the part's `Cooldown` > 0 (parry 2 s).
-- [ ] Grant the sword's power-row abilities to the pawn's ASC (`eb_charge_ab` for the beginner sword). The Hunger and
+- [x] Grant the sword's power-row abilities to the pawn's ASC (`eb_charge_ab` for the beginner sword). The Hunger and
       `WP_EB_SHOCK_01` have none.
