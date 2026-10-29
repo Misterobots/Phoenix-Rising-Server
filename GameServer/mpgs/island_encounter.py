@@ -304,11 +304,21 @@ def start(session):
             entries += parts
             weapon = weapon_parts.equipped_weapon(session)
             if weapon is not None:
-                from .engine import legendary
-                comps = [row['component'].rsplit('.', 1)[-1]
-                         for _, _, row in weapon_parts.default_parts(weapon_parts.load(), weapon[2])]
-                entries += legendary.setup(session, session._encounter, comps)
+                from .engine import buffs, legendary
+                parts = weapon_parts.default_parts(weapon_parts.load(), weapon[2])
+                entries += legendary.setup(session, session._encounter, [row['component'].rsplit('.', 1)[-1]
+                                                                         for _, _, row in parts])
+                for package, cls in weapon_parts.part_buffs(parts):    # they switch on with Combat.SpecialActive themselves
+                    entries += buffs.add(session, session._encounter, cls, package)
             pa = session._encounter.get('part_abilities')
+            if weapon is not None:
+                from .engine.weapon_meter import WeaponMeter, is_meter_weapon
+                if is_meter_weapon(session.chan_cls.get(weapon[0])):
+                    meter = WeaponMeter(session, session._encounter['damage_model']['rows'], lambda m: print('ABILITY ' + m, flush=True))
+                    session._encounter['meter'] = meter
+                    entries.append(meter.start_entry())
+                    if pa is not None:
+                        pa.meter = meter                  # the special's full-meter check (abilities.py)
             if pa is not None and any(v['cls'] == 'dp_y_ability_spawn_raptor_ab_C' for v in pa.granted.values()):
                 from .engine import buffs                 # the Q ability's client side needs it (engine/buffs.py)
                 entries += buffs.add(session, session._encounter, 'alluring_raptor_manager_buff_C')
@@ -844,21 +854,28 @@ def handle_ability(session, ch, req_block, params):
 
 
 def _apply_heals(session, enc):
-    from .engine.attributes import find_block
     due = [x for x in enc.get('pending_heals', []) if x[0] <= time.monotonic()]
     if not due or enc.get('player_downed'):
         if due:
             enc['pending_heals'] = [x for x in enc['pending_heals'] if x not in due]
         return []
     enc['pending_heals'] = [x for x in enc['pending_heals'] if x not in due]
+    return change_player_health(session, enc, lambda h, top: min(top, h + sum(x[1] for x in due)), 'heal')
+
+
+def change_player_health(session, enc, change, why):
+    """Set the player's CurrentHealth to change(health, max health). -> entries ([] while downed)."""
+    from .engine.attributes import find_block
+    if enc.get('player_downed'):
+        return []
     pawn = next(e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C')
     header = find_block(session, pawn.ch, 'ArchonHealthAttributeSet')
     values = header.values or {}
     if enc.get('player_health') is None:
         enc['player_health'] = float(values.get('CurrentHealth', 0.0))
     top = float(enc.get('player_max_health') or values.get('MaxHealth') or enc['player_health'])
-    enc['player_health'] = min(top, enc['player_health'] + sum(x[1] for x in due))
-    print('ENCOUNTER heal -> player health %.0f' % enc['player_health'], flush=True)
+    enc['player_health'] = change(enc['player_health'], top)
+    print('ENCOUNTER %s -> player health %.0f' % (why, enc['player_health']), flush=True)
     return _health_entries(session, pawn, header, enc['player_health'])
 
 
@@ -1047,11 +1064,13 @@ def _engine_step(session, enc, now):
             w = model.encode(upd.parsed, session.ctx, cls)
             bunches.extend(compose.compose(ENCOUNTER_CHANNEL, w.n, w.nbits, upd.exports, open=False, close=False,
                                            reliable=False))
-    from .engine import allies, legendary
+    from .engine import allies, legendary, sword_special
     reliable.extend(legendary.step(session, enc, t))
+    now = time.monotonic() if not hasattr(session, 'clock') else session.clock()      # the effects' clock
+    reliable.extend(sword_special.step(session, enc, now))
     pe = getattr(session, '_effects', None)
     if pe is not None:
-        reliable.extend(pe.step(time.monotonic() if not hasattr(session, 'clock') else session.clock()))
+        reliable.extend(pe.step(now))
     ally_reliable, ally_bunches = allies.step(session, enc, t)
     reliable.extend(ally_reliable)
     bunches.extend(ally_bunches)
@@ -1568,6 +1587,14 @@ def handle_damage(session, ch, req_block, params=None):
     if isinstance(params, dict) and 'PredictionKey' in params and req_block is not None:
         session._queue_rpc(ch, req_block, 'ClientDoDamageSucceed', {'PredictionKey': params['PredictionKey']})
     damage, row = _player_hit_damage(enc, params)
+    if row is not None and enc.get('meter') is not None:      # BP_EB_Weapon.HandleMeterGain, by the attack's row tags
+        from .engine import sword_special
+        name = params.get('Payload.DamageTypeName')
+        enc['meter'].on_hit(name[0] if isinstance(name, tuple) else name)
+        now = time.monotonic() if not hasattr(session, 'clock') else session.clock()
+        for e in reversed(sword_special.on_hit(session, enc, row.get('tags'), now) +
+                          sword_special.lifesteal(session, enc, damage)):
+            session.entries.insert(session.pos, e)
     enc['health'] = max(0.0, enc['health'] - damage)
     director = enc.get('director')
     if director is not None:

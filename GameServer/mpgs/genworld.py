@@ -562,9 +562,12 @@ class GenSession(ReplaySession):
                         from .island_encounter import handle_stamina_rpc
                         handle_stamina_rpc(self, b.ch, blk, x[1], x[3])   # observes only; normal handling continues
                         if x[1] == 'ServerStartNextMove':
-                            from .engine import legendary
+                            from .engine import legendary, sword_special
                             enc = self._encounter
                             legendary.on_move(self, enc, x[3], time.monotonic() - enc['spawn_mono'])
+                            dest = x[3].get('ComboInputBuffer.DestState') if isinstance(x[3], dict) else None
+                            for e in reversed(sword_special.on_move(self, enc, dest[1] if isinstance(dest, tuple) else dest)):
+                                self.entries.insert(self.pos, e)
                     if x[1] in ('ServerShoot', 'Server_Reload') and getattr(self, '_encounter', None) is not None:
                         from .island_encounter import handle_ranged
                         params = x[3] if x[2] == 'rpc' else None
@@ -576,6 +579,18 @@ class GenSession(ReplaySession):
                             except Exception as exc:
                                 print('%s decode failed: %r' % (x[1], exc), flush=True)
                         handle_ranged(self, b.ch, blk, x[1], params)
+                        continue
+                    if x[1] == 'ServerStartCombo' and x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
+                        from .engine import sword_special
+                        for e in reversed(sword_special.on_combo(self, self._encounter, x[3].get('InComboInputKey.PrimaryKey'),
+                                                                  time.monotonic() if not hasattr(self, 'clock') else self.clock())):
+                            self.entries.insert(self.pos, e)          # observes; normal handling continues
+                    if x[1] == 'IncreaseMeter' and x[2] == 'raw' and getattr(self, '_encounter', None) is not None:
+                        meter = self._encounter.get('meter')
+                        from .engine.weapon_meter import increase_params
+                        p = increase_params(x[3])
+                        if meter is not None and p is not None:
+                            meter.on_increase(*p)
                         continue
                     if blk.cls_name == 'DamageComponent' and x[1] == 'ServerTryDoDamage':
                         from .island_encounter import handle_damage

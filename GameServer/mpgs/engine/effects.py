@@ -26,6 +26,7 @@ EXPORT_FLAGS = 5
 EFFECTS = {   # GE class -> package
     'dp_x_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/x_abilities/dp_x_ability_cooldown_ge',
     'dp_y_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/y_abilities/dp_y_ability_cooldown_ge',
+    'special_active_ge_C': '/Game/blueprints/Weapons/_shared/special_active_ge',     # sword special (sword_special.py)
 }
 # the D24 weapon-talent perks (weapon_talent_catalog), each Infinite and owning one weapon.talent.d24.* tag; applied to the
 # player's ASC (ApplyWeaponTalentGameplayModifiers; the abilities read them with GetTalentStatusSP(ArchonCharacter))
@@ -179,6 +180,17 @@ class PlayerEffects:
         _log('%s item %d on the %s for %s (server time %.2f)' % (cls, rid, self.target, 'ever' if duration is None else
                                                                  '%.0f s' % duration, self.world_time(now)))
         return ([clock] if clock is not None else []) + [self._asc_entry(fa, exports, must_map)]
+
+    def remove(self, cls):
+        """Remove every active effect of class `cls` (an Infinite one ends only this way). -> reliable entries."""
+        done = [rid for rid, a in self.active.items() if a['cls'] == cls]
+        if not done:
+            return []
+        for rid in done:
+            _log('%s item %d removed' % (self.active.pop(rid)['cls'], rid))
+        fa = {'delta_flag': 0, 'key': self.key + 1, 'base': self.key, 'deleted': done, 'changed': []}
+        self.key += 1
+        return [self._asc_entry(fa)]
 
     def step(self, now):
         """-> reliable entries: a delete for every effect whose duration ran out."""

@@ -33,15 +33,16 @@ def _buffable_guid(session, enc, pawn_guid):
     return g, exp
 
 
-def add(session, enc, cls):
-    """Spawn buff `cls` on the player. -> entries ([] when it cannot)."""
+def add(session, enc, cls, package=None):
+    """Spawn buff `cls` (from `package`, or PACKAGES) on the player. -> entries ([] when it cannot)."""
     from ..loadout import register_atlas_class_full
     from ..island_encounter import _pawn_guid
     from .attributes import find_block
     pawn = next((e for e in session.entries if e.open and e.cls == 'BP_PlayerCharacter_C'), None)
     asc = find_block(session, pawn.ch, 'ArchonAbilitySystemComponent') if pawn is not None else None
     schema = session.world.schema
-    if asc is None or cls not in PACKAGES or not register_atlas_class_full(schema, cls):
+    package = package or PACKAGES.get(cls)
+    if asc is None or package is None or not register_atlas_class_full(schema, cls):
         _log('%s not sent (%s)' % (cls, 'no pawn ASC' if asc is None else 'no layout'))
         return []
     pawn_guid = _pawn_guid(session)
@@ -49,14 +50,14 @@ def add(session, enc, cls):
     session._live_ch = getattr(session, '_live_ch', 900)
     ch = session._live_ch
     session._live_ch += 1
-    entry, ids = spawn.spawn_entry(schema, enc['guids'], ch=ch, cls_name=cls, package=PACKAGES[cls], loc=[0.0, 0.0, 0.0],
+    entry, ids = spawn.spawn_entry(schema, enc['guids'], ch=ch, cls_name=cls, package=package, loc=[0.0, 0.0, 0.0],
                                    values={'Owner': ('obj', pawn_guid), 'Instigator': ('obj', pawn_guid),
                                            'OwnerAbilitySystemComponent': ('obj', asc.guid),
                                            'InstigatorAbilitySystemComponent': ('obj', asc.guid),
                                            'OwnerBuffableComponent': ('obj', comp), 'bActive': True})
     entry.exports.insert(0, comp_export)
     session.chan_cls[ch] = cls
-    session.ctx._names[ids['package']] = (0, PACKAGES[cls])
+    session.ctx._names[ids['package']] = (0, package)
     session.ctx._names[ids['archetype']] = (ids['package'], 'Default__' + cls)
     enc.setdefault('buffs', {})[cls] = ch
     _log('%s ch%d on the player (buffable component guid %d)' % (cls, ch, comp))

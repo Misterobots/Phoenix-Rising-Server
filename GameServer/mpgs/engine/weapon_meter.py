@@ -23,8 +23,36 @@ TAG_GAINS = {                          # HandleMeterGain: tag -> (gain, gain whi
     'Combat.Sword.YHoldDamage': (9.0, 12.0),
     'Combat.Sword.SwordchargeDelayedAoE': (14.0, 28.0),
 }
-METER_WEAPONS = {'eblade_beginner_00_bp_C': {'max': 100.0}}
+METER_BASE = 'BP_EB_Weapon_C'          # every sword skin derives from it (data/2.1.1/class_layouts.json)
+METER_MAX = 100.0
 SET_CLS = 'ArchonDamageAttributeSet'
+
+
+def is_meter_weapon(cls_name):
+    """A sword: a class with BP_EB_Weapon_C among its ancestors."""
+    from ..loadout import class_layout
+    cur = cls_name
+    while cur:
+        if cur == METER_BASE:
+            return True
+        info = class_layout(cur)
+        cur = info and info['parent']
+    return False
+
+
+def increase_params(raw):
+    """weapon_meter_bpc.IncreaseMeter raw params -> (AmountToIncrease, ApplyAsScaledValue), the parameters before the
+    GameplayCueParameters struct (not decoded). A send bit precedes the double. Checked against 33 live captures
+    (2026-10-28, 81 bits: 3.0, true). None when it does not fit."""
+    import struct
+    from ..bitio import BitReader
+    bits, nbits = raw
+    try:
+        r = BitReader(bits.to_bytes((nbits + 7) // 8, 'little'), nbits)
+        amount = struct.unpack('<d', r.read(64).to_bytes(8, 'little'))[0] if r.bit() else 0.0
+        return amount, bool(r.bit())
+    except Exception:
+        return None
 
 
 def gain_for(tags, special_active=False):
@@ -39,14 +67,14 @@ class WeaponMeter:
     def __init__(self, session, rows, log):
         from .attributes import find_block
         self.s, self.rows, self.log = session, rows, log
-        self.ch = next((e.ch for e in session.entries for b in e.parsed.blocks if b.actor and b.cls_name in METER_WEAPONS), None)
+        self.ch = next((e.ch for e in session.entries for b in e.parsed.blocks if b.actor and is_meter_weapon(b.cls_name)), None)
         if self.ch is None:
             raise LookupError('no meter weapon in the sent world')
         self.weapon = session.chan_cls.get(self.ch)
         self.header = find_block(session, self.ch, SET_CLS)
         if self.header is None:
             raise LookupError('weapon %s has no %s' % (self.weapon, SET_CLS))
-        self.max = METER_WEAPONS[self.weapon]['max']
+        self.max = METER_MAX
         import os
         self.value = min(self.max, float(os.environ.get('MPGS_METER_START', '0')))   # test aid: start part-full
         self.multiplier, self.per_hit_bonus = 1.0, 0.0      # inferred native defaults (see the module doc)
@@ -56,15 +84,34 @@ class WeaponMeter:
         from .attributes import property_update
         self.s.entries.insert(self.s.pos, property_update(self.s, self.ch, self.header, values))
 
-    def start(self):
-        """Initialise the client's view: max and current (the join world never set them)."""
-        self._send({'Determination': self.value, 'DeterminationMax': self.max})
+    def start_entry(self):
+        """The client's initial view, max and current (the join world never set them), as an entry to send."""
+        from .attributes import property_update
         self.log('meter on %s (ch%d set guid %s): Determination %.0f / %.0f' % (self.weapon, self.ch, self.header.guid, self.value, self.max))
+        return property_update(self.s, self.ch, self.header, {'Determination': self.value, 'DeterminationMax': self.max})
+
+    def update_entry(self):
+        """The current value as an entry to send (the special's drain batches its updates)."""
+        from .attributes import property_update
+        return property_update(self.s, self.ch, self.header, {'Determination': self.value})
+
+    def on_increase(self, amount, scaled):
+        """weapon_meter_bpc.IncreaseMeter -> Auth_IncreaseMeter (Blueprint): a scaled amount is multiplied by the weapon's
+        WeaponChargeMultiplier, plus WeaponChargePerHitBonus x max for hits tagged Combat.Weapon.WeaponImpact (the client's
+        cue parameters carry no tags, so no bonus). The Crowbear exotic asks for 3.0 per hit (live 2026-10-28)."""
+        if amount <= 0 or self.value >= self.max:
+            return 0.0
+        old = self.value
+        self.value = min(self.max, self.value + (amount * self.multiplier if scaled else amount))
+        self._send({'Determination': self.value})
+        self.log('meter IncreaseMeter +%.1f -> %.0f / %.0f%s' % (self.value - old, self.value, self.max,
+                                                                 '  FULL: special ready' if self.full else ''))
+        return self.value - old
 
     def on_hit(self, attack):
         tags = (self.rows.get(attack) or {}).get('tags') or []
         amount = gain_for(tags, self.special_active)
-        if amount <= 0:
+        if amount <= 0 or self.full:
             return 0.0
         gain = amount * self.multiplier
         old = self.value

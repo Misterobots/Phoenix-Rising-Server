@@ -22,6 +22,7 @@ from .abilities import _info
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA = os.path.join(HERE, 'world', 'player', 'weapon_parts.json')
+POWER = os.path.join(HERE, 'data', '2.1.1', 'weapon_power.json')
 DP_BASE_PART = 'dp_base_part_bpc_C'
 
 
@@ -60,6 +61,28 @@ def part_abilities(parts):
         for path in row.get('abilities') or []:
             package, cls = split(path)
             out.append((package, cls, 'part %s ability' % pid))
+    return out
+
+
+def part_buffs(parts):
+    """-> [(package, class)]: the parts' Buffs (weapon_part_catalog), buff actors the server adds to the player."""
+    return [split(path) for _, _, row in parts for path in row.get('buffs') or []]
+
+
+def load_power(path=POWER):
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def power_abilities(power, item_id):
+    """-> [(package, class, what)]: the weapon's power row (weapon_progression_rework_power_table[ItemId]) RefAbilities, then
+    RefSpecialAbilities1-5. No row grants nothing, as the game does (atlas weapon_power_and_abilities.md)."""
+    row = power.get(item_id) or {}
+    out = [split(p) + ('power RefAbilities',) for p in row.get('RefAbilities') or []]
+    for n in range(1, 6):
+        out += [split(p) + ('power RefSpecialAbilities%d' % n,) for p in row.get('RefSpecialAbilities%d' % n) or []]
     return out
 
 
@@ -130,7 +153,8 @@ def equipped_weapon(session):
 
 
 def setup(session, log=print):
-    """The weapon's part components and the part abilities, as entries to send now. -> ([Entry], PlayerAbilities or None)."""
+    """The weapon's part components, the part abilities and the power-row abilities, as entries to send now.
+    -> ([Entry], PlayerAbilities or None)."""
     from .abilities import PlayerAbilities
     data = load()
     weapon = equipped_weapon(session)
@@ -139,13 +163,14 @@ def setup(session, log=print):
         return [], None
     ch, cls, item = weapon
     parts = default_parts(data, item)
-    if not parts:
+    out = []
+    if parts:
+        entry, comps = parts_entry(session, ch, cls, parts)
+        log('WEAPON PARTS %s ch%d: %s' % (item, ch, ', '.join('%s=%s' % (pid, comps[pid]) for _, pid, _ in parts)))
+        out.append(entry)
+    else:
         log('WEAPON PARTS %s: none in the catalog' % item)
-        return [], None
-    entry, comps = parts_entry(session, ch, cls, parts)
-    log('WEAPON PARTS %s ch%d: %s' % (item, ch, ', '.join('%s=%s' % (pid, comps[pid]) for _, pid, _ in parts)))
-    out = [entry]
-    abilities = part_abilities(parts)
+    abilities = part_abilities(parts) + power_abilities(load_power(), item)
     pa = None
     if abilities:
         pa = PlayerAbilities(session)

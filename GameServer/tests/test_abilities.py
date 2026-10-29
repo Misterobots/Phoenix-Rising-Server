@@ -14,24 +14,19 @@ def session():
     return world.new_session({'name': 'T', 'char': 'C', 'acct': 'A', 'session': 'S'})
 
 
+def beginner_sword():
+    """WP_EB_BEGINNER's power-row abilities: eb_charge_ab, then the special eb_q_projectile_raw_ab."""
+    from mpgs.engine import weapon_parts
+    return weapon_parts.power_abilities(weapon_parts.load_power(), 'WP_EB_BEGINNER')
+
+
 @unittest.skipUnless(os.path.exists(TEMPLATE), 'world template missing')
 class GrantTests(unittest.TestCase):
     def setUp(self):
-        from mpgs.engine.abilities import PlayerAbilities, WEAPON_ABILITIES
-        self.s = session()
-        self.ab = PlayerAbilities(self.s, env={'MPGS_ABILITY_ASC': 'pawn'})     # the player's ASC (recorded specs 1-11)
-        self.sword = WEAPON_ABILITIES['eblade_beginner_00_bp_C']
-
-    def test_weapon_asc_target(self):
-        # MPGS_ABILITY_ASC=weapon (crashed the client live 2026-10-16; kept as an option, the default is the pawn's ASC)
         from mpgs.engine.abilities import PlayerAbilities
-        ab = PlayerAbilities(self.s, env={'MPGS_ABILITY_ASC': 'weapon'})
-        e, handles = ab.grant_entry(self.sword)
-        self.assertEqual(self.s.chan_cls[ab.ch], 'eblade_beginner_00_bp_C')
-        self.assertEqual(e.ch, ab.ch)                          # instances and the ASC update go on the weapon's channel
-        self.assertEqual(handles, [1, 2])                      # the weapon ASC had no specs
-        fa = e.parsed.blocks[-1].fields[0][3]
-        self.assertEqual((fa['key'], fa['base']), (1, 0))
+        self.s = session()
+        self.ab = PlayerAbilities(self.s)                    # the player's ASC (recorded specs 1-11)
+        self.sword = beginner_sword()
 
     def test_recorded_state_is_read_from_the_join_world(self):
         self.ab._load_recorded()
@@ -60,6 +55,14 @@ class GrantTests(unittest.TestCase):
         self.assertEqual(sorted(got), [12, 13])
         ref = got[12]['ActivatableAbilities.Items[].ReplicatedInstances'][0][0][1]
         self.assertEqual(ref, ('obj', inst[0].guid))       # the spec points at the instance sent in the same bunch
+
+    def test_power_row_abilities(self):
+        from mpgs.engine import weapon_parts
+        self.assertEqual([(c, w) for _, c, w in self.sword], [('eb_charge_ab_C', 'power RefAbilities'),
+                                                              ('eb_q_projectile_raw_ab_C', 'power RefSpecialAbilities1')])
+        power = weapon_parts.load_power()
+        self.assertEqual(weapon_parts.power_abilities(power, 'WP_EB_CROWBEAR_EXOTIC'), [])   # The Hunger: no abilities
+        self.assertEqual(weapon_parts.power_abilities(power, 'WP_NO_SUCH_ROW'), [])           # no row: nothing, no fallback
 
     def test_activation_of_a_granted_ability_succeeds_with_a_server_key(self):
         from mpgs.repl import model
@@ -102,8 +105,7 @@ class MeterTests(unittest.TestCase):
 
     def test_start_and_gains_encode(self):
         from mpgs.repl import model
-        self.m.start()
-        e = self.s.entries[self.s.pos]
+        e = self.m.start_entry()
         self.assertEqual(dict(e.parsed.blocks[0].values), {'Determination': 0.0, 'DeterminationMax': 100.0})
         model.encode(e.parsed, self.s.ctx, e.cls)
         self.assertEqual(self.m.on_hit('EBRework.X1'), 0.0)
@@ -116,10 +118,21 @@ class MeterTests(unittest.TestCase):
         self.assertEqual(self.m.value, 100.0)                       # clamped to the max
         self.assertTrue(self.m.full)
 
+    def test_increase_meter_request(self):
+        """weapon_meter_bpc.IncreaseMeter as the Crowbear exotic sends it (live 2026-10-28: 81 bits, 3.0 scaled)."""
+        from mpgs.engine.weapon_meter import increase_params, is_meter_weapon
+        live = '0100000000001080068001'                       # a captured request (logs/rpc_capture.jsonl), 81 bits
+        raw = (int.from_bytes(bytes.fromhex(live), 'little'), 81)
+        self.assertEqual(increase_params(raw), (3.0, True))
+        self.assertEqual(self.m.on_increase(3.0, True), 3.0)
+        self.assertEqual(self.m.on_increase(-1.0, True), 0.0)       # Auth_IncreaseMeter refuses negative amounts
+        self.assertTrue(is_meter_weapon('eblade_crowbear_exotic_00_bp_C'))
+        self.assertFalse(is_meter_weapon('dp_weapon_bp_C'))
+
     def test_special_needs_a_full_meter_and_spends_it(self):
-        from mpgs.engine.abilities import PlayerAbilities, WEAPON_ABILITIES
-        ab = PlayerAbilities(self.s, env={})
-        ab.grant_entry(WEAPON_ABILITIES['eblade_beginner_00_bp_C'])
+        from mpgs.engine.abilities import PlayerAbilities
+        ab = PlayerAbilities(self.s)
+        ab.grant_entry(beginner_sword())
         ab.meter = self.m
         ask = {'AbilityToActivate.Handle': 13, 'PredictionKey': {'server': 0, 'current': 4}}     # the special, on the pawn's ASC
         ab.on_try_activate(ab.ch, ab.hdr, ask)

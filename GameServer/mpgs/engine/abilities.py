@@ -11,15 +11,9 @@ What a real Dauntless server does and this module rebuilds (UE 5.1.1 GameplayAbi
   abilities the server mints a new key: FPredictionKey::CreateNewServerInitiatedKey (Current from a counter starting at 1,
   bIsServerInitiated set), which the client adopts before running its local instance (ClientActivateAbilitySucceedWithEventData).
 * What the client actually sends is in the logs (2026-10-16): ServerTryActivateAbility only for granted abilities. The weapon's
-  abilities (weapon_power_table RefAbilities / RefSpecialAbilities1) are granted on equip by native code (AArchonWeapon), which the
-  Ramsgate join template never ran, so they are granted here.
-
-Env:
-  MPGS_GRANT_WEAPON_ABILITIES=1   grant the equipped weapon's abilities after join (default on when the Rock is on)
-  MPGS_ABILITY_DELAY=2            seconds after the world is delivered and the player has moved
+  abilities (its power row's RefAbilities / RefSpecialAbilities1-5, and its parts' abilities) are granted on equip by native code
+  (AArchonWeapon) on the server, onto the pawn's ASC; engine/weapon_parts.py collects them and grant_entry sends them.
 """
-import os
-
 from ..repl import model
 from ..repl.guid import GuidInfo
 
@@ -28,22 +22,12 @@ FIELD = 'ActivatableAbilities'
 P = 'ActivatableAbilities.Items[].'
 EXPORT_FLAGS = 5                 # path + checksum flag, checksum 0: as the recorded server exported ability classes and CDOs
 
-# Weapon ability rows (Gameplay/weapon_power_table, FWeaponPowerTableData). Only the starter sword so far; the row of the equipped
-# weapon should come from the item data when more weapons are handled.
 # Part abilities whose server instance ends at once and that the server cools down itself. dp_y_ability_spawn_raptor_ab: the
 # server spawns the pack and calls K2_EndAbility in the same activation, so UGameplayAbility::EndAbility (bReplicateEndAbility)
 # sends ClientEndAbility; the client's own instance never ends on its own here (it stops at FindBuff(alluring_raptor_manager_buff)
 # before StartYCooldown / K2_EndAbility, live 2026-10-27). Its cooldown is the CDO AbilityCooldown, enforced here because the
 # client never applies its dp_y_ability_cooldown_ge; the server applies that effect instead (effects.py) for the HUD.
 SERVER_ENDED = {'dp_y_ability_spawn_raptor_ab_C': 60.0}
-
-WEAPON_ABILITIES = {
-    'eblade_beginner_00_bp_C': [
-        # (package, class, what it is)
-        ('/Game/game/abilities/weapons/eb_charge_ab', 'eb_charge_ab_C', 'RefAbilities: sword charge (Event.OnDamageGiven, ServerInitiated)'),
-        ('/Game/game/abilities/weapons/Sword/eb_q_projectile_raw_ab', 'eb_q_projectile_raw_ab_C', 'RefSpecialAbilities1: special (ServerInitiated)'),
-    ],
-}
 
 
 def log(msg):
@@ -74,41 +58,22 @@ def activation_prefix(raw):
     return {'AbilityToActivate.Handle': h, 'InputPressed': pressed, 'PredictionKey': key}
 
 class PlayerAbilities:
-    """Ability state for one connection's own pawn. Created by the session; step() grants once the world is delivered."""
+    """Ability state for one connection's own pawn: the weapon's abilities granted at hunt start (weapon_parts.setup)."""
 
-    def __init__(self, session, env=None):
-        env = os.environ if env is None else env
+    def __init__(self, session):
         self.s = session
-        self.enabled = env.get('MPGS_GRANT_WEAPON_ABILITIES', '1') == '1'
-        self.delay = float(env.get('MPGS_ABILITY_DELAY', '2'))
-        # pawn | weapon: which ASC gets the weapon abilities. Live 2026-10-16: 'weapon' crashed the client right after the grant;
-        # 'pawn' was accepted. Default pawn.
-        self.target = env.get('MPGS_ABILITY_ASC', 'pawn')
-        self.t_ready = None
         self.granted = {}            # handle -> {'cls', 'package', 'instance', 'cdo'}
         self.server_key = 0          # FPredictionKey::GenerateNewPredictionKey counter (server-initiated keys)
-        self.done = False
-        self.meter = None            # WeaponMeter, started with the grant
+        self.meter = None            # WeaponMeter, for the special's full-meter check
         self.ch = self.hdr = None
         self.fa_key = self.next_rid = self.next_handle = None
 
     # ---- state recorded in the join world ----------------------------------------------------------------------------
-    def _target_asc(self):
-        """(channel, header) of the ASC the weapon abilities go to. Default 'weapon': the equipped weapon actor's own ASC (owner and
-        avatar = the weapon). Evidence (2026-10-16): the weapon meter is that ASC's ArchonDamageAttributeSet.Determination,
-        AArchonWeapon keeps its own Abilities list, and with the abilities on the pawn's ASC and a full meter the client still never
-        asked to activate the special. MPGS_ABILITY_ASC=pawn targets the player's ASC instead (the first attempt)."""
-        from .attributes import find_block
-        if self.target == 'pawn':
-            return self.s._server_header(ASC_CLS)
-        ch = next((e.ch for e in self.s.entries for b in e.parsed.blocks if b.actor and b.cls_name in WEAPON_ABILITIES), None)
-        return (ch, find_block(self.s, ch, ASC_CLS)) if ch is not None else (None, None)
-
     def _load_recorded(self):
         """ASC header (channel, block) and the fast-array state the client already holds from the join world."""
-        ch, hdr = self._target_asc()
+        ch, hdr = self.s._server_header(ASC_CLS)
         if hdr is None:
-            raise LookupError('no %s (%s) in the sent world' % (ASC_CLS, self.target))
+            raise LookupError('no %s in the sent world' % ASC_CLS)
         key, rids, handles = 0, [], []
         for e in self.s.entries:
             if e.ch != ch:
@@ -127,8 +92,8 @@ class PlayerAbilities:
         self.fa_key = key
         self.next_rid = max(rids, default=0) + 1
         self.next_handle = max(handles, default=0) + 1
-        log('target ASC (%s) ch%d guid %s: fast array key %d, %d recorded specs (handles up to %d)'
-            % (self.target, ch, hdr.guid, key, len(rids), self.next_handle - 1))
+        log('pawn ASC ch%d guid %s: fast array key %d, %d recorded specs (handles up to %d)'
+            % (ch, hdr.guid, key, len(rids), self.next_handle - 1))
 
     # ---- grant -----------------------------------------------------------------------------------------------------
     def grant_entry(self, abilities, level=1):
@@ -192,41 +157,6 @@ class PlayerAbilities:
         e.parsed.must_map = must_map
         e.parsed.blocks = inst_blocks + [asc]
         return e, handles
-
-    def step(self, now):
-        if not self.enabled or self.done:
-            return
-        s = self.s
-        if s.pawn_state is None or s.pos < len(s.entries):
-            self.t_ready = None
-            return
-        if self.t_ready is None:
-            self.t_ready = now + self.delay
-            return
-        if now < self.t_ready:
-            return
-        self.done = True
-        weapon = next((b.cls_name for e in s.entries for b in e.parsed.blocks if b.actor and b.cls_name in WEAPON_ABILITIES), None)
-        if weapon is None:
-            log('no known weapon in the world; nothing granted')
-            return
-        e, handles = self.grant_entry(WEAPON_ABILITIES[weapon])
-        s.entries.insert(s.pos, e)
-        for h in handles:
-            log('t=%.2f granted handle %d: %s (%s)' % (now, h, self.granted[h]['cls'], self.granted[h]['what']))
-        try:
-            from .weapon_meter import WeaponMeter
-            from ..behemoth.damage import load_model
-            self.meter = WeaponMeter(s, load_model()['rows'], log)
-            self.meter.start()
-        except Exception as exc:
-            log('weapon meter unavailable (%s: %s)' % (type(exc).__name__, exc))
-
-    # ---- damage given ----------------------------------------------------------------------------------------------
-    def on_damage_given(self, attack):
-        """A player hit that the server counted (the attack's damage-table row name, e.g. EBRework.Y3)."""
-        if self.meter is not None and attack:
-            self.meter.on_hit(attack)
 
     # ---- activation ------------------------------------------------------------------------------------------------
     def new_server_key(self):
