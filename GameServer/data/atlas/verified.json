@@ -733,6 +733,31 @@
    ],
    "source": "pseudo/eb_special_default_part_bpc_C.txt, eb_special_crowbear_exotic_part_bpc_C.txt; montage h_mr_eb_melee_RB_activate_fwd_01_mot; topics/sword_server.md",
    "date": "2026-10-28"
+  },
+  {
+   "id": "sword-meter-drain",
+   "fact": "The sword meter (weapon ASC Determination) drains on the server: weapon_meter_bpc.StartMeterDecay(rate) is a server RPC; while decaying, ReceiveTick -> Auth_DecayMeter applies determination_ge with SetByCaller DeterminationGain = -rate x DeltaSeconds to the weapon's ASC, and BP_EB_Weapon's MeterCompoundingDecay (rate 0.2) raises the rate by 0.2/s; at 0 it calls StopMeterDecay and the special part's MeterEmpty removes special_active_ge. The special part starts it at Decay Rate 5 (4 with talent sp05). Live 2026-10-28: with The Hunger the special (ServerStartCombo key 8) played its animation and aura on the client while the meter stayed full, because no server did these steps.",
+   "classes": [
+    "weapon_meter_bpc_C",
+    "BP_EB_Weapon_C",
+    "eb_special_default_part_bpc_C",
+    "determination_ge_C",
+    "special_active_ge_C"
+   ],
+   "source": "pseudo/weapon_meter_bpc_C.txt (Auth_DecayMeter), eb_special_default_part_bpc_C.txt; topics/sword_server.md",
+   "date": "2026-10-28"
+  },
+  {
+   "id": "sword-charges-server",
+   "fact": "Sword charges (pips) are BP_EB_Weapon.CurrentSwordcharges (replicated, schema rep index 21, max 6) and SwordchargeFillPercent (rep index 22). Only the server changes them (GenerateSwordcharge / RemoveSwordcharges check IsServer). Gained: +1 (Combat.Sword.TokenGranter) or +2 (TokenGranterTwo) on a landed hit whose damage tags include Combat.Sword.TierAdvancer, at most once per 0.25 s; 1 at special start (5 with The Hunger's talent sp04) and +0.05 fill every 0.2 s during the special (a pip every 4 s). Spent by montage notifies call_weapon_function_bpn: SpendOneToken 1 (X6, The Hunger's Umbral Flight dash), SpendThreeTokens 3 (X1 hold, Y4, Y5), SpendHoldTokens 3 or 1 with Combat.Sword.Passive.HoldReduction (Y1 hold). eb_swordcharge_stacks_ge is applied by no Blueprint in 2.1.1.",
+   "classes": [
+    "BP_EB_Weapon_C",
+    "call_weapon_function_bpn_C",
+    "eb_combo_swordcharges_available_ec_C",
+    "eb_special_default_part_bpc_C"
+   ],
+   "source": "pseudo/BP_EB_Weapon_C.txt (GenerateSwordcharge, RemoveSwordcharges, AddPercentPipFill, CallWeaponSpecificFunction branch); sword montages; topics/sword_server.md",
+   "date": "2026-10-28"
   }
  ]
 }
