@@ -265,7 +265,8 @@ class GenSession(ReplaySession):
                         self.player_records, include_stacks=os.environ.get('MPGS_TEST_INVENTORY_V2_STACKS', '1') == '1',
                         custom_data=self._weapon_custom_data(live_ids))
                     refs = apply_backend_equipment_references(self.entries, self.player_records)
-                    self.inventory_v2_updates = updates
+                    from .item_defaults import client_items
+                    self.inventory_v2_updates = updates + client_items({u['instanceId'] for u in updates})
                     stacks = sum(1 for u in updates if u['instanceId'] not in
                                  {it['instanceId'] for it in self.player_records['inventory']['instancedItems']})
                     print('INVENTORY V2 full sync prepared items=%d (stacks=%d) equipped_slots=%s legacy_rows=0' % (
@@ -375,11 +376,9 @@ class GenSession(ReplaySession):
             self.entries.sort(key=lambda e: e.t)
             self.chan_cls[entry.ch] = entry.cls
             self.ctx._names[entry.parsed.open['guid']] = (5, 'atmosphere_spawner_bp_3')
-        if hasattr(self, 'inventory_v2_updates'):
-            delay = int(os.environ.get('MPGS_TEST_INVENTORY_DELAY_MS', '5000'))
-            at = _stage_v2_inventory_rpcs(self.entries, world.schema, self.inventory_v2_updates, delay)
-            print('INVENTORY V2 full sync: %d AddItem RPCs staged reliably from %d ms after join' % (
-                len(self.inventory_v2_updates), at), flush=True)
+        # No AddItem burst at join: the client builds its item state from its own backend inventory fetch (plus the items
+        # it adds itself, item_defaults.CLIENT_ITEMS), so inventory_v2_updates is only the server's copy of that state,
+        # which every later op's postOperationHash is computed from. AddItems for items it already has would not match it.
         if hasattr(self, 'inventory_v2_weapon_update'):
             delay = int(os.environ.get('MPGS_TEST_INVENTORY_DELAY_MS', '5000'))
             at = _stage_v2_weapon_add_rpc(self.entries, world.schema,

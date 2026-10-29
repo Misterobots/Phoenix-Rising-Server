@@ -53,3 +53,21 @@ def test_reload_keeps_slots_classes_copyable():
     finally:
         os.remove(path)
         sys.modules.pop('mpgs._devreload_slots', None)
+
+
+def test_reload_reaches_imported_function_copies():
+    pkg = os.path.dirname(devreload.__file__)
+    path = os.path.join(pkg, '_devreload_fn_probe.py')
+    open(path, 'w').write('def f():\n    return 1\n')
+    try:
+        from mpgs._devreload_fn_probe import f          # a copy, as initialization.py imports default_custom_data
+        devreload._last = 0
+        devreload.poll(log=lambda *_: None)
+        open(path, 'w').write('def f():\n    return 2\n')
+        os.utime(path, (time.time() + 5, time.time() + 5))
+        devreload._last = 0
+        assert 'mpgs._devreload_fn_probe' in devreload.poll(log=lambda *_: None)
+        assert f() == 2
+    finally:
+        os.remove(path)
+        sys.modules.pop('mpgs._devreload_fn_probe', None)

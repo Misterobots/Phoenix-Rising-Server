@@ -5,6 +5,7 @@ python -m tools.export_runtime_data [atlas dir]   (default: data/atlas)
 - class_layouts.json: per Blueprint/native class, what mpgs.loadout needs to give a class the schema lacks a network
   layout: its first parent, its replicated properties and its RPCs with their parameters.
 - talents/<table>.json: the tables mpgs.talents reads (copied as dumped).
+- item_levels.json: each weapon, armour piece and lantern's StartingUpgradeLevel (mpgs.item_defaults).
 - weapon_power.json: each weapon's power-row abilities (mpgs.engine.weapon_parts).
 The server only reads these files; the atlas itself is not needed to run it.
 """
@@ -17,6 +18,22 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(HERE, 'data', '2.1.1')
 TALENT_TABLES = ('weapon_dp_gameplay_catalog', 'weapon_talent_catalog', 'talent_crafting_requirements',
                  'crafting_recipes')
+LEVEL_CATALOGS = ('weapon_ac', 'weapon_bow', 'weapon_cblades', 'weapon_dp', 'weapon_eblade', 'weapon_gaxe',
+                  'weapon_ihammer', 'weapon_mspear', 'armour', 'lantern')
+
+
+def starting_levels(assets):
+    """{catalog id: StartingUpgradeLevel} from the weapon, armour and lantern gameplay catalogs (EUpgradeableItemLevel
+    'Level_N' -> N); the CurrentLevel the client writes into an item's default custom data (mpgs/item_defaults.py)."""
+    out = {}
+    for name in LEVEL_CATALOGS:
+        with open(os.path.join(assets, name + '_gameplay_catalog.json'), encoding='utf-8') as f:
+            table = json.load(f)
+        rows = next(iter(table['exports'].values()))['props']['Rows']
+        for item, row in rows.items():
+            lvl = str(row.get('StartingUpgradeLevel') or '').rsplit('_', 1)[-1]
+            out[item] = int(lvl) if lvl.isdigit() else 0
+    return out
 
 
 def power_rows(assets):
@@ -57,10 +74,14 @@ def main(argv):
     os.makedirs(os.path.join(OUT, 'talents'), exist_ok=True)
     for t in TALENT_TABLES:
         shutil.copyfile(os.path.join(atlas, 'assets', t + '.json'), os.path.join(OUT, 'talents', t + '.json'))
+    levels = starting_levels(os.path.join(atlas, 'assets'))
+    with open(os.path.join(OUT, 'item_levels.json'), 'w', encoding='utf-8') as f:
+        json.dump(levels, f, indent=0, sort_keys=True)
     power = power_rows(os.path.join(atlas, 'assets'))
     with open(os.path.join(OUT, 'weapon_power.json'), 'w', encoding='utf-8') as f:
         json.dump(power, f, indent=0, sort_keys=True)
-    print('%d class layouts, %d talent tables, %d power rows -> %s' % (len(layouts), len(TALENT_TABLES), len(power), OUT))
+    print('%d class layouts, %d talent tables, %d item levels, %d power rows -> %s' % (
+        len(layouts), len(TALENT_TABLES), len(levels), len(power), OUT))
 
 
 if __name__ == '__main__':

@@ -2,7 +2,8 @@
 
 Polled from the server loop (main thread, between packets). A changed module is re-imported, then every class it defines
 gets the new functions copied onto the OLD class object, so objects that already exist (the connected player's world,
-sessions) run the new code without reconnecting. Module-level state is re-run like a fresh import. Not covered: code that
+sessions) run the new code without reconnecting. Module-level functions get the new code on the OLD function object, so
+other modules' `from .x import f` copies run it too. Module-level state is re-run like a fresh import. Not covered: code that
 only runs while joining (needs a rejoin), new __init__ fields on old objects, and a change that fails to import (logged,
 old code keeps running).
 """
@@ -11,6 +12,7 @@ import os
 import sys
 import time
 import traceback
+import types
 
 _ROOT = os.path.dirname(os.path.abspath(__file__))
 _mtimes = {}
@@ -27,6 +29,15 @@ def _modules():
         if (name == 'mpgs' or name.startswith('mpgs.')) and f and f.endswith('.py') \
                 and os.path.abspath(f).startswith(_ROOT) and name != __name__:
             yield name, mod, f
+
+
+def _patch_functions(old_ns, mod):
+    for key, new in vars(mod).items():
+        old = old_ns.get(key)
+        if not isinstance(new, types.FunctionType) or not isinstance(old, types.FunctionType) or old is new                 or new.__module__ != mod.__name__ or new.__closure__ or old.__closure__:
+            continue
+        old.__code__, old.__defaults__, old.__kwdefaults__ = new.__code__, new.__defaults__, new.__kwdefaults__
+        setattr(mod, key, old)
 
 
 def _patch_classes(old_ns, mod):
@@ -68,6 +79,7 @@ def poll(log=print, interval=1.0):
         try:
             importlib.reload(mod)
             _patch_classes(old_ns, mod)
+            _patch_functions(old_ns, mod)
             done.append(name)
             log('DEV RELOAD %s' % name)
         except Exception:

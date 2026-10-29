@@ -10,6 +10,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from .inventory_v2 import post_operation_hash
+from .item_defaults import default_custom_data
 from .inventory_wire import item_identity_crc
 
 # Gear is instanced (one row per item); currencies, tokens, dyes, emotes, materials, ... are stacks
@@ -78,7 +79,8 @@ def v2_operations(state, body):
     existing stack (stacks use instanceId = catalogId)."""
     ops = []
     for it in body.get('addInstancedItems', []):
-        rec = {'instanceId': it['instanceId'], 'catalogIdCrc': item_identity_crc(it['catalogId']), 'quantity': 1, 'customData': ''}
+        rec = {'instanceId': it['instanceId'], 'catalogIdCrc': item_identity_crc(it['catalogId']), 'quantity': 1,
+               'customData': default_custom_data(it['catalogId'])}       # what the client gives a new item (item_defaults.py)
         state.append(rec)
         ops.append(dict(rec, mismatchCount=0, operation='AddItem', postOperationHash=post_operation_hash(state)))
     for it in body.get('addStackedItems', []):

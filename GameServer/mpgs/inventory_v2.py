@@ -205,6 +205,10 @@ def post_operation_hash(items):
 
 
 _OPERATION = {'Hello': 0, 'AddItem': 1, 'RemoveItem': 2, 'UpdateItem': 3}
+# EInventoryItemOperation goes out as an enum, not a byte: FEnumProperty::GetMaxNetSerializeBits = CeilLogTwo64(max + 1),
+# max 4 (_MAX) -> 3 bits. With 8 the client fails to read the RPC once, marks it incompatible and silently drops every
+# later ClientHandleItemStateUpdates (FObjectReplicator::ReceivedRPC, HANDLE_INCOMPATIBLE_RPC; live 2026-10-29).
+OPERATION_BITS = 3
 _CLIENT_UPDATE_FIELD = 17  # ArchonInventory field list, verified from 2.1.1 SDK.
 
 
@@ -246,7 +250,7 @@ def encode_client_item_state_updates_field(updates):
 
         # FInventoryItemOperationData fields, confirmed by SDK offsets/order.
         writer.write(mismatch, 32)
-        writer.write(operation, 8)
+        writer.write(operation, OPERATION_BITS)
         writer.write(post_hash, 64)
         writer.write_fstring(instance_id)
         writer.write(catalog_crc, 32)

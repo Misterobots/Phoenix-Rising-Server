@@ -13,6 +13,7 @@ from urllib.request import Request, urlopen
 from .backend import gameserver_api_key
 from .inventory_wire import build_identity_fixture, item_identity_crc
 from .inventory_v2 import post_operation_hash
+from .item_defaults import default_custom_data
 
 
 def _backend_headers(auth_token=None):
@@ -563,7 +564,8 @@ def build_v2_inventory_add_updates(records, include_stacks=False, custom_data=No
     state, updates = [], []
     for item in ordered:
         catalog_crc = item_identity_crc(item['catalogId'])
-        cd = (custom_data or {}).get(item['instanceId'], '')       # weapons: talents / item level JSON (talents.py)
+        # weapons with talents: talents.py's JSON; any other item: the custom data the client gives it (item_defaults.py)
+        cd = (custom_data or {}).get(item['instanceId']) or default_custom_data(item['catalogId'])
         state.append({'instanceId': item['instanceId'], 'catalogIdCrc': catalog_crc,
                       'quantity': 1, 'customData': cd})
         updates.append({
