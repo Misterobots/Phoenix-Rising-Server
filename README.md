@@ -76,7 +76,7 @@ The server and the game run on the same PC.
 ## Licence
 
 Free to use, copy, modify and distribute, on one condition: servers running it keep the credit to
-"Misterobots" and "The Undaunted Team" in the login screen's status text (the default in
+"SyST3MDeV, Misterobots, EisigesEis, Misterobots, and You." in the login screen's status text (the default in
 `Backend/phoenix_backend/routes.py`, `LOGIN_STATUS`). See `LICENSE`; it covers the code, not the game data in
 `GameServer/data/2.1.1/`.
 
