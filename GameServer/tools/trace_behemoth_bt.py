@@ -27,6 +27,15 @@ from mpgs.behemoth.mover import montage_curve  # noqa: E402
 from mpgs.world.terrain import Terrain  # noqa: E402
 
 TICK = 1.0 / 15.0          # the island server's movement loop
+def node_supported(kind, typ):
+    if kind == 'task':
+        handler = bt.TASKS.get(typ)
+        return (handler is not None and handler is not bt.Instant) or typ == 'BTTask_RunBehavior'
+    if kind == 'decorator':
+        return typ in bt.DECORATORS
+    if kind == 'service':
+        return typ in bt.SERVICES
+    return False
 
 
 class ScriptedPlayer:
@@ -69,6 +78,7 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
     start = contract['starts'][0]['location']
     center = min(enc['centers'], key=lambda c: math.dist(c['location'][:2], start[:2]))
     terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', manifest['terrain']))
+    terrain.hunt = hunt                 # as island_encounter does: the director resolves the hunt's navmesh from it
     rng = random.Random(seed)
     player = ScriptedPlayer(start)
     lines = []
@@ -116,7 +126,7 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
                 subtrees[f.node.tree] += 1
     runner._advance = advance
 
-    floor, path_log, states_seen, events = [], [], set(), []
+    floor, path_log, decision_log, states_seen, events = [], [], [], set(), []
     t = 0.0
     while t < seconds:
         player.tick(TICK, d.loc, terrain)
@@ -126,12 +136,15 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
             g = terrain.ground_z(d.loc[0], d.loc[1])
             floor.append((round(t, 1), [round(v, 1) for v in d.loc], None if g is None else round(g, 1)))
             path_log.append((round(t, 1), runner.path()[-4:]))
+        if int(t * 15) % 75 == 0:
+            decision_log.append(d.trace_line(t))
         t += TICK
 
     attack_montages = {a['montage'] for a in d.species.actions.values() if a['montage'] != 'b_aq_lerawr_00_loco_jumpoverturn_180_right_00_Montage'}
-    handled = lambda kind, typ: (typ in bt.TASKS or typ == 'BTTask_RunBehavior') if kind == 'task' else \
-        (typ in bt.DECORATORS) if kind == 'decorator' else (typ in bt.SERVICES)
-    rows = [{'kind': k, 'type': typ, 'count': n, 'handled': handled(k, typ), 'nodes': sorted(names[(k, typ)])[:6]}
+    rows = [{'kind': k, 'type': typ, 'count': n, 'handled': node_supported(k, typ),
+             'modelingNote': ('runtime handler is an explicit Instant placeholder; Blueprint task behavior is not modeled'
+                              if k == 'task' and bt.TASKS.get(typ) is bt.Instant else None),
+             'nodes': sorted(names[(k, typ)])[:6]}
             for (k, typ), n in entered.most_common()]
     xy = [p for _, p, _ in floor]
     return {
@@ -144,7 +157,8 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
         'events': collections.Counter(e[0] for e in events),
         'states_seen': sorted(states_seen), 'blackboard_keys_set': sorted(k for k, v in ctx.bb.items() if v is not None),
         'max_distance_from_center': round(max(math.dist(p[:2], center['location'][:2]) for p in xy), 1),
-        'floor_samples': floor[::5], 'path_samples': path_log[::10], 'log': lines[:200],
+        'floor_samples': floor[::5], 'path_samples': path_log[::10], 'decision_samples': decision_log,
+        'log': lines[:200],
     }
 
 

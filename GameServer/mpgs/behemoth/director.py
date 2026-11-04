@@ -19,9 +19,13 @@ import json
 import math
 import os
 import random
+import uuid
 
 from . import bt
 from .brain import Brain, Target
+from .aggro import INACCESSIBLE, OBSTRUCTED, Aggro, calculate_accessibility
+from .helpers import ActionHelper, best_helper, tick_score
+from .targeting import Targeting
 from .mover import Mover, montage_curve
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +36,7 @@ PLAYER_CAPSULE_RADIUS = 50.0           # BP_PlayerCharacter CollisionCylinder.Ca
 LIMB_ROOT_MARKS = ('upper_arm', 'thigh')  # a damage window chain rooted here is a limb that swings about that joint
 SWING_MARGIN = 75.0                    # cm a damaging body may travel beyond its reference-pose spot (limb swing, not root motion)
 AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
-STOP_SPEED = 5.0                       # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
+STOP_SPEED = 5.0                      # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
 
 
 def montage_package(name, montage_dir=None):
@@ -54,10 +58,21 @@ class BehemothContext(bt.Context):
         self.variant = 'Alpha' if director.variant == 'alpha' else 'Normal'
         self.island_mode = 'Hunt'
         self.rng = director.brain.rng
-        self.aggro_range = float(env.get('MPGS_ROCK_AGGRO_RANGE', '2500'))
-        self.deaggro_range = float(env.get('MPGS_ROCK_DEAGGRO_RANGE', '8000'))
+        self.targeting = Targeting()
         self._move = None              # (dest, radius)
         self._chosen = None            # (action name, facing it was scored at), from the last choose_action
+        self._coordination_note_emitted = False
+        self.navmesh = None
+        from ..world.navmesh import DetourNavMesh, navmesh_path
+        nav_path = navmesh_path(SERVER, getattr(director, 'hunt', '') or '')
+        if nav_path:
+            try:
+                self.navmesh = DetourNavMesh.load(nav_path)
+                director.brain.path_query = self.navmesh.path_query
+                director.brain.ground_z = director.terrain.ground_z
+                self.log('Recast navmesh loaded: %s' % os.path.basename(nav_path))
+            except (OSError, ValueError, KeyError, TypeError) as exc:
+                self.log('Recast navmesh load failed: %s' % exc)
 
     def log(self, msg):
         self.d.log_ai('t=%.2f %s' % (self.now, msg))
@@ -68,7 +83,9 @@ class BehemothContext(bt.Context):
         return (st['loc'][0], st['loc'][1], st['loc'][2]) if st else None
 
     def target_pos(self, key):
-        if key == 'SelfPos':
+        # Cooked trees reference the controlled pawn as SelfActor in distance and
+        # enter-combat decorators, while movement/attack helpers use SelfPos.
+        if key in ('SelfPos', 'SelfActor'):
             return tuple(self.d.loc)
         if key == 'FrontPoint':
             r = math.radians(self.d.yaw)
@@ -76,7 +93,21 @@ class BehemothContext(bt.Context):
         v = self.bb.get(key)
         if v == 'player':
             return self._player()
+        if isinstance(v, ActionHelper):
+            return v.pos
         return v if isinstance(v, tuple) else None
+
+    def best_action_helper(self):
+        """Helper ticks (BP_ActionHelper_C scores) then EQ_FindBestActionHelper from the behemoth."""
+        brain = self.d.brain
+        if self.navmesh is None or not brain.helpers:
+            return None
+        target, _ = self.d._target()
+        targets = [target] if target is not None else []
+        current = self.bb.get('CurrentHelper')
+        for helper in brain.helpers.values():
+            tick_score(brain, helper, targets, current)
+        return best_helper(list(brain.helpers.values()), tuple(self.d.loc), self.d.yaw, self.navmesh.find_path)
 
     def target_vel(self, key):
         st = self.d.player_state()
@@ -85,25 +116,44 @@ class BehemothContext(bt.Context):
         return (0.0, 0.0)
 
     # ---- services ------------------------------------------------------------------------------------------------
-    def pick_target(self):
+    def _player_alive(self):
+        return self._player() is not None and not getattr(self.d, 'target_down', False)
+
+    def accessibility_of(self, loc):
+        if self.navmesh is None:
+            return INACCESSIBLE
+        return calculate_accessibility(self.navmesh, tuple(self.d.loc), loc, True)[0]
+
+    def update_targets(self, now):
+        """The aggro component's timer passes (targeting.py); AttackTarget follows CurrentTargetIndex."""
         p = self._player()
-        if p is None:
-            self.bb['AttackTarget'] = None
-            return
-        dist = math.hypot(p[0] - self.d.loc[0], p[1] - self.d.loc[1])
-        hit = self.d.health is not None and self.d.health.hits > 0
-        if self.bb.get('AttackTarget') == 'player':
-            if dist > self.deaggro_range:
-                self.bb['AttackTarget'] = None
-                self.log('target lost (%.0f units away)' % dist)
-        elif dist <= self.aggro_range or hit:
-            self.bb['AttackTarget'] = 'player'
-            self.log('target acquired (%.0f units away%s)' % (dist, ', after a hit' if hit else ''))
+        candidates = [('player', p, self._player_alive())] if p is not None else []
+        self.targeting.update(now, tuple(self.d.loc), candidates, self.navmesh, self.accessibility_of)
+        self._sync_attack_target()
+
+    def _sync_attack_target(self):
+        target = self.targeting.current_key()
+        if target != self.bb.get('AttackTarget'):
+            p = self._player()
+            if target is not None and p is not None:
+                self.log('target acquired (%.0f units away)' % math.hypot(p[0] - self.d.loc[0], p[1] - self.d.loc[1]))
+            else:
+                self.log('target cleared')
+        self.bb['AttackTarget'] = target
+
+    def current_target_entry(self):
+        return self.targeting.entry(self.targeting.current_key())
+
+    def pick_target(self):
+        """try_pick_new_target_bts: aggro_bpc TryPickNewTarget."""
+        self.targeting.try_pick_new_target(self.now)
+        self._sync_attack_target()
 
     def choose_action(self):
         if self.bb.get('AttackTarget') != 'player' or not self.d.attacks_allowed(self.now):
             return None
         target, _ = self.d._target()
+        self.d.brain.states = set(self.states)       # IsActionAvailable: BehemothInState on RequireStates / ExcludedStates
         c = self.d.brain.choose(self.now, [target])
         self._chosen = (c[0], self.d.brain.chosen_yaw) if c else None
         return (c[0], c[1]) if c else None
@@ -127,7 +177,12 @@ class BehemothContext(bt.Context):
         return True
 
     def _path_to(self, dest):
-        path = self.d.terrain.path((self.d.loc[0], self.d.loc[1]), (dest[0], dest[1]))
+        if self.navmesh is not None:
+            # AI MoveTo paths on the agent's navigation data (BTTask_MoveTo bAllowPartialPath defaults true).
+            found = self.navmesh.find_path(tuple(self.d.loc), (dest[0], dest[1], dest[2] if len(dest) > 2 else self.d.loc[2]))
+            path = [(p[0], p[1]) for p in found['points'][1:]] if found else None
+        else:
+            path = self.d.terrain.path((self.d.loc[0], self.d.loc[1]), (dest[0], dest[1]))
         if not path:
             self.log('no path to (%.0f, %.0f)' % (dest[0], dest[1]))
             return False
@@ -183,6 +238,16 @@ class BehemothContext(bt.Context):
                 return (x, y, z)
         return None
 
+    def patrol_center_point(self):
+        """EQContext_CurrentPatrolCenterPoint_C: the blackboard CurrentPatrolPoint actor, else the first
+        BP_PatrolCenterPoint_C. Phoenix keeps no CurrentPatrolPoint, so this is the encounter's patrol centre."""
+        return self.bb.get('PatrolCenter')
+
+    def nav_raycast(self, start, end):
+        if self.navmesh is None:
+            return tuple(end), False
+        return self.navmesh.raycast(start, end)
+
     def face(self, point):
         """-> the time the turn montage ends (the pivot task waits for it), or None when the yaw was set directly."""
         return self.d.face(point, self.now, animate=True)
@@ -192,7 +257,58 @@ class BehemothContext(bt.Context):
             self.log('state %s %d' % ('+' if add else '-', s))
         (self.states.add if add else self.states.discard)(s)
         if s == 9 and add:
+            # Bp_Behemoth_C AuthOnStateChanged, entering Combat (NewEnumerator9, value 11)
             self.bb.setdefault('CurrentFightStateStartTime', self.now)
+            self.bb['ReadyToEnterCombat'] = True
+            self.bb['HasEnteredCombatSinceLastDisengage'] = True
+
+    def notify_damage_taken(self):
+        """Bp_Behemoth_C.NotifyDamageTaken: any damage marks the behemoth as having entered combat; out of combat,
+        GetOrAddTargetData for the instigator (the player) and an Accessible or Obstructed result sets ForceEnterCombat
+        (shared_enter_combat_internal_bt clears it)."""
+        self.bb['HasEnteredCombatSinceLastDisengage'] = True
+        p = self._player()
+        if 9 not in self.states and p is not None:
+            entry = self.targeting.entry('player')
+            if entry is None:
+                entry = self.targeting.get_or_add('player', self.now, self.accessibility_of(p))
+            if entry.accessibility <= OBSTRUCTED:
+                self.bb['ForceEnterCombat'] = True
+
+    def add_stagger_armor(self, amount, duration):
+        """Record Sally's local zero armor entry with its generated GUID.
+
+        Debug1HitStagger is absent from the component CDO and therefore false.
+        The exported zero amount stays zero, as does its degen. The source
+        stack is local and non-replicated. Positive authored amounts still
+        require player-count scaling and timed armor behavior.
+        """
+        if float(amount) != 0.0:
+            return False
+        self.d.stagger_armor_stack.insert(0, {
+            'Armor_ID': str(uuid.uuid4()),
+            'RemainingAmount': 0.0,
+            'DegenRate': 0.0,
+            'InitialArmorAmount': 0.0,
+            'duration': float(duration),
+        })
+        return True
+
+    def push_coordination_message(self, message):
+        """No-op the Sally AllyEnteredCombat message when this is the sole AI.
+
+        Phoenix currently simulates one behemoth and has no group manager.
+        AllOtherAgents therefore has no recipients; retain successful sequence
+        flow and log this explicitly once. Other allocation modes stay unknown.
+        """
+        allocation = next((v for k, v in message.items() if k.startswith('AgentAllocationType')), '')
+        allocation = str(allocation).rsplit('::', 1)[-1]
+        if allocation not in ('AllOtherAgents', 'NewEnumerator2'):
+            return False
+        if not self._coordination_note_emitted:
+            self._coordination_note_emitted = True
+            self.log('coordination message AllyEnteredCombat skipped: solo encounter has no other AI recipients')
+        return True
 
     # ---- hooks the generic tree nodes call (bt.Context) -----------------------------------------------------------
     def reach_radius(self, acceptable, key, include_agent=True, include_goal=True):
@@ -208,6 +324,41 @@ class BehemothContext(bt.Context):
     def action_class(self, name):
         a = self.d.brain.actions.get(name) if name else None
         return a.get('class') if a else None
+
+    def generic_action_montage(self, action_type):
+        species = getattr(self.d, 'species', None)
+        choices = getattr(species, 'generic_actions', {}).get(str(action_type), ())
+        return self.rng.choice(choices) if choices else None
+
+    def reset_frustration(self):
+        self.d.aggro.reset()
+
+    def remove_all_targets(self):
+        self.log('all targets removed')
+        self.targeting.remove_all(self.now)
+        self.bb['AttackTarget'] = None
+
+    def behemoth_scale(self):
+        sx, sy, sz = self.d.species.mesh_scale
+        return {'X': sx, 'Y': sy, 'Z': sz}
+
+    def path_hits_navmesh(self, path, filter_name):
+        """Approximate the native local-space polyline query over exported mesh."""
+        if len(path) < 2:
+            return False
+        if filter_name != 'NavigationQueryFilter_NoDynamic':
+            return None
+        if self.navmesh is None:
+            return None
+        angle = math.radians(self.d.yaw)
+        cosine, sine = math.cos(angle), math.sin(angle)
+        x, y, z = self.d.loc
+        world_path = [(x + px * cosine - py * sine,
+                       y + px * sine + py * cosine, z + pz)
+                      for px, py, pz in path]
+        hit = self.navmesh.path_hits_navmesh(world_path, max_vertical=1024.0)
+        self.log('navtest %d points from (%.0f, %.0f, %.0f) hit=%s' % (len(path), x, y, z, hit))
+        return hit
 
     def lock_target(self, key):
         lock = getattr(self.d, 'lock_target', None)
@@ -261,7 +412,7 @@ class Species:
     """
 
     def __init__(self, variant, actions, tree, half_height, walk_speed, enter_combat_range, base_health, turn_montages=None,
-                 damage=None, capsule_radius=0.0, move_props=None, bodies=None, joints=None):
+                 damage=None, capsule_radius=0.0, move_props=None, bodies=None, joints=None, generic_actions=None, mesh_scale=(1.0, 1.0, 1.0)):
         self.variant, self.actions, self.tree = variant, actions, tree
         self.bodies = dict(bodies or {})              # tools.export_behemoth_bodies: {bone: [{'pos', 'radius', 'half_length'}]}
         self.joints = dict(joints or {})              # {bone: {'pos', 'parent'}}: limb swing pivots
@@ -271,23 +422,39 @@ class Species:
         self.enter_combat_range, self.base_health = float(enter_combat_range), float(base_health)
         self.turn_montages = dict(turn_montages or {})
         self.damage = dict(damage or {})
+        self.generic_actions = {str(k): list(v) for k, v in (generic_actions or {}).items()}
+        self.mesh_scale = tuple(float(v) for v in mesh_scale)   # CharacterMesh0 RelativeScale3D: GetBehemothScale_interface
 
     @classmethod
-    def load(cls, hunt, server=SERVER):
+    def load(cls, hunt, server=SERVER, contract=None):
         """From the committed island contract + engine manifest and the locally generated action set."""
         islands = os.path.join(server, 'data', '2.1.1', 'islands')
         with open(os.path.join(islands, hunt + '.engine_data.json'), encoding='utf-8') as f:
             manifest = json.load(f)
-        with open(os.path.join(islands, hunt + '.contract.json'), encoding='utf-8') as f:
-            enc = json.load(f)['encounter']
+        if contract is None:
+            with open(os.path.join(islands, hunt + '.contract.json'), encoding='utf-8') as f:
+                contract = json.load(f)
+        if contract.get('huntId') != hunt:
+            raise ValueError('selected island contract hunt does not match engine data')
+        enc = contract['encounter']
         behemoths = os.path.join(server, 'world', 'behemoths')
         with open(os.path.join(behemoths, manifest['variant'] + '.json'), encoding='utf-8') as f:
             actions = json.load(f)['actions']
+        generic_actions = {}
+        generic_path = os.path.join(behemoths, manifest['variant'] + '_generic_actions.json')
+        if os.path.exists(generic_path):
+            with open(generic_path, encoding='utf-8') as f:
+                generic_actions = json.load(f).get('actions', {})
         damage = {}
         damage_path = os.path.join(behemoths, manifest['variant'] + '_damage.json')   # tools.export_behemoth_damage
         if os.path.exists(damage_path):
             with open(damage_path, encoding='utf-8') as f:
                 damage = json.load(f)['rows']
+        mesh_scale = (1.0, 1.0, 1.0)
+        pawn_path = os.path.join(behemoths, manifest['variant'] + '_pawn.json')   # tools.export_simulation_inputs
+        if os.path.exists(pawn_path):
+            with open(pawn_path, encoding='utf-8') as f:
+                mesh_scale = tuple(json.load(f)['mesh_scale'])
         bodies, joints = {}, {}
         bodies_path = os.path.join(behemoths, manifest['variant'] + '_bodies.json')   # tools.export_behemoth_bodies
         if os.path.exists(bodies_path):
@@ -297,7 +464,8 @@ class Species:
         return cls(manifest['variant'], actions, manifest['behaviourTree'], enc['capsuleOffset'], enc['walkSpeed'],
                    enc['enterCombatRange'], enc['baseHealth'], damage=damage, bodies=bodies, joints=joints,
                    capsule_radius=_capsule_radius(server, [row['name'] for row in enc['schema']]),
-                   move_props=_move_props(server, [row['name'] for row in enc['schema']]))
+                   move_props=_move_props(server, [row['name'] for row in enc['schema']]),
+                   generic_actions=generic_actions, mesh_scale=mesh_scale)
 
     def brain_data(self):
         """Brain's rock.json shape; damage rows from <variant>_damage.json ({key: {'elements', 'tags'}}, empty if not exported)."""
@@ -311,6 +479,8 @@ class BehemothDirector:
     def __init__(self, species, terrain, loc, yaw, player_state, trees=None, rng=None, log=None, send_interval=1.0 / 30.0,
                  env=None):
         self.species = species
+        self.hunt = getattr(terrain, 'hunt', None)
+        self.species.hunt = getattr(species, 'hunt', None) or getattr(terrain, 'hunt', None)
         self.terrain = terrain
         self.variant = 'normal'
         self.player_state = player_state          # () -> {'loc': [x, y, z], 'vel': [...]} | None (GenSession.pawn_state)
@@ -319,6 +489,7 @@ class BehemothDirector:
         self._log = log or (lambda msg: None)
         self.send_interval = send_interval
         self.brain = Brain(species.brain_data(), 'normal', rng=self.rng)
+        self.brain.behemoth_scale = species.mesh_scale
         from .mover import Movement
         movement = Movement.from_props(species.move_props) if species.move_props else None
         # MaxWalkSpeed stays the species walk speed (contract: 400); the archetype's 4000 is the charge ceiling loco modes cap.
@@ -340,10 +511,12 @@ class BehemothDirector:
         self._target_seen = None
         self._states_seen = set()
         self.staggered_until = 0.0                 # a stagger/part-break montage is playing: no tree, no attack
+        self.stagger_armor_stack = []             # local component state; source property is not replicated
         trees = trees or bt.TreeSet.load(os.environ.get('MPGS_BT_DIR') or os.path.join(SERVER, 'world', 'dumps', 'bt'))
         env = dict(env or {})
-        env.setdefault('MPGS_ROCK_AGGRO_RANGE', str(species.enter_combat_range))
         self.ctx = BehemothContext(self, env)
+        self.aggro = Aggro(self.ctx.bb)
+        self._aggro_at = None
         self.ctx.bb['EnterCombatRange'] = species.enter_combat_range
         self.runner = bt.Runner(trees, species.tree, self.ctx)
 
@@ -440,6 +613,10 @@ class BehemothDirector:
     # ---- simulation ----------------------------------------------------------------------------------------------
     def _sync_brain(self):
         self.brain.pos, self.brain.yaw = tuple(self.loc[:2]), self.mover.yaw
+        self.brain.z = self.loc[2]
+        player = self.player_state()
+        if player:
+            self.brain.target_z = player['loc'][2]
 
     def _flush_move(self, now, force=False):
         """Live 2026-10-20 idle rubber banding: the old velocity was the nominal walk speed whenever a path existed, also on the
@@ -470,6 +647,11 @@ class BehemothDirector:
         """Advance to `now` (seconds) and return the events since the last tick."""
         if not self.dead:
             self._sync_brain()
+            dt = now - self._aggro_at if self._aggro_at is not None else 0.0
+            self._aggro_at = now
+            self.ctx.now = now
+            self.ctx.update_targets(now)
+            self.aggro.update(now, dt, self.ctx.navmesh is not None, self.ctx.current_target_entry(), self.ctx.states)
             if now >= self.staggered_until:
                 self.runner.tick(now)
             self.mover.tick(now)

@@ -68,6 +68,7 @@ class RockDirector:
         self.env = env
         self.only_actions = {a.strip() for a in env.get('MPGS_ROCK_ACTIONS', '').split(',') if a.strip()}
         self.health = None
+        self.stagger_armor_stack = []
         self.last_key = None            # prediction key of the last counted hit (echoed in ClientDoDamageSucceed)
         self.hit_log = env.get('MPGS_HIT_LOG') or None     # every ServerTryDoDamage report, full bits as hex (jsonl)
         self.hit_range = float(env.get('MPGS_HIT_RANGE', '1500'))

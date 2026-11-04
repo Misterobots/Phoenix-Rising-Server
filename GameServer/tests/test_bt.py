@@ -5,11 +5,14 @@ import math
 import os
 import random
 import unittest
+from types import SimpleNamespace
 
 from mpgs.behemoth import bt
 from mpgs.behemoth.brain import ROCK
 from mpgs.behemoth.rock_ai import DEFAULT_BT_DIR
 from mpgs.behemoth.session import RockDirector
+from mpgs.behemoth.director import BehemothContext
+from tools.trace_behemoth_bt import node_supported
 
 from test_behemoth_mover_director import write_flat_terrain
 from test_behemoth_session import FakeSession
@@ -49,6 +52,41 @@ class Ctx(bt.Context):
 
 
 class EngineTests(unittest.TestCase):
+    def test_rng_float_service_writes_deterministic_blackboard_value(self):
+        ctx = Ctx()
+        bt.SERVICES['rng_float_service_C'](ctx, {
+            'RNG_Float_key': {'SelectedKeyName': 'RNG_Float'},
+        })
+        self.assertEqual(ctx.bb['RNG_Float'], random.Random(0).random())
+        self.assertTrue(0.0 <= ctx.bb['RNG_Float'] < 1.0)
+        self.assertTrue(node_supported('service', 'rng_float_service_C'))
+
+    def test_cooked_self_actor_key_resolves_to_director_position(self):
+        director = SimpleNamespace(loc=[120.0, -35.0, 80.0], yaw=0.0, variant='normal',
+                                   brain=SimpleNamespace(rng=random.Random(1)),
+                                   player_state=lambda: None, log_ai=lambda _message: None)
+        ctx = BehemothContext(director, {})
+        self.assertEqual(ctx.target_pos('SelfActor'), (120.0, -35.0, 80.0))
+
+    def test_trace_support_report_includes_implemented_generic_action(self):
+        self.assertTrue(node_supported('decorator', 'cooldown_btdeco_C'))
+        self.assertTrue(node_supported('task', 'generic_action_bttask_C'))
+        self.assertFalse(node_supported('task', 'BTT_FocusTarget_C'))
+
+    def test_generic_action_task_resolves_and_plays_selected_montage(self):
+        t = 'T'
+        nodes = {
+            'Seq': ('BTComposite_Sequence', {'Children': [child(t, 'Generic', task=True)]}),
+            'Generic': ('generic_action_bttask_C', {'ActionType': 'behemoth_generic_action_type::NewEnumerator13'}),
+        }
+
+        class GenericCtx(Ctx):
+            def generic_action_montage(self, action_type):
+                return 'personality_mot' if action_type.endswith('NewEnumerator13') else None
+
+        ctx, _ = self.run_tree(make_tree(t, nodes, 'Seq'), 1.5, ctx=GenericCtx())
+        self.assertIn('montage personality_mot', ctx.events)
+
     def run_tree(self, exports, secs=3.0, ctx=None, setup=None):
         ts = bt.TreeSet()
         ts.add(exports)
@@ -153,9 +191,45 @@ class EngineTests(unittest.TestCase):
         self.assertIn('montage b_mot', ctx.events)
         self.assertEqual(sum('mystery_bttask_C' in e for e in ctx.events), 1)
 
+    def test_blueprint_cooldown_uses_authored_range_and_resets_after_child_exit(self):
+        t = 'T'
+        nodes = {
+            'Loop': ('BTComposite_Selector', {'Children': [child(t, 'Attack', ['CD'], task=True)]}),
+            'CD': ('cooldown_btdeco_C', {
+                'MinCooldown': {'ConstantFloat_30': 2.0},
+                'MaxCooldown': {'ConstantFloat_30': 2.0},
+                'CooldownResetType': 0,
+            }),
+            'Attack': ('BTTask_BehemothAction_C', {'Montage': 'attack_mot'}),
+        }
+
+        class TimedCtx(Ctx):
+            def play_montage(self, name):
+                self.events.append((self.now, 'montage ' + name))
+                return self.now + 1.0
+
+        ctx = TimedCtx()
+        ctx.bb['CurrentFightStateStartTime'] = 0.0
+        ts = bt.TreeSet()
+        ts.add(make_tree(t, nodes, 'Loop'))
+        runner = bt.Runner(ts, t, ctx)
+        for i in range(91):
+            runner.tick(i / 10.0)
+        starts = [round(e[0], 1) for e in ctx.events if isinstance(e, tuple) and e[1] == 'montage attack_mot']
+        self.assertEqual(starts, [2.0, 5.0, 8.0])
+        self.assertNotIn('cooldown_btdeco_C', runner.unknown)
+
 
 # ---- the real Rock tree with a fake world -------------------------------------------------------------------------
 class World(bt.Context):
+    def add_stagger_armor(self, amount, duration):
+        self.log_.append(('stagger_armor', (amount, duration)))
+        return amount == 0.0
+
+    def push_coordination_message(self, message):
+        self.log_.append(('coordination', message))
+        return True
+
     def __init__(self, player):
         self.bb = {'EnterCombatRange': 2000.0, 'PatrolCenter': (0.0, 0.0, 0.0), 'StaggerCount': 0}
         self.states, self.rng = set(), random.Random(1)

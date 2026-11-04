@@ -32,6 +32,7 @@ class Terrain:
         self.z_base = header['z_world']['base']
         self.z_scale = header['z_world']['scale']
         self.grid = samples  # array('H'), row-major, index = j * w + i
+        self.hunt = None
 
     @classmethod
     def load(cls, base):

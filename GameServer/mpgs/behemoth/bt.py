@@ -28,6 +28,8 @@ import math
 import os
 import random
 
+from . import eqs
+
 SUCCEEDED, FAILED, RUNNING = 'succeeded', 'failed', 'running'
 
 
@@ -72,7 +74,7 @@ class Node:
         self.name = export['Name']
         self.type = export['Type']
         self.props = export.get('Properties') or {}
-        self.children = []              # composites: [(child Node, [decorator Nodes])]
+        self.children = []              # composites: [(child Node, [decorator Nodes], DecoratorOps)]
         self.services = []              # [Node]
 
     @property
@@ -115,7 +117,9 @@ class TreeSet:
             for c in n.props.get('Children') or []:
                 child = get(c.get('ChildComposite')) or get(c.get('ChildTask'))
                 if child is not None:
-                    n.children.append((child, [d for d in (get(r) for r in c.get('Decorators') or []) if d is not None]))
+                    n.children.append((child,
+                                       [d for d in (get(r) for r in c.get('Decorators') or []) if d is not None],
+                                       c.get('DecoratorOps') or []))
             n.services = [s for s in (get(r) for r in n.props.get('Services') or []) if s is not None]
         root = get(tree['Properties']['RootNode'])
         root.root_decorators = [d for d in (get(r) for r in tree['Properties'].get('RootDecorators') or []) if d is not None]
@@ -152,11 +156,27 @@ class Context:
         """Blueprint class of the named action (e.g. 'lerawr_short_bite_atk_C'), or None. BTDeco_CheckChosenAction compares it."""
         return None
 
+    def generic_action_montage(self, action_type):
+        """Montage selected by Bp_Behemoth's GenericActionLookupTable for a generic action type."""
+        return None
+
+    def remove_all_targets(self):
+        """aggro_bpc RemoveAllTargets."""
+        self.bb['AttackTarget'] = None
+
     def lock_target(self, key):
         """Bp_Behemoth.LockTarget(blackboard[key]) (btdeco_lock_target on execution start)."""
 
     def clear_locked_target(self):
         """Bp_Behemoth.ClearLockedTarget() (btdeco_lock_target on execution finish)."""
+
+    def patrol_center_point(self):
+        """EQContext_CurrentPatrolCenterPoint_C location, or None."""
+        return None
+
+    def nav_raycast(self, start, end):
+        """ARecastNavMesh::BatchRaycast for one ray -> (hit location, did hit). Without a navmesh nothing is hit."""
+        return tuple(end), False
 
 
 class Frame:
@@ -225,11 +245,20 @@ class Runner:
             if node.is_composite:
                 if frame.idx >= len(node.children):
                     self.stack.pop()
-                    self._finish(frame, FAILED if node.type == 'BTComposite_Selector' else SUCCEEDED)
+                    if node.children:
+                        self._finish(frame, FAILED if node.type == 'BTComposite_Selector' else SUCCEEDED)
+                    else:
+                        # UBTCompositeNode::FindChildToExecute returns to the parent with LastResult unchanged, so an
+                        # empty composite passes on the result its parent entered it with: a selector only moves on
+                        # after a failure, a sequence after a success (sally_bt's empty Sequence_18 sits before the
+                        # attack selector and must not end the combat selector).
+                        parent = self.stack[-1].node if self.stack else None
+                        self._finish(frame, FAILED if parent is not None and parent.type == 'BTComposite_Selector'
+                                     else SUCCEEDED)
                     continue
-                child, decos = node.children[frame.idx]
+                child, decos, ops = node.children[frame.idx]
                 frame.idx += 1
-                if not all(self._check(d) for d in decos):
+                if not self._check_decorators(decos, ops):
                     # UE notifies the decorators of a blocked child too, so ForceSuccess still turns it into a success
                     forced = any(d.type == 'BTDecorator_ForceSuccess' for d in decos)
                     self._apply(frame, SUCCEEDED if forced else FAILED)
@@ -308,11 +337,46 @@ class Runner:
             if node.type != 'BTComposite_Selector':
                 continue
             active = f.idx - 1
-            for child, decos in node.children[:max(active, 0)]:
+            for child, decos, ops in node.children[:max(active, 0)]:
                 aborting = [d for d in decos if str(d.props.get('FlowAbortMode', '')).endswith(('LowerPriority', 'Both'))]
-                if aborting and all(self._check(d, peek=True) for d in decos):
+                if aborting and self._check_decorators(decos, ops, peek=True):
                     return True
         return False
+
+    def _check_decorators(self, decos, ops=None, peek=False):
+        """Evaluate UE's serialized DecoratorOps prefix expression.
+
+        A cooked stream such as And(2), Test(0), Or(2), Test(1), Test(2)
+        means decorator 0 AND (decorator 1 OR decorator 2). Assets without an
+        operation stream retain UE's default all-decorators behavior.
+        """
+        if not ops:
+            return all(self._check(d, peek=peek) for d in decos)
+        pos = 0
+
+        def expression():
+            nonlocal pos
+            if pos >= len(ops):
+                raise ValueError('truncated BT decorator logic operation stream')
+            op = ops[pos]
+            pos += 1
+            name = str(op.get('Operation', '')).rsplit('::', 1)[-1]
+            number = int(op.get('Number', 0))
+            if name == 'Test':
+                if number < 0 or number >= len(decos):
+                    raise ValueError('BT decorator logic references missing decorator %d' % number)
+                return self._check(decos[number], peek=peek)
+            if name in ('And', 'Or'):
+                values = [expression() for _ in range(number)]
+                return all(values) if name == 'And' else any(values)
+            if name == 'Not':
+                return not expression()
+            raise ValueError('unsupported BT decorator logic operation %r' % name)
+
+        result = expression()
+        if pos != len(ops):
+            raise ValueError('BT decorator logic operation stream has unused entries')
+        return result
 
     def _abort_task(self):
         frame, h = self.task
@@ -341,12 +405,24 @@ class Runner:
         for d in decos:
             if d.type == 'btdeco_variablecooldown_C':
                 pass                                # state already advanced in the check (as the Blueprint does)
+            elif d.type == 'cooldown_btdeco_C':
+                mem = self._deco_state.setdefault(id(d), {})
+                mem['active'] = True                # ReceiveObserverActivatedAI
+                if int(d.props.get('CooldownResetType', 0)) == 1:
+                    mem['last_finished'] = self.ctx.now
+                    mem['duration'] = _new_blueprint_cooldown(self.ctx, d.props)
             elif d.type == 'btdeco_lock_target_C':  # ReceiveExecutionStartAI: LockTarget(bb[LockToTargetName])
                 if self.ctx.bb.get(d.props.get('LockToTargetName', 'AttackTarget')) is not None:
                     self.ctx.lock_target(d.props.get('LockToTargetName', 'AttackTarget'))
 
     def _on_exit(self, decos):
         for d in decos:
+            if d.type == 'cooldown_btdeco_C':
+                mem = self._deco_state.setdefault(id(d), {})
+                mem['active'] = False               # ReceiveObserverDeactivatedAI
+                if int(d.props.get('CooldownResetType', 0)) == 0:
+                    mem['last_finished'] = self.ctx.now
+                    mem['duration'] = _new_blueprint_cooldown(self.ctx, d.props)
             if d.type == 'btdeco_lock_target_C':    # ReceiveExecutionFinishAI: ClearLockedTarget()
                 self.ctx.clear_locked_target()
 
@@ -394,6 +470,11 @@ def _d_blackboard(ctx, p, mem, peek):
     return is_set if op == 0 else not is_set
 
 
+def _d_has_generic_action(ctx, p, mem, peek):
+    """has_generic_action_btdeco_C: FindMontageInGenericActionSet(ActionType) on the behemoth returns a valid montage."""
+    return bool(ctx.generic_action_montage(p.get('ActionType')))
+
+
 def _d_in_state(ctx, p, mem, peek):
     in_state = _enum_index(p.get('State')) in ctx.states
     return in_state if _enum_index(p.get('StateRequirement'), 0) == 0 else not in_state
@@ -401,10 +482,38 @@ def _d_in_state(ctx, p, mem, peek):
 
 def _d_requirements(ctx, p, mem, peek):
     req = p.get('BehemothRequirements') or {}
-    for k, v in req.items():
-        if k.startswith('RequireBehemothClassificationName') and v not in (None, '', 'None'):
-            if str(v).lower() != ctx.variant.lower():
+    def meets(value, actual, condition):
+        if value in (None, '', 'None'):
+            return True
+        if actual is None:
+            return False
+        operation = str(condition or 'Require').rsplit('::', 1)[-1]
+        exclude = operation in ('Exclude', 'NewEnumerator1')
+        matched = str(value).lower() == str(actual).lower()
+        return not matched if exclude else matched
+
+    classification = next((v for k, v in req.items()
+                           if k.startswith('RequireBehemothClassificationName')), None)
+    classification_condition = next((v for k, v in req.items()
+                                     if k.startswith('ClassificationCondition')), None)
+    if not meets(classification, ctx.variant, classification_condition):
+        return False
+
+    archetype = next((v for k, v in req.items() if k.startswith('RequireBehemothArchetypeName')), None)
+    archetype_condition = next((v for k, v in req.items() if k.startswith('ArchetypeCondition')), None)
+    if not meets(archetype, getattr(ctx, 'archetype', None), archetype_condition):
+        return False
+
+    state = next((v for k, v in req.items() if k.startswith('StateRequirement')), None)
+    state_condition = next((v for k, v in req.items() if k.startswith('StateRequirementType')), None)
+    if state not in (None, '', 'None'):
+        in_state = _enum_index(state) in ctx.states
+        op = str(state_condition or 'RequiresState').rsplit('::', 1)[-1]
+        if op in ('ExcludedByState', 'Exclude', 'NewEnumerator1'):
+            if in_state:
                 return False
+        elif not in_state:
+            return False
     return True
 
 
@@ -425,6 +534,44 @@ def _d_cooldown(ctx, p, mem, peek):
     if not peek:
         mem['next'] = ctx.now + float(p.get('CoolDownTime', 5.0))
     return True
+
+
+def _simplified_bb_float(ctx, value, default=0.0):
+    """Evaluate the float form used by cooldown_btdeco_C's Min/MaxCooldown fields."""
+    if not isinstance(value, dict):
+        return float(value) if isinstance(value, (int, float)) else float(default)
+    key = next((str(v) for k, v in value.items()
+                if k.startswith('BlackboardKeyName') and v not in (None, '', 'None')), None)
+    if key:
+        current = ctx.bb.get(key)
+        if isinstance(current, (int, float)):
+            return float(current)
+    constant = next((v for k, v in value.items() if k.startswith('ConstantFloat')), default)
+    return float(constant if constant is not None else default)
+
+
+def _new_blueprint_cooldown(ctx, p):
+    lo = _simplified_bb_float(ctx, p.get('MinCooldown'), 0.0)
+    hi = _simplified_bb_float(ctx, p.get('MaxCooldown'), lo)
+    return ctx.rng.uniform(min(lo, hi), max(lo, hi))
+
+
+def _d_blueprint_cooldown(ctx, p, mem, peek):
+    """Model the 2.1.1 cooldown_btdeco_C PerformConditionCheckAI bytecode.
+
+    The Blueprint lazily selects a cooldown, then checks elapsed time since the later of
+    CurrentFightStateStartTime and LastCooldownFinishedTime. The two observer callbacks
+    start/finish the cooldown according to CooldownResetType; Runner mirrors those callbacks
+    in _on_enter/_on_exit for the child path.
+    """
+    if mem.get('active'):
+        return True
+    if not mem.get('initialised'):
+        mem['initialised'] = True
+        mem['duration'] = _new_blueprint_cooldown(ctx, p)
+    start_key = p.get('CooldownStartTimeBlackboardName', 'CurrentFightStateStartTime')
+    start = max(float(ctx.bb.get(start_key) or 0.0), float(mem.get('last_finished', -99999.0)))
+    return ctx.now - start >= float(mem.get('duration', 0.0))
 
 
 def _d_island_mode(ctx, p, mem, peek):
@@ -568,6 +715,31 @@ def _d_has_tags(ctx, p, mem, peek):
     return all(w in tags for w in want)
 
 
+def _d_navtest(ctx, p, mem, peek):
+    """Source-mapped navtest_btdeco_C: negate PathHitsNavMesh for scaled Displacement.
+
+    The context must supply an actual query result. Missing Recast data fails closed and is
+    reported, instead of treating this reached Sally decorator as unconditional success.
+    """
+    scale = getattr(ctx, 'behemoth_scale', lambda: 1.0)()
+    if isinstance(scale, dict):
+        scale = tuple(float(scale.get(k, 1.0)) for k in ('X', 'Y', 'Z'))
+    elif isinstance(scale, (int, float)):
+        scale = (float(scale),) * 3
+    path = [tuple(float(point.get(k, 0.0)) * scale[i]
+                  for i, k in enumerate(('X', 'Y', 'Z')))
+            for point in p.get('Displacement') or []]
+    query = getattr(ctx, 'path_hits_navmesh', None)
+    if query is None:
+        ctx.log('navtest_btdeco_C cannot query PathHitsNavMesh: navmesh data unavailable')
+        return False
+    result = query(path, 'NavigationQueryFilter_NoDynamic')
+    if result is None:
+        ctx.log('navtest_btdeco_C PathHitsNavMesh result unavailable')
+        return False
+    return not bool(result)
+
+
 DECORATORS = {
     'BTDeco_CheckChosenAction_C': _d_check_chosen_action,
     'archon_distance_check_btdeco_C': _d_archon_distance,
@@ -576,7 +748,9 @@ DECORATORS = {
     'BTDecorator_ForceSuccess': lambda ctx, p, m, peek: True,
     'BTDecorator_TimeLimit': lambda ctx, p, m, peek: True,
     'BTDecorator_Cooldown': _d_cooldown,
+    'cooldown_btdeco_C': _d_blueprint_cooldown,
     'behemoth_in_state_btdeco_C': _d_in_state,
+    'has_generic_action_btdeco_C': _d_has_generic_action,
     'passes_behemoth_requirements_btdeco_C': _d_requirements,
     'btdeco_variablecooldown_C': _d_variable_cooldown,
     'is_island_gamemode_btdeco_C': _d_island_mode,
@@ -601,6 +775,7 @@ DECORATORS = {
     'set_behemoth_loco_mode_btdeco_C': lambda ctx, p, m, peek: True,
     'set_state_btdeco_C': lambda ctx, p, m, peek: True,
     'navtrace_btdeco_C': lambda ctx, p, m, peek: True,
+    'navtest_btdeco_C': _d_navtest,
 }
 
 
@@ -665,6 +840,12 @@ class EQSQuery(Task):
         cfg = {c.get('ParamName'): c.get('Value') for c in req.get('QueryConfig') or []}
         if hasattr(ctx, 'run_eqs'):                    # creatures: the context knows their queries by name
             return SUCCEEDED if ctx.run_eqs(name, _key(self.p, 'BlackboardKey') or 'TempLocation', cfg) else FAILED
+        if name in eqs.QUERIES:
+            p = eqs.run(name, cfg, ctx.patrol_center_point(), ctx.nav_raycast)
+            if p is None:
+                return FAILED
+            ctx.bb[_key(self.p, 'BlackboardKey') or 'MoveDestination'] = p
+            return SUCCEEDED
         if 'patrol' not in name.lower() and 'NextPointAroundTargetPoint' not in name:
             return FAILED
         outer = float(cfg.get('DonutOuterRadius') or cfg.get('Radius') or 500.0)
@@ -683,6 +864,20 @@ class BehemothAction(Task):
         if not name:
             return SUCCEEDED
         self.until = ctx.play_montage(name)
+        return RUNNING if self.until is not None else SUCCEEDED
+
+    def update(self, ctx):
+        return SUCCEEDED if ctx.now >= self.until else RUNNING
+
+
+class GenericAction(Task):
+    """generic_action_bttask_C: resolve ActionType to a generic montage and wait for it to finish."""
+
+    def start(self, ctx):
+        montage = ctx.generic_action_montage(self.p.get('ActionType'))
+        if not montage:
+            return FAILED
+        self.until = ctx.play_montage(montage)
         return RUNNING if self.until is not None else SUCCEEDED
 
     def update(self, ctx):
@@ -754,6 +949,17 @@ class StateMontage(Task):
         return SUCCEEDED if ctx.now >= self.until else RUNNING
 
 
+class AudioExitFleeState(Task):
+    """Set the behemoth music state to 6, then finish with that call's result.
+
+    The Blueprint bytecode performs no blackboard or gameplay mutation. Music
+    state is a presentation side effect that this server simulation does not
+    implement, so preserve the task's zero-duration control-flow success.
+    """
+
+    pass
+
+
 class HandleStagger(Task):
     """handle_stagger_bttask (shared_handle_stagger_bt, gated by 'StaggerCount Is Greater Than 0'): plays the picked stagger montage,
     then SetValueAsInt(StaggerCount, 0) and FinishExecute. The director already plays the stagger and holds the tree until it ends
@@ -765,9 +971,65 @@ class HandleStagger(Task):
         return SUCCEEDED
 
 
+class AddStaggerArmor(Task):
+    """Source-mapped add_stagger_armor_bttask_C for authored single-behemoth trees.
+
+    The exported Sally node overrides ArmorDuration to 10 seconds while its
+    inherited UnscaledArmorAmount remains 0.0. Debug1HitStagger is omitted
+    from the component CDO and defaults false, so the amount remains zero.
+    The context records its local GUID stack entry; the source stack is not
+    replicated. Non-zero authored amounts still require component scaling and
+    timed armor behavior and fail closed here.
+    """
+
+    def start(self, ctx):
+        amount = _simplified_bb_float(ctx, self.p.get('UnscaledArmorAmount'), 0.0)
+        duration = _simplified_bb_float(ctx, self.p.get('ArmorDuration'), 0.0)
+        if amount == 0.0:
+            ctx.add_stagger_armor(amount, duration)
+            return SUCCEEDED
+        ctx.log('BT unsupported non-zero stagger armor amount %.3f' % amount)
+        return FAILED
+
+
+class PushCoordinationMessage(Task):
+    """Model the Sally AllOtherAgents combat-entry message in a solo encounter.
+
+    Phoenix currently has no AI coordination-group consumer. With the
+    single-behemoth composition there are no other recipients, so submission
+    has no target-side effect and the task preserves sequence control flow.
+    """
+
+    def start(self, ctx):
+        if ctx.push_coordination_message(self.p.get('Message') or {}):
+            return SUCCEEDED
+        return FAILED
+
+
+class RemoveAllTargets(Task):
+    """remove_all_targets_bttask_C: the owner's aggro component RemoveAllTargets (native, body RVA 0x2650AE0: removes
+    every target entry, current target index -1, OnCurrentTargetChanged broadcast), then FinishExecute(true)."""
+
+    def start(self, ctx):
+        ctx.remove_all_targets()
+        return SUCCEEDED
+
+
+class ResetFrustration(Task):
+    """reset_frustration_bttask_C: the owner's aggro component ResetFrustration, then FinishExecute(true)."""
+
+    def start(self, ctx):
+        ctx.reset_frustration()
+        return SUCCEEDED
+
+
 TASKS = {
     'BTTask_Wait': Wait,
+    'reset_frustration_bttask_C': ResetFrustration,
+    'remove_all_targets_bttask_C': RemoveAllTargets,
     'handle_stagger_bttask_C': HandleStagger,
+    'add_stagger_armor_bttask_C': AddStaggerArmor,
+    'push_coordination_message_bttask_C': PushCoordinationMessage,
     'BTTask_MoveTo': MoveTo,
     'BTTask_MoveToAndFace': MoveTo,
     'BTTask_RunEQSQuery': EQSQuery,
@@ -780,8 +1042,8 @@ TASKS = {
     'bttask_enter_rage_state_C': StateMontage,
     'bttask_exit_rage_state_C': StateMontage,
     'bttask_enter_tired_state_C': StateMontage,
-    # instant in this server: growls/generic actions, coordination, audio, armour, flee timers
-    'generic_action_bttask_C': Instant,
+    'audio_exit_flee_state_bttask_C': AudioExitFleeState,
+    'generic_action_bttask_C': GenericAction,
     'perform_action_montage_bttask_C': BehemothAction,   # NetworkedMontage.PlayMontage(Montage); finishes when it blends out
     'BTTask_RotateToFaceBBEntry': Pivot,
     'BTT_FocusTarget_C': Instant,                          # SetFocus: the creature faces its target while moving (ctx.face on move)
@@ -802,16 +1064,30 @@ def _s_pick_target(ctx, p):
     ctx.pick_target()
 
 
+def _s_action_helper(ctx, p):
+    """get_action_helper_btservice_C tick: EQ_FindBestActionHelper's best item into ActionHelperKey, cleared when none."""
+    ctx.bb[_key(p, 'ActionHelperKey') or 'CurrentHelper'] = ctx.best_action_helper()
+
+
 def _s_distance_from_target(ctx, p):
     """distance_from_target_service (bytecode): bb[Distance_key] = |pawn - bb[Target_key] actor| (3D), or 0 without a target."""
     t = ctx.target_pos(_key(p, 'Target_key') or 'AttackTarget') if ctx.bb.get(_key(p, 'Target_key') or 'AttackTarget') else None
     ctx.bb[_key(p, 'Distance_key') or 'DistanceFromAttackTarget'] = math.dist(ctx.target_pos('SelfPos'), t) if t else 0.0
 
 
+def _s_rng_float(ctx, p):
+    """rng_float_service_C: RandomFloat() -> Blackboard.SetValueAsFloat(RNG_Float_key)."""
+    key = _key(p, 'RNG_Float_key')
+    if key:
+        ctx.bb[key] = ctx.rng.random()
+
+
 SERVICES = {
+    'rng_float_service_C': _s_rng_float,
     'distance_from_target_service_C': _s_distance_from_target,
     'evaluate_action_btservice_C': _s_evaluate_action,
     'try_pick_new_target_bts_C': _s_pick_target,
+    'get_action_helper_btservice_C': _s_action_helper,
     'ally_try_pick_new_target_bts_C': lambda ctx, p: ctx.pick_ally_target(),   # bb[AttackTarget] = nearest ArchonBehemoth
     'set_loco_state_btservice_C': lambda ctx, p: ctx.set_loco(_enum_index(p.get('LocoState'))),   # loco table MovementSpeed
     'BTService_RunEQS': lambda ctx, p: ctx.run_eqs(_asset_name((p.get('EQSRequest') or {}).get('QueryTemplate')),

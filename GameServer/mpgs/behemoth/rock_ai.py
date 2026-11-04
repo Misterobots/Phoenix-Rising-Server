@@ -1,10 +1,8 @@
 """The Rock's real behaviour tree (rock_bt + shared sub-trees) driving a RockDirector. Enabled with MPGS_ROCK_BT=1 (needs MPGS_MOVER=1).
 
 The tree decides; the director does: attacks (brain.py scoring + montage RPC + root motion), plain montages (patrol, rage,
-death), walking along terrain paths, facing. Inferred values (no data read yet), all overridable:
-  MPGS_ROCK_AGGRO_RANGE=2500     the player becomes the target inside this distance (or once they hit the Rock)
-  MPGS_ROCK_DEAGGRO_RANGE=8000   the target is dropped beyond this distance
-  MPGS_ROCK_BT_DIR               folder with rock_bt.json and the shared_*_bt.json sub-trees (default <repo>/_dumps/bt)
+death), walking along terrain paths, facing. Targets follow the aggro component (targeting.py).
+  MPGS_ROCK_BT_DIR            folder with rock_bt.json and the shared_*_bt.json sub-trees (default <repo>/_dumps/bt)
 Montages whose name is not a Rock montage (the tree references one Shrike montage on an alpha-only branch) are skipped.
 """
 import os
@@ -32,6 +30,8 @@ class RockAI:
         self.runner = bt.Runner(self.trees, 'rock_bt', self.ctx)
 
     def tick(self, now):
+        self.ctx.now = now
+        self.ctx.update_targets(now)
         self.runner.tick(now)
 
     def on_death(self):

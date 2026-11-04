@@ -98,8 +98,13 @@ def attack_bp(path):
                 'require_states': [enum_n(s) for s in p['RequireStates']] if 'RequireStates' in p else [9],
                 'classification': req.get('RequireBehemothClassificationName'),
                 'part_requirements': req.get('PartRequirements'),
-                'has_attack_vectors': bool(p.get('AttackVectors1_Simple') or p.get('AttackVectors1')),
-                'attack_vectors': p.get('AttackVectors1_Simple') or p.get('AttackVectors1'),
+                # Authored vectors only: the action recomputes AttackVectorsN_Simple at init, so serialized _Simple is stale.
+                'attack_vectors1': [[v['X'], v['Y'], v['Z']] for v in p.get('AttackVectors1') or []],
+                'attack_vectors2': [[v['X'], v['Y'], v['Z']] for v in p.get('AttackVectors2') or []],
+                'scale_hit_area': p.get('ScaleHitAreaToBehemothSize'),
+                'debug_scale': p.get('DebugScale'),
+                'allow_nav_links': p.get('AllowNavLinks'),
+                'create_helper': p.get('CreateHelper'),
             }
     return None
 

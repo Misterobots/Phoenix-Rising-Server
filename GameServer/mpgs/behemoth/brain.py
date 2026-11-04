@@ -15,11 +15,13 @@ the native GetAttackTargetScore (a threat-weighted stand-in is used, flagged bel
 triggers (states are set by the caller), part breaking and stagger, hit detection against player bodies.
 """
 import json
+import math
 import os
 import random
 from dataclasses import dataclass
 
 from . import geometry
+from .helpers import ActionHelper, place
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROCK = os.path.join(HERE, 'world', 'behemoths', 'rock.json')
@@ -30,6 +32,28 @@ RAGE, COMBAT, CUSTOM_STATE = 0, 9, 23
 FORCE_SCORE = 99999.0
 INTENSITY_BOUNDS = (7.0, 15.0)   # threat as % of max health: <7 -> 0, <15 -> 1, else 2 (threat_tracking_bpc.GetIntensityLevel)
 THREAT_WEIGHT_PER_PERCENT = 0.1  # threat_tracking_bpc default TargettingWeightingPer1PercentOfMaxHPInThreat
+NAV_PATH_FRACTION = 0.9          # Evaluate: a path hitting the navmesh before 90% of its length rejects the action
+SIMPLIFY_EPSILON = 100.0         # BP_BehemothAction init: AttackVectorsN_Simple = SimplifyVectors(AttackVectorsN, 100)
+
+
+def simplify_vectors(points, epsilon=SIMPLIFY_EPSILON):
+    """BP_BehemothAction_C.SimplifyVectors as shipped (native runs matched 538/538 dumped arrays, 2026-11-03).
+    ClosestPointToLine is the 2D distance to the infinite line, a zero-length line gives 0 (Divide_DoubleDouble), only
+    interior points are candidates, and both recursion halves are points[0..split]: points after a split are dropped."""
+    pts = [tuple(p) for p in points]
+    start = pts[0] if pts else (0.0, 0.0, 0.0)
+    end = pts[-1] if pts else (0.0, 0.0, 0.0)
+    best, index = 0.0, 0
+    length = math.hypot(end[0] - start[0], end[1] - start[1])
+    for i in range(1, len(pts) - 1):
+        x, y = pts[i][0], pts[i][1]
+        d = abs((end[1] - start[1]) * x - (end[0] - start[0]) * y + end[0] * start[1] - end[1] * start[0]) / length             if length else 0.0
+        if d > best:
+            best, index = d, i
+    if best > epsilon:
+        before = simplify_vectors(pts[:index + 1], epsilon)
+        return before[:-1] + before
+    return [start, end]
 
 
 def load_rock(path=ROCK):
@@ -87,6 +111,22 @@ class Brain:
         self.force_action = None
         self.run = None
         self._cd = {n: _Cooldown(a['usage_count']) for n, a in self.actions.items()}
+        # Navigation: path_query(world points) -> {hit, found, percentage} (DetourNavMesh.path_query); None without navmesh
+        # data. z is the root (capsule centre) height; behemoth_scale is GetBehemothScale_interface (mesh component scale).
+        self.path_query = None
+        self.z = 0.0
+        self.behemoth_scale = (1.0, 1.0, 1.0)
+        self._simple = {n: [simplify_vectors(a['attack'].get(k) or [])
+                            for k in ('attack_vectors1', 'attack_vectors2')]
+                        for n, a in self.actions.items() if a.get('attack')}
+        # Helpers (helpers.py): one per action with an OptimalHitArea and CreateHelper (BP_BehemothAction_C default true).
+        # ground_z(x, y) stands in for the helper ground trace; target_z is the attack target's actor height.
+        self.helpers = {n: ActionHelper(n) for n, a in self.actions.items()
+                        if a.get('attack') and a['attack'].get('optimal') and a['attack'].get('create_helper', True) is not False}
+        self.ground_z = lambda x, y: None
+        self.target_z = 0.0
+        self.severed = set()          # severed part names; part severing is not modelled, so this stays empty
+        self.last_targets = []
 
     # --- state ---------------------------------------------------------------------------------------------------
     def set_state(self, state, on=True):
@@ -150,13 +190,62 @@ class Brain:
                 hit.append(t)
         return hit
 
+    def scaling_factor(self, name):
+        """GetScalingFactor: DebugScale when set, else the behemoth scale when ScaleHitAreaToBehemothSize, else 1.
+        Unset properties take the BP_BehemothAction_C defaults (ScaleHitAreaToBehemothSize true, DebugScale 0)."""
+        atk = self.actions[name]['attack']
+        debug = atk.get('debug_scale') or 0.0
+        if abs(debug) > 1e-6:
+            return (debug, debug, debug)
+        return self.behemoth_scale if atk.get('scale_hit_area', True) is not False else (1.0, 1.0, 1.0)
+
+    def nav_rejected(self, name):
+        """Evaluate's PathHitsNavMesh test from the behemoth root."""
+        return self.paths_rejected(name, self.pos, self.z, self.yaw)
+
+    def paths_rejected(self, name, pos, z, yaw):
+        """Either scaled simplified attack path with more than one point that hits the navmesh before NAV_PATH_FRACTION of
+        its length rejects the action. Paths are local to the parent transform (behemoth, or helper for the predictive test)."""
+        if self.path_query is None or name not in self._simple:
+            return False
+        sx, sy, sz = self.scaling_factor(name)
+        c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+        x, y = pos
+        for local in self._simple[name]:
+            if len(local) < 2:
+                continue
+            world = [(x + px * sx * c - py * sy * s, y + px * sx * s + py * sy * c, z + pz * sz)
+                     for px, py, pz in local]
+            q = self.path_query(world)
+            if q['hit'] and q['percentage'] < NAV_PATH_FRACTION:
+                return True
+        return False
+
+    def _place_helper(self, name, targets):
+        """Evaluate's helper branch (CreateHelper, a valid helper and a valid current target); its score is always 0."""
+        target = next((t for t in targets if t.alive), None)
+        if target is not None and name in self.helpers:
+            place(self, name, (target.pos[0], target.pos[1], self.target_z), (self.pos[0], self.pos[1], self.z), self.ground_z)
+
+    def action_tests(self, name, targets=()):
+        """ActionSpecifcTests. BP_BehemothAction_C: the action hits a target from the behemoth's current transform.
+        sally_rocklaunch1_atk_C replaces that result with 'Tail not severed'."""
+        if self.actions[name].get('class') == 'sally_rocklaunch1_atk_C':
+            return 'Tail' not in self.severed
+        return bool(self.targets_hit(name, targets or self.last_targets))
+
     def evaluate(self, name, now, targets, predict_time=0.0):
         """BP_BehemothAction.Evaluate at the behemoth's current transform -> (score, targets hit)."""
+        self.last_targets = targets
         ok, _ = self.available(name, now, self.intensity(targets))
         if not ok:
             return 0.0, []
+        if self.nav_rejected(name):
+            self._place_helper(name, targets)
+            return 0.0, []
         hit = self.targets_hit(name, targets, predict_time)
         if not hit:
+            self._place_helper(name, targets)
             return 0.0, []
         base = sum(self._target_score(t) * self.actions[name]['base_value'] * self.attack_weighting *
                    self.runtime_weighting for t in hit)
