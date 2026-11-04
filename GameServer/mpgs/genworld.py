@@ -579,6 +579,13 @@ class GenSession(ReplaySession):
                                 print('%s decode failed: %r' % (x[1], exc), flush=True)
                         handle_ranged(self, b.ch, blk, x[1], params)
                         continue
+                    if x[1] in ('ServerStartCharge', 'ServerProcessCharge', 'ServerEndCharge') and x[2] == 'rpc' \
+                            and getattr(self, '_encounter', None) is not None:
+                        from .engine import combat_moves
+                        combat_moves.on_charge(self, self._encounter, x[1], x[3], time.monotonic() - self._encounter['spawn_mono'])
+                    if x[1] == 'ServerStartInputAction' and x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
+                        from .engine import hammer
+                        hammer.on_input_action(self, self._encounter, x[3], time.monotonic() - self._encounter['spawn_mono'])
                     if x[1] == 'ServerStartCombo' and x[2] == 'rpc' and getattr(self, '_encounter', None) is not None:
                         from .engine import sword_special
                         for e in reversed(sword_special.on_combo(self, self._encounter, x[3].get('InComboInputKey.PrimaryKey'),

@@ -306,6 +306,10 @@ def start(session):
             if weapon is not None:
                 from .engine import buffs, legendary
                 parts = weapon_parts.default_parts(weapon_parts.load(), weapon[2])
+                session._encounter['parts_by_type'] = {row['type']: row['component'].rsplit('.', 1)[-1]
+                                                       for _, _, row in parts}
+                session._encounter['empty_meter_on_combat_end'] = any(
+                    pid == 'PART_EB_SPECIAL_CROWBEAR_EXOTIC' for _, pid, _ in parts)
                 entries += legendary.setup(session, session._encounter, [row['component'].rsplit('.', 1)[-1]
                                                                          for _, _, row in parts])
                 for package, cls in weapon_parts.part_buffs(parts):    # they switch on with Combat.SpecialActive themselves
@@ -835,6 +839,9 @@ def handle_ability(session, ch, req_block, params):
     pa = (enc or {}).get('part_abilities')
     if pa is not None and h in pa.granted:
         accepted = pa.on_try_activate(ch, req_block, params)   # a weapon part ability (repeater X / Y): granted by this server
+        if accepted:
+            from .engine import hammer
+            hammer.on_blast(session, pa.granted[h]['cls'])
         if accepted and pa.granted[h]['cls'] == 'dp_y_ability_spawn_raptor_ab_C' and enc.get('director') is not None:
             from .engine import allies                       # the ability spawns its raptors on the server (authority only)
             session.entries.extend(allies.spawn_raptors(session, enc, time.monotonic() - enc['spawn_mono']))
@@ -1068,6 +1075,8 @@ def _engine_step(session, enc, now):
     reliable.extend(legendary.step(session, enc, t))
     now = time.monotonic() if not hasattr(session, 'clock') else session.clock()      # the effects' clock
     reliable.extend(sword_special.step(session, enc, now))
+    if enc.get('moves') is not None:
+        enc['moves'].step(session, enc, t)
     pe = getattr(session, '_effects', None)
     if pe is not None:
         reliable.extend(pe.step(now))
@@ -1272,8 +1281,8 @@ def _stamina(session, enc):
 
 
 def handle_stamina_rpc(session, ch, req_block, func, params):
-    """CharCombatComp.ServerStartNextMove spends the destination move's stamina; the locomotion state and sheathe status
-    start or stop the sprint drain. Out of stamina -> ArchonCombatComponent.ClientHandleOutOfStamina on the same component."""
+    """CharCombatComp.ServerStartNextMove starts the move's montage timeline (engine.combat_moves), whose notifies spend
+    stamina at their times; the locomotion state and sheathe status start or stop the sprint drain. Out of stamina -> ArchonCombatComponent.ClientHandleOutOfStamina on the same component."""
     enc = session._encounter
     st = _stamina(session, enc)
     now = time.monotonic() - enc['spawn_mono']
@@ -1292,12 +1301,9 @@ def handle_stamina_rpc(session, ch, req_block, func, params):
         return
     dest = (params or {}).get('ComboInputBuffer.DestState')
     dest = dest[1] if isinstance(dest, tuple) else dest
-    cost = st.move_cost(dest)
-    if cost and not st.spend(cost, now):
-        session._queue_rpc(ch, req_block, 'ClientHandleOutOfStamina', {})
-        print('ENCOUNTER stamina out (move cost %.0f) -> ClientHandleOutOfStamina' % cost, flush=True)
-    elif cost:
-        print('ENCOUNTER stamina -%.0f -> %.0f' % (cost, st.value), flush=True)
+    from .engine import combat_moves
+    combat_moves.for_encounter(enc).start(
+        session, enc, dest, now, out_of_stamina=lambda: session._queue_rpc(ch, req_block, 'ClientHandleOutOfStamina', {}))
 
 
 def _stamina_entries(session, enc, t):
@@ -1317,46 +1323,70 @@ RANGED_ROWS = {'dp_umbral_01_bp_C': 'DP.ExoticBombs.PrimaryFire', 'dp_radiant_01
                'dp_exotic_bombs_00_bp_C': 'DP.ExoticBombs.PrimaryFire'}   # the weapon CDOs' DamageRowName
 RANGED_DEFAULT_ROW = 'DP.PrimaryFire'                                    # dp_weapon_bp CDO
 AMMO_MAX = 12                                                            # dp_weapon_bp ammo_bpc_GEN_VARIABLE MaxAmmoCount
+# Weapon base class -> (its ammo_bpc_C SCS component name, MaxAmmoCount). Hammer: bp_ihammer_weapon SCS 'AmmoComponent',
+# StartWithFullAmmo, MaxAmmoCount 7 (atlas weapons/hammer.txt; topics/hammer_server.md section 1).
+AMMO_WEAPONS = {'dp_weapon_bp_C': ('ammo_bpc', AMMO_MAX), 'bp_ihammer_weapon_C': ('AmmoComponent', 7)}
+
+
+def _ammo_weapons(session):
+    """-> {channel: (actor guid, component name, max ammo)} for the open actors whose class carries an ammo component."""
+    inherit = session.world.schema.inherit
+    out = {}
+    for e in session.entries:
+        if not (e.open and e.parsed is not None):
+            continue
+        base = next((b for b in AMMO_WEAPONS if e.cls == b or b in inherit.get(e.cls, ())), None)
+        g = (e.parsed.open or {}).get('guid')
+        if base and g:
+            out[e.ch] = (g,) + AMMO_WEAPONS[base]
+    return out
 
 
 def _ranged_channels(session):
     """-> {channel: actor guid} for the open repeater actors (classes under dp_weapon_bp_C)."""
-    inherit = session.world.schema.inherit
-    out = {}
-    for e in session.entries:
-        if e.open and e.parsed is not None and (e.cls == 'dp_weapon_bp_C' or 'dp_weapon_bp_C' in inherit.get(e.cls, ())):
-            g = (e.parsed.open or {}).get('guid')
-            if g:
-                out[e.ch] = g
-    return out
+    return {ch: w[0] for ch, w in _ammo_weapons(session).items() if w[1] == 'ammo_bpc'}
+
+
+def ammo_max(session, ch):
+    w = _ammo_weapons(session).get(ch)
+    return w[2] if w else AMMO_MAX
 
 
 def _ammo_entries(session, enc):
-    """ArchonAmmoComponent's MaxAmmoCount / AuthoritativeAmmoCount on the repeater's ammo_bpc component (the dp_weapon_bp SCS
-    component 'ammo_bpc'). The server sets them (ammo_bpc BeginPlay: StartWithFullAmmo -> SetAmmo(max); AuthReloadNumAmmo);
-    while they stay 0 the client treats every attack as a reload (live 2026-10-26)."""
+    """ArchonAmmoComponent's MaxAmmoCount / AuthoritativeAmmoCount on the weapon's ammo_bpc_C component (repeaters:
+    dp_weapon_bp SCS 'ammo_bpc'; hammers: bp_ihammer_weapon SCS 'AmmoComponent'). The server sets them (ammo_bpc
+    BeginPlay: StartWithFullAmmo -> SetAmmo(max); AdjustAmmo; AuthReloadNumAmmo); while they stay 0 the client treats
+    every attack as a reload (live 2026-10-26)."""
     ammo, sent, guids = enc.setdefault('ammo', {}), enc.setdefault('ammo_sent', {}), enc.setdefault('ammo_guids', {})
     out = []
-    for ch, actor in _ranged_channels(session).items():
-        value = ammo.setdefault(ch, AMMO_MAX)
+    for ch, (actor, comp, maximum) in _ammo_weapons(session).items():
+        value = ammo.setdefault(ch, maximum)
         if sent.get(ch) == value:
             continue
         exports = []
         if ch not in guids:
             g = guids[ch] = session.next_live_guid()
-            info = _info(g, 'ammo_bpc', _info(actor))
+            info = _info(g, comp, _info(actor))
             info.flags = 3
-            session.ctx._names[g] = (actor, 'ammo_bpc')
+            session.ctx._names[g] = (actor, comp)
             exports.append(info)
         values = {'AuthoritativeAmmoCount': value}
         if ch not in sent:
-            values['MaxAmmoCount'] = AMMO_MAX
+            values['MaxAmmoCount'] = maximum
         entry = _entry(session.world, ch, session.chan_cls.get(ch), [_block('ammo_bpc_C', values, guid=guids[ch])])
         entry.exports = exports
         sent[ch] = value
         print('ENCOUNTER ammo ch%d -> %s' % (ch, values), flush=True)
         out.append(entry)
     return out
+
+
+def adjust_ammo(session, ch, amount):
+    """ammo_bpc.AdjustAmmo(amount) on the server: clamp to [0, MaxAmmoCount]; _ammo_entries sends the new count."""
+    ammo = session._encounter.setdefault('ammo', {})
+    maximum = ammo_max(session, ch)
+    ammo[ch] = max(0, min(maximum, ammo.get(ch, maximum) + amount))
+    return ammo[ch]
 
 
 def handle_ranged(session, ch, req_block, func, params):
@@ -1447,6 +1477,28 @@ def handle_spawn_projectile(session, ch, req_block, params):
                                                                           'ImpactPoint': list(hit[1])}})
 
 
+def apply_aoe(session, row_name, origin, yaw, radius, wedge=None, scale=1.0, what='aoe'):
+    """aoe_base_bp.ApplySingleHitDamage on the server for the encounter behemoth: overlap (projectiles.area_hit), then one
+    DealDamageToActor per actor hit -> archon_function_library.ApplySingleHitDamageFromAOE(row, SingleHitDamageMultiplier x
+    GetCustomDamageScale). A row missing from the damage table deals nothing (Apply Ao EDamage asserts 'Damage row not
+    found'). -> the bone hit, or None."""
+    from .engine import projectiles
+    enc = getattr(session, '_encounter', None)
+    director = enc.get('director') if enc else None
+    if director is None or enc['dead']:
+        return None
+    if row_name not in ((enc.get('damage_model') or {}).get('rows') or {}):
+        print('ENCOUNTER %s: damage row %s not found, no damage (as the game)' % (what, row_name), flush=True)
+        return None
+    hit = projectiles.area_hit(director.species.bodies, director.loc, director.yaw, origin, yaw, radius, wedge)
+    print('ENCOUNTER %s %s radius %.0f -> %s' % (what, row_name, radius, 'hit %s' % hit[0] if hit else 'miss'), flush=True)
+    if hit:
+        handle_damage(session, None, None, {'Payload.DamageTypeName': (row_name, 0), 'DamageScale': scale,
+                                            'Payload.Hit': {'bone_name': [hit[0]], 'impact_point': list(hit[1]),
+                                                            'ImpactPoint': list(hit[1])}})
+    return hit[0] if hit else None
+
+
 def _player_hit_damage(enc, params):
     """-> (damage, damage-table row or None). The report names its attack (Payload.DamageTypeName, a Gameplay/DamageTable row such
     as EBRework.X1); damage = the row's BaseDamage x player_to_behemoth_exploration_dmgcurve(player power - behemoth power), as
@@ -1462,6 +1514,7 @@ def _player_hit_damage(enc, params):
         print('ENCOUNTER hit attack=%s not in the damage table -> %.0f' % (name, DEFAULT_HIT_DAMAGE), flush=True)
         return DEFAULT_HIT_DAMAGE, None
     mult = eval_curve(model['curves'][PLAYER_CURVE], 0.0) * float(os.environ.get('MPGS_DAMAGE_SCALE', '1'))
+    mult *= float(params.get('DamageScale', 1.0))       # server-side damage scales (AoE multiplier x custom scale)
     print('ENCOUNTER hit attack=%s base=%s' % (name, row.get('BaseDamage')), flush=True)
     return float(row.get('BaseDamage', 0)) * mult, row
 
@@ -1595,6 +1648,8 @@ def handle_damage(session, ch, req_block, params=None):
         for e in reversed(sword_special.on_hit(session, enc, row.get('tags'), now) +
                           sword_special.lifesteal(session, enc, damage)):
             session.entries.insert(session.pos, e)
+    from .engine import hammer
+    hammer.on_damage_given(session, enc)
     enc['health'] = max(0.0, enc['health'] - damage)
     director = enc.get('director')
     if director is not None:

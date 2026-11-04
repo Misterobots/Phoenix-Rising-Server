@@ -1,11 +1,10 @@
-"""Write world/player/combat_moves.json (every weapon combo state: montage, transitions, entry condition, every montage
-notify with its time, class and properties) and world/player/stamina_costs.json (the stamina view of it).
+"""Write world/player/combat_moves.json: every weapon combo state (montage, transitions, entry condition) and every
+montage (sections with their start times, every notify with its time, class and properties). engine.combat_moves
+plays it on the server.
 
-  python -m tools.export_stamina_costs <scratch dir>
+  python -m tools.export_combat_moves <scratch dir>
 
-Dumps every Weapons/AnimStates/*animstateset with AssetDump, then each ComboAnimState's AnimMontage, and sums the
-"Stamina Cost" of the montage's Notify_ConsumeStamina notifies (Notify_ConsumeStamina.Received_Notify ->
-BP_PlayerCharacter.ConsumeStamina). Keys match ServerStartNextMove's ComboInputBuffer.DestState soft path:
+Dumps every Weapons/AnimStates/*animstateset with AssetDump, then each ComboAnimState's AnimMontage. State keys match ServerStartNextMove's ComboInputBuffer.DestState soft path:
 '<package>.<asset>:ComboAnimState_N'.
 """
 import glob
@@ -16,7 +15,6 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETDUMP = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..', 'Mystic-Paradox', 'tools', 'AssetDump', 'bin', 'AssetDump.dll'))
-OUT = os.path.join(HERE, '..', 'world', 'player', 'stamina_costs.json')
 MOVES = os.path.join(HERE, '..', 'world', 'player', 'combat_moves.json')
 
 
@@ -78,7 +76,7 @@ def main():
     paks = sorted(game_to_pak(m) for m in montages)
     for i in range(0, len(paks), 60):
         run('dump', mdir, *paks[i:i + 60])
-    costs, montage_info = {}, {}
+    montage_info = {}
     for f in glob.glob(os.path.join(mdir, '*.json')):
         with open(f, encoding='utf-8') as fh:
             exports = json.load(fh)
@@ -95,26 +93,19 @@ def main():
             notifies.append({'name': n.get('NotifyName'), 'class': inst.get('Type'), 'time': n.get('LinkValue'),
                              'duration': n.get('Duration'), 'track': n.get('TrackIndex'),
                              'properties': _ref(inst.get('Properties') or {})})
-        costs[pkg] = sum(float((x['properties'] or {}).get('Stamina Cost', 0.0)) for x in notifies if 'ConsumeStamina' in (x['class'] or ''))
         montage_info[pkg] = {'length': mp.get('SequenceLength'), 'rate_scale': mp.get('RateScale'),
-                             'sections': [{'name': c.get('SectionName'), 'next': c.get('NextSectionName'), 'start': c.get('SegmentBeginTime')}
+                             'sections': [{'name': c.get('SectionName'), 'next': c.get('NextSectionName'), 'start': c.get('SegmentBeginTime'),
+                                           'time': c.get('LinkValue')}
                                           for c in mp.get('CompositeSections') or []],
                              'segments': [{'slot': t.get('SlotName'), 'anims': [{'anim': _ref(sg.get('AnimReference')), 'start': sg.get('StartPos'),
                                            'length': sg.get('AnimEndTime'), 'rate': sg.get('AnimPlayRate'), 'loops': sg.get('LoopingCount')}
                                           for sg in (t.get('AnimTrack') or {}).get('AnimSegments') or []]} for t in mp.get('SlotAnimTracks') or []],
-                             'notifies': notifies, 'stamina_cost': costs[pkg]}
-    for v in states.values():
-        v['cost'] = costs.get(v['montage'], 0.0) if v['montage'] else 0.0
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+                             'notifies': notifies}
+    os.makedirs(os.path.dirname(MOVES), exist_ok=True)
     with open(MOVES, 'w', encoding='utf-8') as fh:
-        json.dump({'source': 'AssetDump of Weapons/AnimStates/*animstateset and their ComboAnimState montages (tools/export_stamina_costs.py)',
+        json.dump({'source': 'AssetDump of Weapons/AnimStates/*animstateset and their ComboAnimState montages (tools/export_combat_moves.py)',
                    'states': states, 'montages': montage_info}, fh, indent=1, sort_keys=True)
-    with open(OUT, 'w', encoding='utf-8') as fh:
-        json.dump({'source': 'AnimStateSet ComboAnimState.AnimMontage -> Notify_ConsumeStamina "Stamina Cost" (tools/export_stamina_costs.py)',
-                   'states': {k: {'state': v['state'], 'montage': v['montage'], 'cost': v['cost']} for k, v in states.items()}},
-                  fh, indent=1, sort_keys=True)
-    print('%s: %d states, %d montages; %d states with a stamina cost' % (
-        os.path.normpath(MOVES), len(states), len(montage_info), sum(1 for v in states.values() if v['cost'])))
+    print('%s: %d states, %d montages' % (os.path.normpath(MOVES), len(states), len(montage_info)))
 
 
 if __name__ == '__main__':

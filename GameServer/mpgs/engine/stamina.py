@@ -1,8 +1,8 @@
 """Player stamina, server side (ArchonHealthAttributeSet.Stamina is server-authoritative and replicated).
 
 Read from the game:
-- spend: a move's montage Notify_ConsumeStamina "Stamina Cost" (world/player/stamina_costs.json, keyed by the
-  ServerStartNextMove DestState) -> BP_PlayerCharacter.ConsumeStamina -> ArchonStaminaComponent.TryConsumeStamina.
+- spend: each Notify_ConsumeStamina "Stamina Cost" in a move's montage at its time (engine.combat_moves) ->
+  BP_PlayerCharacter.ConsumeStamina -> ArchonStaminaComponent.TryConsumeStamina.
 - sprint: BP_PlayerCharacter."Evaluate Stamina System" drains SPRINT STAMINA DRAIN PER SECOND (3.75) x
   SprintStaminaCostMultiplier while sprinting; it does not regenerate while draining.
 - regen: the same tick adds StaminaRegen (9/s in the join) x dt, capped at MaxStamina, when CanRegenStamina;
@@ -11,36 +11,20 @@ Assumed: CanRegenStamina = no spend within the delay (native); the weapon power 
 larger than what is left empties stamina and is reported to the client as out of stamina (ClientHandleOutOfStamina).
 Not covered yet: the dodge (BASE DODGE STAMINA COST 20) - the dodge is detected natively (GetIsDodging).
 """
-import json
-import os
-
-HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-COSTS = os.path.join(HERE, 'world', 'player', 'stamina_costs.json')
 SPRINT_DRAIN = 3.75
 REGEN_DELAY = 1.4
 SEND_INTERVAL = 0.25
 RESYNC_INTERVAL = 2.0     # the server is authoritative: resend even unchanged, so a client-side spend never sticks
 
 
-def load_costs(path=COSTS):
-    if not os.path.exists(path):
-        return {}
-    with open(path, encoding='utf-8') as f:
-        return {k.lower(): float(v.get('cost') or 0.0) for k, v in json.load(f)['states'].items()}   # path case differs
-
-
 class Stamina:
-    def __init__(self, value=100.0, maximum=100.0, regen=9.0, costs=None):
+    def __init__(self, value=100.0, maximum=100.0, regen=9.0):
         self.value, self.max, self.regen = float(value), float(maximum), float(regen)
-        self.costs = costs if costs is not None else load_costs()
         self.sprinting = False
         self.last_use = None
         self.last_t = None
         self.sent = self.value
         self.sent_t = None
-
-    def move_cost(self, dest_state):
-        return self.costs.get(dest_state.lower(), 0.0) if dest_state else 0.0
 
     def spend(self, cost, now):
         """-> True when there was enough; otherwise stamina empties and the caller reports out of stamina."""
