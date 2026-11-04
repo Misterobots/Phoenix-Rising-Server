@@ -51,7 +51,60 @@ class Ctx(bt.Context):
         return self.now + 1.0
 
 
+class Tracked(bt.Wait):
+    log = []
+
+    def start(self, ctx):
+        Tracked.log.append(('start', self.p['Tag'], ctx.now))
+        return super().start(ctx)
+
+    def abort(self, ctx):
+        Tracked.log.append(('abort', self.p['Tag'], ctx.now))
+
+
 class EngineTests(unittest.TestCase):
+    def test_wait_for_distance_needs_target_inside_min_and_key_true(self):
+        ctx = Ctx()
+        ctx.bb['AttackTarget'] = 'player'
+        here, there = [(0.0, 0.0, 0.0)], [(3000.0, 0.0, 0.0)]
+        ctx.target_pos = lambda key: here[0] if key == 'SelfPos' else there[0]
+        ctx.target_vel = lambda key: (-1000.0, 0.0)
+        task = bt.WaitForDistance({'TargetKey': {'SelectedKeyName': 'AttackTarget'},
+                                   'MinDistanceData': {'ConstantFloat_30': 1500.0},
+                                   'MaxDistanceData': {'ConstantFloat_30': 99999.0},
+                                   'TimeInFutureToPredictTargetPos': 0.5,
+                                   'BlackboardKeyNameToCheck': 'CanTransitToNextAnim',
+                                   'BlackboardCompareData': {'ConstantBool_28': True}})
+        ctx.now = 0.0
+        self.assertEqual(task.start(ctx), bt.RUNNING)
+        self.assertEqual(task.update(ctx), bt.RUNNING)      # 2500 predicted: still in the 1500-99999 band
+        there[0] = (1900.0, 0.0, 0.0)                       # predicted 1400: out of band, but the key is unset
+        self.assertEqual(task.update(ctx), bt.RUNNING)
+        ctx.bb['CanTransitToNextAnim'] = True
+        self.assertEqual(task.update(ctx), bt.SUCCEEDED)
+        ctx.bb['CanTransitToNextAnim'] = False
+        ctx.now = 10.0
+        self.assertEqual(task.update(ctx), bt.FAILED)        # MaximumTimeToWait (CDO 10 s)
+
+    def test_simple_parallel_repeats_background_and_aborts_it_when_main_finishes(self):
+        bt.TASKS['tracked_task'] = Tracked
+        self.addCleanup(bt.TASKS.pop, 'tracked_task')
+        Tracked.log = []
+        t = 'par'
+        ts = bt.TreeSet()
+        ts.add(make_tree(t, {
+            'Seq': ('BTComposite_Sequence', {'Children': [child(t, 'Par'), child(t, 'After', task=True)]}),
+            'Par': ('BTComposite_SimpleParallel', {'Children': [child(t, 'Main', task=True), child(t, 'Bg', task=True)]}),
+            'Main': ('tracked_task', {'Tag': 'main', 'WaitTime': 1.0}),
+            'Bg': ('tracked_task', {'Tag': 'bg', 'WaitTime': 0.4}),
+            'After': ('tracked_task', {'Tag': 'after', 'WaitTime': 5.0}),
+        }, 'Seq'))
+        runner = bt.Runner(ts, t, Ctx())
+        for i in range(7):
+            runner.tick(i * 0.25)
+        self.assertEqual(Tracked.log, [('start', 'main', 0.0), ('start', 'bg', 0.0), ('start', 'bg', 0.5),
+                                       ('abort', 'bg', 1.0), ('start', 'after', 1.0)])
+
     def test_rng_float_service_writes_deterministic_blackboard_value(self):
         ctx = Ctx()
         bt.SERVICES['rng_float_service_C'](ctx, {

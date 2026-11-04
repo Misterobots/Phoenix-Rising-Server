@@ -456,9 +456,8 @@ class RockDirector:
         curve = montage_curve(mname + '_mot' if not mname.endswith('_mot') else mname)
         if curve is None:
             log('t=%.2f %s: no root motion curve, staying in place' % (now, label))
-        elif not self.mover.play(curve, now):
-            log('t=%.2f %s: a montage is already moving the Rock' % (now, label))
         else:
+            self.mover.play(curve, now)
             log('t=%.2f %s: root motion %.2fs' % (now, label, curve.duration))
             self._rm = (mname, now)
         return curve

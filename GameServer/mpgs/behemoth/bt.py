@@ -14,6 +14,10 @@ Semantics (UE BehaviorTree, simplified):
   it and the tree restarts from the root.
 - Services on a composite or task on the running path tick at their Interval.
 - BTTask_RunBehavior runs the named sub-tree in place (same blackboard).
+- BTComposite_SimpleParallel (UE 5.1.1 BTComposite_SimpleParallel.cpp): child 0 is the main task, child 1 the
+  background branch. A main task that finishes at once is the parallel's result. While the main task runs, the
+  background branch runs and restarts whenever it finishes. FinishMode AbortBackground (enum 0, the default every
+  cooked tree uses) aborts the background when the main task finishes, and the main task's result is the parallel's.
 - Node classes without a handler: decorators pass and tasks succeed at once. Each is logged once (`unknown`), so the
   list of gaps is visible in the server log. That is a deliberate simplification: most unhandled nodes are
   coordination, audio or cosmetic tasks.
@@ -31,6 +35,7 @@ import random
 from . import eqs
 
 SUCCEEDED, FAILED, RUNNING = 'succeeded', 'failed', 'running'
+PARALLEL = 'BTComposite_SimpleParallel'
 
 
 def _short_name(ref):
@@ -79,7 +84,7 @@ class Node:
 
     @property
     def is_composite(self):
-        return self.type in ('BTComposite_Selector', 'BTComposite_Sequence')
+        return self.type in ('BTComposite_Selector', 'BTComposite_Sequence', PARALLEL)
 
     def __repr__(self):
         return '%s:%s' % (self.tree, self.name)
@@ -188,6 +193,8 @@ class Frame:
         self.forced = any(d.type == 'BTDecorator_ForceSuccess' for d in self.decorators)
         self.time_limit = next((float(d.props.get('TimeLimit', 5.0)) for d in self.decorators
                                 if d.type == 'BTDecorator_TimeLimit'), None)
+        self.main = None                        # simple parallel: (main task Frame, handler) while it runs
+        self.background_started = None          # simple parallel: tick the background branch last started
 
 
 class Runner:
@@ -208,10 +215,12 @@ class Runner:
     def tick(self, now):
         self.ctx.now = now
         self._run_services(now)
+        self._tick_parallel_mains()
         if self.task is not None:
             if self._should_abort(now):
                 self._abort_task()
                 for f in reversed(self.stack):        # aborted frames finish too (UE calls ReceiveExecutionFinishAI)
+                    self._abort_main(f)
                     self._on_exit(f.decorators)
                 self.stack = []
             else:
@@ -242,6 +251,15 @@ class Runner:
                 self._started_root = True
             frame = self.stack[-1]
             node = frame.node
+            if node.type == PARALLEL:
+                if frame.main is None:
+                    self._start_parallel_main(frame, now)
+                    continue
+                if len(node.children) < 2 or frame.background_started == now:
+                    return                         # wait for the main task (UE postpones a repeat within one search)
+                if frame.idx >= len(node.children):
+                    frame.idx = 1                  # the background branch restarts while the main task runs
+                frame.background_started = now
             if node.is_composite:
                 if frame.idx >= len(node.children):
                     self.stack.pop()
@@ -294,7 +312,57 @@ class Runner:
             else:                                   # a bare task frame left on the stack (should not happen)
                 self.stack.pop()
         self.ctx.log('BT step limit reached at %s' % self.path())
+        for f in self.stack:
+            self._abort_main(f)
         self.stack = []
+
+    # ---- simple parallel -----------------------------------------------------------------------------------------
+    def _start_parallel_main(self, frame, now):
+        """Run child 0 of a simple parallel. A main task that finishes at once finishes the parallel."""
+        child, decos, ops = frame.node.children[0]
+        frame.idx = 1
+        if not self._check_decorators(decos, ops):
+            self.stack.pop()
+            self._finish(frame, SUCCEEDED if any(d.type == 'BTDecorator_ForceSuccess' for d in decos) else FAILED)
+            return
+        self._on_enter(decos)
+        main = Frame(child, decos, now)
+        h = self._task_handler(child)
+        r = h.start(self.ctx)
+        self.last_leaf = child
+        if r == RUNNING:
+            frame.main = (main, h)
+            return
+        self._on_exit(decos)
+        self.stack.pop()
+        self._finish(frame, SUCCEEDED if main.forced else r)
+
+    def _tick_parallel_mains(self):
+        """Update running main tasks; one that finishes aborts its background branch (AbortBackground)."""
+        for i, frame in enumerate(self.stack):
+            if frame.main is None:
+                continue
+            main, h = frame.main
+            r = h.update(self.ctx)
+            if r == RUNNING:
+                continue
+            frame.main = None
+            self._on_exit(main.decorators)
+            if self.task is not None:
+                self._abort_task()
+            for f in reversed(self.stack[i + 1:]):
+                self._abort_main(f)
+                self._on_exit(f.decorators)
+            del self.stack[i:]
+            self._finish(frame, SUCCEEDED if main.forced else r)
+            return
+
+    def _abort_main(self, frame):
+        if frame.main is not None:
+            main, h = frame.main
+            h.abort(self.ctx)
+            self._on_exit(main.decorators)
+            frame.main = None
 
     def _finish_child(self, parent, child_frame, result):
         if child_frame.forced:
@@ -924,6 +992,55 @@ class SetBlackboardKey(SetBool):
     type_is_set_key = True
 
 
+class WaitForDistance(Task):
+    """wait_for_distance_bttask (bytecode; CDO MaximumTimeToWait 10, OriginPosKeyName SelfPos, RequiredBlackboardKeyWaitType 1,
+    BlackBoardCompareOperator ==). ReceiveExecuteAI stamps the start; each tick (ReceiveTickAI):
+    - distance: the target (horizontally predicted by TimeInFutureToPredictTargetPos when it is an actor) is in band when it is
+      within MaxDistance and not within MinDistance of the origin (IsWithinDistanceFast: 3D). It passes when in band with
+      TimeWaitType 1 (RunUntilConditionIsTrue) or out of band with TimeWaitType 0; a missing location skips the test.
+    - blackboard: CompareBlackboardValues(BlackboardKeyNameToCheck) passes when true with RequiredBlackboardKeyWaitType 1 or
+      false with 0; a key name of None skips it.
+    Both passing finishes true; otherwise MaximumTimeToWait > 0 elapsed finishes false."""
+
+    def start(self, ctx):
+        self.started = ctx.now
+        return RUNNING
+
+    def update(self, ctx):
+        p = self.p
+        origin = ctx.target_pos(p.get('OriginPosKeyName', 'SelfPos'))
+        tkey = _key(p, 'TargetKey')
+        target = ctx.target_pos(tkey) if tkey else None
+        ok = True
+        if origin is not None and target is not None:
+            future = float(p.get('TimeInFutureToPredictTargetPos', 0.0))
+            if ctx.bb.get(tkey) == 'player' and future > 0.0:
+                vx, vy = ctx.target_vel(tkey)
+                target = (target[0] + vx * future, target[1] + vy * future, target[2])
+            d = math.dist(origin, target)
+            in_band = d <= _bb_float(ctx, p.get('MaxDistanceData')) and not d <= _bb_float(ctx, p.get('MinDistanceData'))
+            ok = in_band == (_enum_index(p.get('TimeWaitType'), 0) == 1)
+        name = p.get('BlackboardKeyNameToCheck', 'None')
+        if ok and name not in (None, '', 'None'):
+            ok = _compare_bool_key(ctx, name, p) == (_enum_index(p.get('RequiredBlackboardKeyWaitType'), 1) == 1)
+        if ok:
+            return SUCCEEDED
+        limit = float(p.get('MaximumTimeToWait', 10.0))
+        if limit > 0.0 and self.started + limit <= ctx.now:
+            return FAILED
+        return RUNNING
+
+
+def _compare_bool_key(ctx, name, p):
+    """archon_function_library.CompareBlackboardValues for a Bool key (blackboard_comparable_key_type value 2) with the CDO
+    operator ==: GetValueAsBool(name) == the right side (a named key, else ConstantBool). An unset key reads false."""
+    right = p.get('BlackboardCompareData') or {}
+    rkey = next((v for k, v in right.items() if k.startswith('BlackboardKeyName')), None)
+    want = bool(ctx.bb.get(rkey)) if rkey not in (None, '', 'None') else \
+        bool(next((v for k, v in right.items() if k.startswith('ConstantBool')), False))
+    return bool(ctx.bb.get(name)) == want
+
+
 class Pivot(Task):
     """Turn toward the target. ctx.face returns the end time of a turn montage (wait for it) or None (turned at once)."""
 
@@ -1038,6 +1155,7 @@ TASKS = {
     'try_set_behemoth_state_bttask_C': SetState,
     'bttask_set_boolean_C': SetBool,
     'set_blackboard_key_bttask_C': SetBlackboardKey,
+    'wait_for_distance_bttask_C': WaitForDistance,
     'pivot_towards_target_bttask_C': Pivot,
     'bttask_enter_rage_state_C': StateMontage,
     'bttask_exit_rage_state_C': StateMontage,

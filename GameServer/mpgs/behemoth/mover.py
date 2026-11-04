@@ -187,12 +187,11 @@ class Mover:
         self.path = pts
 
     def play(self, curve, now):
-        if self.montage is not None:
-            return False
+        """UAnimInstance::Montage_PlayInternal (UE 5.1.1): the montages of the group blend out and the new instance becomes
+        RootMotionMontageInstance, the only one root motion is extracted from, so a playing montage's root motion stops here."""
         self.path = []
         self.montage = (curve, now, self.x, self.y, self.yaw, self.z)
         self.stopped_reason = None
-        return True
 
     # ---- simulation ----------------------------------------------------------------------------------------------
     def _blocked(self, nx, ny):

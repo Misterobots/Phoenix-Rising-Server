@@ -68,11 +68,22 @@ class MoverTests(unittest.TestCase):
         self.assertFalse(m.pop_changed())
         self.assertFalse(m.pop_changed())
 
+    def test_new_montage_takes_over_root_motion_from_the_playing_one(self):
+        m = Mover(flat_terrain(), (100.0, 100.0), 0.0, half_height=250.0)
+        m.tick(0.0)
+        m.play(straight_curve(300.0, 31), 0.0)
+        m.tick(0.5)
+        x_at_switch = m.x
+        m.play(straight_curve(0.0, 31), 0.5)          # Montage_Play: the new instance owns root motion
+        for k in range(16, 60):
+            m.tick(k / 30.0)
+        self.assertAlmostEqual(m.x, x_at_switch, delta=1.0)
+
     def test_root_motion_moves_forward_by_exported_distance(self):
         m = Mover(flat_terrain(), (100.0, 100.0), 0.0, half_height=250.0)
         c = straight_curve(100.0, 31)
         m.tick(0.0)
-        self.assertTrue(m.play(c, 0.0))
+        m.play(c, 0.0)
         for k in range(1, 60):
             m.tick(k / 30.0)
         self.assertFalse(m.moving)
@@ -171,7 +182,7 @@ class FrontTackleOnIsland(unittest.TestCase):
         ground = terrain.ground_z(*start)
         m = Mover(terrain, start, 0.0, half_height=0.0)
         m.tick(0.0)
-        self.assertTrue(m.play(curve, 0.0))
+        m.play(curve, 0.0)
         t = 0.0
         while m.moving and t < curve.duration + 1.0:
             t += 1 / 30.0

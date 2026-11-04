@@ -37,6 +37,10 @@ LIMB_ROOT_MARKS = ('upper_arm', 'thigh')  # a damage window chain rooted here is
 SWING_MARGIN = 75.0                    # cm a damaging body may travel beyond its reference-pose spot (limb swing, not root motion)
 AGENT_RADIUS_PCT = 1.1                 # UPathFollowingComponent MinAgentRadiusPct (PathFollowingComponent.cpp)
 STOP_SPEED = 5.0                      # cm/s; below this the actor counts as standing (a zero-velocity stop is sent once)
+# Blackboard notify states on a species' run locomotion sequence: (sequence length, state begin, state end, key).
+# set_blackboard_key_ns (bytecode) sets ValueDuringState (CDO false) at begin and ValueAfterState at end, server only.
+# lerawr: b_aq_lerawr_00_loco_run_fwd_00 (and _scaled_fwd_00) set_blackboard_key_ns, ValueAfterState true.
+RUN_BLACKBOARD_NOTIFIES = {'lerawr': (0.56666666, 0.29811272, 0.39894003, 'CanTransitToNextAnim')}
 
 
 def montage_package(name, montage_dir=None):
@@ -511,6 +515,8 @@ class BehemothDirector:
         self._target_seen = None
         self._states_seen = set()
         self.staggered_until = 0.0                 # a stagger/part-break montage is playing: no tree, no attack
+        self._run_notify = RUN_BLACKBOARD_NOTIFIES.get(str(species.variant).split('_')[0])
+        self._run_started = None                   # when the current walk along a path began (run cycle phase 0)
         self.stagger_armor_stack = []             # local component state; source property is not replicated
         trees = trees or bt.TreeSet.load(os.environ.get('MPGS_BT_DIR') or os.path.join(SERVER, 'world', 'dumps', 'bt'))
         env = dict(env or {})
@@ -554,8 +560,8 @@ class BehemothDirector:
     def _play(self, name, rate, now):
         curve = montage_curve(name)
         self._events.append(('montage', name, rate, now))
-        if curve is not None and not self.mover.play(curve, now):
-            self._log('t=%.2f %s: a montage is already moving the actor' % (now, name))
+        if curve is not None:
+            self.mover.play(curve, now)
         return curve
 
     def start_attack(self, name, now, score=1.0, yaw=None):
@@ -643,6 +649,27 @@ class BehemothDirector:
             self._tick_vel = [(x - self._prev_tick[1]) / dt, (y - self._prev_tick[2]) / dt, 0.0]
         self._prev_tick = (now, x, y)
 
+    def _run_cycle_notify(self, now):
+        """The run sequence's blackboard notify state while the behemoth walks a path without a montage. Approximation: the
+        anim blueprint's locomotion state machine is not modelled, so the run sequence is taken to start (phase 0, rate 1) when
+        path following starts, and a run that stops inside the state ends it (NotifyEnd)."""
+        if self._run_notify is None:
+            return
+        length, begin, end, key = self._run_notify
+        running = bool(self.mover.path) and self.mover.montage is None
+        if not running:
+            if self._run_started is not None and self.ctx.bb.get(key) is False:
+                self.ctx.bb[key] = True
+            self._run_started = None
+            return
+        if self._run_started is None:
+            self._run_started = now
+        elapsed = now - self._run_started
+        if elapsed < begin:
+            return
+        phase = elapsed % length
+        self.ctx.bb[key] = not (begin <= phase < end)
+
     def tick(self, now):
         """Advance to `now` (seconds) and return the events since the last tick."""
         if not self.dead:
@@ -655,6 +682,7 @@ class BehemothDirector:
             if now >= self.staggered_until:
                 self.runner.tick(now)
             self.mover.tick(now)
+            self._run_cycle_notify(now)
             self._measure(now)
             self._sync_brain()
             if self.brain.busy:

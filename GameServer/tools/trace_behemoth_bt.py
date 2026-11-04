@@ -38,24 +38,56 @@ def node_supported(kind, typ):
     return False
 
 
-class ScriptedPlayer:
-    """Lands at the first PlayerStart, walks at run speed to stand off the behemoth, then circles it at melee range."""
+SCENARIOS = {
+    'melee': [],
+    # fight, then sprint straight away and wait out of reach, repeatedly: drives the run / wait_for_distance / pounce branch
+    'kite': [(30.0, 'melee'), (12.0, 'retreat'), (10.0, 'hold')] * 6,
+}
 
-    def __init__(self, start, speed=600.0, standoff=350.0):
+
+class ScriptedPlayer:
+    """Lands at the first PlayerStart, walks at run speed to stand off the behemoth, then circles it at melee range.
+
+    With a script of (seconds, mode) phases, applied once the player first reaches melee range: 'melee' circles the behemoth,
+    'retreat' sprints directly away from it, 'hold' stands still. After the script ends the player stays in melee."""
+
+    def __init__(self, start, speed=600.0, standoff=350.0, script=(), sprint=900.0):
         self.loc = list(start)
-        self.speed, self.standoff = speed, standoff
+        self.speed, self.standoff, self.sprint = speed, standoff, sprint
         self.pawn_state = {'loc': list(start), 'vel': [0.0, 0.0, 0.0]}
         self.angle = None
+        self.script, self.phase_t, self.engaged = list(script), 0.0, False
+
+    def mode(self, dt):
+        if not self.engaged or not self.script:
+            return 'melee'
+        self.phase_t += dt
+        while self.script and self.phase_t >= self.script[0][0]:
+            self.phase_t -= self.script.pop(0)[0]
+        return self.script[0][1] if self.script else 'melee'
 
     def tick(self, dt, behemoth_loc, terrain):
         dx, dy = behemoth_loc[0] - self.loc[0], behemoth_loc[1] - self.loc[1]
-        d = math.hypot(dx, dy)
-        if d > self.standoff + 50.0:
+        d = math.hypot(dx, dy) or 1.0
+        mode = self.mode(dt)
+        if mode == 'retreat':
+            vx, vy = -dx / d * self.sprint, -dy / d * self.sprint
+            nx, ny = self.loc[0] + vx * dt, self.loc[1] + vy * dt
+            if terrain.ground_z(nx, ny) is None:
+                vx = vy = 0.0
+            else:
+                self.loc[0], self.loc[1] = nx, ny
+            self.angle = None
+        elif mode == 'hold':
+            vx = vy = 0.0
+            self.angle = None
+        elif d > self.standoff + 50.0:
             step = min(self.speed * dt, d - self.standoff)
             vx, vy = dx / d * self.speed, dy / d * self.speed
             self.loc[0] += dx / d * step
             self.loc[1] += dy / d * step
         else:
+            self.engaged = True
             if self.angle is None:
                 self.angle = math.atan2(-dy, -dx)
             self.angle += 0.6 * dt           # slow strafe around the behemoth
@@ -69,7 +101,7 @@ class ScriptedPlayer:
         self.pawn_state = {'loc': list(self.loc), 'vel': [vx, vy, 0.0]}
 
 
-def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
+def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1, scenario='melee'):
     with open(os.path.join(SERVER, 'data', '2.1.1', 'islands', hunt + '.engine_data.json'), encoding='utf-8') as f:
         manifest = json.load(f)
     with open(os.path.join(SERVER, 'data', '2.1.1', 'islands', hunt + '.contract.json'), encoding='utf-8') as f:
@@ -80,7 +112,7 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
     terrain = Terrain.load(os.path.join(SERVER, 'world', 'maps', manifest['terrain']))
     terrain.hunt = hunt                 # as island_encounter does: the director resolves the hunt's navmesh from it
     rng = random.Random(seed)
-    player = ScriptedPlayer(start)
+    player = ScriptedPlayer(start, script=SCENARIOS[scenario])
     lines = []
 
     def log(msg):
@@ -148,7 +180,9 @@ def trace(hunt='Adventure_IslandA_D24', seconds=180.0, seed=1):
             for (k, typ), n in entered.most_common()]
     xy = [p for _, p, _ in floor]
     return {
-        'hunt': hunt, 'tree': manifest['behaviourTree'], 'seconds': seconds, 'seed': seed,
+        'hunt': hunt, 'tree': manifest['behaviourTree'], 'seconds': seconds, 'seed': seed, 'scenario': scenario,
+        'attacks_by_montage': dict(collections.Counter(e[1] for e in events
+                                                       if e[0] == 'montage' and e[1] in attack_montages).most_common()),
         'center': center['name'], 'vent_ground_z': center.get('groundZ'),
         'nodes': rows, 'unhandled': [r for r in rows if not r['handled']],
         'subtrees_entered': dict(subtrees.most_common()),
@@ -167,9 +201,10 @@ def main():
     ap.add_argument('--hunt', default='Adventure_IslandA_D24')
     ap.add_argument('--seconds', type=float, default=180.0)
     ap.add_argument('--seed', type=int, default=1)
+    ap.add_argument('--scenario', choices=sorted(SCENARIOS), default='melee')
     ap.add_argument('--json')
     a = ap.parse_args()
-    r = trace(a.hunt, a.seconds, a.seed)
+    r = trace(a.hunt, a.seconds, a.seed, a.scenario)
     if a.json:
         with open(a.json, 'w', encoding='utf-8') as f:
             json.dump(r, f, indent=1)
@@ -181,6 +216,7 @@ def main():
         print('  %5d %-9s %-45s %s' % (x['count'], x['kind'], x['type'], ', '.join(x['nodes'][:3])))
     print('handled:', ', '.join('%s(%d)' % (x['type'], x['count']) for x in r['nodes'] if x['handled']))
     print('montages:', collections.Counter((m[1], m[2]) for m in r['montages']).most_common())
+    print('attacks by montage:', r['attacks_by_montage'])
     print('events:', dict(r['events']))
 
 
