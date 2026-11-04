@@ -106,6 +106,20 @@ list.
 
 ## Step 3: Work out what the server has to do
 
+For an island encounter, first use `plan` to assemble the island's authored encounter with any weapon or quick item
+you want to include in the implementation review:
+
+```
+python -m tools.atlas plan Adventure_IslandP_D24 --behemoth sally_normal --weapon repeaters --item QI_FROSTBITE_PYLON
+```
+
+This follows the island contract to the behemoth sheet, then adds the selected weapon and item readiness notes. It
+prints known runtime findings and the exact checks still open. A component that maps to a game class is not thereby
+implemented, compatible with every other selected component, or client-validated. If the plan says a status is
+unknown or unvalidated, follow that gap before treating the composition as ready.
+
+Then use the focused queries below for each component:
+
 For each piece of game logic on your list, run:
 
 ```
@@ -180,6 +194,9 @@ Never present a guessed value as if it came from the game.
 
 ## Step 6: Test it, then write down what you learned
 
+Before a live test, fill in [PREFIGHT_CHECKLIST.md](PREFIGHT_CHECKLIST.md). Hand off only the items it marks testable in the
+current configuration; anything else is fixed first or reported as not testable.
+
 - Test with the **unmodified game**. Save up several changes and test them together, rather than restarting for
   each one.
 - When something is confirmed in game, add a short note to `data/atlas/verified.json`: what is true, which logic it
@@ -206,7 +223,7 @@ This is how the atlas keeps growing, and how nobody has to rediscover the same t
    - spawn what the island says
    - run the behemoth's attacks from its sheet, scaled for difficulty as `topics/behemoth_scaling.md` explains
    - hand out the rewards listed in `rewards/`
-5. Is anything missing? `behemoths.txt` has a "missing" column. For `lerawr_beta` it is empty, so nothing is missing.
+5. Check `behemoths.txt`'s "missing" column. For `lerawr_beta` it is empty, which means this extraction recorded no unresolved source rows for that behemoth. It does not mean the server implementation or the fight has been validated; check the implementation plan and live-test record separately.
 
 ## Example 2: bringing back a weapon special
 

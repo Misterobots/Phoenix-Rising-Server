@@ -10,6 +10,9 @@
   python -m tools.atlas assets <package|glob ...> [--refresh]       dump data assets (behavior trees, montages,
                                                                     tables, specs) into data/atlas/assets
   python -m tools.atlas asset <name>                                an asset's text view, refs and users
+  python -m tools.atlas plan <hunt> [--behemoth ROW] [--weapon TYPE] [--item ID]
+                                                                    compose references and surface known implementation gaps
+  python -m tools.atlas simulation <template|stage|apply> ...         versioned server-owned encounter bundles
   python -m tools.atlas damage-windows [glob ...] [--refresh]       every behemoth montage's damage windows
                                                                     -> data/atlas/damage_windows.json/.txt
   python -m tools.atlas behemoths [--dump] [--build] [--refresh]    one data sheet per behemoth in the roster
@@ -284,6 +287,16 @@ def cmd_asset(a):
             print('%s:\n  %s' % (k, '\n  '.join(r[k])))
 
 
+def cmd_plan(a):
+    from .planning import plan
+    plan(a)
+
+
+def cmd_simulation(a):
+    from .simulations import _cli
+    _cli(a.args)
+
+
 def main():
     ap = argparse.ArgumentParser(prog='python -m tools.atlas', description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -313,6 +326,15 @@ def main():
     y = sub.add_parser('asset')
     y.add_argument('name')
     y.set_defaults(f=cmd_asset)
+    pl = sub.add_parser('plan', help='compose an island and optional weapon/item references into an implementation plan')
+    pl.add_argument('hunt', help='hunt row such as Adventure_IslandP_D24')
+    pl.add_argument('--behemoth', help='choose an authored candidate row, or flag an out-of-pool override')
+    pl.add_argument('--weapon', help='add one weapon component (sword, axe, hammer, chainblades, warpike, repeaters, strikers, bow)')
+    pl.add_argument('--item', help='add one exact quick-item catalog id, such as QI_FROSTBITE_PYLON')
+    pl.set_defaults(f=cmd_plan)
+    sim = sub.add_parser('simulation', help='create a simulation template, stage a bundle, or apply a complete bundle')
+    sim.add_argument('args', nargs=argparse.REMAINDER)
+    sim.set_defaults(f=cmd_simulation)
     w = sub.add_parser('damage-windows')
     w.add_argument('patterns', nargs='*', help='montage packages or globs (default: every behemoth montage)')
     w.add_argument('--refresh', action='store_true', help='re-dump packages already in the cache')

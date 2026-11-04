@@ -1,0 +1,75 @@
+{
+  "source": "Phoenix Rising server source inspected 2026-10-29; weapon coverage counts and class families from this Phoenix-Atlas checkout's 2.1.1 weapon catalog exports",
+  "evidence_boundary": "Static source coverage only. Client-visible behavior, successful damage, animation, replication, inventory consumption, and live acceptance require a stock-client island session.",
+  "shared_server_paths": {
+    "weapon_actor_swap": "mpgs/loadout.py swap_weapon_actor/respawn_weapon",
+    "weapon_part_and_power_ability_grants": "mpgs/engine/weapon_parts.py; power row abilities and part abilities are catalog-driven",
+    "weapon_ability_activation": "mpgs/engine/abilities.py; only server-granted ability handles are accepted",
+    "generic_damage_rpc": "mpgs/island_encounter.py handle_damage via DamageComponent.ServerTryDoDamage",
+    "movement_combo_rpc": "mpgs/island_encounter.py handle_server_start_next_move",
+    "repeater_shoot_reload": "mpgs/island_encounter.py handle_repeater_rpc",
+    "quick_item_runtime": "mpgs/engine/quick_items.py"
+  },
+  "weapons": [
+    {"type":"sword","catalog_items":49,"actor":"BP_EB_Weapon_C","implementation_status":"partial-known-gaps","validation_status":"not-fully-client-validated","type_specific_runtime":"sword special/meter/pips module exists; source module states Feast and pip/meter authority work remains incomplete","live_test":"basic combo hit; full meter special; meter drain; pip gain/spend; Hunger Feast effects; death and rejoin"},
+    {"type":"axe","catalog_items":37,"actor":"BP_Axe_Weapon_C","implementation_status":"shared-runtime-only; per-type behavior not identified","validation_status":"not-recorded","type_specific_runtime":"no per-type special/meter handler identified in server router","live_test":"basic light/heavy combo damage; throw/recall; determination special; legendary/passive; switch away/back"},
+    {"type":"hammer","catalog_items":37,"actor":"bp_ihammer_weapon_C","implementation_status":"shared-runtime-only; per-type behavior not identified","validation_status":"not-recorded","type_specific_runtime":"no per-type special/meter handler identified in server router","live_test":"basic combo; ammo generation; reload; concussive blast; aerial/secondary attacks; specials and passives"},
+    {"type":"chainblades","catalog_items":37,"actor":"cblades_weapon_bp_C","implementation_status":"shared-runtime-only; per-type behavior not identified","validation_status":"not-recorded","type_specific_runtime":"no per-type special/meter handler identified in server router","live_test":"basic combo; reaper's dance activation/return; meter; specials; part ability; switch away/back"},
+    {"type":"warpike","catalog_items":37,"actor":"bp_mspear_weapon_C","implementation_status":"shared-runtime-only; per-type behavior not identified","validation_status":"not-recorded","type_specific_runtime":"no per-type special/meter handler identified in server router","live_test":"basic combo; wound damage; ammo generation; shot/mortar; special; meter and part abilities"},
+    {"type":"repeaters","catalog_items":36,"actor":"dp_weapon_bp_C family","implementation_status":"type-runtime-present; combination coverage open","validation_status":"not-fully-client-validated","type_specific_runtime":"ranged fire/reload and repeater legendary raptor handlers exist; verify all part/ability combinations separately","live_test":"shoot, hit and miss; ammo/reload; empowered reload; grip/receiver abilities; legendary raptor; swap away/back"},
+    {"type":"strikers","catalog_items":45,"actor":"ac_weapon_bp_C","implementation_status":"shared-runtime-only; per-type behavior not identified","validation_status":"not-recorded","type_specific_runtime":"no per-type special/meter handler identified in server router","live_test":"all three mantra builders; mantra tier changes; special; slam; meter; part abilities"},
+    {"type":"bow","catalog_items":4,"actor":"bow weapon actor family","implementation_status":"unreleased; no weapon-specific handler identified","validation_status":"not-applicable-unless-client-exposes-bow","type_specific_runtime":"Atlas labels weapon unreleased; server type enum exists but no weapon-specific runtime handler identified","live_test":"defer unless client exposes a usable bow; verify equip/unequip and report unsupported actions"}
+  ],
+  "quick_items": {
+    "implementation_status": "partial-runtime-handler-list; catalog mapping does not imply server support",
+    "validation_status": "per-item-stock-client-results-not-recorded",
+    "catalog_scope": {"catalog_ids":444,"flare_ids":418,"grenade_ids":7,"other_quick_item_ids":19,"mapping":"items/quick_item_catalog_ability_map.json"},
+    "runtime_named_catalog_ids": ["QI_GRENADE_INCENDIARY","QI_FROSTBITE_PYLON","QI_BOMBING_RUN"],
+    "coverage_note": "The 444-row catalog-to-ability map is reference coverage, not server runtime support. Verify activation, authored actor spawn, effect/damage, charge consumption, cooldown, and UI replication per item. The 418 flare variants share mapped classes but no flare firing/effect handler is named in quick_items.py.",
+    "test_sequence": ["equip one item in a loadout slot","activate once and observe animation/effect","confirm server-side effect and target state","confirm charge decrement in UI","attempt activation with zero charges","rejoin and verify slot/charge persistence","repeat with each supported and unsupported catalog family"]
+  },
+  "known_runtime_findings": [
+    {
+      "id": "island_p_behemoth_engine_disabled",
+      "applies_to": ["Adventure_IslandP_D24", "sally_normal"],
+      "status": "cause-partial-correction-unvalidated",
+      "title": "Hades Reach Charrogg walked into geometry; encounter behavior not accepted",
+      "observed": "Stock-client report: the Behemoth attempted to engage but walked forward into a wall; no weapon attacks or slot-item effects worked, then the fight disconnected.",
+      "cause": "The preview process was run with MPGS_BEHEMOTH_ENGINE=0, which bypasses the behavior director. This explains absent behavior-tree attacks, but does not by itself explain the wall path or client disconnect.",
+      "correction": "The preview launcher no longer forces the engine off. The current run must be confirmed with an ENCOUNTER engine on log before attributing subsequent behavior.",
+      "validation": "No stock-client retest after the launcher correction is recorded. Pathing, wall collision, attacks, and disconnect remain open acceptance checks.",
+      "evidence": [
+        "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.log: Adventure_IslandP_D24 loaded and sally_normal spawned",
+        "Stock-client report dated 2026-10-30",
+        "Phoenix source: start-server.ps1 previewserver environment; GameServer/mpgs/island_encounter.py BehemothDirector integration"
+      ],
+      "next_checks": [
+        "Confirm the selected preview process logs ENCOUNTER engine on for sally_normal",
+        "Observe whether the Charrogg turns, navigates around geometry, and executes an attack",
+        "Capture the client disconnect reason and server traceback if the session ends"
+      ]
+    },
+    {
+      "id": "preview_missing_guid_allocator",
+      "applies_to": ["Adventure_IslandP_D24", "QI_FROSTBITE_PYLON", "weapons"],
+      "status": "partial-source-correction-unvalidated",
+      "title": "Preview quick-item activation and weapon-part setup encountered missing GUID allocator",
+      "observed": "The preview server raised KeyError: 'guids' in handle_ability while spawning the Frostbite Pylon; the same preview log reported weapon-part setup failing with KeyError: 'guids'.",
+      "cause": "The engine-disabled preview path did not initialize the encounter GUID allocator, while some actor-spawn paths assumed enc['guids'] already existed.",
+      "correction": "mpgs/engine/quick_items.py now lazily creates a GuidSource for authored quick-item actors. Other direct enc['guids'] consumers remain in island_encounter.py and have not been audited or validated under the same path.",
+      "validation": "The pylon helper correction is present in source, but no post-correction stock-client activation is recorded. Weapon-part setup remains explicitly unresolved.",
+      "evidence": [
+        "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.err.log: KeyError: 'guids' in handle_ability",
+        "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.log: WEAPON PARTS failed: KeyError: 'guids'",
+        "Phoenix source: GameServer/mpgs/engine/quick_items.py _live_guids; GameServer/mpgs/island_encounter.py direct enc['guids'] spawn callsites"
+      ],
+      "next_checks": [
+        "Rejoin Island P and activate Frostbite Pylon; confirm actor/effect, charge decrement, and no traceback",
+        "Confirm weapon parts are granted and swapping weapons does not raise a missing-GUID error",
+        "Audit every direct encounter GUID consumer when BehemothDirector is disabled or absent"
+      ]
+    }
+  ],
+  "weapon_catalog_counts": "GameServer/data/atlas/weapons.json",
+  "weapon_class_behavior_sheets": "GameServer/data/atlas/weapons/<type>.txt"
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phoenix-atlas.invalid/schemas/simulation-bundle-v1.json",
+  "title": "Phoenix Simulation Bundle",
+  "type": "object",
+  "required": ["format", "version", "template", "sourceBuild", "targetBuild", "targetBuildFingerprint", "runnable", "dependencies", "missing", "unresolvedRequirements", "exclusions", "evidence"],
+  "properties": {
+    "format": {"const": "phoenix-simulation-bundle"},
+    "version": {"const": 1},
+    "template": {"$ref": "simulation-template-v1.json"},
+    "sourceBuild": {"type": "string"},
+    "targetBuild": {"type": "string"},
+    "targetBuildFingerprint": {"type": "object", "minProperties": 2, "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+    "runnable": {"type": "boolean"},
+    "dependencies": {"type": "array", "items": {"type": "object", "required": ["id", "target", "sha256"]}},
+    "missing": {"type": "array"},
+    "unresolvedRequirements": {"type": "array", "items": {"type": "string"}},
+    "exclusions": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "object", "required": ["dataPresent", "behaviorUnderstood", "consumerImplemented", "offlineChecksPassed", "clientAccepted"]}
+  },
+  "additionalProperties": true
+}

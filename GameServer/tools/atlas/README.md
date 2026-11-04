@@ -46,6 +46,7 @@ island spec, hunts, escalation and game modes), with coverage tables in `behemot
 | `native <Class.Function>` | Address of a C++ function in the exe, plus any decompile notes |
 | `verified [text]` | Hand-confirmed facts, optionally filtered by a word |
 | `asset <name>` | A data asset's text view (behavior tree, montage notifies, table rows, physics bodies, class defaults), what it references and what uses it |
+| `plan <hunt> [--behemoth ROW] [--weapon TYPE] [--item ID]` | Compose a hunt with selected component references; show source coverage, implementation findings, evidence boundaries, and validation still required |
 | `assets <package or glob ...>` | Dump data assets into `data/atlas/assets` (see below) |
 | `behemoths [--dump] [--build]` | One data sheet per behemoth in the game's roster, plus a coverage table (see below) |
 | `weapons [--dump key ...]` | One data sheet per player weapon type (sword, axe, ...), one for shared weapon infrastructure and one for armor (items, perks, cells, set bonuses), plus the prefix list and a coverage table (see below) |
@@ -56,6 +57,22 @@ island spec, hunts, escalation and game modes), with coverage tables in `behemot
 
 Names are case-insensitive. For `show`, the `_C` suffix and C++ prefix (`U`, `A`) are optional. `who-*`,
 `uses-table` and `native` try an exact match first, then a substring match.
+
+### Example: compose a hunt and expose its open gaps
+
+`plan` joins the island contract, the behemoth sheet, and optional weapon/item readiness rows. A selected behemoth
+inside the island's authored candidate pool is identified as such; an outside selection is shown as a custom
+combination with compatibility unknown. The command never treats static data coverage as implementation or live
+acceptance. Known Phoenix failures and corrections that still need validation are listed from
+`topics/weapon_item_server_readiness.json`.
+
+```text
+python -m tools.atlas plan Adventure_IslandP_D24 --behemoth sally_normal --weapon repeaters --item QI_FROSTBITE_PYLON
+```
+
+Use `python -m tools.atlas plan --help` for options. This is an implementation-planning view over the current
+reference data, not a server template generator; unsupported or unrecorded cross-component compatibility stays
+explicitly unknown.
 
 ### Example: tracking down a behaviour
 

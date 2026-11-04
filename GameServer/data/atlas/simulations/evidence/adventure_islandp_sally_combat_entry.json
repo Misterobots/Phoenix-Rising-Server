@@ -1,0 +1,190 @@
+{
+  "format": "atlas-behavior-evidence-map",
+  "version": 1,
+  "huntId": "Adventure_IslandP_D24",
+  "variantId": "sally_normal",
+  "behaviorTreeId": "sally_bt",
+  "scope": "source map and Phoenix consumer boundary for the Sally shared combat-entry sequence, attack selector, terrain, and reached navtest decorator",
+  "sequence": {
+    "asset": "shared_enter_combat_internal_bt",
+    "type": "BTComposite_Sequence",
+    "orderedChildren": [
+      {
+        "node": "bttask_set_boolean_C_0",
+        "type": "bttask_set_boolean_C",
+        "props": {
+          "Key": "bb.ForceEnterCombat"
+        },
+        "phoenix": "implemented"
+      },
+      {
+        "node": "add_stagger_armor_bttask_C_0",
+        "type": "add_stagger_armor_bttask_C",
+        "props": {
+          "ArmorDuration": {
+            "ConstantFloat": 10.0
+          }
+        },
+        "phoenix": "unimplemented"
+      },
+      {
+        "node": "try_set_behemoth_state_bttask_C_2",
+        "type": "try_set_behemoth_state_bttask_C",
+        "props": {
+          "State": "behemoth_states_enum::Combat"
+        },
+        "phoenix": "implemented"
+      },
+      {
+        "node": "push_coordination_message_bttask_C_0",
+        "type": "push_coordination_message_bttask_C",
+        "props": {
+          "Message": {
+            "TaskType": "coordination_message_type::AllyEnteredCombat",
+            "AgentAllocationType": "agent_allocation_type::AllOtherAgents",
+            "TaskExclusivity": "task_exclusivity::MultipleTasksOfTypeAllowed"
+          }
+        },
+        "phoenix": "unimplemented"
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "type": "add_stagger_armor_bttask_C",
+      "sourceBehavior": "ReceiveExecuteAI checks for BPI_CombatGameMode; if available it reads connected-player count, obtains the pawn staggerable_bpc_C, resolves UnscaledArmorAmount and ArmorDuration via SimplifiedBBData_GetFloat, calls AddStaggerArmor, and finishes true. If the game-mode interface is missing, it finishes true only if the staggerable component exists; otherwise false.",
+      "classDefaults": {
+        "UnscaledArmorAmount": {
+          "ConstantFloat": 0.0
+        },
+        "ArmorDuration": {
+          "ConstantFloat": 0.0
+        }
+      },
+      "nodeOverrides": {
+        "ArmorDuration": {
+          "ConstantFloat": 10.0
+        }
+      },
+      "sharedComponentEvidence": "AddStaggerArmor allocates a GUID and inserts a local stagger_armor_data record at index 0. staggerable_bpc_C declares Debug1HitStagger as a BoolProperty, but the CDO omits it (false). Sally amount=0 and duration=10 therefore yield RemainingAmount=0, InitialArmorAmount=0, DegenRate=0. StaggerArmorStack is not replicated.",
+      "sourceFiles": [
+        "data/atlas/pseudo/add_stagger_armor_bttask_C.txt",
+        "data/atlas/assets/add_stagger_armor_bttask.json",
+        "data/atlas/pseudo/staggerable_bpc_C.txt",
+        "data/atlas/classes/staggerable_bpc_C.json"
+      ],
+      "phoenixStatus": "implemented for the exported Sally zero-amount case: records the local GUID stack entry; there is no combat armor effect and no wire replication because StaggerArmorStack is non-net."
+    },
+    {
+      "type": "push_coordination_message_bttask_C",
+      "sourceBehavior": "Requires a valid ai_coordination_agent_bpc_C MainGroupID to submit a message to the group manager; resolves optional PayloadActorBBKey, sets INTERNAL_SourceAgent, then calls PushMessageToGroup and finishes true. If MainGroupID is invalid, it finishes true when FailIfNotInAGroup is false, otherwise false (with assertion path).",
+      "nodeOverrides": {
+        "Message": {
+          "TaskType": "coordination_message_type::AllyEnteredCombat",
+          "AgentAllocationType": "agent_allocation_type::AllOtherAgents",
+          "TaskExclusivity": "task_exclusivity::MultipleTasksOfTypeAllowed"
+        }
+      },
+      "classDefaultValuesNotPresentInExport": [
+        "FailIfNotInAGroup"
+      ],
+      "singleBehemothImplication": "With FailIfNotInA Group false, an invalid MainGroupID completes successfully by design. Phoenix has no coordination manager or group-ID assignment, so it follows the source success path for this solo composition; actual group-message delivery is outside this consumer.",
+      "sourceFiles": [
+        "data/atlas/pseudo/push_coordination_message_bttask_C.txt",
+        "data/atlas/assets/push_coordination_message_bttask.json",
+        "data/atlas/assets/shared_enter_combat_internal_bt.json"
+      ],
+      "phoenixStatus": "implemented for solo AllOtherAgents flow with the source false default; it does not validate MainGroupID or deliver through an AI group manager",
+      "classDefaultValuesNotPresent": [],
+      "classDefaultInterpretation": {
+        "FailIfNotInA Group": false,
+        "basis": "own Blueprint BoolProperty; CDO omits the field, so its zero/default value is false"
+      }
+    },
+    {
+      "type": "navtest_btdeco_C",
+      "sourceBehavior": "PerformConditionCheckAI gets behemoth scale (or actor scale if interface unavailable), scales each Displacement, calls PathHitsNavMesh with NavigationQueryFilter_NoDynamic and QueryExtent (100,100,1024), then returns the negated result.",
+      "sallyNodeProps": {
+        "Displacement": [
+          {
+            "X": -1200.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        ]
+      },
+      "sourceFiles": [
+        "data/atlas/pseudo/navtest_btdeco_C.txt",
+        "data/atlas/classes/navtest_btdeco_C.json",
+        "data/atlas/assets/sally_bt.json"
+      ],
+      "phoenixStatus": "implemented approximate sampled segment coverage and Detour polygon connectivity over recovered Behemoth geometry; exact native query parity unverified"
+    }
+  ],
+  "traceEvidence": {
+    "path": "GameServer/world/behemoths/sally_normal_bt_trace.json",
+    "durationSeconds": 180,
+    "attacks": 29,
+    "hitEvents": 23,
+    "unhandledDecorators": [
+      "navtest_btdeco_C"
+    ],
+    "maxDistanceFromCenterCm": 3993.2,
+    "subtreesEntered": {
+      "sally_bt": 40,
+      "shared_patrol_bt": 1
+    }
+  },
+  "terrainEvidence": {
+    "path": "GameServer/world/behemoths/sally_normal_acquisition.json",
+    "encoding": "R_hi_G_lo",
+    "reference": "UE Landscape collision heightfield at patrol-center XY",
+    "centers": 5,
+    "walkableCenters": 5,
+    "valid": true,
+    "ventRootZ": "diagnostic only; not used as ground-height truth"
+  },
+  "acceptanceBoundary": {
+    "sourceMapped": true,
+    "combatEntryTasksImplementedForCurrentSoloDefaults": true,
+    "navtestConsumerImplemented": true,
+    "emptySequenceFailureSemantics": "empty Sequence succeeds by UE sequence contract; native 2.1.1 binary not available for direct confirmation",
+    "attackPathEstablishedOffline": true,
+    "stockClientAccepted": false,
+    "combatEntrySideEffectsFullyModeled": false
+  },
+  "nextWork": "Resolve Sally PartCollisionComponent bone routing and implement Phoenix part runtime data; acquire usable Behemoth Detour tile payloads or a faithful navigation query; verify empty-Sequence native semantics.",
+  "sourceMappedSemantics": [
+    "sally_bt navtest_btdeco_C scales Displacement and negates PathHitsNavMesh; 1,549 Behemoth Recast tiles and 3,669 polygons are recovered and staged for Phoenix.",
+    "Sally Landscape source encoding is R_hi_G_lo; five patrol centers are sampled against the Landscape collision heightfield and all are walkable",
+    "sally_bt contains an empty BTComposite_Sequence before its attack selector; the interpreter now treats it as success per UE Sequence contract (empty-selector failure), with no 2.1.1 native binary confirmation.",
+    "Sally Normal part data is mapped from its Normal and archetype Blueprints plus six referenced part presets; vent components retain authored RatioOfBehemothHealth=0.085 but initialize to preset ratio 0.08, body/leg/head/tail presets and normal break overrides are recorded in adventure_islandp_sally_parts.json. Effective stagger stages and runtime bone-to-part routing remain unresolved.",
+    "Sally inherited stagger defaults are source-resolved from the Bp_Behemoth staggerable component template and staggerable_bpc_CDO; see adventure_islandp_sally_parts.json.",
+    "PushCoordinationMessage FailIfNotInA Group is false by the omitted-zero Blueprint BoolProperty default. In the single-behemoth composition, AllOtherAgents has no other recipient; Phoenix preserves success and no target-side message effect is observable.",
+    "AddStaggerArmor inserts a local GUID record; Debug1HitStagger is false by its omitted CDO BoolProperty default, so Sally amount=0 and duration=10 produce zero remaining, initial and degen values. StaggerArmorStack is non-replicated.",
+    "Sally part data export now includes 11 components, preset-resolved health ratios, break metadata, PhATBones, montage durations, and tail socket transform. Runtime part damage/break application and collision attribution remain unimplemented/unverified.",
+    "navtest_btdeco_C is handled by a scaled-displacement PathHitsNavMesh context query over recovered Recast polygon coverage and connectivity; exact native query parity remains unverified.",
+    "navtest_btdeco_C scales each candidate displacement, checks that its segment remains on the Behemoth mesh, and negates the hit result as in the Blueprint."
+  ],
+  "phoenixConsumersImplemented": [
+    "BTDecoratorLogic prefix streams: And/Or/Test expressions are evaluated for guarded children",
+    "empty Sequence before Sally attack selector: modeled as failure in the offline interpreter; matching-engine semantics are not verified",
+    "push_coordination_message_bttask_C: preserves the source false-default success path; the solo AllOtherAgents message has no other agent recipient",
+    "add_stagger_armor_bttask_C: records Sally's local zero-amount GUID stack entry; it has no combat effect and source StaggerArmorStack is non-replicated"
+  ],
+  "navmeshEvidence": {
+    "path": "data/atlas/simulations/evidence/adventure_arid_rose_navmesh_export.json",
+    "sourceAsset": "RecastNavMesh-Behemoth",
+    "agentRadius": 400.0,
+    "agentHeight": 1000.0,
+    "tileCount": 1549,
+    "validTileCount": 1549,
+    "tilePayloadBytesPresent": true,
+    "detourPolygonGeometryPresent": true,
+    "polygonCount": 3669,
+    "limitation": "full Detour polygon geometry is recovered; PathHitsNavMesh return semantics are approximated by sampled segment coverage and endpoint connectivity"
+  },
+  "unresolvedRequirements": [
+    "Recast polygon geometry is recovered and used by Phoenix. Exact stock PathHitsNavMesh parity is unverified because the Archon native implementation and authoritative query results are unavailable."
+  ]
+}

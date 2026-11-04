@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phoenix-atlas.invalid/schemas/simulation-template-v1.json",
+  "title": "Phoenix Simulation Template",
+  "type": "object",
+  "required": ["format", "version", "kind", "id", "huntId", "mapId", "encounter", "loadout", "modifiers", "sourceProvenance", "generatorVersions", "readinessEvidence", "exclusions", "unresolvedRequirements", "acceptanceGaps", "dependencies"],
+  "properties": {
+    "format": {"const": "phoenix-simulation-template"},
+    "version": {"const": 1},
+    "kind": {"enum": ["hunt", "map_preview"]},
+    "id": {"type": "string", "minLength": 1},
+    "huntId": {"type": "string", "minLength": 1},
+    "mapId": {"type": "string", "minLength": 1},
+    "mapPackageId": {"type": "string"},
+    "encounter": {"oneOf": [
+      {"type": "null"},
+      {"type": "object", "required": ["speciesId", "variantId", "behaviorTreeId", "selectionId", "placement"],
+       "properties": {
+         "speciesId": {"type": "string", "minLength": 1},
+         "variantId": {"type": "string", "minLength": 1},
+         "behaviorTreeId": {"type": "string", "minLength": 1},
+         "selectionId": {"type": "string", "minLength": 1},
+         "placement": {"type": "object", "required": ["sourceId"], "properties": {"sourceId": {"type": "string"}, "centers": {"type": "array"}}}
+       }}
+    ]},
+    "loadout": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string", "minLength": 1}}},
+    "modifiers": {"type": "array", "items": {"type": "string"}},
+    "supportedModifiers": {"type": "array", "items": {"type": "string"}},
+    "sourceProvenance": {"type": "object"},
+    "generatorVersions": {"type": "object"},
+    "readinessEvidence": {"type": "object", "required": ["dataPresent", "behaviorUnderstood", "consumerImplemented", "offlineChecksPassed", "clientAccepted"]},
+    "exclusions": {"type": "array", "items": {"type": "string"}},
+    "unresolvedRequirements": {"type": "array", "items": {"type": "string"}},
+    "acceptanceGaps": {"type": "array", "items": {"type": "string"}},
+    "dependencies": {"type": "array", "items": {"type": "object", "required": ["id", "target"]}}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "map_preview"}}, "required": ["kind"]},
+     "then": {"properties": {"encounter": {"type": "null"}}},
+     "else": {"properties": {"encounter": {"type": "object"}}}}
+  ],
+  "additionalProperties": true
+}

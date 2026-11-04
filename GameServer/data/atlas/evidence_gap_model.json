@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0.0",
+  "records": [
+    {
+      "id": "weapon_item_server_readiness_summary",
+      "component": "weapons_and_quick_items",
+      "behavior": "server_implementation_and_validation",
+      "version": "2.1.1",
+      "source_references": [
+        "Phoenix Rising server source inspected 2026-10-29",
+        "GameServer/data/atlas/weapons.json"
+      ],
+      "dependencies": [
+        "mpgs/loadout.py",
+        "mpgs/engine/weapon_parts.py",
+        "mpgs/engine/abilities.py",
+        "mpgs/island_encounter.py",
+        "mpgs/engine/quick_items.py"
+      ],
+      "known_gaps": [
+        {
+          "type": "implementation_omission",
+          "description": "Axe, Hammer, Chainblades, Warpike, Strikers: shared-runtime-only; per-type behavior not identified in server router.",
+          "status": "unresolved"
+        },
+        {
+          "type": "implementation_omission",
+          "description": "Bow: unreleased; no weapon-specific handler identified.",
+          "status": "unresolved"
+        },
+        {
+          "type": "validation_gap",
+          "description": "Quick items: catalog mapping does not imply server support; activation, actor spawn, effect/damage, charge consumption, and UI replication not recorded.",
+          "status": "unresolved"
+        }
+      ],
+      "findings": [
+        {
+          "id": "island_p_behemoth_engine_disabled",
+          "title": "Hades Reach Charrogg walked into geometry; encounter behavior not accepted",
+          "status": "historical-cause-corrected-client-unvalidated",
+          "evidence_level": "live_observation",
+          "observed": "Stock-client report: the Behemoth attempted to engage but walked forward into a wall; no weapon attacks or slot-item effects worked, then the fight disconnected.",
+          "cause": "The preview process was run with MPGS_BEHEMOTH_ENGINE=0, which bypasses the behavior director.",
+          "correction": "The preview launcher no longer forces the engine off.",
+          "validation_gap": "No stock-client retest after the launcher correction is recorded. Pathing, wall collision, attacks, and disconnect remain open acceptance checks.",
+          "next_action": "Retest the current engine-enabled preview in the stock client; observe grounded placement, turning, pathing, attacks, weapon/items, and disconnect behavior.",
+          "source_evidence": [
+            "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.log",
+            "Stock-client report dated 2026-10-30"
+          ]
+        },
+        {
+          "id": "preview_missing_guid_allocator",
+          "title": "Preview quick-item activation and weapon-part setup encountered missing GUID allocator",
+          "status": "historical-source-fix-client-unvalidated",
+          "evidence_level": "log_error",
+          "observed": "The preview server raised KeyError: 'guids' in handle_ability while spawning the Frostbite Pylon; the same preview log reported weapon-part setup failing with KeyError: 'guids'.",
+          "cause": "The earlier preview path did not initialize the encounter GUID allocator.",
+          "correction": "mpgs/engine/quick_items.py now lazily creates a GuidSource for authored quick-item actors.",
+          "validation_gap": "The pylon helper correction is present in source, but no post-correction stock-client activation is recorded. Weapon-part setup and client-visible charge/effect changes remain unverified.",
+          "next_action": "Rejoin Island P and activate Frostbite Pylon; confirm actor/effect, charge decrement, and no traceback. Confirm weapon parts are granted and swapping weapons does not raise a missing-GUID error.",
+          "source_evidence": [
+            "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.err.log",
+            "Dauntless-Phoenix-Rising-Server/logs/previewserver_20261030_105059.log"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adventure_island_batch_readiness_summary",
+      "component": "adventure_islands",
+      "behavior": "extraction_and_encoding_readiness",
+      "version": "2.1.1",
+      "source_references": [
+        "_handoff/Dauntless-Phoenix-Rising-Server/GameServer/data/2.1.1/islands/adventure_batch_readiness.json"
+      ],
+      "dependencies": [
+        "asset_dumper",
+        "sdk_mappings",
+        "pak_files"
+      ],
+      "known_gaps": [
+        {
+          "type": "acquisition_and_behavior_gap",
+          "description": "Island A LeRawr has 8 actions, 14 damage rows, 20 behavior trees, 34 body bones, zero root-motion gaps, validated 28-component terrain, and no unresolved template requirements; Simple Parallel (AbortBackground) and wait_for_distance_bttask are modeled and the 180-second offline trace emits 32 attacks with no unhandled nodes. Island A has no behemoth navmesh or rock/static-mesh collision, so paths to points off the terrain fail and a player standing on a rock is attacked from beneath. Island P Sally stages 79/79 dependencies with validated R_hi_G_lo collision-heightfield terrain and all 1,549 Behemoth Recast tiles; the Phoenix PathHitsNavMesh query matches 675 native queries. Behemoth floor height uses the landscape heightfield instead of native movement collision, and coordination and zero-armor side effects are partial models.",
+          "status": "unresolved"
+        },
+        {
+          "type": "validation_gap",
+          "description": "Offline encoding does not establish engine-data/terrain readiness or stock-client acceptance.",
+          "status": "unresolved"
+        },
+        {
+          "type": "policy_exclusion",
+          "description": "Island U PublicEvent lifecycle and stage execution are intentionally outside the Phoenix map-preview scope.",
+          "status": "documented-exclusion"
+        },
+        {
+          "type": "validation_gap",
+          "description": "Older preview notes required MPGS_BEHEMOTH_ENGINE=0 before per-hunt manifests were prepared; the current launcher enables the engine, while live behavior acceptance remains open.",
+          "status": "historical-corrected-client-unvalidated"
+        }
+      ],
+      "findings": [
+        {
+          "id": "island_u_public_event_bypass",
+          "title": "Island U PublicEvent lifecycle and stage execution bypassed",
+          "status": "intentional-exclusion",
+          "evidence_level": "source_analysis",
+          "observed": "Island U is authored around PublicEvent content, but the server preview path does not yet run the sequence (public_event_chooser_C). Templates remain map/arrival only.",
+          "cause": "PublicEvent lifecycle is outside the selected Phoenix preview scope.",
+          "correction": "PublicEvents remain explicitly bypassed by design.",
+          "validation_gap": "No validation is claimed for PublicEvent stages, which are excluded.",
+          "next_action": "Keep the exclusion documented; handle PublicEvents only under a separate explicit scope.",
+          "source_evidence": [
+            "adventure_batch_readiness.json: extractorFindings[5]"
+          ]
+        },
+        {
+          "id": "island_u_no_standard_behemoth",
+          "title": "Island U map-only templates omit StandardBehemoth by design",
+          "status": "intentional-exclusion",
+          "evidence_level": "source_analysis",
+          "observed": "Island U templates are map-only and do not spawn a StandardBehemoth; PublicEvent content remains bypassed.",
+          "cause": "Island U is authored around PublicEvent content and is intentionally represented as map-only in this preview scope.",
+          "correction": "No StandardBehemoth is assigned by the current map-only template.",
+          "validation_gap": "This template does not claim PublicEvent stages or a StandardBehemoth encounter.",
+          "next_action": "Keep the exclusion documented; handle PublicEvents only under a separate explicit scope.",
+          "source_evidence": [
+            "adventure_batch_readiness.json: extractorFindings[5]"
+          ]
+        },
+        {
+          "id": "island_a_lerawr_behavior_and_client_validation_open",
+          "title": "Island A LeRawr behavior tree fully handled offline and attacking live; pounce is combat-entry only (native); world collision and pylon/weapon live checks remain open",
+          "status": "offline-complete-live-attacks-collision-open",
+          "evidence_level": "engine_source_bytecode_offline_scenarios_and_live_client",
+          "observed": "The 180-second offline trace emitted 20 attacks. audio_exit_flee_state_bttask_C is modeled for control flow as zero-duration success after source inspection; its SetBehemothMusicState presentation effect is not implemented. BTComposite_SimpleParallel_2 has main child wait_for_distance_bttask_C_1 and background child BTTask_MoveTo_2. The main task instance sets TargetKey=AttackTarget, distance range 1500..99999, and 0.5s target prediction. Its ClassDefaults export supplies OriginPosKeyName=SelfPos, MaximumTimeToWait=10s, and RequiredBlackboardKeyWaitType=RunUntilConditionIsTrue. The composite FinishMode is absent from serialized props. UE 5.1.1 declares it as TEnumAsByte<EBTParallelMode::Type> FinishMode and the UBTComposite_SimpleParallel constructor does not set it, so the class default is zero, EBTParallelMode::AbortBackground (Immediate); tagged property serialization omits values equal to the class default, which is why no value is present. 2026-11-04: BTComposite_SimpleParallel is implemented in the Phoenix runner (main task, background branch restarted when it finishes and postponed within one search, AbortBackground when the main task finishes). wait_for_distance_bttask_C is decoded from bytecode: target position predicted horizontally by TimeInFuture, in band = within MaxDistance and not within MinDistance (3D), passes when in_band equals TimeWaitType==1; then CompareBlackboardValues on BlackboardKeyNameToCheck (Bool compare op 2 ==, 3 !=); finishes false after MaximumTimeToWait. CanTransitToNextAnim comes from a server-only set_blackboard_key_ns_C notify state on b_aq_lerawr_00_loco_run_fwd_00 (length 0.56666666, state 0.29811272-0.39894003; NotifyBegin sets ValueDuringState false, NotifyEnd ValueAfterState true). Offline 180 s trace: 32 attacks, no unhandled nodes; 360 s scripted scenarios (tools/trace_behemoth_bt --scenario melee|kite on Phoenix main): melee 44 attacks, kite 19, zero unhandled. lerawr_runandpounce_bt is reachable only through lerawr_enter_combat_pounce_bt, whose RootDecorators require a valid target within EnterCombatRange and behemoth_in_state NewEnumerator9 with StateRequirement 1 (not in Combat); the run-and-pounce therefore runs once on combat entry and retreating mid-fight does not re-enter it (both scenarios enter it exactly once). Live 2026-11-04 (stock client, Ramsgate Outskirts > Emberthorn Cove, Lesser Embermane): spotted at 7859 units, entered combat; Bite, SideGore_L, TailSwipeL and JumpReposition with every hit accepted (75 damage), no tracebacks, no unknown nodes. Two 'no path' failures while the player ran off; with the player on a rock about 840 units above the terrain the behemoth stood 150-450 units away horizontally and attacked every ~5 s with no hit attempt (3D hit check), reproduced offline.",
+          "cause": "Island A has no exported behemoth navmesh and Phoenix has no static-mesh/rock collision, so destinations off the terrain have no path and an elevated player is horizontally reachable but out of 3D hit range.",
+          "correction": "Simple Parallel, wait_for_distance and the run-cycle blackboard notify are implemented (Phoenix main 60f9deb9). The pounce entry gate is native and needs no change. The run-cycle phase for CanTransitToNextAnim is a labelled approximation: the run sequence is taken to start when path following starts, because the anim BP locomotion state machine is not modeled.",
+          "validation_gap": "World collision (rocks, static meshes) and an Island A behemoth navmesh are not acquired. The run-cycle phase is approximate. The audio music-state effect remains a presentation exclusion. The assumption that Archon did not change the 5.1.1 AIModule Simple Parallel default stands.",
+          "next_action": "Acquire Island A behemoth navmesh and static collision; confirm the native response to an unreachable elevated target.",
+          "source_evidence": [
+            "GameServer/world/behemoths/lerawr_beta_acquisition.json",
+            "data/atlas/assets/lerawr_runandpounce_bt.json",
+            "data/atlas/assets/wait_for_distance_bttask.json",
+            "data/atlas/pseudo/wait_for_distance_bttask_C.txt",
+            "data/atlas/classes/BTComposite_SimpleParallel.json",
+            "Mystic-Paradox/sdk211/.../CppSDK/SDK/AIModule_structs.hpp",
+            "data/atlas/pseudo/audio_exit_flee_state_bttask_C.txt",
+            "UnrealEngine-5.1.1 AIModule/Classes/BehaviorTree/Composites/BTComposite_SimpleParallel.h: FinishMode, EBTParallelMode",
+            "UnrealEngine-5.1.1 AIModule/Private/BehaviorTree/Composites/BTComposite_SimpleParallel.cpp: constructor, AbortBackground handling",
+            "data/atlas/pseudo/wait_for_distance_bttask_C.txt",
+            "data/atlas/assets/lerawr_enter_combat_pounce_bt.json",
+            "Phoenix main 60f9deb9: mpgs/behemoth/bt.py, director.py, tools/trace_behemoth_bt.py",
+            "Phoenix logs/islandserver_20261103_222451.log (live 2026-11-04)"
+          ]
+        },
+        {
+          "id": "island_p_sally_combat_entry_tasks_unimplemented",
+          "title": "Island P Sally attacks live with native attack-vector navmesh rejection; movement pathing and floor height remain native gaps",
+          "status": "partial-consumer-live-attacks-native-navigation-consumers-open",
+          "evidence_level": "native_query_capture_engine_source_offline_trace_and_live_client",
+          "observed": "Native PathHitsNavMesh was captured on the 2.1.1 exe host for adventure_arid_rose (675 cases, verticalCompensation 100, 0 native faults); the Phoenix DetourNavMesh query reproduces every hit result. Before 2026-11-03 the Phoenix behavior runner finished the childless BTComposite_Sequence_18 as success, which ended BTComposite_Selector_32 before the attack selector: offline and live (stock client, Hades Reach) Sally aggroed and roared but never attacked. With engine semantics the 120-second offline trace emits 19 attacks and 15 hits, and the live stock client showed tackles, tail sweeps, fire sneeze, fire belch and backoff. sally_bt's only navtest_btdeco_C has one Displacement point, so native PathHitsNavMesh returns false before any query and the decorator always passes. 752 of 1,219 offline position samples lie outside the Behemoth navmesh query extent, and per-tick heightfield floor steps reach 99 units (live: visible bouncing). 2026-11-03 Evaluate gate: Phoenix Brain rejects an action when either scaled runtime-simplified attack path (SimplifyVectors port, 538/538 native match) hits the navmesh before 0.9 of its length (DetourNavMesh.path_query, 957/957 native match); sally_normal mesh scale 1.15 (sq_sally_archetype_bp CharacterMesh0, exported to world/behemoths/sally_normal_pawn.json). 180-second offline trace: 28 attacks; FrontTackle rejected in 99 of 207 evaluations, side swipes and tail sweeps 10-25%; off-navmesh position samples fell from 62% (752/1219) to 23% (462/1974). Detour pathfinding port (findPath A* with dtNodeQueue, area cost and fixed entering cost, heuristic 0.999, 2048 nodes; findStraightPath with DT_STRAIGHTPATH_AREA_CROSSINGS; Behemoth DefaultQueryExtent 300,300,600 from DefaultEngine.ini SupportedAgents, BP_Nav_BreakableTree_C cost 10 / entering 10): versus 231 native FindPathToLocationSynchronously captures on RecastNavMesh-Behemoth, 214 point-exact, 16 within 1% (all partial natively too: the Behemoth mesh has disconnected regions), 1 at 1.7% (raw_1, findNearestPoly choice for a start ~90 units above the mesh). Action helpers implemented: Evaluate helper branch (BP_BehemothAction_C is an Actor; OptimArea has no serialized relative transform), BP_ActionHelper_C tick score (base ActionSpecifcTests = hits from the behemoth's current transform; sally_rocklaunch1 = Tail not severed), get_action_helper_btservice_C + EQ_FindBestActionHelper with UE NormalizeItemScores. Offline 200 s: helpers placed and passing (e.g. SideSwipeL 240/302), but the service never ticks: it sits on Selector_1 and UE ticks services only while a task under it runs (bCallTickOnSearchStart false); its only long task is the >950-unit approach MoveTo. Live 2026-11-03 Sally roared every ~6 s once close: the Selector_32 fallback generic action 13 after rejected attacks and a failed reposition. Frustration (2026-11-03): the repeated close-range roar is Selector_32's fallback generic action 13 after evaluate_action_btservice clears ChosenAttack (native bytecode); escalation is aggro frustration. Native CalculateAccessibility (impl RVA 0x263E500) decoded: owner projected with extent 50,50,1000; target with AccessibleTargetTolerance else AccessibleTargetInAirCheck; GetPathCost on the agent navdata, partial paths count (ARecastNavMesh::CalcPathLengthAndCost); cost > MaxPathCostForAccessibility -> Inaccessible; distance < 1500 and cost > 3000 -> CloseButLongPath. Native host Default__aggro_bpc_C: MaxFrustration 100, tolerance 750,750,25, in-air 100,100,800, MaxPathCostForAccessibility 11000, DegenDelay 3, Degen 5/s every 0.25 s, PathCostCheckInterval 2, CanDeaggro true; rates 1/s inaccessible, 15/s deaggroing. DecreaseFrustration (native) sets CanDeaggroWarning at 0 and clears ReadyToDeaggroWarning below 50 (FNames resolved live). behemoth_states_enum values differ from NewEnumerator names (NewEnumerator9 Combat = 11; IsInState(5) = NewEnumerator4, IsInState(16) = NewEnumerator14); HasEnteredCombatSinceLastDisengage is set by AuthOnStateChanged entering Combat and by NotifyDamageTaken. Implemented in mpgs/behemoth/aggro.py; offline frustration builds on inaccessible stretches, and forced max frustration enters shared_deaggro_bt. On 2026-11-03 eqs_aetherconsume_position was ported from its asset and UE 5.1.1 source: the circle centre is EQContext_CurrentPatrolCenterPoint_C (blackboard CurrentPatrolPoint, else the first BP_PatrolCenterPoint_C), not TargetActor; EQSQueryBlackboardKey is unused because QueryTemplate is set. The generator places 8 points (ByNumberOfPoints, class default), starting at Forward rotated by -180 degrees and stepping 45 degrees, each replaced by the BatchRaycast hit from the centre (TraceData Navigation, Keep). With no tests, SingleResult sorts by TGreater with the DataOffset tie-break, so the last point (135 degrees) wins. Offline Island P trace with frustration forced while Sally was on the navmesh: the MoveTo ran from 81.3 to 89.0 s and shared_deaggro_cleanup_bt reset frustration and removed Combat. Also 2026-11-03: has_generic_action_btdeco_C passes when FindMontageInGenericActionSet(ActionType) returns a valid montage (bytecode). remove_all_targets_bttask_C calls the owner's aggro_bpc RemoveAllTargets and finishes true. The native body (exec thunk 0x22A51D0, body RVA 0x2650AE0) removes every target entry, sets CurrentTargetIndex to -1, timestamps the change and broadcasts OnCurrentTargetChanged. In the Island P trace the cleanup clears the target at 89.0 s; the following scripted player is re-acquired 0.8 s later at 350 units and Combat resumes at 93.9 s. Frustration no longer builds without navigation data: Island A has no behemoth navmesh, so LeRawr's accessibility stayed at the initial Inaccessible and frustrated to max at 120 s. Native targeting decoded 2026-11-03 (exe RVAs): TryPickNewTarget 0x265A3B0, IsTargetValid 0x2648600, RefreshTargetAggro 0x264FA10, RefreshTargetVisibility 0x264FB40, UpdateAfterTargetDataChange 0x265AD00. RefreshAndScoreTargets runs every 1 s with eqs_score_behemoth_targets (live players, 2D distance <= 8000); visibility and aggro passes every 0.25 s, path costs every 2 s. IsTargetValid: acc = Accessibility < 2, or 2/3 within 6 s of LastAccessible; seen = score > 0, alive, LastSeen within 5 s; req 0 acc and seen, 1 acc, 2 seen, 3 seen and not acc, 4 any. TryPickNewTarget takes the highest score (current target times stickiness, lerp 0.75-1.25 over 20 s), prefers req 0 over req 2, and ranks a deaggroing target below a non-deaggroing one. Untethered, RefreshTargetAggro sets DeaggroState 0 and LastAggro now every pass. Bp_Behemoth NotifyDamageTaken adds the instigator with GetOrAddTargetData and sets ForceEnterCombat when accessible or obstructed. BP_BehemothAction default RequireStates is [Combat]; Phoenix previously held brain.states at Combat, so out-of-combat attacks were never gated. Live 2026-11-03 (stock client, Hades Reach): targeted at 7515 units with no attack out of combat; Combat at 243.6 s after a hit; give-up at 355.6 s (112 s; offline 108 s); re-acquired 0.7 s later and returned to patrol with no re-engage. 2026-11-04: UE 5.1.1 Montage_PlayInternal stops montages in the same group and makes the new instance RootMotionMontageInstance, the only instance root motion is extracted from; Phoenix Mover.play now always takes over. 360 s scripted scenarios on Hades Reach: melee 57 attacks, kite 25, zero unhandled nodes, shared_combat_reposition_bt entered 5 times in kite; 26 attacks (18 melee, 8 kite) started during a roar and took over its root motion, each of which was previously refused.",
+          "cause": "UE 5.1.1 UBTCompositeNode::FindChildToExecute returns BTSpecialChild::ReturnToParent with LastResult unchanged for a composite without children, so an empty composite passes on its parent's entry result (failure under a selector). BP_BehemothAction_C.Evaluate and TestAttackVectorCollision reject an action when PathHitsNavMesh on SimplifiedAttackVectors1/2 hits before 0.9 of the path (NavFilter_ExcludeBehemoth_C, extent 100,100,1024, current target as TargetActor); Phoenix Brain.evaluate has no such test because the vectors are absent from every Phoenix export and from the Atlas. Phoenix Mover sets Z from the landscape heightfield every tick; the native floor comes from character movement against world collision, which is not acquired.",
+          "correction": "Phoenix bt.Runner passes the parent's entry result through childless composites (source-verified). trace_behemoth_bt now gives the director the hunt, as island_encounter does, so offline runs load the hunt navmesh. No substitute was applied for attack-vector rejection or floor height. Brain.evaluate now applies the Evaluate PathHitsNavMesh rejection between availability and target hit tests; tools/export_behemoth stores authored AttackVectors1/2 (serialized _Simple is stale) with ScaleHitAreaToBehemothSize, DebugScale and AllowNavLinks; Species loads the mesh scale and BehemothContext.behemoth_scale serves it to navtest. mpgs/behemoth/targeting.py ports the target data, timer passes, IsTargetValid, UpdateAfterTargetDataChange, TryPickNewTarget and stickiness; AttackTarget follows CurrentTargetIndex; brain.states follows the behemoth's states; the MPGS_ROCK_AGGRO_RANGE/DEAGGRO_RANGE substitutes are removed; NotifyDamageTaken ForceEnterCombat is ported.",
+          "validation_gap": "Targeting line of sight is treated as clear (no world collision for the channel-3 trace) and a lone player's EQS score is taken as 1. Without a navmesh accessibility stays Inaccessible, so ForceEnterCombat never triggers there. ThisActorTookDamage pending frustration is not implemented. Behemoths without an exported navmesh (Island A) build no frustration. Phoenix keeps no CurrentPatrolPoint, so the EQS centre is always the encounter patrol centre. When a root-motion attack leaves Sally off the behemoth navmesh (a charge to -16058, 3611, about 360 units past the edge), the deaggro MoveTo finds no start polygon and fails under ForceSuccess; whether the native mover keeps Sally on the mesh is unconfirmed. ResetFrustration's cleared key is inferred as ReadyToDeaggro from the name table order. Sally has no generic action 15. Plus the earlier open items: native close-range roar confirmation, EnvQueryTest_ActionHelperScore value, helper ground trace, MoveToAndFace facing, TargetActor suppression, hit-area offset scaling, capsule radius, mesh rescale, part severing, floor height, coordination and armor replication.",
+          "next_action": "Tethered DeaggroState and the channel-3 visibility trace need world collision. ThisActorTookDamage pending frustration is not implemented.",
+          "source_evidence": [
+            "data/atlas/pseudo/add_stagger_armor_bttask_C.txt",
+            "data/atlas/pseudo/push_coordination_message_bttask_C.txt",
+            "data/atlas/pseudo/navtest_btdeco_C.txt",
+            "data/atlas/simulations/evidence/adventure_arid_rose_navmesh_export.json",
+            "GameServer/world/behemoths/sally_normal_bt_trace.json",
+            "D:/PhoenixAtlasArtifacts/Adventure_IslandP_D24/artifact.json",
+            "D:/PhoenixAtlasArtifacts/NavmeshObserver/native_query_comparison_extended.json",
+            "D:/PhoenixAtlasArtifacts/NavmeshObserver/NATIVE_QUERY_FINDINGS.md",
+            "data/atlas/pseudo/BP_BehemothAction_C.txt",
+            "data/atlas/index_who_calls.json: ArchonGameplayStatics.PathHitsNavMesh",
+            "UnrealEngine-5.1.1 AIModule/Private/BehaviorTree/BTCompositeNode.cpp: FindChildToExecute",
+            "data/atlas/simulations/evidence/adventure_islandp_sally_attack_vectors.json",
+            "D:/PhoenixAtlasArtifacts/NavmeshObserver/native_probe_aggro.log",
+            "D:/PhoenixAtlasArtifacts/NavmeshObserver/native_probe_paths.log",
+            "exe 0x265A3B0 TryPickNewTarget, 0x2648600 IsTargetValid, 0x265AD00 UpdateAfterTargetDataChange",
+            "data/atlas/pseudo/aggro_bpc_C.txt",
+            "UnrealEngine-5.1.1 Engine/Private/Animation/AnimInstance.cpp: Montage_PlayInternal",
+            "Phoenix main 60f9deb9: mpgs/behemoth/mover.py"
+          ]
+        }
+      ]
+    }
+  ]
+}
