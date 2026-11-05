@@ -317,6 +317,8 @@ def start(session):
             pa = session._encounter.get('part_abilities')
             if weapon is not None:
                 from .engine.weapon_meter import WeaponMeter, is_meter_weapon
+                print('WEAPON METER %s ch%d class %s: %s' % (weapon[2], weapon[0], session.chan_cls.get(weapon[0]),
+                                                             'meter' if is_meter_weapon(session.chan_cls.get(weapon[0])) else 'no meter'), flush=True)
                 if is_meter_weapon(session.chan_cls.get(weapon[0])):
                     meter = WeaponMeter(session, session._encounter['damage_model']['rows'], lambda m: print('ABILITY ' + m, flush=True))
                     session._encounter['meter'] = meter
@@ -1641,12 +1643,14 @@ def handle_damage(session, ch, req_block, params=None):
         session._queue_rpc(ch, req_block, 'ClientDoDamageSucceed', {'PredictionKey': params['PredictionKey']})
     damage, row = _player_hit_damage(enc, params)
     if row is not None and enc.get('meter') is not None:      # BP_EB_Weapon.HandleMeterGain, by the attack's row tags
-        from .engine import sword_special
+        from .engine import axe, sword_special
+        from .engine.weapon_meter import METER_BASE
         name = params.get('Payload.DamageTypeName')
-        enc['meter'].on_hit(name[0] if isinstance(name, tuple) else name)
+        if enc['meter'].base == METER_BASE:
+            enc['meter'].on_hit(name[0] if isinstance(name, tuple) else name)
         now = time.monotonic() if not hasattr(session, 'clock') else session.clock()
         for e in reversed(sword_special.on_hit(session, enc, row.get('tags'), now) +
-                          sword_special.lifesteal(session, enc, damage)):
+                          sword_special.lifesteal(session, enc, damage) + axe.on_hit(session, enc, row.get('tags'), now)):
             session.entries.insert(session.pos, e)
     from .engine import hammer
     hammer.on_damage_given(session, enc)

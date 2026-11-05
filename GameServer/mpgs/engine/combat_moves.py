@@ -81,6 +81,18 @@ def _hammer_primed_window(session, enc, n, phase, now, ctx):
         hammer.on_primed_window_end(session, enc)
 
 
+def _send(session, entries):
+    for e in reversed(entries):
+        session.entries.insert(session.pos, e)
+
+
+def _axe_clear_charge(session, enc, n, phase, now, ctx):
+    """Notify_GAClearChargeLevel (Y3 and open-attack charge montages, 0 s): BP_Axe_Weapon.ResetCurrentChargeLevel."""
+    if phase == 'begin':
+        from . import axe
+        _send(session, axe.clear_charge(session, enc))
+
+
 def _part_event(session, enc, n, phase, now, ctx):
     """The forwarding notifies: the weapon's part of WeaponPartToActivate (GetWeaponPartByType) gets
     activate_weapon_part_gameplay_bpns: ActivateWeaponPartGameplay at the begin, DeactivateWeaponPartGameplay at the end;
@@ -116,6 +128,8 @@ def on_charge(session, enc, func, params, now):
     elif func == 'ServerProcessCharge':
         charge['level'] = int(p.get('NewChargeLevel') or 0)
         event, args = 'WeaponPartChargeLevelChanged', (int(p.get('PreviousChargeLevel') or 0), charge['level'])
+        from . import axe                                  # the weapon's own OnChargeLevelChanged (BP_Axe_Weapon)
+        _send(session, axe.on_charge_level(session, enc, *args))
     else:
         charge['charging'] = False
         _log('charge ended at level %d' % charge['level'])
@@ -156,6 +170,7 @@ HANDLERS = {
     'activate_weapon_part_gameplay_bpns_C': _part_event,
     'activate_weapon_part_gameplay_event_bpn_C': _part_event,
     'Notify_ConsumeStamina_C': _stamina,
+    'Notify_GAClearChargeLevel_C': _axe_clear_charge,
     'Notify_ConsumeStamina_RepeatingElements_C': _stamina,
     'Notify_ConsumeStamina_BowComboChains_C': _stamina,
     'reload_ammo_hammer_bpn_C': _hammer_reload,

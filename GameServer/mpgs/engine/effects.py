@@ -27,6 +27,7 @@ EFFECTS = {   # GE class -> package
     'dp_x_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/x_abilities/dp_x_ability_cooldown_ge',
     'dp_y_ability_cooldown_ge_C': '/Game/game/abilities/weapons/DP/y_abilities/dp_y_ability_cooldown_ge',
     'special_active_ge_C': '/Game/blueprints/Weapons/_shared/special_active_ge',     # sword special (sword_special.py)
+    'determination_ready_to_level_ge_C': '/Game/game/abilities/weapons/Determination/determination_ready_to_level_ge',  # axe.py
 }
 # the D24 weapon-talent perks (weapon_talent_catalog), each Infinite and owning one weapon.talent.d24.* tag; applied to the
 # player's ASC (ApplyWeaponTalentGameplayModifiers; the abilities read them with GetTalentStatusSP(ArchonCharacter))

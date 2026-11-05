@@ -52,6 +52,13 @@ def _log(msg):
     print('SWORD ' + msg, flush=True)
 
 
+def _meter(enc):
+    """The encounter's meter when the weapon is a sword (the axe has its own rules, engine/axe.py)."""
+    from .weapon_meter import METER_BASE
+    m = enc.get('meter')
+    return m if m is not None and m.base == METER_BASE else None
+
+
 def _charges(enc):
     return enc.setdefault('swordcharges', {'n': 0, 'fill': 0.0, 'last_gain': -1e9})
 
@@ -77,7 +84,7 @@ def _add(session, enc, n):
 
 def on_hit(session, enc, tags, now):
     """A landed hit with its damage row's tags. -> reliable entries."""
-    if enc.get('meter') is None or 'Combat.Sword.TierAdvancer' not in (tags or ()):
+    if _meter(enc) is None or 'Combat.Sword.TierAdvancer' not in (tags or ()):
         return []
     c = _charges(enc)
     gain = 2 if 'Combat.Sword.TokenGranterTwo' in tags else 1 if 'Combat.Sword.TokenGranter' in tags else 0
@@ -118,7 +125,7 @@ def _drain(session, enc, now):
 def on_move(session, enc, dest_state):
     """CharCombatComp.ServerStartNextMove's ComboInputBuffer.DestState (soft path '...animstateset:ComboAnimState_N').
     -> reliable entries."""
-    if enc.get('meter') is None or not isinstance(dest_state, str) or ':ComboAnimState_' not in dest_state:
+    if _meter(enc) is None or not isinstance(dest_state, str) or ':ComboAnimState_' not in dest_state:
         return []
     path, state = dest_state.rsplit(':ComboAnimState_', 1)
     cost = SPENDS.get((path.rsplit('.', 1)[-1], int(state))) if state.isdigit() else None
@@ -132,7 +139,7 @@ def on_move(session, enc, dest_state):
 
 def on_combo(session, enc, key, now):
     """CharCombatComp.ServerStartCombo. -> reliable entries to send."""
-    meter = enc.get('meter')
+    meter = _meter(enc)
     if key != SPECIAL_KEY or meter is None:
         return []
     sp = enc.setdefault('sword_special', {'active': False})
@@ -159,7 +166,7 @@ def on_combo(session, enc, key, now):
 def step(session, enc, now):
     """While the special is active: drain the meter; at 0 end the special. -> reliable entries to send."""
     sp = enc.get('sword_special')
-    meter = enc.get('meter')
+    meter = _meter(enc)
     if not sp or not sp['active'] or meter is None:
         return []
     dt, sp['last'] = now - sp['last'], now

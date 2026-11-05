@@ -161,6 +161,10 @@ def register_atlas_class(schema, cls_name, props_only=False):
     return True
 
 
+# atlas property type -> schema Prop kind, for the replicated properties register_atlas_class_full gives a class
+_ATLAS_PROP = {'BoolProperty': {'k': 'BoolProperty', 'bsz': 1}, 'IntProperty': {'k': 'IntProperty'},
+               'FloatProperty': {'k': 'FloatProperty'}, 'DoubleProperty': {'k': 'DoubleProperty'},
+               'StructProperty<Vector>': {'k': 'StructProperty', 'st': 'Vector'}}
 _ATLAS_PARAM = {'StructProperty<Vector>': ['FVector', 'S', '', []], 'StructProperty<Rotator>': ['FRotator', 'S', '', []],
                 'BoolProperty': ['bool', 'D', '', []], 'IntProperty': ['int32', 'D', '', []], 'FloatProperty': ['float', 'D', '', []],
                 'DoubleProperty': ['double', 'D', '', []]}
@@ -182,9 +186,12 @@ def register_atlas_class_full(schema, cls_name):
     from .repl.schema import Prop
     props = []
     for i, p in enumerate(info['properties']):
-        if p.get('type') != 'BoolProperty':
+        kind = _ATLAS_PROP.get(p.get('type') or '')
+        if kind is None and (p.get('type') or '').startswith('ObjectProperty<'):
+            kind = {'k': 'ObjectProperty'}
+        if kind is None:
             return False
-        props.append(Prop({'n': p['name'], 'ri': i, 'off': i, 'dim': 1, 'fl': '20', 'k': 'BoolProperty', 'bsz': 1}))
+        props.append(Prop({'n': p['name'], 'ri': i, 'off': i, 'dim': 1, 'fl': '20', **kind}))
     funcs = []
     for fn in info['rpcs']:
         params = []
@@ -229,7 +236,7 @@ def swap_equipment_actor(entries, schema, slot, catalog, classes=None, slots=Non
     arch.name, arch.flags, arch.checksum = 'Default__' + cls_name, 1, None
     arch.outer_info.name, arch.outer_info.flags, arch.outer_info.checksum = package, 1, None
     a.values['ItemId'] = catalog
-    if cls_name in schema.inherit or register_atlas_class(schema, cls_name):
+    if cls_name in schema.inherit or register_atlas_class(schema, cls_name) or register_atlas_class_full(schema, cls_name):
         layout = cls_name
     elif slot == 1 and cls_name.startswith('eblade_') and e.cls.startswith('eblade_'):
         layout = e.cls          # sword -> sword keeps the sword layout

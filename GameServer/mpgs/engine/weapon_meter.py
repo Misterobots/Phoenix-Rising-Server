@@ -1,4 +1,5 @@
-"""The sword's weapon meter, held by the server and replicated as the weapon's Determination attribute.
+"""The weapon meter (swords; the axe's determination, engine/axe.py), held by the server and replicated as the weapon's
+Determination attribute.
 
 From the game's Blueprints (AssetDump bytecode, 2026-10-16):
 * BP_EB_Weapon.SpecialAttackReady: QReady = (weapon_meter_bpc.GetCurrentMeter == GetMaxMeter). The client only asks to activate
@@ -24,20 +25,27 @@ TAG_GAINS = {                          # HandleMeterGain: tag -> (gain, gain whi
     'Combat.Sword.SwordchargeDelayedAoE': (14.0, 28.0),
 }
 METER_BASE = 'BP_EB_Weapon_C'          # every sword skin derives from it (data/2.1.1/class_layouts.json)
-METER_MAX = 100.0
+AXE_BASE = 'BP_Axe_Weapon_C'
+# weapon base class -> DeterminationMax: the sword's EBlade_ChargeMax (inferred, see above); the axe's ga_determination_ab
+# and BP_Axe_Weapon default 12 (atlas axe_server.md)
+METER_MAX = {METER_BASE: 100.0, AXE_BASE: 12.0}
 SET_CLS = 'ArchonDamageAttributeSet'
 
 
-def is_meter_weapon(cls_name):
-    """A sword: a class with BP_EB_Weapon_C among its ancestors."""
+def meter_base(cls_name):
+    """The METER_MAX base class among cls_name's ancestors, or None."""
     from ..loadout import class_layout
     cur = cls_name
     while cur:
-        if cur == METER_BASE:
-            return True
+        if cur in METER_MAX:
+            return cur
         info = class_layout(cur)
         cur = info and info['parent']
-    return False
+    return None
+
+
+def is_meter_weapon(cls_name):
+    return meter_base(cls_name) is not None
 
 
 def increase_params(raw):
@@ -74,7 +82,8 @@ class WeaponMeter:
         self.header = find_block(session, self.ch, SET_CLS)
         if self.header is None:
             raise LookupError('weapon %s has no %s' % (self.weapon, SET_CLS))
-        self.max = METER_MAX
+        self.base = meter_base(self.weapon)
+        self.max = METER_MAX[self.base]
         import os
         self.value = min(self.max, float(os.environ.get('MPGS_METER_START', '0')))   # test aid: start part-full
         self.multiplier, self.per_hit_bonus = 1.0, 0.0      # inferred native defaults (see the module doc)
